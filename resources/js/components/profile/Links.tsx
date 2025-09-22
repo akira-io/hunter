@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import profile from '@/routes/profile';
 import { LinkName, useLinkStore } from '@/stores/link';
 import { User } from '@/types';
 import { useForm } from '@inertiajs/react';
@@ -52,7 +53,7 @@ export function ProfileLinks({ user }: { user: User }) {
 
     function submit(e: FormEvent) {
         e.preventDefault();
-        patch(route('profile.links'), {
+        patch(profile.links().url, {
             preserveScroll: true,
             onSuccess: () => {
                 toast({

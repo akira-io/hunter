@@ -3,12 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import followable from '@/routes/followable';
 import { User } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { CheckCircle, UserMinus2Icon } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
-import followable from '@/routes/followable';
 
 interface UnfollowButtonProps extends HTMLAttributes<HTMLButtonElement> {
     user: User;
@@ -16,10 +16,12 @@ interface UnfollowButtonProps extends HTMLAttributes<HTMLButtonElement> {
 
 export default function UnfollowButton({ user, className }: UnfollowButtonProps) {
     const { toast } = useToast();
-    const { post, processing } = useForm();
+    const { post, processing } = useForm({
+        user_id: user.id,
+    });
 
     function unFollow() {
-        post(followable.unfollow.url({ user_id: user.id }), {
+        post(followable.unfollow().url, {
             preserveScroll: true,
             onSuccess: () => {
                 toast({

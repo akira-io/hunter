@@ -4,7 +4,7 @@ import { Finder } from '@/components/Finder';
 import { NavUser } from '@/components/nav-user';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/toaster';
-import { login, register } from '@/routes';
+import { home, login, register } from '@/routes';
 import { type SharedData, User } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RiDiscordFill, RiGithubFill } from '@remixicon/react';
@@ -34,7 +34,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
         e.preventDefault();
         setIsSearchLoading(true);
         router.get(
-            route('home'),
+            home().url,
             { q: e.target.value },
             {
                 preserveScroll: true,

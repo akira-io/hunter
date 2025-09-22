@@ -10,6 +10,7 @@ import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import password from '@/routes/password';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -31,7 +32,7 @@ export default function Password() {
     const updatePassword: FormEventHandler = (e) => {
         e.preventDefault();
 
-        put(route('password.update'), {
+        put(password.update().url, {
             preserveScroll: true,
             onSuccess: () => reset(),
             onError: (errors) => {

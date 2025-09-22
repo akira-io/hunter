@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import password from '@/routes/password';
+import { login } from '@/routes';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm<Required<{ email: string }>>({
@@ -18,7 +20,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('password.email'));
+        post(password.email().url);
     };
 
     return (
@@ -50,7 +52,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                 </form>
                 <div className="text-muted-foreground space-x-1 text-center text-sm">
                     <span>Ou, voltar para </span>
-                    <TextLink href={route('login')}>iniciar sessão</TextLink>
+                    <TextLink href={login()}>iniciar sessão</TextLink>
                 </div>
             </div>
         </AuthLayout>

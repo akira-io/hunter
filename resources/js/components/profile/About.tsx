@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import profile from '@/routes/profile';
 import { useAboutStore } from '@/stores/about';
 import type { SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
@@ -26,7 +27,7 @@ export function About() {
     // const [openBioDialog, setOpenBioDialog] = useState(false);
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('profile.about'), {
+        patch(profile.about().url, {
             preserveScroll: true,
             onFinish: () => {
                 close();

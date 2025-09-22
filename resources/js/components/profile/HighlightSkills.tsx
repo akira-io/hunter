@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import MultipleSelector, { Option } from '@/components/ui/multiselect';
 import { useToast } from '@/hooks/use-toast';
+import profile from '@/routes/profile';
 import { useHighlightedSkills } from '@/stores/highlightedSkills';
 import { useForm } from '@inertiajs/react';
 import { Code } from 'lucide-react';
@@ -29,7 +30,7 @@ export function HighlightSkills({ skills, authSkills: highlightedSkills, ...prop
     function submitForm(e: FormEvent) {
         e.preventDefault();
         setData('skills', data.skills);
-        post(route('profile.highlight-skills'), {
+        post(profile.highlightSkills().url, {
             onFinish: () => {
                 close();
                 toast({

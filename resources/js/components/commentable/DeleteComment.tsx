@@ -3,6 +3,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Comment } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { Ban } from 'lucide-react';
+import comments from '@/routes/comments';
 
 interface DeleteComentProps {
     comment: Comment;
@@ -13,7 +14,7 @@ export default function DeleteComment({ comment }: DeleteComentProps) {
     const { delete: destroy, processing } = useForm();
 
     function deleteComment() {
-        destroy(route('comments.destroy', { comment }), {
+        destroy(comments.destroy(comment).url, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
