@@ -13,7 +13,8 @@
             "commentable",
             "likeable",
             "huntings",
-            "commitlint"
+            "commitlint",
+            "paginator"
         ],
         "paths": [
             "resources",

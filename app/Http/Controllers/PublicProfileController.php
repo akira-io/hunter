@@ -11,7 +11,6 @@ use App\Http\Resources\Hunt\HuntResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Inertia\ResponseFactory;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Throwable;

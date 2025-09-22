@@ -14,7 +14,10 @@ final readonly class GetHuntersAction
     /**
      * Handle the action of getting hunters.
      *
-     * @return array{mixed,LengthAwarePaginator<int, string>}
+     * @return array{
+     *     0: Collection<int, array<string, mixed>>,
+     *     1: LengthAwarePaginator<int, User>
+     * }
      */
     public function handle(Request $request, int $perPage = 15, ?User $user = null): array
     {
@@ -27,21 +30,21 @@ final readonly class GetHuntersAction
             ? User::search($query)
             : User::query()->inRandomOrder();
 
-        /**
-         * @var LengthAwarePaginator<int, string> $paginator
-         */
+        /** @var LengthAwarePaginator<int, User> $paginator */
         $paginator = $usersQuery->paginate($perPage)->withQueryString();
 
         $paginator->getCollection()->load('academicBackgrounds'); // @phpstan-ignore-line
         /** @var Collection<int, User> $collection */
         $collection = $paginator->getCollection();
+
+        /** @var Collection<int, array<string, mixed>> $hunters */
         $hunters = $collection->map(
             static fn (User $user): array => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'avatar_url' => $user->getMedia('profile_avatar')->last()?->getUrl() ?? $user->avatar_url,
-                'background_image_url' => $user->getMedia('profile_background')->last()?->getUrl() ?? 'https://images.unsplash.com/photo-1746768934151-8c5cb84bcf11?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwzMHx8fGVufDB8fHx8fA%3D%3D',
+                'background_image_url' => $user->getMedia('profile_background')->last()?->getUrl() ?? 'https://images.unsplash.com/photo-1746768934151-8c5cb84bcf11?w=500&auto=format&fit=crop&q=60',
                 'location' => $user->location,
                 'bio' => $user->bio,
                 'user_name' => $user->user_name,
@@ -62,6 +65,7 @@ final readonly class GetHuntersAction
             ? $user->attachFollowStatus($hunters)
             : $hunters;
 
+        /** @var Collection<int, array<string, mixed>> $hunters */
         return [$hunters, $paginator];
     }
 }

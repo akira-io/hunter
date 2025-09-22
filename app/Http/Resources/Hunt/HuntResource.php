@@ -61,6 +61,7 @@ final class HuntResource extends JsonResource
 
         return $comments->map(function (Comment $comment) use ($user): Comment {
             $comment->has_liked = (bool) $comment->likes()->where('user_id', $user->id)->exists();
+
             return $comment;
         })->sortByDesc('created_at');
     }
