@@ -9,12 +9,24 @@ export function useSanitizeImageUrl(url: string | undefined | null): string {
         if (!url) return '';
 
         try {
-            const parsedUrl = new URL(url);
+            const parsedUrl = new URL(url, window.location.origin);
 
             // Allow safe protocols
             const allowedProtocols = ['blob:', 'https:', 'http:', 'data:'];
 
             if (allowedProtocols.includes(parsedUrl.protocol)) {
+                // Additional check for data: URLs
+                if (parsedUrl.protocol === 'data:') {
+                    // Only allow data URLs that start with image MIME types
+                    // e.g. data:image/png;base64,...
+                    if (/^data:image\/(?:png|jpeg|jpg|gif|webp|bmp);base64,/.test(url)) {
+                        return url;
+                    } else {
+                        return '';
+                    }
+                }
+                // For blob: URLs, optionally do extra validation if needed, but usually safe if only generated from file input
+                // https: and http: are generally safe for images
                 return url;
             }
 
