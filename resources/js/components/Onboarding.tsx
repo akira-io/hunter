@@ -6,6 +6,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { useTruncate } from '@/hooks/use-truncate-text';
 import { cn } from '@/lib/utils';
 import { SharedData, User } from '@/types';
@@ -31,12 +32,14 @@ interface OnboardingAvatarProps {
 export function OnboardingAvatar({ avatarUrl, onClick, size = 16 }: OnboardingAvatarProps) {
     const avatarSize = size * 4;
     const config = genConfig({ sex: 'man', hairStyle: 'thick' });
+    const sanitizedAvatarUrl = useSanitizeImageUrl(avatarUrl);
+
     return (
         <Avatar style={{ height: `${avatarSize}px`, width: `${avatarSize}px` }} className="shadow" onClick={onClick}>
-            {avatarUrl ? (
+            {sanitizedAvatarUrl ? (
                 <AvatarImage
-                    src={avatarUrl}
-                    alt={avatarUrl}
+                    src={sanitizedAvatarUrl}
+                    alt={sanitizedAvatarUrl}
                     className="rounded-full object-cover"
                     style={{ height: `${avatarSize}px`, width: `${avatarSize}px` }}
                 />
@@ -47,23 +50,30 @@ export function OnboardingAvatar({ avatarUrl, onClick, size = 16 }: OnboardingAv
     );
 }
 
+function OnboardingLink({ url, name, children }: { url: string | undefined; name: string; children: React.ReactNode }) {
+    const sanitizedUrl = useSanitizeExternalUrl(url);
+
+    return sanitizedUrl ? (
+        <a
+            key={name}
+            href={sanitizedUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-primary"
+        >
+            {children}
+        </a>
+    ) : null;
+}
+
 function OnboardingLinks({ links }: { links: { name: string; url: string | undefined; icon: React.ReactNode }[] }) {
     return (
         <div className="flex gap-2">
-            {links.map(
-                (link) =>
-                    link.url && (
-                        <a
-                            key={link.name}
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-primary"
-                        >
-                            {link.icon}
-                        </a>
-                    ),
-            )}
+            {links.map((link) => (
+                <OnboardingLink key={link.name} url={link.url} name={link.name}>
+                    {link.icon}
+                </OnboardingLink>
+            ))}
         </div>
     );
 }

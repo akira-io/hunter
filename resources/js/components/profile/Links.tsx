@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useSanitizeExternalUrl } from '@/hooks/use-sanitize-image-url';
 import { useToast } from '@/hooks/use-toast';
 import profile from '@/routes/profile';
 import { LinkName, useLinkStore } from '@/stores/link';
@@ -12,6 +13,18 @@ import { RiBlueskyFill, RiGithubFill, RiLinkedinBoxFill, RiTwitterXFill, RiYoutu
 import { Globe, PlusIcon, UserIcon } from 'lucide-react';
 import { FormEvent, JSX } from 'react';
 import { PiNotePencilBold } from 'react-icons/pi';
+
+function SafeLink({ url, children }: { url: string | undefined; children: React.ReactNode }) {
+    const sanitizedUrl = useSanitizeExternalUrl(url);
+
+    return sanitizedUrl ? (
+        <a href={sanitizedUrl} target="_blank" rel="noopener noreferrer">
+            {children}
+        </a>
+    ) : (
+        <span>{children}</span>
+    );
+}
 
 export function ProfileLinks({ user }: { user: User }) {
     const { toast } = useToast();
@@ -84,9 +97,9 @@ export function ProfileLinks({ user }: { user: User }) {
                                 asChild
                             >
                                 {link.url ? (
-                                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                    <SafeLink url={link.url}>
                                         <span> {link.icon}</span>
-                                    </a>
+                                    </SafeLink>
                                 ) : (
                                     <button type="button" onClick={open}>
                                         <PlusIcon />

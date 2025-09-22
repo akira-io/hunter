@@ -3,6 +3,7 @@ import AvatarGenerator from 'react-nice-avatar';
 
 import { HunterAlertDialog } from '@/components/core/HunterAlertDialog';
 import InputError from '@/components/input-error';
+import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -28,14 +29,17 @@ export default function ProfileAvatarCard() {
         updateProfile,
     } = useProfileUpdate();
 
+    const sanitizedAvatarPreview = useSanitizeImageUrl(avatarPreview);
+    const sanitizedBackgroundPreview = useSanitizeImageUrl(backgroundPreview);
+
     return (
         <>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                     <div className="relative cursor-pointer">
                         <div className="h-32 w-auto">
-                            {avatarPreview ? (
-                                <img src={avatarPreview} alt={data.name} className="mb-4 h-32 w-32 rounded-full object-cover" />
+                            {sanitizedAvatarPreview ? (
+                                <img src={sanitizedAvatarPreview} alt={data.name} className="mb-4 h-32 w-32 rounded-full object-cover" />
                             ) : (
                                 <AvatarGenerator className="mb-4 h-32 w-32 rounded-full object-cover" {...config} />
                             )}
@@ -51,8 +55,8 @@ export default function ProfileAvatarCard() {
                         <div className="overflow-y-auto">
                             <div className="h-32">
                                 <div className="bg-muted relative flex size-full items-center justify-center overflow-hidden">
-                                    {backgroundPreview && (
-                                        <img src={backgroundPreview} className="size-full object-cover" alt="Imagem de capa do perfil" />
+                                    {sanitizedBackgroundPreview && (
+                                        <img src={sanitizedBackgroundPreview} className="size-full object-cover" alt="Imagem de capa do perfil" />
                                     )}
                                     <div className="absolute inset-0 flex items-center justify-center gap-2">
                                         <label className="flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white">
@@ -78,8 +82,8 @@ export default function ProfileAvatarCard() {
                             </div>
                             <div className="-mt-10 px-6">
                                 <div className="bg-muted relative flex size-20 items-center justify-center overflow-hidden rounded-full border-4 shadow-xs">
-                                    {avatarPreview ? (
-                                        <img src={avatarPreview} className="size-full object-cover" alt="Imagem de perfil" />
+                                    {sanitizedAvatarPreview ? (
+                                        <img src={sanitizedAvatarPreview} className="size-full object-cover" alt="Imagem de perfil" />
                                     ) : (
                                         <AvatarGenerator className="size-full object-cover" {...config} />
                                     )}

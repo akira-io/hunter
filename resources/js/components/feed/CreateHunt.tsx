@@ -1,6 +1,7 @@
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useSanitizeImageUrls } from '@/hooks/use-sanitize-image-url';
 import { useToast } from '@/hooks/use-toast';
 import hunts from '@/routes/hunts';
 import { useHuntStore } from '@/stores/huntStore';
@@ -23,6 +24,7 @@ export function CreateHunt() {
     const { toast } = useToast();
 
     const [imagePreview, setImagePreview] = useState<string[]>([]);
+    const sanitizedImageUrls = useSanitizeImageUrls(imagePreview);
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         setImagePreview([]);
@@ -77,9 +79,9 @@ export function CreateHunt() {
                     />
                     <span className="text-right text-sm text-gray-500">{data.content.length}/500</span>
                     <InputError message={errors.content} />
-                    {imagePreview && (
+                    {sanitizedImageUrls.length > 0 && (
                         <div className="mt-2 grid grid-cols-1 gap-2">
-                            {imagePreview.map((src, index) => (
+                            {sanitizedImageUrls.map((src, index) => (
                                 <img
                                     key={index}
                                     src={src}

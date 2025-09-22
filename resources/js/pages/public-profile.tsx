@@ -1,6 +1,7 @@
 import { HuntCard } from '@/components/feed/HuntCard';
 import { FollowButton } from '@/components/followable/FollowButton';
 import UnfollowButton from '@/components/followable/UnfollowButton';
+import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import Onboarding, { OnboardingAvatar } from '@/components/Onboarding';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription } from '@/components/ui/card';
@@ -37,11 +38,13 @@ const tabLists: TabList[] = [
 ];
 
 export function ProfileBg({ user }: { user: User }) {
+    const sanitizedBackgroundUrl = useSanitizeImageUrl(user.background_image_url);
+
     return (
         <div className="h-30 sm:h-40">
             <div className="bg-muted relative flex size-full items-center justify-center overflow-hidden rounded-xl shadow-2xl">
                 <div className="absolute inset-0 flex items-center justify-center gap-2">
-                    <img className="size-full object-cover" src={user.background_image_url} alt="Default profile background" />
+                    {sanitizedBackgroundUrl && <img className="size-full object-cover" src={sanitizedBackgroundUrl} alt="Default profile background" />}
                 </div>
             </div>
         </div>

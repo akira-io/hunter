@@ -1,5 +1,6 @@
 import { HuntComments } from '@/components/commentable/HuntComments';
 import DeleteHunt from '@/components/feed/DeleteHunt';
+import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,9 @@ export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
     const { auth } = usePage<SharedData>().props;
     const [isOpenComments, setOpenComments] = useState(false);
 
+    const sanitizedAvatarUrl = useSanitizeImageUrl(hunt.owner.avatar_url);
+    const sanitizedImageUrl = useSanitizeImageUrl(hunt.image_url);
+
     function gotoProfile() {
         router.get(publicRoutes.profile.show.url(hunt.owner.id));
     }
@@ -38,7 +42,7 @@ export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
             <Card className="relative mx-auto w-full max-w-xl">
                 <CardHeader className="flex flex-row items-start gap-4">
                     <Avatar onClick={gotoProfile}>
-                        <AvatarImage src={hunt.owner.avatar_url} className="object-cover" />
+                        <AvatarImage src={sanitizedAvatarUrl} className="object-cover" />
                         <AvatarFallback>U</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
@@ -97,7 +101,7 @@ export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <p>{hunt.content}</p>
-                    {hunt.image_url && <img src={hunt.image_url} alt="Hunt image" className="max-h-50 w-full rounded-md object-cover" />}
+                    {sanitizedImageUrl && <img src={sanitizedImageUrl} alt="Hunt image" className="max-h-50 w-full rounded-md object-cover" />}
                 </CardContent>
                 <CardFooter className="text-muted-foreground flex justify-between text-sm">
                     <HuntLikes hunt={hunt} />
