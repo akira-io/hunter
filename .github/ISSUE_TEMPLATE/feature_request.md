@@ -1,7 +1,18 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+
 #### **Description**
 
-When a Hunter follows another, the followed Hunter should receive a notification indicating who followed them. This
-helps users stay connected and aware of new followers.
+When a Hunter follows another, the followed Hunter should receive a notification indicating who followed them. This helps users stay connected and aware of new followers.
 
 ---
 
@@ -9,9 +20,9 @@ helps users stay connected and aware of new followers.
 
 - When a Hunter clicks "Follow", a notification is triggered for the followed Hunter.
 - The notification includes:
-- Username of the follower
-- A link to their profile
-- A timestamp
+  - Username of the follower
+  - A link to their profile
+  - A timestamp
 - The notification appears in the recipient's notification center (or UI area).
 - Notifications are marked as unread until opened or viewed.
 
