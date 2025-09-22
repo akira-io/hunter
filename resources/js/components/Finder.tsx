@@ -31,7 +31,7 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
             </div>
             <div className="grid w-full max-w-7xl grid-cols-1 justify-center gap-4 transition-all duration-1 sm:grid-cols-2 md:px-10 xl:grid-cols-3">
                 {users.map((user) => (
-                    <Onboarding user={user} key={user.email} />
+                    <Onboarding user={user} key={`${user.id}-${user.email}`} />
                 ))}
             </div>
             <ScrollDown className="bg-foreground fixed bottom-0 h-8 w-8 rounded-md text-white dark:text-zinc-900" />
