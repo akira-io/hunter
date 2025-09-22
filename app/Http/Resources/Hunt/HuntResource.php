@@ -45,16 +45,22 @@ final class HuntResource extends JsonResource
 
     /**
      * Get the comments with the has_liked status.
+     *
+     * @return Collection<int, Comment>
      */
     public function commentsWithHasLiked(): Collection
     {
         /** @var User $user */
         $user = request()->user();
 
-        return collect($this->comments)->map(function (Comment $comment) use ($user): Comment {
+        // Get the actual comments from the relation
+        $commentsCollection = $this->comments()->get();
 
-            $comment->has_liked = $comment->likes->contains('user_id', $user->id);
+        /** @var Collection<int, Comment> $comments */
+        $comments = collect($commentsCollection);
 
+        return $comments->map(function (Comment $comment) use ($user): Comment {
+            $comment->has_liked = (bool) $comment->likes()->where('user_id', $user->id)->exists();
             return $comment;
         })->sortByDesc('created_at');
     }

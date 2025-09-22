@@ -79,7 +79,7 @@ followers.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Followable\GetHuntingsController::__invoke
-* @see app/Http/Controllers/Followable/GetHuntingsController.php:24
+* @see app/Http/Controllers/Followable/GetHuntingsController.php:23
 * @route '/followable/followings'
 */
 export const followings = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ followings.definition = {
 
 /**
 * @see \App\Http\Controllers\Followable\GetHuntingsController::__invoke
-* @see app/Http/Controllers/Followable/GetHuntingsController.php:24
+* @see app/Http/Controllers/Followable/GetHuntingsController.php:23
 * @route '/followable/followings'
 */
 followings.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ followings.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Followable\GetHuntingsController::__invoke
-* @see app/Http/Controllers/Followable/GetHuntingsController.php:24
+* @see app/Http/Controllers/Followable/GetHuntingsController.php:23
 * @route '/followable/followings'
 */
 followings.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -113,7 +113,7 @@ followings.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Followable\GetHuntingsController::__invoke
-* @see app/Http/Controllers/Followable/GetHuntingsController.php:24
+* @see app/Http/Controllers/Followable/GetHuntingsController.php:23
 * @route '/followable/followings'
 */
 followings.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

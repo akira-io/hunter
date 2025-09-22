@@ -1,9 +1,4 @@
-includes:
-   - phpstan-baseline.neon
-
 parameters:
-
     paths:
         - app
-
     level: max

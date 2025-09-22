@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 final readonly class GetHuntersAction
 {
@@ -32,7 +33,9 @@ final readonly class GetHuntersAction
         $paginator = $usersQuery->paginate($perPage)->withQueryString();
 
         $paginator->getCollection()->load('academicBackgrounds'); // @phpstan-ignore-line
-        $hunters = $paginator->getCollection()->map(
+        /** @var Collection<int, User> $collection */
+        $collection = $paginator->getCollection();
+        $hunters = $collection->map(
             static fn (User $user): array => [
                 'id' => $user->id,
                 'name' => $user->name,

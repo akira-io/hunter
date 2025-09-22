@@ -26,7 +26,7 @@ final readonly class PublicProfileController
      * @throws Throwable
      */
     #[Get('public-profile/{user}', name: 'public.profile.show')]
-    public function show(Request $request, User $user, GetHuntingsAction $huntingsAction, UserProfileAction $userProfileAction): Response|ResponseFactory
+    public function show(Request $request, User $user, GetHuntingsAction $huntingsAction, UserProfileAction $userProfileAction): Response
     {
         /** @var User $authUser */
         $authUser = $request->user();

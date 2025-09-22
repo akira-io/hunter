@@ -18,7 +18,7 @@ final readonly class GetHuntersController
      * Display the followers of the authenticated user.
      */
     #[Get('followable/followers', name: 'followable.followers')]
-    public function __invoke(Request $request): Response|ResponseFactory
+    public function __invoke(Request $request): Response
     {
 
         /*** @var User $user */

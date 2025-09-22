@@ -1,7 +1,7 @@
-import HandleRequestsModule from './HandleRequests'
+import HandleRequests from './HandleRequests'
 
 const HandleRequests = {
-    HandleRequests: HandleRequestsModule,
-};
+    HandleRequests: Object.assign(HandleRequests, HandleRequests),
+}
 
-export default HandleRequests;
+export default HandleRequests

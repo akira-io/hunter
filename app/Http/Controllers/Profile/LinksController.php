@@ -19,8 +19,11 @@ final readonly class LinksController
     #[Patch('/profile/links', name: 'profile.links')]
     public function __invoke(ProfileLinkRequest $request): RedirectResponse
     {
-        type($request->user())->as(User::class)
-            ->update((array) $request->validated());
+        $user = type($request->user())->as(User::class);
+        $validatedData = $request->validated();
+        /** @var array<string, mixed> $attributes */
+        $attributes = is_array($validatedData) ? $validatedData : [];
+        $user->update($attributes);
 
         return to_route('profile.edit');
     }

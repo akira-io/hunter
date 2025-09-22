@@ -74,7 +74,10 @@ final class ProfileUpdateRequest extends FormRequest
 
         $user = type($this->user())->as(User::class);
 
-        $user->fill($this->except('avatar_url', 'background_image_url'));
+        $data = $this->except('avatar_url', 'background_image_url');
+        /** @var array<string, mixed> $fillData */
+        $fillData = $data;
+        $user->fill($fillData);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
