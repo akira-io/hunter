@@ -2,9 +2,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build --write resources/js/routes/**/*.ts",
     "build:ssr": "vite build && vite build --ssr",
-    "dev": "vite",
+    "dev": "vite --write resources/js/routes/**/*.ts",
     "format": "prettier --write resources/",
     "format:check": "prettier --check resources/",
     "lint": "eslint . --fix",

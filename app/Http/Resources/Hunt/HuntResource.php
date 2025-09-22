@@ -63,7 +63,7 @@ final class HuntResource extends JsonResource
 
         return $builder
             ->withCount([
-                'likes as has_liked' => function ($q) use ($user) {
+                'likes as has_liked' => function ($q) use ($user): void {
                     $q->where('user_id', $user->id);
                 },
             ])
