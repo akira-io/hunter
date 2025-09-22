@@ -1,3 +1,4 @@
+import PublicProfileController from '@/actions/App/Http/Controllers/PublicProfileController';
 import { FollowButton } from '@/components/followable/FollowButton';
 import UnfollowButton from '@/components/followable/UnfollowButton';
 import { HighlightedSkills } from '@/components/profile/HighlightedSkills';
@@ -137,7 +138,7 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
     const has_followed = user.has_followed ?? hasFollowed;
 
     function gotoProfile() {
-        get(route('public.profile.show', { user: user.id }), {
+        get(PublicProfileController.show({ user: user.id }).url, {
             preserveScroll: true,
             preserveState: true,
         });

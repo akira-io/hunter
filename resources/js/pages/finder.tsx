@@ -6,6 +6,7 @@ import { type BreadcrumbItem, User } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { ListFilterPlusIcon } from 'lucide-react';
 import React, { useState } from 'react';
+import finder from '@/routes/finder';
 
 interface FinderProps {
     users: User[];
@@ -24,7 +25,7 @@ export default function Finder({ users }: FinderProps) {
         e.preventDefault();
         setIsSearchLoading(true);
         router.get(
-            route('finder.index'),
+            finder.index().url,
             { q: e.target.value },
             {
                 preserveScroll: true,

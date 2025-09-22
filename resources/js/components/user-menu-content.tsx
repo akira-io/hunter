@@ -4,6 +4,10 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type User } from '@/types';
 import { Link } from '@inertiajs/react';
 import { LogOut, RssIcon, Settings, UserIcon } from 'lucide-react';
+import hunts from '@/routes/hunts';
+import profile from '@/routes/profile';
+import password from '@/routes/password';
+import { logout } from '@/routes';
 
 interface UserMenuContentProps {
     user: User;
@@ -26,19 +30,19 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route('hunts.index')} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={hunts.index()} as="button" prefetch onClick={cleanup}>
                         <RssIcon className="mr-2" />
                         Hunt Line
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={profile.edit()} as="button" prefetch onClick={cleanup}>
                         <UserIcon className="mr-2" />
                         Perfil
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route('password.edit')} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={password.edit()} as="button" prefetch onClick={cleanup}>
                         <Settings className="mr-2" />
                         Minha Conta
                     </Link>
@@ -46,7 +50,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                <Link className="block w-full" method="post" href={route('logout')} as="button" onClick={cleanup}>
+                <Link className="block w-full" method="post" href={logout.post()} as="button" onClick={cleanup}>
                     <LogOut className="mr-2" />
                     Sair
                 </Link>

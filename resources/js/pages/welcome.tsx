@@ -4,6 +4,7 @@ import { Finder } from '@/components/Finder';
 import { NavUser } from '@/components/nav-user';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/toaster';
+import { login, register } from '@/routes';
 import { type SharedData, User } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RiDiscordFill, RiGithubFill } from '@remixicon/react';
@@ -64,14 +65,14 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                         ) : (
                             <>
                                 <Link
-                                    href={route('login')}
+                                    href={login()}
                                     className="flex items-center justify-center gap-2 rounded-sm border px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] md:border-transparent dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                                 >
                                     <LogInIcon size={16} />
                                     Iniciar sessão
                                 </Link>
                                 <Link
-                                    href={route('register')}
+                                    href={register()}
                                     className="hidden items-center justify-center gap-2 rounded-sm border border-[#19140035] px-5 py-1.5 text-sm text-[#1b1b18] hover:border-[#1915014a] md:flex dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                                 >
                                     <UserPlus size={16} />

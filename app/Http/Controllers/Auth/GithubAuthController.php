@@ -46,7 +46,7 @@ final class GithubAuthController
             $githubUserData['avatar_url'] = $user->avatar_url ?? $githubUserData['avatar_url'];
             $githubUserData['email'] = $user->email ?? $githubUserData['email'];
 
-            $user->update((array) $githubUserData);
+            $user->update($githubUserData);
         }
 
         Auth::login($user, remember: true);

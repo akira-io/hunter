@@ -27,6 +27,7 @@ import {
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import profile from '@/routes/profile';
 import { useAcademicBackground } from '@/stores/academicBackground';
 import { AcademicBackground as AcademicBackgroundType } from '@/types';
 
@@ -74,7 +75,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
 
     function submit(e: FormEvent) {
         e.preventDefault();
-        post(route('profile.education'), {
+        post(profile.education().url, {
             preserveScroll: true,
             only: ['academicBackgrounds'],
             onSuccess: () => {
@@ -89,7 +90,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
     }
 
     function deleteEducation(id: number) {
-        destroy(route('profile.education.delete', id), {
+        destroy(profile.education.delete(id).url, {
             preserveScroll: true,
             replace: true,
             only: ['academicBackgrounds'],

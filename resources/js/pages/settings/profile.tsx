@@ -10,12 +10,13 @@ import ProfileAvatarCard from '@/components/ProfileAvatarCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Option } from '@/components/ui/multiselect';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type AcademicBackground as ProfessionalEducationType, type SharedData } from '@/types';
+import { type AcademicBackground as ProfessionalEducationType, type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { GoLocation } from 'react-icons/go';
 import publicRoutes from '@/routes/public';
 import followable from '@/routes/followable';
 import verification from '@/routes/verification';
+import { formatDate } from 'date-fns/format';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -49,10 +50,7 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                         <CardContent className="effect flex flex-col items-center text-center">
                             <ProfileAvatarCard />
                             <h2 className="mt-4 text-xl font-semibold">
-                                <Link
-                                    href={publicRoutes.profile.show.url(auth.user.id)}
-                                    prefetch
-                                >
+                                <Link href={publicRoutes.profile.show.url(auth.user.id)} prefetch>
                                     {auth.user.name}
                                 </Link>
                             </h2>
@@ -76,7 +74,7 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                         </div>
                         <HighlightSkills skills={skills} authSkills={highlightedSkills} />
                         <p className="mt-0 border-t-1 py-2 text-xs text-gray-500">
-                            Hunter desde de: <b>{auth.user.created_at}</b>
+                            Hunter desde de: <b>{formatDate(auth.user.created_at, 'dd-MM-Y')}</b>
                         </p>
                     </Card>
                     <ProfileLinks user={auth.user} />
