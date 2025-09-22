@@ -1,13 +1,13 @@
-import Auth from './Auth';
-import Commentable from './Commentable';
-import FinderController from './FinderController';
-import Followable from './Followable';
-import HuntController from './HuntController';
-import Likeable from './Likeable';
-import Profile from './Profile';
-import PublicProfileController from './PublicProfileController';
-import Settings from './Settings';
-import Welcome from './Welcome';
+import Auth from './Auth'
+import Commentable from './Commentable'
+import FinderController from './FinderController'
+import Followable from './Followable'
+import HuntController from './HuntController'
+import Likeable from './Likeable'
+import Profile from './Profile'
+import PublicProfileController from './PublicProfileController'
+import Welcome from './Welcome'
+import Settings from './Settings'
 
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
@@ -20,6 +20,6 @@ const Controllers = {
     PublicProfileController: Object.assign(PublicProfileController, PublicProfileController),
     Welcome: Object.assign(Welcome, Welcome),
     Settings: Object.assign(Settings, Settings),
-};
+}
 
-export default Controllers;
+export default Controllers
