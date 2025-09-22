@@ -3,12 +3,12 @@ import AvatarGenerator from 'react-nice-avatar';
 
 import { HunterAlertDialog } from '@/components/core/HunterAlertDialog';
 import InputError from '@/components/input-error';
-import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useProfileUpdate } from '@/hooks/profile/useProfileUpdate';
+import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 
 export default function ProfileAvatarCard() {
     const {

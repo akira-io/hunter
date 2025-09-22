@@ -1,10 +1,10 @@
 import { HuntComments } from '@/components/commentable/HuntComments';
 import DeleteHunt from '@/components/feed/DeleteHunt';
-import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';

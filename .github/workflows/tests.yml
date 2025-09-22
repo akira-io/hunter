@@ -35,14 +35,16 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y aspell aspell-en
 
+      - name: Install Dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
       - name: Install Node Dependencies
         run: npm ci --force
 
       - name: Build Assets
         run: npm run build
 
-      - name: Install Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
 
       - name: Copy Environment File
         run: cp .env.example .env

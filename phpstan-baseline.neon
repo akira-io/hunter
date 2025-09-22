@@ -1,0 +1,49 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Controllers/Welcome/WelcomeController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Query\\Builder\:\:withCount\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/Hunt/HuntResource.php
+
+		-
+			message: '#^Cannot call method each\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/Hunt/HuntResource.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/Hunt/HuntResource.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/Hunt/HuntResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\Hunt\\HuntResource\:\:commentsWithHasLiked\(\) should return Illuminate\\Support\\Collection\<int, App\\Models\\Comment\> but returns Illuminate\\Support\\Collection\<int, stdClass\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/Hunt/HuntResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\Hunt\\HuntResource\:\:commentsWithHasLiked\(\) should return Illuminate\\Support\\Collection\<int, App\\Models\\Comment\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/Hunt/HuntResource.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:each\(\) expects callable\(stdClass, int\)\: mixed, Closure\(App\\Models\\Comment\)\: void given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Resources/Hunt/HuntResource.php

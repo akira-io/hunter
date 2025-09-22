@@ -22,8 +22,6 @@ final class HuntResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $request->user();
-
         return [
             'id' => $this->id,
             'content' => $this->content,
@@ -50,18 +48,26 @@ final class HuntResource extends JsonResource
      */
     public function commentsWithHasLiked(): Collection
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = request()->user();
 
-        // Get the actual comments from the relation
-        $commentsCollection = $this->comments()->get();
+        $builder = $this->comments()->orderByDesc('created_at');
 
-        /** @var Collection<int, Comment> $comments */
-        $comments = collect($commentsCollection);
+        if ($user === null) {
+            return $builder->get()->each(function (Comment $comment): void {
+                $comment->has_liked = false;
+            });
+        }
 
-        return $comments->map(function (Comment $comment) use ($user): Comment {
-            $comment->has_liked = (bool) $comment->likes()->where('user_id', $user->id)->exists();
-            return $comment;
-        })->sortByDesc('created_at');
+        return $builder
+            ->withCount([
+                'likes as has_liked' => function ($q) use ($user): void {
+                    $q->where('user_id', $user->id);
+                },
+            ])
+            ->get()
+            ->each(function (Comment $comment): void {
+                $comment->has_liked = (bool) $comment->has_liked;
+            });
     }
 }
