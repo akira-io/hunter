@@ -1,7 +1,7 @@
-import FrontendAssets from './FrontendAssets'
+import FrontendAssetsModule from './FrontendAssets'
 
 const FrontendAssets = {
-    FrontendAssets: Object.assign(FrontendAssets, FrontendAssets),
+    FrontendAssets: FrontendAssetsModule,
 }
 
 export default FrontendAssets
