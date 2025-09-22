@@ -22,8 +22,6 @@ final class HuntResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $request->user();
-
         return [
             'id' => $this->id,
             'content' => $this->content,

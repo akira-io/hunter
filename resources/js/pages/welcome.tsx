@@ -24,7 +24,7 @@ export interface WelcomeProps {
         from?: number;
         to?: number;
     };
-    nextPageUsers?: User[];
+    // nextPageUsers?: User[];
 }
 
 export default function Welcome({ users, paginator }: WelcomeProps) {

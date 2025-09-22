@@ -55,6 +55,7 @@ function OnboardingLink({ url, name, children }: { url: string | undefined; name
 
     return sanitizedUrl ? (
         <a key={name} href={sanitizedUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+            aria-label={`Abrir ${name} em nova aba`}
             {children}
         </a>
     ) : null;
