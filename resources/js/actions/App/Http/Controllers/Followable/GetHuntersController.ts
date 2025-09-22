@@ -1,7 +1,7 @@
 import { queryParams, type RouteDefinition, type RouteQueryOptions } from './../../../../../wayfinder';
 /**
  * @see \App\Http\Controllers\Followable\GetHuntersController::__invoke
- * @see app/Http/Controllers/Followable/GetHuntersController.php:21
+ * @see app/Http/Controllers/Followable/GetHuntersController.php:20
  * @route '/followable/followers'
  */
 const GetHuntersController = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ GetHuntersController.definition = {
 
 /**
  * @see \App\Http\Controllers\Followable\GetHuntersController::__invoke
- * @see app/Http/Controllers/Followable/GetHuntersController.php:21
+ * @see app/Http/Controllers/Followable/GetHuntersController.php:20
  * @route '/followable/followers'
  */
 GetHuntersController.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ GetHuntersController.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see \App\Http\Controllers\Followable\GetHuntersController::__invoke
- * @see app/Http/Controllers/Followable/GetHuntersController.php:21
+ * @see app/Http/Controllers/Followable/GetHuntersController.php:20
  * @route '/followable/followers'
  */
 GetHuntersController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ GetHuntersController.get = (options?: RouteQueryOptions): RouteDefinition<'get'>
 
 /**
  * @see \App\Http\Controllers\Followable\GetHuntersController::__invoke
- * @see app/Http/Controllers/Followable/GetHuntersController.php:21
+ * @see app/Http/Controllers/Followable/GetHuntersController.php:20
  * @route '/followable/followers'
  */
 GetHuntersController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

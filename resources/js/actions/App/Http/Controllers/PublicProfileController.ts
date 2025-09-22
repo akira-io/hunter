@@ -1,7 +1,7 @@
 import { applyUrlDefaults, queryParams, type RouteDefinition, type RouteQueryOptions } from './../../../../wayfinder';
 /**
  * @see \App\Http\Controllers\PublicProfileController::show
- * @see app/Http/Controllers/PublicProfileController.php:29
+ * @see app/Http/Controllers/PublicProfileController.php:28
  * @route '/public-profile/{user}'
  */
 export const show = (
@@ -19,7 +19,7 @@ show.definition = {
 
 /**
  * @see \App\Http\Controllers\PublicProfileController::show
- * @see app/Http/Controllers/PublicProfileController.php:29
+ * @see app/Http/Controllers/PublicProfileController.php:28
  * @route '/public-profile/{user}'
  */
 show.url = (args: { user: number | { id: number } } | [user: number | { id: number }] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -48,7 +48,7 @@ show.url = (args: { user: number | { id: number } } | [user: number | { id: numb
 
 /**
  * @see \App\Http\Controllers\PublicProfileController::show
- * @see app/Http/Controllers/PublicProfileController.php:29
+ * @see app/Http/Controllers/PublicProfileController.php:28
  * @route '/public-profile/{user}'
  */
 show.get = (
@@ -61,7 +61,7 @@ show.get = (
 
 /**
  * @see \App\Http\Controllers\PublicProfileController::show
- * @see app/Http/Controllers/PublicProfileController.php:29
+ * @see app/Http/Controllers/PublicProfileController.php:28
  * @route '/public-profile/{user}'
  */
 show.head = (

@@ -21,9 +21,8 @@ final readonly class WelcomeController
     {
         $currentPage = (int) $request->get('page', 1);
         $isInertiaRequest = (bool) $request->header('X-Inertia');
-        // If it's a page refresh (not AJAX) and page > 1, load all pages from 1 to current
-        // This applies to ANY page > 1, including the last page
-        if (! $isAjaxRequest && $currentPage > 1 && ! $request->has('q')) {
+
+        if (! $isInertiaRequest && $currentPage > 1 && ! $request->has('q')) {
             $allUsers = collect();
             $finalPaginator = null;
 
@@ -33,11 +32,15 @@ final readonly class WelcomeController
                 $pageRequest->merge(['page' => $page]);
                 [$pageUsers, $paginator] = $action->handle($pageRequest);
                 $allUsers = $allUsers->concat($pageUsers);
+
                 $finalPaginator = $paginator;
+                if ($page >= $paginator->lastPage()) {
+                    break;
+                }
             }
 
             return Inertia::render('welcome', [
-                'users' => $allUsers->values()->all(),
+                'users' => $allUsers->unique('id')->values()->all(),
                 'paginator' => $finalPaginator,
             ]);
         }
