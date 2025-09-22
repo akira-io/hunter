@@ -9,7 +9,7 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-    CommandShortcut
+    CommandShortcut,
 } from '@/components/ui/command';
 import { home } from '@/routes';
 import hunts from '@/routes/hunts';

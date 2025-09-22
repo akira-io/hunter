@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import comments from '@/routes/comments';
+import hunts from '@/routes/hunts';
 import { Hunt, SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { EllipsisVerticalIcon, SendHorizonal } from 'lucide-react';
 import { FormEvent } from 'react';
-import hunts from '@/routes/hunts';
-import comments from '@/routes/comments';
 
 interface TweetCommentsProps {
     isOpen: boolean;

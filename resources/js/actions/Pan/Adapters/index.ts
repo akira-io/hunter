@@ -1,7 +1,7 @@
-import Laravel from './Laravel'
+import Laravel from './Laravel';
 
 const Adapters = {
     Laravel: Object.assign(Laravel, Laravel),
-}
+};
 
-export default Adapters
+export default Adapters;

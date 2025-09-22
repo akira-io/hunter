@@ -1,9 +1,9 @@
 import { HunterConfirmDialog } from '@/components/core/HuntDialog';
 import { useToast } from '@/hooks/use-toast';
+import hunts from '@/routes/hunts';
 import { Hunt } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { Ban } from 'lucide-react';
-import hunts from '@/routes/hunts';
 
 interface DeleteHuntProps {
     hunt: Hunt;

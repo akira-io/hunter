@@ -2,13 +2,13 @@ import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import finder from '@/routes/finder';
+import followable from '@/routes/followable';
+import hunts from '@/routes/hunts';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookOpen, EyeIcon, FileSearch, MessageCircleMore, NetworkIcon, RssIcon } from 'lucide-react';
 import { AiFillGithub } from 'react-icons/ai';
-import hunts from '@/routes/hunts';
-import finder from '@/routes/finder';
-import followable from '@/routes/followable';
 
 const mainNavItems: NavItem[] = [
     {

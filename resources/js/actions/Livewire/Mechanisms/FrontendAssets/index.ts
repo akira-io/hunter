@@ -1,7 +1,7 @@
-import FrontendAssetsModule from './FrontendAssets'
+import FrontendAssetsModule from './FrontendAssets';
 
 const FrontendAssets = {
     FrontendAssets: FrontendAssetsModule,
-}
+};
 
-export default FrontendAssets
+export default FrontendAssets;

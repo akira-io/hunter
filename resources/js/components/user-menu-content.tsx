@@ -1,13 +1,13 @@
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
+import { logout } from '@/routes';
+import hunts from '@/routes/hunts';
+import password from '@/routes/password';
+import profile from '@/routes/profile';
 import { type User } from '@/types';
 import { Link } from '@inertiajs/react';
 import { LogOut, RssIcon, Settings, UserIcon } from 'lucide-react';
-import hunts from '@/routes/hunts';
-import profile from '@/routes/profile';
-import password from '@/routes/password';
-import { logout } from '@/routes';
 
 interface UserMenuContentProps {
     user: User;

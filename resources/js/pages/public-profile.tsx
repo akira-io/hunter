@@ -10,10 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AppLayout from '@/layouts/app-layout';
+import profile from '@/routes/profile';
 import { Hunt, SharedData, User } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { EditIcon, EyeIcon, GraduationCapIcon, LucideProps, MonitorUpIcon, NetworkIcon, UserIcon } from 'lucide-react';
-import profile from '@/routes/profile';
 
 type TabList = {
     icon: React.ForwardRefExoticComponent<Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>>;

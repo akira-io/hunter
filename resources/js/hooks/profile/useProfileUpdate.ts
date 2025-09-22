@@ -1,9 +1,9 @@
 import { useToast } from '@/hooks/use-toast';
+import profile from '@/routes/profile';
 import { SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { genConfig } from 'react-nice-avatar';
-import profile from '@/routes/profile';
 
 type ProfileForm = {
     name: string;

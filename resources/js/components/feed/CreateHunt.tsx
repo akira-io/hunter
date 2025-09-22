@@ -2,11 +2,11 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import hunts from '@/routes/hunts';
 import { useHuntStore } from '@/stores/huntStore';
 import { useForm } from '@inertiajs/react';
 import { ImageIcon, Loader2, PlusCircleIcon } from 'lucide-react';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import hunts from '@/routes/hunts';
 
 interface HuntForm {
     content: string;

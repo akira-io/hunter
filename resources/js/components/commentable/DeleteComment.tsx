@@ -1,9 +1,9 @@
 import { HunterConfirmDialog } from '@/components/core/HuntDialog';
 import { useToast } from '@/hooks/use-toast';
+import comments from '@/routes/comments';
 import { Comment } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { Ban } from 'lucide-react';
-import comments from '@/routes/comments';
 
 interface DeleteComentProps {
     comment: Comment;

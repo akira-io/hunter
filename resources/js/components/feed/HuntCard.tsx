@@ -4,12 +4,12 @@ import { HuntLikes } from '@/components/likeable/HuntLikes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import { BarChart, Edit, EllipsisVerticalIcon, MessageCircle, Repeat2, SaveIcon, Share2Icon, ShieldAlert, StopCircle } from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
-import publicRoutes from '@/routes/public';
 
 interface HuntCardProps {
     hunt: Hunt;

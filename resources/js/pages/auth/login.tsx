@@ -9,12 +9,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
-import { RiGithubFill } from '@remixicon/react';
-import { RiGoogleFill } from 'react-icons/ri';
 import { login, register } from '@/routes';
 import github from '@/routes/github';
 import google from '@/routes/google';
 import password from '@/routes/password';
+import { RiGithubFill } from '@remixicon/react';
+import { RiGoogleFill } from 'react-icons/ri';
 
 type LoginForm = {
     email: string;

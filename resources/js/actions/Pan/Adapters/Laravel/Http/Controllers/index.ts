@@ -1,7 +1,7 @@
-import EventController from './EventController'
+import EventController from './EventController';
 
 const Controllers = {
     EventController: Object.assign(EventController, EventController),
-}
+};
 
-export default Controllers
+export default Controllers;

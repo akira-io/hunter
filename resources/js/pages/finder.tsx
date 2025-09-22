@@ -2,11 +2,11 @@ import { SectionHeader } from '@/components/feed/SectionHeader';
 import { Finder as FinderComponent } from '@/components/Finder';
 import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/app-layout';
+import finder from '@/routes/finder';
 import { type BreadcrumbItem, User } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { ListFilterPlusIcon } from 'lucide-react';
 import React, { useState } from 'react';
-import finder from '@/routes/finder';
 
 interface FinderProps {
     users: User[];
