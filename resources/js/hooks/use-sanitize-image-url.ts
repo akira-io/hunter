@@ -15,6 +15,21 @@ export function useSanitizeImageUrl(url: string | undefined | null): string {
             const allowedProtocols = ['blob:', 'https:', 'http:', 'data:'];
 
             if (allowedProtocols.includes(parsedUrl.protocol)) {
+                // For data: URLs, only allow safe image types (block SVG)
+                if (parsedUrl.protocol === 'data:') {
+                    // Example: data:image/jpeg;base64,...
+                    const mimeMatch = url.match(/^data:([\w/+.-]+);/);
+                    if (!mimeMatch) {
+                        return '';
+                    }
+                    const mimeType = mimeMatch[1].toLowerCase();
+                    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    // Block SVG images and anything not in allowed list
+                    if (!allowedMimeTypes.includes(mimeType)) {
+                        return '';
+                    }
+                }
+                // For blob: URLs, preview is limited and controlled by input file filtering
                 return url;
             }
 
