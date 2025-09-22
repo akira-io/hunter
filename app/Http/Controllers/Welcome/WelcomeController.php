@@ -19,9 +19,8 @@ final readonly class WelcomeController
      */
     public function index(Request $request, GetHuntersAction $action): Response
     {
-        $currentPage = $request->get('page', 1);
-        $isAjaxRequest = $request->header('X-Requested-With') === 'XMLHttpRequest';
-
+        $currentPage = (int) $request->get('page', 1);
+        $isInertiaRequest = (bool) $request->header('X-Inertia');
         // If it's a page refresh (not AJAX) and page > 1, load all pages from 1 to current
         // This applies to ANY page > 1, including the last page
         if (! $isAjaxRequest && $currentPage > 1 && ! $request->has('q')) {
