@@ -23,6 +23,7 @@
     "laravel/scout": "^10.14",
     "laravel/socialite": "^5.19",
     "laravel/tinker": "^2.10.1",
+    "laravel/wayfinder": "^0.1.12",
     "league/flysystem-aws-s3-v3": "^3.0",
     "meilisearch/meilisearch-php": "^1.14",
     "panphp/pan": "^0.1.8",
