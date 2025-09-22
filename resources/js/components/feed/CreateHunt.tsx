@@ -6,6 +6,7 @@ import { useHuntStore } from '@/stores/huntStore';
 import { useForm } from '@inertiajs/react';
 import { ImageIcon, Loader2, PlusCircleIcon } from 'lucide-react';
 import { ChangeEvent, FormEvent, useState } from 'react';
+import hunts from '@/routes/hunts';
 
 interface HuntForm {
     content: string;
@@ -47,7 +48,7 @@ export function CreateHunt() {
 
     const shareHunt = (e: FormEvent) => {
         e.preventDefault();
-        post(route('hunts.store'), {
+        post(hunts.store.url(), {
             preserveScroll: true,
             forceFormData: true,
             onSuccess: () => {

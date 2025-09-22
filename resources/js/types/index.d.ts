@@ -1,7 +1,6 @@
 import { Option } from '@/components/ui/multiselect';
 import { LucideIcon } from 'lucide-react';
 import { IconType } from 'react-icons';
-import type { Config } from 'ziggy-js';
 
 export interface Auth {
     user: User;
@@ -28,7 +27,6 @@ export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
-    ziggy: Config & { location: string };
     sidebarOpen: boolean;
 
     [key: string]: unknown;

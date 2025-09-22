@@ -13,6 +13,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Hunt, SharedData, User } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { EditIcon, EyeIcon, GraduationCapIcon, LucideProps, MonitorUpIcon, NetworkIcon, UserIcon } from 'lucide-react';
+import profile from '@/routes/profile';
 
 type TabList = {
     icon: React.ForwardRefExoticComponent<Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>>;
@@ -82,7 +83,7 @@ function Avatar({ user, huntingsCount, huntersCount, huntsCount }: { user: User;
                     </div>
                     <div className="flex w-full items-end justify-end gap-2">
                         {auth.user.id === user.id ? (
-                            <Button className="w-full" onClick={() => router.get(route('profile.edit'))}>
+                            <Button className="w-full" onClick={() => router.get(profile.edit.url())}>
                                 <EditIcon />
                                 Editar Perfil
                             </Button>

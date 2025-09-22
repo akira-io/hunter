@@ -10,6 +10,8 @@ import { Hunt, SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { EllipsisVerticalIcon, SendHorizonal } from 'lucide-react';
 import { FormEvent } from 'react';
+import hunts from '@/routes/hunts';
+import comments from '@/routes/comments';
 
 interface TweetCommentsProps {
     isOpen: boolean;
@@ -25,7 +27,7 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
 
     const handleAddComment = (e: FormEvent) => {
         e.preventDefault();
-        post(route('hunts.comment', hunt.id), {
+        post(hunts.comment.url(hunt.id), {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
@@ -38,7 +40,7 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
     };
 
     const handleLike = (commentId: number) => {
-        post(route('comments.toggle-like', commentId), {
+        post(comments.toggleLike.url(commentId), {
             preserveScroll: true,
             preserveState: true,
         });

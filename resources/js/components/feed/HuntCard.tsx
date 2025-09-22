@@ -9,6 +9,7 @@ import { router, usePage } from '@inertiajs/react';
 import { BarChart, Edit, EllipsisVerticalIcon, MessageCircle, Repeat2, SaveIcon, Share2Icon, ShieldAlert, StopCircle } from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import publicRoutes from '@/routes/public';
 
 interface HuntCardProps {
     hunt: Hunt;
@@ -29,7 +30,7 @@ export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
     const [isOpenComments, setOpenComments] = useState(false);
 
     function gotoProfile() {
-        router.get(route('public.profile.show', { user: hunt.owner.id }));
+        router.get(publicRoutes.profile.show.url(hunt.owner.id));
     }
 
     return (
@@ -46,7 +47,7 @@ export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
                         </CardTitle>
                         <div
                             className="text-muted-foreground cursor-pointer text-sm"
-                            onClick={() => router.get(route('public.profile.show', { user: hunt.owner.id }))}
+                            onClick={() => router.get(publicRoutes.profile.show.url(hunt.owner.id))}
                         >
                             @{hunt.owner.user_name || hunt.owner.name} · {hunt.created_at}
                         </div>

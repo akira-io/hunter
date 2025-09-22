@@ -3,6 +3,7 @@ import { SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { genConfig } from 'react-nice-avatar';
+import profile from '@/routes/profile';
 
 type ProfileForm = {
     name: string;
@@ -84,7 +85,7 @@ export function useProfileUpdate() {
     function updateProfile(e: React.FormEvent) {
         e.preventDefault();
 
-        post(route('profile.update'), {
+        post(profile.update.url(), {
             preserveState: true,
             preserveScroll: true,
             forceFormData: true,

@@ -6,27 +6,30 @@ import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookOpen, EyeIcon, FileSearch, MessageCircleMore, NetworkIcon, RssIcon } from 'lucide-react';
 import { AiFillGithub } from 'react-icons/ai';
+import hunts from '@/routes/hunts';
+import finder from '@/routes/finder';
+import followable from '@/routes/followable';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Hunt Line',
-        href: route('hunts.index'),
+        href: hunts.index.url(),
         icon: RssIcon,
     },
     {
         title: 'Explorar',
-        href: route('finder.index'),
+        href: finder.index.url(),
         icon: FileSearch,
     },
     {
         title: 'Hunters',
-        href: route('followable.followers'),
+        href: followable.followers.url(),
         icon: EyeIcon,
     },
 
     {
         title: 'Huntings',
-        href: route('followable.followings'),
+        href: followable.followings.url(),
         icon: NetworkIcon,
     },
 ];

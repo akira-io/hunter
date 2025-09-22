@@ -9,8 +9,11 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-    CommandShortcut,
+    CommandShortcut
 } from '@/components/ui/command';
+import { home } from '@/routes';
+import hunts from '@/routes/hunts';
+import profile from '@/routes/profile';
 import { Link } from '@inertiajs/react';
 
 export default function SearchHunt() {
@@ -60,7 +63,7 @@ export default function SearchHunt() {
                         </CommandItem>
                         <CommandItem>
                             <CircleFadingPlusIcon size={16} className="opacity-60" aria-hidden="true" />
-                            <Link href={route('profile.edit')}>Perfil</Link>
+                            <Link href={profile.about()}>Perfil</Link>
                             <CommandShortcut className="justify-center">⌘B</CommandShortcut>
                         </CommandItem>
                     </CommandGroup>
@@ -68,11 +71,11 @@ export default function SearchHunt() {
                     <CommandGroup heading="Navigation">
                         <CommandItem>
                             <ArrowUpRightIcon size={16} className="opacity-60" aria-hidden="true" />
-                            <Link href={route('home')}>Pagina Inicial</Link>
+                            <Link href={home()}>Pagina Inicial</Link>
                         </CommandItem>
                         <CommandItem>
                             <ArrowUpRightIcon size={16} className="opacity-60" aria-hidden="true" />
-                            <Link href={route('hunts.index')}>Feed</Link>
+                            <Link href={hunts.index()}>Feed</Link>
                         </CommandItem>
                     </CommandGroup>
                 </CommandList>

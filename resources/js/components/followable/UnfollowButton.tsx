@@ -8,6 +8,7 @@ import { useForm } from '@inertiajs/react';
 import { CheckCircle, UserMinus2Icon } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
+import followable from '@/routes/followable';
 
 interface UnfollowButtonProps extends HTMLAttributes<HTMLButtonElement> {
     user: User;
@@ -18,7 +19,7 @@ export default function UnfollowButton({ user, className }: UnfollowButtonProps)
     const { post, processing } = useForm();
 
     function unFollow() {
-        post(route('followable.unfollow', { user_id: user.id }), {
+        post(followable.unfollow.url({ user_id: user.id }), {
             preserveScroll: true,
             onSuccess: () => {
                 toast({

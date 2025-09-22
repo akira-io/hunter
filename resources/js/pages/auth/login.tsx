@@ -11,6 +11,10 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { RiGithubFill } from '@remixicon/react';
 import { RiGoogleFill } from 'react-icons/ri';
+import { login, register } from '@/routes';
+import github from '@/routes/github';
+import google from '@/routes/google';
+import password from '@/routes/password';
 
 type LoginForm = {
     email: string;
@@ -35,19 +39,19 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('login'), {
+        post(login.url(), {
             onFinish: () => reset('password'),
         });
     };
 
     const handleGithubLogin = () => {
         setLoadingGithub(true);
-        window.location.assign(route('github.login'));
+        window.location.assign(github.login.url());
     };
 
     const handleGoogleLogin = () => {
         setLoadingGoogle(true);
-        window.location.assign(route('google.login'));
+        window.location.assign(google.login.url());
     };
 
     return (
@@ -74,7 +78,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="flex items-center">
                             <Label htmlFor="password">Password</Label>
                             {canResetPassword && (
-                                <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
+                                <TextLink href={password.request.url()} className="ml-auto text-sm" tabIndex={5}>
                                     Esqueci-me da password
                                 </TextLink>
                             )}
@@ -126,7 +130,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </div>
                 <div className="text-muted-foreground text-center text-sm">
                     Você não tem uma conta?{' '}
-                    <TextLink href={route('register')} tabIndex={7}>
+                    <TextLink href={register.url()} tabIndex={7}>
                         Criar conta
                     </TextLink>
                 </div>

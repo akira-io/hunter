@@ -3,6 +3,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Hunt } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { Ban } from 'lucide-react';
+import hunts from '@/routes/hunts';
 
 interface DeleteHuntProps {
     hunt: Hunt;
@@ -13,7 +14,7 @@ export default function DeleteHunt({ hunt }: DeleteHuntProps) {
     const { delete: destroy, processing } = useForm();
 
     function deleteHunt() {
-        destroy(route('hunts.destroy', { hunt }), {
+        destroy(hunts.destroy.url(hunt.id), {
             preserveScroll: true,
             onSuccess: () => {
                 toast({ description: 'Hunt eliminada com sucesso.' });

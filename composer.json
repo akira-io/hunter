@@ -29,8 +29,7 @@
     "panphp/pan": "^0.1.8",
     "pinkary-project/type-guard": "^0.1.0",
     "spatie/laravel-medialibrary": "^11.12",
-    "spatie/laravel-route-attributes": "^1.25",
-    "tightenco/ziggy": "^2.5.2"
+    "spatie/laravel-route-attributes": "^1.25"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.15",

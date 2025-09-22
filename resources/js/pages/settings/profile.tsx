@@ -13,6 +13,9 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type AcademicBackground as ProfessionalEducationType, type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { GoLocation } from 'react-icons/go';
+import publicRoutes from '@/routes/public';
+import followable from '@/routes/followable';
+import verification from '@/routes/verification';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -47,9 +50,7 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                             <ProfileAvatarCard />
                             <h2 className="mt-4 text-xl font-semibold">
                                 <Link
-                                    href={route('public.profile.show', {
-                                        user: auth.user.id,
-                                    })}
+                                    href={publicRoutes.profile.show.url(auth.user.id)}
                                     prefetch
                                 >
                                     {auth.user.name}
@@ -66,10 +67,10 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                             </div>
                         </CardContent>
                         <div className="effect grid grid-cols-2 items-end justify-end gap-4">
-                            <Link href={route('followable.followers')} className="flex gap-1 text-xs">
+                            <Link href={followable.followers.url()} className="flex gap-1 text-xs">
                                 <b>{followers}</b> Hunters
                             </Link>
-                            <Link href={route('followable.followings')} className="flex gap-1 text-xs">
+                            <Link href={followable.followings.url()} className="flex gap-1 text-xs">
                                 <b>{followings}</b> Huntings
                             </Link>
                         </div>
@@ -131,7 +132,7 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                     <p className="text-muted-foreground text-md -mt-4">
                         O seu endereço de e-mail não está verificado.
                         <Link
-                            href={route('verification.send')}
+                            href={verification.send.url()}
                             method="post"
                             as="button"
                             className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
