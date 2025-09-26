@@ -13,6 +13,7 @@ use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -142,6 +143,63 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
 
         return $this->hasMany(Hunt::class, 'owner_id');
+    }
+
+    /**
+     * Chat conversations that the user participates in
+     *
+     * @return BelongsToMany<Conversation, $this>
+     */
+    public function conversations(): BelongsToMany
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_participants')
+            ->withPivot(['joined_at', 'last_read_at', 'is_admin'])
+            ->withTimestamps()
+            ->orderBy('last_message_at', 'desc');
+    }
+
+    /**
+     * Messages sent by the user
+     *
+     * @return HasMany<Message, $this>
+     */
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    /**
+     * Conversations created by the user
+     *
+     * @return HasMany<Conversation, $this>
+     */
+    public function createdConversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'created_by');
+    }
+
+    /**
+     * Get the avatar URL attribute.
+     * Returns null if avatar_url is a local file path instead of a valid URL.
+     */
+    public function getAvatarUrlAttribute($value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        // Check if it's a valid URL (starts with http:// or https://)
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        // Check if it's a relative path that should be made absolute
+        if (str_starts_with($value, '/') && !str_starts_with($value, '/private') && !str_starts_with($value, '/var')) {
+            return url($value);
+        }
+
+        // If it's a local file path (like /private/var/tmp/...), return null to use fallback
+        return null;
     }
 
     /**

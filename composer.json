@@ -20,6 +20,7 @@
     "laravel/nightwatch": "^1.7",
     "laravel/pulse": "^1.4",
     "laravel/reverb": "^1.0",
+    "laravel/sanctum": "^4.0",
     "laravel/scout": "^10.14",
     "laravel/socialite": "^5.19",
     "laravel/tinker": "^2.10.1",

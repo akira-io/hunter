@@ -7,6 +7,7 @@ import Likeable from './Likeable'
 import Profile from './Profile'
 import PublicProfileController from './PublicProfileController'
 import Welcome from './Welcome'
+import Api from './Api'
 import Settings from './Settings'
 
 const Controllers = {
@@ -19,6 +20,7 @@ const Controllers = {
     Profile: Object.assign(Profile, Profile),
     PublicProfileController: Object.assign(PublicProfileController, PublicProfileController),
     Welcome: Object.assign(Welcome, Welcome),
+    Api: Object.assign(Api, Api),
     Settings: Object.assign(Settings, Settings),
 }
 

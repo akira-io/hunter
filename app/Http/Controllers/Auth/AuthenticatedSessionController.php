@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserOffline;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -42,6 +44,15 @@ final readonly class AuthenticatedSessionController
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Remove presence cache so the user is no longer shown as online after logout
+        $user = $request->user();
+        $userId = $user?->id;
+        if ($userId) {
+            // Broadcast offline event
+            UserOffline::dispatch($user);
+            Cache::forget("user_online_{$userId}");
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
