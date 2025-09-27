@@ -51,23 +51,38 @@ final class HuntResource extends JsonResource
         /** @var User|null $user */
         $user = request()->user();
 
+        /** @var \Illuminate\Database\Eloquent\Builder<Comment> $builder */
         $builder = $this->comments()->orderByDesc('created_at');
 
         if ($user === null) {
-            return $builder->get()->each(function (Comment $comment): void {
+            /** @var \Illuminate\Database\Eloquent\Collection<int, Comment> $commentsCollection */
+            $commentsCollection = $builder->get();
+            $commentsCollection->each(function (Comment $comment): void {
                 $comment->has_liked = false;
             });
+            /** @var \Illuminate\Support\Collection<int, Comment> $comments */
+            $comments = $commentsCollection;
+            return $comments;
         }
 
-        return $builder
+        $builderWithCount = $builder
             ->withCount([
                 'likes as has_liked' => function ($q) use ($user): void {
-                    $q->where('user_id', $user->id);
+                    if (is_object($q) && method_exists($q, 'where')) {
+                        $q->where('user_id', $user->getAttribute('id'));
+                    }
                 },
-            ])
-            ->get()
-            ->each(function (Comment $comment): void {
-                $comment->has_liked = (bool) $comment->has_liked;
-            });
+            ]);
+
+        /** @var \Illuminate\Database\Eloquent\Collection<int, Comment> $commentsWithCount */
+        $commentsWithCount = $builderWithCount->get();
+        $commentsWithCount->each(function (Comment $comment): void {
+            $comment->has_liked = (bool) $comment->has_liked;
+        });
+
+        /** @var \Illuminate\Support\Collection<int, Comment> $comments */
+        $comments = $commentsWithCount;
+
+        return $comments;
     }
 }

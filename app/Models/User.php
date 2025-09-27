@@ -154,8 +154,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         return $this->belongsToMany(Conversation::class, 'conversation_participants')
             ->withPivot(['joined_at', 'last_read_at', 'is_admin'])
-            ->withTimestamps()
-            ->orderBy('last_message_at', 'desc');
+            ->withTimestamps();
     }
 
     /**
@@ -182,20 +181,25 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
      * Get the avatar URL attribute.
      * Returns null if avatar_url is a local file path instead of a valid URL.
      */
-    public function getAvatarUrlAttribute($value): ?string
+    public function getAvatarUrlAttribute(mixed $value): ?string
     {
         if (! $value) {
             return null;
         }
 
+        if (! is_scalar($value)) {
+            return null;
+        }
+        $stringValue = is_string($value) ? $value : (string) $value;
+
         // Check if it's a valid URL (starts with http:// or https://)
-        if (filter_var($value, FILTER_VALIDATE_URL)) {
-            return $value;
+        if (filter_var($stringValue, FILTER_VALIDATE_URL)) {
+            return $stringValue;
         }
 
         // Check if it's a relative path that should be made absolute
-        if (str_starts_with((string) $value, '/') && ! str_starts_with((string) $value, '/private') && ! str_starts_with((string) $value, '/var')) {
-            return url($value);
+        if (str_starts_with($stringValue, '/') && ! str_starts_with($stringValue, '/private') && ! str_starts_with($stringValue, '/var')) {
+            return url($stringValue);
         }
 
         // If it's a local file path (like /private/var/tmp/...), return null to use fallback

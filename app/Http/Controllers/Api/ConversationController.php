@@ -7,11 +7,15 @@ namespace App\Http\Controllers\Api;
 use App\Actions\User\GetAvatarAction;
 use App\Events\ConversationCreated;
 use App\Models\Conversation;
+use App\Models\Message;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -24,47 +28,57 @@ final readonly class ConversationController
     public function index(): JsonResponse
     {
         $user = Auth::user();
+        if (! $user instanceof User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
-        $conversations = $user->conversations()
-            ->with(['participants', 'messages' => function ($query): void {
-                $query->latest()->limit(1)->with('user');
-            }])
+        /** @var Collection<int, Conversation> $conversationsCollection */
+        $conversationsCollection = $user->conversations()
+            ->with([
+                'participants',
+                'messages' => function ($query): void {
+                    // @phpstan-ignore-next-line
+                    $query->latest()->limit(1)->with('user');
+                },
+            ])
             ->orderBy('last_message_at', 'desc')
-            ->get()
-            ->map(function (Conversation $conversation) use ($user): array {
-                $lastMessage = $conversation->messages->first();
-                $otherParticipants = $conversation->participants->where('id', '!=', $user->id);
+            ->get();
 
-                $otherParticipant = $otherParticipants->first();
+        $conversations = $conversationsCollection->map(function (Conversation $conversation) use ($user): array {
+            /** @var Collection<int, Message> $messages */
+            $messages = $conversation->getRelation('messages');
+            $lastMessage = $messages->first();
 
-                return [
-                    'id' => $conversation->id,
-                    'title' => $conversation->title ?: $otherParticipants->pluck('name')->join(', '),
-                    'type' => $conversation->type,
-                    'avatar_url' => new GetAvatarAction()->handle($otherParticipants->first()),
-                    'participants' => $conversation->participants->map(fn (User $participant): array => [
-                        'id' => $participant->id,
-                        'name' => $participant->name,
+            /** @var Collection<int, User> $participants */
+            $participants = $conversation->getRelation('participants');
+            $userId = $user->getAttribute('id');
+            $otherParticipants = $participants->where('id', '!=', $userId);
+
+            $otherParticipant = $otherParticipants->first();
+
+            // Ensure we have a User object for the unread count calculation
+            $userId = $user->getAttribute('id');
+
+            return [
+                'id' => $conversation->getAttribute('id'),
+                'title' => $conversation->getAttribute('title') ?: $otherParticipants->pluck('name')->join(', '),
+                'type' => $conversation->getAttribute('type'),
+                'avatar_url' => $otherParticipant instanceof User ? new GetAvatarAction()->handle($otherParticipant) : null,
+                'participants' => $participants->map(function (User $participant): array {
+                    return [
+                        'id' => $participant->getAttribute('id'),
+                        'name' => $participant->getAttribute('name'),
                         'avatar_url' => new GetAvatarAction()->handle($participant),
-                    ]),
-                    'last_message' => $lastMessage ? [
-                        'id' => $lastMessage->id,
-                        'content' => $lastMessage->content,
-                        'type' => $lastMessage->type,
-                        'created_at' => $lastMessage->created_at,
-                        'user' => [
-                            'id' => $lastMessage->user->id,
-                            'name' => $lastMessage->user->name,
-                            'avatar_url' => new GetAvatarAction()->handle($lastMessage->user),
-                        ],
-                    ] : null,
-                    'last_message_at' => $conversation->last_message_at,
-                    'unread_count' => $conversation->messages()
-                        ->where('user_id', '!=', $user->id)
-                        ->whereNull('read_at')
-                        ->count(),
-                ];
-            });
+                    ];
+                }),
+                'last_message' => ($lastMessage instanceof Message) ? $this->formatMessage($lastMessage) : null,
+                'last_message_at' => $conversation->getAttribute('last_message_at'),
+                'unread_count' => $conversation->messages()
+                    ->where('user_id', '!=', $userId)
+                    ->whereNull('read_at')
+                    ->count(),
+            ];
+        });
 
         return response()->json($conversations);
     }
@@ -84,18 +98,35 @@ final readonly class ConversationController
         ]);
 
         $user = Auth::user();
-        $participantIds = collect($request->participants)->filter(fn ($id): bool => $id !== $user->id)->values();
+        if (! $user instanceof User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        /** @var array<int> $participantsInput */
+        $participantsInput = $request->input('participants', []);
+        $participantIds = collect($participantsInput)->filter(fn (int $id): bool => $id !== $user->getAttribute('id'))->values();
 
-        if ($request->type === 'direct' && $participantIds->count() !== 1) {
+        if ($request->input('type') === 'direct' && $participantIds->count() !== 1) {
             return response()->json(['error' => 'Direct conversations must have exactly one other participant'], 422);
         }
 
-        if ($request->type === 'direct') {
-            $existingConversation = Conversation::query()->directConversation(user1: $user, user2: User::find($participantIds->first()))
+        if ($request->input('type') === 'direct') {
+            $otherUser = User::query()->find($participantIds->first());
+            if (! $otherUser instanceof User) {
+                return response()->json(['error' => 'Invalid participant'], 422);
+            }
+            $existingConversation = Conversation::query()
+                ->where('type', 'direct')
+                ->whereHas('participants', function (Builder $q) use ($user): void {
+                    $q->where('user_id', $user->getAttribute('id'));
+                })
+                ->whereHas('participants', function (Builder $q) use ($otherUser): void {
+                    $q->where('user_id', $otherUser->getAttribute('id'));
+                })
+                ->has('participants', '=', 2)
                 ->first();
             if ($existingConversation) {
                 return response()->json([
-                    'id' => $existingConversation->id,
+                    'id' => $existingConversation->getAttribute('id'),
                     'message' => 'Conversation already exists',
                 ]);
             }
@@ -103,30 +134,40 @@ final readonly class ConversationController
 
         DB::beginTransaction();
         try {
-            $conversation = Conversation::create([
-                'title' => $request->title,
-                'type' => $request->type,
-                'created_by' => $user->id,
+            $conversation = Conversation::query()->create([
+                'title' => $request->input('title'),
+                'type' => $request->input('type'),
+                'created_by' => $user->getAttribute('id'),
             ]);
 
-            $allParticipants = $participantIds->concat([$user->id]);
-            $conversation->participants()->attach($allParticipants->mapWithKeys(fn ($id): array => [
-                $id => [
-                    'joined_at' => now(),
-                    'is_admin' => $id === $user->id,
-                ],
-            ]));
+            $allParticipants = $participantIds->concat([$user->getAttribute('id')]);
+            /** @var array<int, array{joined_at: Carbon, is_admin: bool}> $attachData */
+            $attachData = [];
+            $userIdValue = $user->getAttribute('id');
+            $userIdInt = is_numeric($userIdValue) ? (int) $userIdValue : 0;
+            foreach ($allParticipants as $id) {
+                if (is_numeric($id)) {
+                    $intId = (int) $id;
+                    $attachData[$intId] = [
+                        'joined_at' => now(),
+                        'is_admin' => $intId === $userIdInt,
+                    ];
+                }
+            }
+            $conversation->participants()->attach($attachData);
 
             DB::commit();
 
             // Broadcast conversation created to each participant via their private user channel
             $conversation->load('participants');
-            foreach ($conversation->participants as $participant) {
+            /** @var Collection<int, User> $participants */
+            $participants = $conversation->getRelation('participants');
+            foreach ($participants as $participant) {
                 ConversationCreated::dispatch($conversation, $participant);
             }
 
             return response()->json([
-                'id' => $conversation->id,
+                'id' => $conversation->getAttribute('id'),
                 'message' => 'Conversation created successfully',
             ], 201);
         } catch (Exception) {
@@ -142,38 +183,40 @@ final readonly class ConversationController
     public function show(int $id): JsonResponse
     {
         $user = Auth::user();
+        if (! $user instanceof User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         try {
-            $conversation = Conversation::query()->forUser(user: $user)
-                ->with(['participants', 'messages.user'])
+            /** @var Conversation $conversation */
+            $conversation = Conversation::query()
+                ->whereHas('participants', function (Builder $q) use ($user): void {
+                    $q->where('user_id', $user->getAttribute('id'));
+                })
                 ->findOrFail($id);
 
-            $messages = $conversation->messages()
+            /** @var Collection<int, Message> $messagesCollection */
+            $messagesCollection = $conversation->messages()
                 ->with('user')
                 ->orderBy('created_at', 'asc')
-                ->get()
-                ->map(fn ($message): array => [
-                    'id' => $message->id,
-                    'content' => $message->content,
-                    'type' => $message->type,
-                    'metadata' => $message->metadata,
-                    'created_at' => $message->created_at,
-                    'user' => [
-                        'id' => $message->user->id,
-                        'name' => $message->user->name,
-                        'avatar_url' => new GetAvatarAction()->handle($message->user),
-                    ],
-                ]);
+                ->get();
+
+            $messages = $messagesCollection->map(fn (Message $message): array => $this->formatMessage($message));
+
+            /** @var Collection<int, User> $participants */
+            $participants = $conversation->participants;
 
             return response()->json([
                 'id' => $conversation->id,
                 'title' => $conversation->title,
                 'type' => $conversation->type,
-                'participants' => $conversation->participants->map(fn (User $participant): array => [
-                    'id' => $participant->id,
-                    'name' => $participant->name,
-                    'avatar_url' => new GetAvatarAction()->handle($participant),
-                ]),
+                'participants' => $participants->map(function (User $participant): array {
+                    return [
+                        'id' => $participant->id,
+                        'name' => $participant->name,
+                        'avatar_url' => new GetAvatarAction()->handle($participant),
+                    ];
+                }),
                 'messages' => $messages,
             ]);
         } catch (ModelNotFoundException) {
@@ -187,11 +230,21 @@ final readonly class ConversationController
     public function destroy(int $id): JsonResponse
     {
         $user = Auth::user();
+        if (! $user instanceof User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         try {
-            $conversation = Conversation::query()->forUser(user: $user)->findOrFail($id);
+            /** @var Conversation $conversation */
+            $conversation = Conversation::query()
+                ->whereHas('participants', function (Builder $q) use ($user): void {
+                    $q->where('user_id', $user->getAttribute('id'));
+                })
+                ->with('creator')
+                ->findOrFail($id);
 
-            if ($conversation->creator->id !== $user->id) {
+            $creator = $conversation->getRelation('creator');
+            if ($creator instanceof User && $creator->getAttribute('id') !== $user->getAttribute('id')) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -201,5 +254,28 @@ final readonly class ConversationController
         } catch (ModelNotFoundException) {
             return response()->json(['error' => 'Conversation not found'], 404);
         }
+    }
+
+    /**
+     * Format a message for API response.
+     *
+     * @return array{id: mixed, content: mixed, type: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}
+     */
+    private function formatMessage(Message $message): array
+    {
+        $user = $message->user;
+
+        return [
+            'id' => $message->id,
+            'content' => $message->content,
+            'type' => $message->type,
+            'metadata' => $message->metadata,
+            'created_at' => $message->created_at,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'avatar_url' => new GetAvatarAction()->handle($user),
+            ],
+        ];
     }
 }

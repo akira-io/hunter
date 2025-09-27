@@ -27,8 +27,12 @@ final class MessageSent implements ShouldBroadcastNow
      */
     public function broadcastOn(): array
     {
+        $conversationId = $this->message->getAttribute('conversation_id');
+        if (!is_numeric($conversationId)) {
+            throw new \InvalidArgumentException('Conversation ID must be numeric');
+        }
         return [
-            new PrivateChannel('conversation.'.$this->message->conversation_id),
+            new PrivateChannel('conversation.'.$conversationId),
         ];
     }
 
@@ -43,21 +47,41 @@ final class MessageSent implements ShouldBroadcastNow
     /**
      * The event's broadcast data.'
      *
-     * @return array[]
+     * @return array{message: array{id: int, content: string, type: string, metadata: mixed, created_at: mixed, user: array{id: int, name: string, avatar_url: mixed}}}
      */
     public function broadcastWith(): array
     {
+        $messageId = $this->message->getAttribute('id');
+        $messageContent = $this->message->getAttribute('content');
+        $messageType = $this->message->getAttribute('type');
+        $user = $this->message->getRelation('user');
+
+        if (!is_numeric($messageId) || !is_string($messageContent) || !is_string($messageType)) {
+            throw new \InvalidArgumentException('Invalid message attributes');
+        }
+
+        if (!($user instanceof \App\Models\User)) {
+            throw new \InvalidArgumentException('User relation must be a User instance');
+        }
+
+        $userId = $user->getAttribute('id');
+        $userName = $user->getAttribute('name');
+
+        if (!is_numeric($userId) || !is_string($userName)) {
+            throw new \InvalidArgumentException('Invalid user attributes');
+        }
+
         return [
             'message' => [
-                'id' => $this->message->id,
-                'content' => $this->message->content,
-                'type' => $this->message->type,
-                'metadata' => $this->message->metadata,
-                'created_at' => $this->message->created_at,
+                'id' => (int) $messageId,
+                'content' => $messageContent,
+                'type' => $messageType,
+                'metadata' => $this->message->getAttribute('metadata'),
+                'created_at' => $this->message->getAttribute('created_at'),
                 'user' => [
-                    'id' => $this->message->user->id,
-                    'name' => $this->message->user->name,
-                    'avatar_url' => $this->message->user->avatar_url,
+                    'id' => (int) $userId,
+                    'name' => $userName,
+                    'avatar_url' => $user->getAttribute('avatar_url'),
                 ],
             ],
         ];

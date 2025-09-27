@@ -8,6 +8,7 @@ use App\Actions\User\GetAvatarAction;
 use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -33,18 +34,27 @@ final readonly class MessageController
         ]);
 
         $user = Auth::user();
+        if (! $user instanceof User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         try {
-            $conversation = Conversation::query()->forUser(user: $user)->findOrFail($request->conversation_id);
+            /** @var Conversation $conversation */
+            $conversation = Conversation::query()
+                ->whereHas('participants', function ($q) use ($user): void {
+                    $q->where('user_id', $user->getAttribute('id'));
+                })
+                ->findOrFail($request->input('conversation_id'));
 
             DB::beginTransaction();
 
-            $message = Message::create([
-                'conversation_id' => $conversation->id,
-                'user_id' => $user->id,
-                'content' => $request->content,
-                'type' => $request->type ?? 'text',
-                'metadata' => $request->metadata,
+            /** @var Message $message */
+            $message = Message::query()->create([
+                'conversation_id' => $conversation->getAttribute('id'),
+                'user_id' => $user->getAttribute('id'),
+                'content' => $request->input('content'),
+                'type' => $request->input('type', 'text'),
+                'metadata' => $request->input('metadata'),
             ]);
 
             $conversation->update(['last_message_at' => now()]);
@@ -55,16 +65,19 @@ final readonly class MessageController
 
             DB::commit();
 
+            /** @var User $messageUser */
+            $messageUser = $message->getRelation('user');
+
             return response()->json([
-                'id' => $message->id,
-                'content' => $message->content,
-                'type' => $message->type,
-                'metadata' => $message->metadata,
-                'created_at' => $message->created_at,
+                'id' => $message->getAttribute('id'),
+                'content' => $message->getAttribute('content'),
+                'type' => $message->getAttribute('type'),
+                'metadata' => $message->getAttribute('metadata'),
+                'created_at' => $message->getAttribute('created_at'),
                 'user' => [
-                    'id' => $message->user->id,
-                    'name' => $message->user->name,
-                    'avatar_url' => new GetAvatarAction()->handle($message->user),
+                    'id' => $messageUser->getAttribute('id'),
+                    'name' => $messageUser->getAttribute('name'),
+                    'avatar_url' => new GetAvatarAction()->handle($messageUser),
                 ],
             ], 201);
         } catch (ModelNotFoundException) {
@@ -87,21 +100,30 @@ final readonly class MessageController
         ]);
 
         $user = Auth::user();
+        if (! $user instanceof User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         try {
-            $conversation = Conversation::query()->forUser(user: $user)->findOrFail($conversationId);
+            /** @var Conversation $conversation */
+            $conversation = Conversation::query()
+                ->whereHas('participants', function ($q) use ($user): void {
+                    $q->where('user_id', $user->getAttribute('id'));
+                })
+                ->findOrFail($conversationId);
 
-            $query = Message::where('conversation_id', $conversation->id)
-                ->where('user_id', '!=', $user->id)
+            $query = Message::query()
+                ->where('conversation_id', $conversation->getAttribute('id'))
+                ->where('user_id', '!=', $user->getAttribute('id'))
                 ->whereNull('read_at');
 
             if ($request->has('message_ids')) {
-                $query->whereIn('id', $request->message_ids);
+                $query->whereIn('id', $request->input('message_ids', []));
             }
 
             $query->update(['read_at' => now()]);
 
-            $conversation->participants()->updateExistingPivot($user->id, [
+            $conversation->participants()->updateExistingPivot($user->getAttribute('id'), [
                 'last_read_at' => now(),
             ]);
 
@@ -117,9 +139,15 @@ final readonly class MessageController
     public function destroy(int $id): JsonResponse
     {
         $user = Auth::user();
+        if (! $user instanceof User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         try {
-            $message = Message::where('user_id', $user->id)->findOrFail($id);
+            /** @var Message $message */
+            $message = Message::query()
+                ->where('user_id', $user->getAttribute('id'))
+                ->findOrFail($id);
             $message->delete();
 
             return response()->json(['message' => 'Message deleted successfully']);

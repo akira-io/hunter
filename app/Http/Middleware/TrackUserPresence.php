@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use App\Events\ConversationsSnapshot;
 use App\Events\UserOnline;
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,20 @@ final readonly class TrackUserPresence
     {
         if (Auth::check()) {
             $user = Auth::user();
-            $cacheKey = "user_online_{$user->id}";
+            if (! $user instanceof User) {
+                /** @var Response $response */
+                $response = $next($request);
+                return $response;
+            }
+
+            $userId = $user->getAttribute('id');
+            if (!is_numeric($userId)) {
+                /** @var Response $response */
+                $response = $next($request);
+                return $response;
+            }
+
+            $cacheKey = "user_online_{$userId}";
             $lastSeen = Cache::get($cacheKey);
 
             if ($lastSeen === null) {
@@ -34,6 +48,8 @@ final readonly class TrackUserPresence
             Cache::put($cacheKey, now(), now()->addMinutes(5));
         }
 
-        return $next($request);
+        /** @var Response $response */
+        $response = $next($request);
+        return $response;
     }
 }

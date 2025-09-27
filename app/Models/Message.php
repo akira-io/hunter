@@ -10,7 +10,21 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property-read  int $id
+ * @property-read  int $conversation_id
+ * @property-read  int $user_id
+ * @property-read  string $content
+ * @property-read  string $type
+ * @property-read  array<string,mixed>|null $metadata
+ * @property-read  Carbon|null $read_at
+ * @property-read  Carbon $created_at
+ * @property-read  Carbon $updated_at
+ * @property-read  Conversation $conversation
+ * @property-read  User $user
+ */
 final class Message extends Model
 {
     /** @use HasFactory<MessageFactory> */
@@ -50,13 +64,18 @@ final class Message extends Model
 
     /**
      * Scope a query to only include unread messages for a given user.
+     *
+     * @param  Builder<self>  $query
+     * @return Builder<self>
      */
     #[Scope]
     public function unread(Builder $query, User $user): Builder
     {
+        /** @var Builder<self> $result */
+        $result = $query->whereNull('read_at')
+            ->where('user_id', '!=', $user->getAttribute('id'));
 
-        return $query->whereNull('read_at')
-            ->where('user_id', '!=', $user->id);
+        return $result;
     }
 
     /**
