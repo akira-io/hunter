@@ -58,7 +58,39 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         <AuthLayout title="Login" description="Iniciar sessão na sua conta Hunter">
             <Head title="Login" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
+                <div className='grid gap-1'>
+                    <Button variant='outline'
+                            type='button'
+                            className='w-full'
+                            onClick={handleGithubLogin}
+                            tabIndex={5}
+                            disabled={loadingGithub}>
+                        {loadingGithub ? (
+                            <LoaderCircle className='h-4 w-4 animate-spin' />
+                        ) : (
+                            <RiGithubFill className='me-1 text-[#333333] dark:text-white/60'
+                                          size={16}
+                                          aria-hidden='true' />
+                        )}
+                        Continuar com GitHub
+                    </Button>
+                    <Button variant='outline'
+                            type='button'
+                            className='w-full'
+                            onClick={handleGoogleLogin}
+                            tabIndex={6}
+                            disabled={loadingGithub}>
+                        {loadingGoogle ? (
+                            <LoaderCircle className='h-4 w-4 animate-spin' />
+                        ) : (
+                            <RiGoogleFill className='me-1 text-[#333333] dark:text-white/60'
+                                          size={16}
+                                          aria-hidden='true' />
+                        )}
+                        Continuar com Google
+                    </Button>
+                </div>
+                <div className='grid gap-6 mt-2'>
                     <div className="grid gap-2">
                         <Label htmlFor="email">E-mail</Label>
                         <Input
@@ -109,24 +141,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LogInIcon />}
                         Iniciar sessão
                     </Button>
-                    <div className="grid gap-1">
-                        <Button variant="outline" type="button" className="w-full" onClick={handleGithubLogin} tabIndex={5} disabled={loadingGithub}>
-                            {loadingGithub ? (
-                                <LoaderCircle className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <RiGithubFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
-                            )}
-                            Continuar com GitHub
-                        </Button>
-                        <Button variant="outline" type="button" className="w-full" onClick={handleGoogleLogin} tabIndex={6} disabled={loadingGithub}>
-                            {loadingGoogle ? (
-                                <LoaderCircle className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <RiGoogleFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
-                            )}
-                            Continuar com Google
-                        </Button>
-                    </div>
                 </div>
                 <div className="text-muted-foreground text-center text-sm">
                     Você não tem uma conta?{' '}
