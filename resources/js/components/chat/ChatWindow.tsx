@@ -277,7 +277,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                         key={message.id}
                                         className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
                                     >
-                                        <div className={`flex gap-3 max-w-[75%] ${isOwn ? 'flex-row-reverse' : ''}`}>
+                                        <div className={`flex gap-3 max-w-[85%] ${isOwn ? 'flex-row-reverse' : ''}`}>
                                             <div className="flex-shrink-0">
                                                 {message.user.avatar_url ? (
                                                     <img
@@ -291,13 +291,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
+                                            <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} min-w-0 flex-1`}>
                                                 <div
-                                                    className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                                                    className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words word-wrap overflow-wrap-anywhere ${
                                                         isOwn
                                                             ? 'bg-gradient-to-r from-purple-500 to-purple-700 text-white shadow-md'
                                                             : 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 shadow-sm'
                                                     }`}
+                                                    style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
                                                 >
                                                     {message.content}
                                                 </div>
