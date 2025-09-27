@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Actions\User\GetAvatarAction;
 use App\Events\MessageSent;
-use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
 use Exception;
@@ -15,9 +14,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
-final class MessageController extends Controller
+final readonly class MessageController
 {
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @throws Throwable
+     */
     public function store(Request $request): JsonResponse
     {
         $request->validate([
@@ -30,7 +35,7 @@ final class MessageController extends Controller
         $user = Auth::user();
 
         try {
-            $conversation = Conversation::forUser($user)->findOrFail($request->conversation_id);
+            $conversation = Conversation::query()->forUser(user: $user)->findOrFail($request->conversation_id);
 
             DB::beginTransaction();
 
@@ -64,13 +69,16 @@ final class MessageController extends Controller
             ], 201);
         } catch (ModelNotFoundException) {
             return response()->json(['error' => 'Conversation not found'], 404);
-        } catch (Exception $e) {
+        } catch (Exception) {
             DB::rollBack();
 
             return response()->json(['error' => 'Failed to send message'], 500);
         }
     }
 
+    /**
+     * Mark messages as read.
+     */
     public function markAsRead(Request $request, int $conversationId): JsonResponse
     {
         $request->validate([
@@ -81,7 +89,7 @@ final class MessageController extends Controller
         $user = Auth::user();
 
         try {
-            $conversation = Conversation::forUser($user)->findOrFail($conversationId);
+            $conversation = Conversation::query()->forUser(user: $user)->findOrFail($conversationId);
 
             $query = Message::where('conversation_id', $conversation->id)
                 ->where('user_id', '!=', $user->id)
@@ -93,10 +101,9 @@ final class MessageController extends Controller
 
             $query->update(['read_at' => now()]);
 
-            $participant = $conversation->participants()->where('user_id', $user->id)->first();
-            if ($participant) {
-                $participant->pivot->updateLastRead();
-            }
+            $conversation->participants()->updateExistingPivot($user->id, [
+                'last_read_at' => now(),
+            ]);
 
             return response()->json(['message' => 'Messages marked as read']);
         } catch (ModelNotFoundException) {
@@ -104,6 +111,9 @@ final class MessageController extends Controller
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(int $id): JsonResponse
     {
         $user = Auth::user();

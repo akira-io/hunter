@@ -37,33 +37,45 @@ final readonly class GetHuntersAction
         /** @var Collection<int, User> $collection */
         $collection = $paginator->getCollection();
 
+        // Attach follow status before mapping to arrays
+        if ($user) {
+            $user->attachFollowStatus($collection);
+        }
+
         /** @var Collection<int, array<string, mixed>> $hunters */
         $hunters = $collection->map(
-            static fn (User $user): array => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'avatar_url' => $user->getMedia('profile_avatar')->last()?->getUrl() ?? $user->avatar_url,
-                'background_image_url' => $user->getMedia('profile_background')->last()?->getUrl() ?? 'https://images.unsplash.com/photo-1746768934151-8c5cb84bcf11?w=500&auto=format&fit=crop&q=60',
-                'location' => $user->location,
-                'bio' => $user->bio,
-                'user_name' => $user->user_name,
-                'email_verified_at' => $user->email_verified_at,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-                'skills' => $user->skills,
-                'github_url' => $user->github_url,
-                'twitter_url' => $user->twitter_url,
-                'linkedin_url' => $user->linkedin_url,
-                'bluesky_url' => $user->bluesky_url,
-                'website_url' => $user->website_url,
-                'youtube_url' => $user->youtube_url,
-            ]
-        );
+            function (User $userModel) use ($user): array {
+                $data = [
+                    'id' => $userModel->id,
+                    'name' => $userModel->name,
+                    'email' => $userModel->email,
+                    'avatar_url' => $userModel->getMedia('profile_avatar')->last()?->getUrl() ?? $userModel->avatar_url,
+                    'background_image_url' => $userModel->getMedia('profile_background')->last()?->getUrl() ?? 'https://images.unsplash.com/photo-1746768934151-8c5cb84bcf11?w=500&auto=format&fit=crop&q=60',
+                    'location' => $userModel->location,
+                    'bio' => $userModel->bio,
+                    'user_name' => $userModel->user_name,
+                    'email_verified_at' => $userModel->email_verified_at,
+                    'created_at' => $userModel->created_at,
+                    'updated_at' => $userModel->updated_at,
+                    'skills' => $userModel->skills,
+                    'github_url' => $userModel->github_url,
+                    'twitter_url' => $userModel->twitter_url,
+                    'linkedin_url' => $userModel->linkedin_url,
+                    'bluesky_url' => $userModel->bluesky_url,
+                    'website_url' => $userModel->website_url,
+                    'youtube_url' => $userModel->youtube_url,
+                ];
 
-        $hunters = $user
-            ? $user->attachFollowStatus($hunters)
-            : $hunters;
+                // Only include follow status if user is authenticated
+                if ($user) {
+                    $data['has_followed'] = $userModel->has_followed ?? false;
+                    $data['followed_at'] = $userModel->followed_at ?? null;
+                    $data['follow_accepted_at'] = $userModel->follow_accepted_at ?? null;
+                }
+
+                return $data;
+            }
+        );
 
         /** @var Collection<int, array<string, mixed>> $hunters */
         return [$hunters, $paginator];

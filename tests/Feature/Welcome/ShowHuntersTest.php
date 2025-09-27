@@ -58,7 +58,7 @@ it('renders second page with remaining users and no overlap with first page', fu
     // page 1
     $first = get(route('home'));
     // page 2
-    $second = get(route('home') . '?page=2');
+    $second = get(route('home').'?page=2');
 
     $first
         ->assertOk()
@@ -107,14 +107,15 @@ it('renders second page with remaining users and no overlap with first page', fu
 
 it('treats invalid page values as page 1', function () {
     $page1 = get(route('home'));
-    $pageZero = get(route('home') . '?page=0');
-    $pageNegative = get(route('home') . '?page=-1');
-    $pageNonNumeric = get(route('home') . '?page=foo');
+    $pageZero = get(route('home').'?page=0');
+    $pageNegative = get(route('home').'?page=-1');
+    $pageNonNumeric = get(route('home').'?page=foo');
 
     $extractIds = function ($response) {
         /** @var Inertia\Response $inertia */
         $inertia = $response->getOriginalContent();
         $props = $inertia->getData()['page']['props'];
+
         return collect($props['paginator']['data'])->pluck('id')->all();
     };
 
@@ -127,7 +128,7 @@ it('treats invalid page values as page 1', function () {
 
 it('returns an empty dataset when requesting a page beyond the last', function () {
     // With 25 total and 15 per page, last page is 2.
-    $response = get(route('home') . '?page=999');
+    $response = get(route('home').'?page=999');
 
     $response
         ->assertOk()

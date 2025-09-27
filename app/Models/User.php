@@ -184,7 +184,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function getAvatarUrlAttribute($value): ?string
     {
-        if (!$value) {
+        if (! $value) {
             return null;
         }
 
@@ -194,7 +194,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         }
 
         // Check if it's a relative path that should be made absolute
-        if (str_starts_with($value, '/') && !str_starts_with($value, '/private') && !str_starts_with($value, '/var')) {
+        if (str_starts_with((string) $value, '/') && ! str_starts_with((string) $value, '/private') && ! str_starts_with((string) $value, '/var')) {
             return url($value);
         }
 

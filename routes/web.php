@@ -14,6 +14,7 @@ Route::middleware('auth:web')->group(static function () {
     // Chat mobile page
     Route::get('/chat/mobile/{conversation}', function ($conversationId) {
         $user = auth()->user();
+
         return Inertia\Inertia::render('Chat/Mobile', [
             'conversationId' => (int) $conversationId,
             'currentUser' => [

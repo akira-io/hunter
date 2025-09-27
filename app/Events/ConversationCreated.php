@@ -18,13 +18,16 @@ final class ConversationCreated implements ShouldBroadcastNow
     /** @var array{id:int,title:?string,type:string,participants:array<int,array{id:int,name:string,avatar_url:?string}>,last_message:null,last_message_at:mixed,unread_count:int} */
     public array $conversation;
 
+    /**
+     * Create a new event instance.
+     */
     public function __construct(public Conversation $model, public User $forUser)
     {
         $this->conversation = [
             'id' => $model->id,
             'title' => $model->title ?: $model->participants->where('id', '!=', $forUser->id)->pluck('name')->join(', '),
             'type' => $model->type,
-            'participants' => $model->participants->map(static fn (User $participant) => [
+            'participants' => $model->participants->map(static fn (User $participant): array => [
                 'id' => $participant->id,
                 'name' => $participant->name,
                 'avatar_url' => $participant->avatar_url,
@@ -35,17 +38,27 @@ final class ConversationCreated implements ShouldBroadcastNow
         ];
     }
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return PrivateChannel[]
+     */
     public function broadcastOn(): array
     {
         return [new PrivateChannel('user.'.$this->forUser->id)];
     }
 
+    /**
+     * The event's broadcast name.'
+     */
     public function broadcastAs(): string
     {
         return 'conversation.created';
     }
 
     /**
+     * The event's broadcast data.'
+     *
      * @return array{conversation: array{id:int,title:?string,type:string,participants:array<int,array{id:int,name:string,avatar_url:?string}>,last_message:null,last_message_at:mixed,unread_count:int}}
      */
     public function broadcastWith(): array

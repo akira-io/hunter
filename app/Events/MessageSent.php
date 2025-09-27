@@ -10,21 +10,21 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Log;
 
 final class MessageSent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public Message $message)
-    {
-        Log::info('🔍 MessageSent: Evento criado para conversa '.$this->message->conversation_id, [
-            'message_id' => $this->message->id,
-            'user_id' => $this->message->user_id,
-            'content' => mb_substr($this->message->content, 0, 50).'...',
-        ]);
-    }
+    /**
+     * Create a new event instance.
+     */
+    public function __construct(public Message $message) {}
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return PrivateChannel[]
+     */
     public function broadcastOn(): array
     {
         return [
@@ -32,11 +32,19 @@ final class MessageSent implements ShouldBroadcastNow
         ];
     }
 
+    /**
+     * The event's broadcast name.'
+     */
     public function broadcastAs(): string
     {
         return 'message.sent';
     }
 
+    /**
+     * The event's broadcast data.'
+     *
+     * @return array[]
+     */
     public function broadcastWith(): array
     {
         return [

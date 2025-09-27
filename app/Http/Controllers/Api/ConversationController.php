@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Actions\User\GetAvatarAction;
-use App\Http\Controllers\Controller;
+use App\Events\ConversationCreated;
 use App\Models\Conversation;
 use App\Models\User;
 use Exception;
@@ -14,20 +14,24 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
-final class ConversationController extends Controller
+final readonly class ConversationController
 {
+    /**
+     * Get the conversations of the authenticated user.
+     */
     public function index(): JsonResponse
     {
         $user = Auth::user();
 
         $conversations = $user->conversations()
-            ->with(['participants', 'messages' => function ($query) {
+            ->with(['participants', 'messages' => function ($query): void {
                 $query->latest()->limit(1)->with('user');
             }])
             ->orderBy('last_message_at', 'desc')
             ->get()
-            ->map(function (Conversation $conversation) use ($user) {
+            ->map(function (Conversation $conversation) use ($user): array {
                 $lastMessage = $conversation->messages->first();
                 $otherParticipants = $conversation->participants->where('id', '!=', $user->id);
 
@@ -38,7 +42,7 @@ final class ConversationController extends Controller
                     'title' => $conversation->title ?: $otherParticipants->pluck('name')->join(', '),
                     'type' => $conversation->type,
                     'avatar_url' => new GetAvatarAction()->handle($otherParticipants->first()),
-                    'participants' => $conversation->participants->map(fn (User $participant) => [
+                    'participants' => $conversation->participants->map(fn (User $participant): array => [
                         'id' => $participant->id,
                         'name' => $participant->name,
                         'avatar_url' => new GetAvatarAction()->handle($participant),
@@ -51,7 +55,7 @@ final class ConversationController extends Controller
                         'user' => [
                             'id' => $lastMessage->user->id,
                             'name' => $lastMessage->user->name,
-                            'avatar_url' => (new GetAvatarAction())->handle($lastMessage->user),
+                            'avatar_url' => new GetAvatarAction()->handle($lastMessage->user),
                         ],
                     ] : null,
                     'last_message_at' => $conversation->last_message_at,
@@ -65,6 +69,11 @@ final class ConversationController extends Controller
         return response()->json($conversations);
     }
 
+    /**
+     * Store a new conversation.
+     *
+     * @throws Throwable
+     */
     public function store(Request $request): JsonResponse
     {
         $request->validate([
@@ -75,14 +84,15 @@ final class ConversationController extends Controller
         ]);
 
         $user = Auth::user();
-        $participantIds = collect($request->participants)->filter(fn ($id) => $id !== $user->id)->values();
+        $participantIds = collect($request->participants)->filter(fn ($id): bool => $id !== $user->id)->values();
 
         if ($request->type === 'direct' && $participantIds->count() !== 1) {
             return response()->json(['error' => 'Direct conversations must have exactly one other participant'], 422);
         }
 
         if ($request->type === 'direct') {
-            $existingConversation = Conversation::directConversation($user, User::find($participantIds->first()))->first();
+            $existingConversation = Conversation::query()->directConversation(user1: $user, user2: User::find($participantIds->first()))
+                ->first();
             if ($existingConversation) {
                 return response()->json([
                     'id' => $existingConversation->id,
@@ -100,7 +110,7 @@ final class ConversationController extends Controller
             ]);
 
             $allParticipants = $participantIds->concat([$user->id]);
-            $conversation->participants()->attach($allParticipants->mapWithKeys(fn ($id) => [
+            $conversation->participants()->attach($allParticipants->mapWithKeys(fn ($id): array => [
                 $id => [
                     'joined_at' => now(),
                     'is_admin' => $id === $user->id,
@@ -112,26 +122,29 @@ final class ConversationController extends Controller
             // Broadcast conversation created to each participant via their private user channel
             $conversation->load('participants');
             foreach ($conversation->participants as $participant) {
-                ConversationCreatedEvent::dispatch($conversation, $participant);
+                ConversationCreated::dispatch($conversation, $participant);
             }
 
             return response()->json([
                 'id' => $conversation->id,
                 'message' => 'Conversation created successfully',
             ], 201);
-        } catch (Exception $e) {
+        } catch (Exception) {
             DB::rollBack();
 
             return response()->json(['error' => 'Failed to create conversation'], 500);
         }
     }
 
+    /**
+     * Display the specified conversation.
+     */
     public function show(int $id): JsonResponse
     {
         $user = Auth::user();
 
         try {
-            $conversation = Conversation::forUser($user)
+            $conversation = Conversation::query()->forUser(user: $user)
                 ->with(['participants', 'messages.user'])
                 ->findOrFail($id);
 
@@ -139,7 +152,7 @@ final class ConversationController extends Controller
                 ->with('user')
                 ->orderBy('created_at', 'asc')
                 ->get()
-                ->map(fn ($message) => [
+                ->map(fn ($message): array => [
                     'id' => $message->id,
                     'content' => $message->content,
                     'type' => $message->type,
@@ -148,7 +161,7 @@ final class ConversationController extends Controller
                     'user' => [
                         'id' => $message->user->id,
                         'name' => $message->user->name,
-                        'avatar_url' => (new GetAvatarAction())->handle($message->user),
+                        'avatar_url' => new GetAvatarAction()->handle($message->user),
                     ],
                 ]);
 
@@ -156,10 +169,10 @@ final class ConversationController extends Controller
                 'id' => $conversation->id,
                 'title' => $conversation->title,
                 'type' => $conversation->type,
-                'participants' => $conversation->participants->map(fn (User $participant) => [
+                'participants' => $conversation->participants->map(fn (User $participant): array => [
                     'id' => $participant->id,
                     'name' => $participant->name,
-                    'avatar_url' => (new GetAvatarAction())->handle($participant),
+                    'avatar_url' => new GetAvatarAction()->handle($participant),
                 ]),
                 'messages' => $messages,
             ]);
@@ -168,12 +181,15 @@ final class ConversationController extends Controller
         }
     }
 
+    /**
+     * Remove the specified conversation.
+     */
     public function destroy(int $id): JsonResponse
     {
         $user = Auth::user();
 
         try {
-            $conversation = Conversation::forUser($user)->findOrFail($id);
+            $conversation = Conversation::query()->forUser(user: $user)->findOrFail($id);
 
             if ($conversation->creator->id !== $user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);

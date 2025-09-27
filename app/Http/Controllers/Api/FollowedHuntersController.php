@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Actions\User\GetAvatarAction;
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Log;
 
-final class FollowedHuntersController extends Controller
+final readonly class FollowedHuntersController
 {
+    /**
+     * Get the followed hunters.
+     */
     public function index(): JsonResponse
     {
         Log::info('🔍 FollowedHuntersController: Requisição recebida');
@@ -27,23 +29,21 @@ final class FollowedHuntersController extends Controller
 
         Log::info('🔍 FollowedHuntersController: Usuário autenticado', ['user_id' => $user->id]);
 
-        $followedHunters = User::whereHas('followers', function ($query) use ($user) {
+        $followedHunters = User::whereHas('followers', function ($query) use ($user): void {
             $query->where('user_id', $user->id)
                 ->whereNotNull('accepted_at');
         })
             ->select(['id', 'name', 'user_name', 'avatar_url'])
             ->orderBy('name')
             ->get()
-            ->map(function (User $hunter) {
-                return [
-                    'id' => $hunter->id,
-                    'name' => $hunter->name,
-                    'username' => $hunter->user_name,
-                    'avatar_url' => new GetAvatarAction()->handle($hunter),
-                    'level' => null,
-                    'is_online' => false,
-                ];
-            });
+            ->map(fn (User $hunter): array => [
+                'id' => $hunter->id,
+                'name' => $hunter->name,
+                'username' => $hunter->user_name,
+                'avatar_url' => new GetAvatarAction()->handle($hunter),
+                'level' => null,
+                'is_online' => false,
+            ]);
 
         Log::info('🔍 FollowedHuntersController: Hunters encontrados', ['count' => $followedHunters->count()]);
 

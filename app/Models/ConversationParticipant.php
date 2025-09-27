@@ -17,21 +17,39 @@ final class ConversationParticipant extends Model
         'is_admin',
     ];
 
+    /**
+     * Conversation relationship
+     *
+     * @return BelongsTo<Conversation, $this>
+     */
     public function conversation(): BelongsTo
     {
         return $this->belongsTo(Conversation::class);
     }
 
+    /**
+     * User relationship
+     *
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Update the last read timestamp for the participant.
+     */
     public function updateLastRead(): void
     {
         $this->update(['last_read_at' => now()]);
     }
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return string[]
+     */
     protected function casts(): array
     {
         return [

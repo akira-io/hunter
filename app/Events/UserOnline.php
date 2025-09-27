@@ -16,23 +16,35 @@ final class UserOnline implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /**
+     * Create a new event instance.
+     */
     public function __construct(public User $user)
     {
         //
     }
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return Channel[]
+     */
     public function broadcastOn(): array
     {
-        // Public channel for presence updates
         return [new Channel('online')];
     }
 
+    /**
+     * The event's broadcast name.'
+     */
     public function broadcastAs(): string
     {
         return 'user.online';
     }
 
     /**
+     * The event's broadcast data.'
+     *
      * @return array{user: array{id:int, name:string, avatar_url: string|null}}
      */
     public function broadcastWith(): array

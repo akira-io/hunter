@@ -28,7 +28,6 @@ it('should get all user hunters', function () {
  * Test framework: Pest PHP (pestphp/pest) with Laravel's Laravel\Testing utilities.
  * Framework: Laravel.
  */
-
 it('returns empty hunters list when authenticated user has no followers', function () {
     $response = $this->get(route('followable.followers'));
 

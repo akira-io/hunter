@@ -133,7 +133,7 @@ it('updates an existing user when github user exists', function () {
         'email' => 'old@example.com', // Should keep existing email
         'bio' => 'Old bio', // Should keep existing bio
         'location' => 'Old location', // Should keep existing location
-        'avatar_url' => 'old-avatar.jpg', // Should keep existing avatar
+        'avatar_url' => 'https://github.com/avatar.jpg', // Should keep existing avatar
     ]);
 
     // Assert redirect to hunts index
@@ -198,7 +198,7 @@ it('preserves existing user data when some github fields are null', function () 
         'email' => 'old@example.com', // Should keep existing email
         'bio' => 'Old bio', // Should keep existing bio
         'location' => 'Old location', // Should keep existing location
-        'avatar_url' => 'old-avatar.jpg', // Should keep existing avatar
+        'avatar_url' => null, // Should keep existing avatar
     ]);
 
     // Assert redirect to hunts index
