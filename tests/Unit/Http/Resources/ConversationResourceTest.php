@@ -55,10 +55,10 @@ describe('ConversationResource', function () {
             ->toHaveKey('unread_count')
             ->toHaveKey('current_user_joined_at')
             ->toHaveKey('is_muted', false)
-            ->toHaveKey('is_pinned', false);
-
-        expect($array['participants'])->toBeInstanceOf(Illuminate\Http\Resources\Json\AnonymousResourceCollection::class);
-        expect($array['last_message'])->toBeInstanceOf(App\Http\Resources\MessageResource::class);
+            ->toHaveKey('is_pinned', false)
+            ->and($array['participants'])
+            ->toBeInstanceOf(Illuminate\Http\Resources\Json\AnonymousResourceCollection::class)
+            ->and($array['last_message'])->toBeInstanceOf(App\Http\Resources\MessageResource::class);
     });
 
     it('generates title from participants for direct conversations', function () {
@@ -169,8 +169,8 @@ describe('ConversationResource', function () {
         $resource = new ConversationResource($conversation);
         $array = $resource->toArray($request);
 
-        expect($array['unread_count'])->toBe(0);
-        expect($array['current_user_joined_at'])->toBeNull();
+        expect($array['unread_count'])->toBe(0)
+            ->and($array['current_user_joined_at'])->toBeNull();
     });
 
     it('handles conversation with multiple other participants', function () {
@@ -198,7 +198,8 @@ describe('ConversationResource', function () {
         $resource = new ConversationResource($conversation);
         $array = $resource->toArray($request);
 
-        expect($array['title'])->toBe('Jane Smith, Bob Wilson');
-        expect($array['participants_count'])->toBe(3);
+        expect($array['title'])->toBe('Jane Smith, Bob Wilson')
+            ->and($array['participants_count'])->toBe(3);
     });
+
 });
