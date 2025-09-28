@@ -57,12 +57,6 @@ final readonly class MessageController
 
             $conversation->update(['last_message_at' => now()]);
 
-            logger()->debug('🔍 MessageController: Despachando evento MessageSent', [
-                'message_id' => $message->id,
-                'conversation_id' => $conversation->id,
-                'user_id' => $user->id,
-                'content' => $message->content
-            ]);
 
             MessageSent::dispatch($message);
 
@@ -96,11 +90,6 @@ final readonly class MessageController
      */
     public function markAsRead(Request $request, int $conversationId): JsonResponse
     {
-        logger()->debug('🔍 MessageController: markAsRead called', [
-            'conversation_id' => $conversationId,
-            'message_ids' => $request->input('message_ids'),
-            'user_id' => Auth::id()
-        ]);
 
         $request->validate([
             'message_ids' => 'array',
@@ -135,10 +124,6 @@ final readonly class MessageController
                 'last_read_at' => now(),
             ]);
 
-            logger()->debug('🔍 MessageController: markAsRead completed', [
-                'conversation_id' => $conversationId,
-                'updated_messages' => $updatedCount
-            ]);
 
             return response()->json(['message' => 'Messages marked as read']);
         } catch (ModelNotFoundException) {

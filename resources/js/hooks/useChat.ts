@@ -64,15 +64,11 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
             channel.stopListening('.message.sent', messageHandlerRef.current)
         }
 
-        console.log('🔍 useChat: Setting up global message listener on user channel')
 
         // Listen for messages on the user channel
         const messageHandler = (event: { message: Message, conversation_id: number }) => {
-            console.log('🔍 useChat: Global message received for conversation', event.conversation_id, 'from user', event.message.user.id)
-
             const isMyMessage = event.message.user.id === currentUserId
             if (isMyMessage) {
-                console.log('🔍 useChat: Ignoring my own message')
                 return // Don't increment for our own messages
             }
 
@@ -87,7 +83,6 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
                                             !minimizedWindows?.has(event.conversation_id)
 
                     if (isActiveConversation || hasOpenChatWindow) {
-                        console.log('🔍 useChat: Message for active conversation or open chat window, not incrementing counter')
                         return {
                             ...conv,
                             last_message: event.message,
@@ -95,8 +90,6 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
                             // Don't increment unread_count for active conversation or open chat window
                         }
                     }
-
-                    console.log('🔍 useChat: Incrementing unread count for conversation', event.conversation_id)
                     return {
                         ...conv,
                         last_message: event.message,
@@ -300,7 +293,6 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
 
     const markMessagesAsRead = useCallback(async (conversationId: number, messageIds?: number[]) => {
         try {
-            console.log('🔍 useChat: Marking messages as read for conversation:', conversationId)
             const response = await fetch(`/conversations/${conversationId}/messages/read`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
@@ -310,17 +302,14 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
             })
 
             if (response.ok) {
-                console.log('🔍 useChat: Successfully marked messages as read')
                 setConversations(prev => prev.map(conv =>
                     conv.id === conversationId
                         ? { ...conv, unread_count: 0 }
                         : conv
                 ))
-            } else {
-                console.error('🔍 useChat: Failed to mark messages as read, status:', response.status)
             }
         } catch (error) {
-            console.error('🔍 useChat: Failed to mark messages as read:', error)
+            console.error('Failed to mark messages as read:', error)
         }
     }, [])
 

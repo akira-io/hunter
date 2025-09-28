@@ -194,6 +194,18 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
                     return [conversationId]
                 }
             })
+
+            // Ensure the chat is not minimized when opened from background
+            setMinimizedWindows(prev => {
+                const newSet = new Set(prev)
+                newSet.delete(conversationId)
+                return newSet
+            })
+
+            // Mark messages as read when opening from background
+            chatHook.markMessagesAsRead(conversationId).catch(error => {
+                console.error('Failed to mark messages as read when opening from background:', error)
+            })
         }
     }
 
@@ -209,8 +221,15 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
     const toggleMinimize = (conversationId: number) => {
         setMinimizedWindows(prev => {
             const newSet = new Set(prev)
-            if (newSet.has(conversationId)) {
+            const wasMinimized = newSet.has(conversationId)
+
+            if (wasMinimized) {
+                // Restoring from minimized - mark messages as read
                 newSet.delete(conversationId)
+                // Call markMessagesAsRead when restoring
+                chatHook.markMessagesAsRead(conversationId).catch(error => {
+                    console.error('Failed to mark messages as read when restoring chat:', error)
+                })
             } else {
                 newSet.add(conversationId)
             }

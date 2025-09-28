@@ -20,12 +20,7 @@ final class MessageSent implements ShouldBroadcastNow
      * Create a new event instance.
      */
     public function __construct(public Message $message) {
-        logger()->debug('🔍 MessageSent: Event created', [
-            'message_id' => $message->id,
-            'conversation_id' => $message->conversation_id,
-            'content' => $message->content,
-            'user_id' => $message->user_id
-        ]);
+        //
     }
 
     /**
@@ -49,11 +44,6 @@ final class MessageSent implements ShouldBroadcastNow
             $channels[] = new PrivateChannel($userChannelName);
         }
 
-        logger()->debug('🔍 MessageSent: Broadcasting on channels', [
-            'conversation_channel' => $conversationChannelName,
-            'user_channels' => $participants->pluck('id')->map(fn($id) => 'user.'.$id)->toArray(),
-            'message_id' => $this->message->id
-        ]);
 
         return $channels;
     }

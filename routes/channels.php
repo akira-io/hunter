@@ -17,18 +17,7 @@ Broadcast::channel('user.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
-    logger()->debug('🔍 Broadcasting auth check', [
-        'user_id' => $user->id,
-        'conversation_id' => $conversationId
-    ]);
-
-    $authorized = Conversation::query()->forUser(user: $user)->where('id', $conversationId)->exists();
-
-    logger()->debug('🔍 Broadcasting auth result', [
-        'authorized' => $authorized
-    ]);
-
-    return $authorized;
+    return Conversation::query()->forUser(user: $user)->where('id', $conversationId)->exists();
 });
 
 Broadcast::channel('presence', function ($user) {

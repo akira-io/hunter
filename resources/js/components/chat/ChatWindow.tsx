@@ -114,7 +114,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                     }
 
                     // Mark messages as read when conversation loads and reset unread count
-                    console.log('🔍 ChatWindow: Marking messages as read for conversation:', conversationId)
                     await markMessagesAsRead(conversationId);
                 }
             } catch (error) {
