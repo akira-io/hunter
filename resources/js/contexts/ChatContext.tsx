@@ -1,4 +1,31 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { useChat } from '@/hooks/useChat'
+
+interface User {
+    id: number
+    name: string
+    avatar_url?: string
+}
+
+interface Message {
+    id: number
+    content: string
+    type: 'text' | 'image' | 'file'
+    metadata?: Record<string, unknown> | null
+    created_at: string
+    user: User
+}
+
+interface Conversation {
+    id: number
+    title: string
+    type: 'direct' | 'group'
+    participants: User[]
+    last_message?: Message
+    last_message_at?: string
+    unread_count: number
+    messages?: Message[]
+}
 
 interface ChatContextType {
     isChatOpen: boolean
@@ -15,6 +42,17 @@ interface ChatContextType {
     toggleMinimize: (conversationId: number) => void
     clearChatState: () => void
     currentUserId?: number
+    // Chat data and functions
+    conversations: Conversation[]
+    activeConversation: Conversation | null
+    loading: boolean
+    sending: boolean
+    loadConversations: () => Promise<void>
+    loadConversation: (conversationId: number) => Promise<void>
+    sendMessage: (conversationId: number, content: string, type?: 'text' | 'image' | 'file', metadata?: Record<string, unknown> | null) => Promise<void>
+    createConversation: (type: 'direct' | 'group', participants: number[], title?: string) => Promise<any>
+    markMessagesAsRead: (conversationId: number, messageIds?: number[]) => Promise<void>
+    setActiveConversation: (conversation: Conversation | null) => void
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined)
@@ -78,6 +116,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
     const [chatWindows, setChatWindows] = useState<number[]>(initialState.chatWindows)
     const [backgroundWindows, setBackgroundWindows] = useState<number[]>(initialState.backgroundWindows)
     const [minimizedWindows, setMinimizedWindows] = useState<Set<number>>(new Set(initialState.minimizedWindows))
+
+    // Use the central chat hook
+    const chatHook = useChat(currentUserId)
 
     // Save state to localStorage whenever it changes
     useEffect(() => {
@@ -201,6 +242,17 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
                 toggleMinimize,
                 clearChatState,
                 currentUserId,
+                // Chat data and functions from central hook
+                conversations: chatHook.conversations,
+                activeConversation: chatHook.activeConversation,
+                loading: chatHook.loading,
+                sending: chatHook.sending,
+                loadConversations: chatHook.loadConversations,
+                loadConversation: chatHook.loadConversation,
+                sendMessage: chatHook.sendMessage,
+                createConversation: chatHook.createConversation,
+                markMessagesAsRead: chatHook.markMessagesAsRead,
+                setActiveConversation: chatHook.setActiveConversation,
             }}
         >
             {children}

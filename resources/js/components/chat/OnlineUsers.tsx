@@ -1,5 +1,4 @@
 import { useChatContext } from '@/contexts/ChatContext';
-import { useChat } from '@/hooks/useChat';
 import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
@@ -12,8 +11,7 @@ interface ChatUsersProps {
 }
 
 export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
-    const { openChatWindow } = useChatContext()
-    const { createConversation, conversations } = useChat(currentUserId);
+    const { openChatWindow, createConversation, conversations } = useChatContext()
     const onlineUsers = useOnlineUsers()
     const isConnected = useIsConnected()
     const followedHunters = useFollowedHunters()

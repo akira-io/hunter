@@ -1,5 +1,4 @@
 import { useChatContext } from '@/contexts/ChatContext';
-import { useChat } from '@/hooks/useChat';
 import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
 import { router } from '@inertiajs/react';
 import { User as UserIcon, X } from 'lucide-react';
@@ -11,8 +10,7 @@ interface ChatContainerProps {
 }
 
 export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) => {
-    const { chatWindows, backgroundWindows, switchToWindow, closeBackgroundWindow } = useChatContext()
-    const { conversations } = useChat(currentUserId)
+    const { chatWindows, backgroundWindows, switchToWindow, closeBackgroundWindow, conversations } = useChatContext()
 
     const getConversationTitle = (conversationId: number) => {
         const conv = conversations.find(c => c.id === conversationId)

@@ -1,5 +1,4 @@
 import { useChatContext } from '@/contexts/ChatContext';
-import { useChat } from '@/hooks/useChat';
 import { useOnlineUsers } from '@/stores/onlineUsersStore';
 import { useFollowedHunters } from '@/stores/followedHuntersStore';
 import { useEcho } from '@laravel/echo-react';
@@ -59,8 +58,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
     const messagesContainerRef = useRef<HTMLDivElement>(null)
     const prevMessageCountRef = useRef<number>(0)
 
-    const { closeChatWindow, minimizedWindows, toggleMinimize } = useChatContext()
-    const { sendMessage, sending, markMessagesAsRead } = useChat(currentUserId);
+    const { closeChatWindow, minimizedWindows, toggleMinimize, sendMessage, sending, markMessagesAsRead, conversations } = useChatContext()
+
+    // Get conversation from centralized state for real-time updates (especially unread_count)
+    const centralConversation = conversations.find(c => c.id === conversationId)
 
     // Create a dedicated WebSocket connection for this specific conversation
     const conversationEcho = useEcho<{ message: Message }>(
@@ -238,7 +239,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
 
     return (
         <div className={`w-80 bg-white/95 border rounded-2xl shadow-2xl backdrop-blur-lg flex flex-col ${isMinimized ? 'h-auto' : 'h-[26rem]'} dark:bg-zinc-900/95 relative ${
-            conversation?.unread_count && conversation.unread_count > 0
+            isMinimized && centralConversation?.unread_count && centralConversation.unread_count > 0
                 ? 'border-red-300 dark:border-red-700 shadow-red-100 dark:shadow-red-900/20'
                 : 'border-zinc-200 dark:border-zinc-700'
         }`}>

@@ -96,6 +96,12 @@ final readonly class MessageController
      */
     public function markAsRead(Request $request, int $conversationId): JsonResponse
     {
+        logger()->debug('🔍 MessageController: markAsRead called', [
+            'conversation_id' => $conversationId,
+            'message_ids' => $request->input('message_ids'),
+            'user_id' => Auth::id()
+        ]);
+
         $request->validate([
             'message_ids' => 'array',
             'message_ids.*' => 'integer|exists:messages,id',
@@ -123,10 +129,15 @@ final readonly class MessageController
                 $query->whereIn('id', $request->input('message_ids', []));
             }
 
-            $query->update(['read_at' => now()]);
+            $updatedCount = $query->update(['read_at' => now()]);
 
             $conversation->participants()->updateExistingPivot($user->getAttribute('id'), [
                 'last_read_at' => now(),
+            ]);
+
+            logger()->debug('🔍 MessageController: markAsRead completed', [
+                'conversation_id' => $conversationId,
+                'updated_messages' => $updatedCount
             ]);
 
             return response()->json(['message' => 'Messages marked as read']);
