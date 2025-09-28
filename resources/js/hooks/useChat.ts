@@ -27,7 +27,7 @@ interface Conversation {
     messages?: Message[]
 }
 
-export const useChat = (currentUserId?: number) => {
+export const useChat = (currentUserId?: number, chatWindows?: number[], minimizedWindows?: Set<number>) => {
     const [conversations, setConversations] = useState<Conversation[]>([])
     const [activeConversation, setActiveConversation] = useState<Conversation | null>(null)
     const [loading, setLoading] = useState(true)
@@ -81,13 +81,18 @@ export const useChat = (currentUserId?: number) => {
                 if (conv.id === event.conversation_id) {
                     // Check if this conversation is currently active (using state from closure)
                     const isActiveConversation = activeConversation?.id === event.conversation_id
-                    if (isActiveConversation) {
-                        console.log('🔍 useChat: Message for active conversation, not incrementing counter')
+
+                    // Check if there's an open (non-minimized) chat window for this conversation
+                    const hasOpenChatWindow = chatWindows?.includes(event.conversation_id) &&
+                                            !minimizedWindows?.has(event.conversation_id)
+
+                    if (isActiveConversation || hasOpenChatWindow) {
+                        console.log('🔍 useChat: Message for active conversation or open chat window, not incrementing counter')
                         return {
                             ...conv,
                             last_message: event.message,
                             last_message_at: event.message.created_at,
-                            // Don't increment unread_count for active conversation
+                            // Don't increment unread_count for active conversation or open chat window
                         }
                     }
 

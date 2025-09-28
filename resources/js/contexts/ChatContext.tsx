@@ -117,8 +117,8 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
     const [backgroundWindows, setBackgroundWindows] = useState<number[]>(initialState.backgroundWindows)
     const [minimizedWindows, setMinimizedWindows] = useState<Set<number>>(new Set(initialState.minimizedWindows))
 
-    // Use the central chat hook
-    const chatHook = useChat(currentUserId)
+    // Use the central chat hook with chat window state
+    const chatHook = useChat(currentUserId, chatWindows, minimizedWindows)
 
     // Save state to localStorage whenever it changes
     useEffect(() => {
