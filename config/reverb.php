@@ -36,7 +36,14 @@ return [
             'path' => env('REVERB_SERVER_PATH', ''),
             'hostname' => env('REVERB_HOST'),
             'options' => [
-                'tls' => [],
+                'tls' => env('REVERB_TLS', false) ? [
+                    // Herd: certificados ficam aqui (ajusta o domínio)
+                    'local_cert' => env('REVERB_TLS_CERT'),
+                    'local_pk' => env('REVERB_TLS_KEY'),
+                    // dev-friendly:
+                    'verify_peer' => false,
+                    'allow_self_signed' => true,
+                ] : [],
             ],
             'max_request_size' => env('REVERB_MAX_REQUEST_SIZE', 10_000),
             'scaling' => [

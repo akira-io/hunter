@@ -116,7 +116,7 @@ test('commentsWithHasLiked returns empty collection for hunts without comments (
     $comments = $resource->commentsWithHasLiked();
 
     // Assert
-    expect($comments)->toBeInstanceOf(\Illuminate\Support\Collection::class)
+    expect($comments)->toBeInstanceOf(Illuminate\Support\Collection::class)
         ->and($comments)->toHaveCount(0);
 });
 
@@ -212,17 +212,21 @@ test('toArray embeds comments with has_liked flags for guest requests', function
 
     // Assert
     expect($array)->toBeArray()->toHaveKey('comments');
-    expect($array['comments'])->toBeArray()->toHaveCount(2);
+    expect($array['comments'])->toBeInstanceOf(Illuminate\Http\Resources\Json\AnonymousResourceCollection::class);
 
-    $index1 = array_search($comment1->id, array_column($array['comments'], 'id'), true);
-    $index2 = array_search($comment2->id, array_column($array['comments'], 'id'), true);
+    // Convert the resource collection to array for testing
+    $commentsArray = $array['comments']->toArray(request());
+    expect($commentsArray)->toBeArray()->toHaveCount(2);
+
+    $index1 = array_search($comment1->id, array_column($commentsArray, 'id'), true);
+    $index2 = array_search($comment2->id, array_column($commentsArray, 'id'), true);
 
     expect($index1)->not->toBeFalse()
         ->and($index2)->not->toBeFalse();
 
-    expect($array['comments'][$index1])->toHaveKey('has_liked')
-        ->and($array['comments'][$index1]['has_liked'])->toBeFalse();
+    expect($commentsArray[$index1])->toHaveKey('has_liked')
+        ->and($commentsArray[$index1]['has_liked'])->toBeFalse();
 
-    expect($array['comments'][$index2])->toHaveKey('has_liked')
-        ->and($array['comments'][$index2]['has_liked'])->toBeFalse();
+    expect($commentsArray[$index2])->toHaveKey('has_liked')
+        ->and($commentsArray[$index2]['has_liked'])->toBeFalse();
 });

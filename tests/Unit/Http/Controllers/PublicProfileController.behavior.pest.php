@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -11,7 +12,6 @@ use Akira\Followable\Exceptions\FollowableTraitNotFoundException;
 use App\Actions\Followable\GetHuntingsAction;
 use App\Actions\User\UserProfileAction;
 use App\Http\Controllers\PublicProfileController;
-use App\Http\Resources\Hunt\HuntResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,14 +26,14 @@ test('show returns Inertia JSON with expected keys and uses auth user to attach 
     $user = Mockery::mock(User::class);
 
     // hunts() -> latest() -> paginate()
-    $huntsPaginator = (object)['tag' => 'huntsPaginator'];
+    $huntsPaginator = (object) ['tag' => 'huntsPaginator'];
     $huntsQuery = Mockery::mock('stdClass');
     $huntsQuery->shouldReceive('latest')->once()->andReturnSelf();
     $huntsQuery->shouldReceive('paginate')->once()->andReturn($huntsPaginator);
     $user->shouldReceive('hunts')->once()->andReturn($huntsQuery);
 
     // followers() -> latest() -> paginate()
-    $huntersPaginator = (object)['tag' => 'huntersPaginator'];
+    $huntersPaginator = (object) ['tag' => 'huntersPaginator'];
     $followersQuery = Mockery::mock('stdClass');
     $followersQuery->shouldReceive('latest')->once()->andReturnSelf();
     $followersQuery->shouldReceive('paginate')->once()->andReturn($huntersPaginator);
@@ -74,7 +74,7 @@ test('show returns Inertia JSON with expected keys and uses auth user to attach 
     $page = $json->getData(true);
 
     expect($page['component'])->toBe('public-profile');
-    expect($page['props'])->toBeArray()->toHaveKeys(['user','hunts','hunters','huntings']);
+    expect($page['props'])->toBeArray()->toHaveKeys(['user', 'hunts', 'hunters', 'huntings']);
 
     expect($page['props']['user'])->toEqual($userProfile);
     expect($page['props']['hunters'])->toEqual($huntersWithStatus);
@@ -89,12 +89,12 @@ test('show bubbles FollowableTraitNotFoundException', function () {
 
     $huntsQuery = Mockery::mock('stdClass');
     $huntsQuery->shouldReceive('latest')->andReturnSelf();
-    $huntsQuery->shouldReceive('paginate')->andReturn((object)[]);
+    $huntsQuery->shouldReceive('paginate')->andReturn((object) []);
     $user->shouldReceive('hunts')->andReturn($huntsQuery);
 
     $followersQuery = Mockery::mock('stdClass');
     $followersQuery->shouldReceive('latest')->andReturnSelf();
-    $followersQuery->shouldReceive('paginate')->andReturn((object)[]);
+    $followersQuery->shouldReceive('paginate')->andReturn((object) []);
     $user->shouldReceive('followers')->andReturn($followersQuery);
 
     $huntingsAction = Mockery::mock(GetHuntingsAction::class);
@@ -121,12 +121,12 @@ test('show bubbles unexpected throwable from huntings action', function () {
 
     $huntsQuery = Mockery::mock('stdClass');
     $huntsQuery->shouldReceive('latest')->andReturnSelf();
-    $huntsQuery->shouldReceive('paginate')->andReturn((object)[]);
+    $huntsQuery->shouldReceive('paginate')->andReturn((object) []);
     $user->shouldReceive('hunts')->andReturn($huntsQuery);
 
     $followersQuery = Mockery::mock('stdClass');
     $followersQuery->shouldReceive('latest')->andReturnSelf();
-    $followersQuery->shouldReceive('paginate')->andReturn((object)[]);
+    $followersQuery->shouldReceive('paginate')->andReturn((object) []);
     $user->shouldReceive('followers')->andReturn($followersQuery);
 
     $huntingsAction = Mockery::mock(GetHuntingsAction::class);

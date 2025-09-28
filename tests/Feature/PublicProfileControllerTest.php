@@ -149,12 +149,10 @@ it('does not mix in hunts from other users', function () {
         ->get(route('public.profile.show', $profileOwner));
 
     $response->assertStatus(200);
-    $response->assertInertia(fn (AssertableInertia $page) =>
-        $page->component('public-profile')
-            ->has('hunts.data', 2)
-            ->where('hunts.data', fn ($data) =>
-                collect($data)->every(fn ($h) => $h['owner_id'] === $profileOwner->id)
-            )
+    $response->assertInertia(fn (AssertableInertia $page) => $page->component('public-profile')
+        ->has('hunts.data', 2)
+        ->where('hunts.data', fn ($data) => collect($data)->every(fn ($h) => $h['owner']['id'] === $profileOwner->id)
+        )
     );
 });
 
@@ -188,10 +186,6 @@ it('exposes minimal expected user payload on profile', function () {
     $response->assertStatus(200);
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('public-profile')
-        ->has('user') // Already asserted in base test; add minimal sanity checks if fields exist
-        ->where('user', fn ($u) =>
-            // Accept either id-only or richer payloads without being brittle.
-            is_array($u) && (\!array_key_exists('id', $u) || $u['id'] === $profileOwner->id)
-        )
-    );
+        ->has('user')
+        ->where('user.id', $profileOwner->id));
 });

@@ -19,7 +19,8 @@ final readonly class WelcomeController
      */
     public function index(Request $request, GetHuntersAction $action): Response
     {
-        $currentPage = (int) $request->get('page', 1);
+        $pageValue = $request->get('page', 1);
+        $currentPage = is_numeric($pageValue) ? (int) $pageValue : 1;
         $isInertiaRequest = (bool) $request->header('X-Inertia');
 
         if (! $isInertiaRequest && $currentPage > 1 && ! $request->has('q')) {

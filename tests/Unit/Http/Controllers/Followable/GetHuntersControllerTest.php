@@ -14,6 +14,8 @@ use Inertia\Response as InertiaResponse;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use Throwable;
 
 /**
  * Framework: PHPUnit.
@@ -27,20 +29,6 @@ final class GetHuntersControllerTest extends TestCase
     {
         Mockery::close();
         parent::tearDown();
-    }
-
-    /**
-     * Helper to build a minimal Request with a mocked authenticated user.
-     *
-     * @param \App\Models\User|MockInterface $user
-     */
-    private function makeRequestWithUser($user): Request
-    {
-        $request = Request::create('/followable/followers', 'GET');
-        // Bind the user resolver so $request->user() returns our mock.
-        $request->setUserResolver(fn () => $user);
-
-        return $request;
     }
 
     /** @test */
@@ -58,16 +46,19 @@ final class GetHuntersControllerTest extends TestCase
         $paginator = new Paginator($items, $items->count(), 20, 1);
 
         // Mock followers()->paginate(20)
-        $relation = new class($paginator) {
+        $relation = new class($paginator)
+        {
             private LengthAwarePaginator $p;
+
             public function __construct(LengthAwarePaginator $p)
             {
                 $this->p = $p;
             }
+
             public function paginate(int $perPage)
             {
                 // Use $perPage to satisfy static analysis for unused parameters.
-                (void) $perPage;
+
                 return $this->p;
             }
         };
@@ -155,12 +146,12 @@ final class GetHuntersControllerTest extends TestCase
         /** @var User&MockInterface $user */
         $user = Mockery::mock(User::class);
 
-        $user->shouldReceive('followers')->once()->andThrow(new \RuntimeException('Relation failed'));
+        $user->shouldReceive('followers')->once()->andThrow(new RuntimeException('Relation failed'));
 
         $request = $this->makeRequestWithUser($user);
         $controller = new GetHuntersController();
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Relation failed');
 
         $controller($request);
@@ -179,11 +170,25 @@ final class GetHuntersControllerTest extends TestCase
         $caught = false;
         try {
             $controller($request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $caught = true;
             $this->assertNotEmpty($e->getMessage(), 'Type assertion should produce an error message.');
         }
 
         $this->assertTrue($caught, 'Expected an exception when request->user() is not App\\Models\\User.');
+    }
+
+    /**
+     * Helper to build a minimal Request with a mocked authenticated user.
+     *
+     * @param  User|MockInterface  $user
+     */
+    private function makeRequestWithUser($user): Request
+    {
+        $request = Request::create('/followable/followers', 'GET');
+        // Bind the user resolver so $request->user() returns our mock.
+        $request->setUserResolver(fn () => $user);
+
+        return $request;
     }
 }

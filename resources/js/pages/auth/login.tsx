@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle, LogInIcon } from 'lucide-react';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -10,11 +10,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { login, register } from '@/routes';
-import github from '@/routes/github';
-import google from '@/routes/google';
 import password from '@/routes/password';
-import { RiGithubFill } from '@remixicon/react';
-import { RiGoogleFill } from 'react-icons/ri';
+import { GithubLoginButton } from '@/components/login/GithubLoginButton';
+import { GoogleLoginButton } from '@/components/login/GoogleLoginButton';
 
 type LoginForm = {
     email: string;
@@ -27,9 +25,9 @@ interface LoginProps {
     canResetPassword: boolean;
 }
 
+
 export default function Login({ status, canResetPassword }: LoginProps) {
-    const [loadingGithub, setLoadingGithub] = useState(false);
-    const [loadingGoogle, setLoadingGoogle] = useState(false);
+
 
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         email: '',
@@ -44,21 +42,16 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         });
     };
 
-    const handleGithubLogin = () => {
-        setLoadingGithub(true);
-        window.location.assign(github.login.url());
-    };
-
-    const handleGoogleLogin = () => {
-        setLoadingGoogle(true);
-        window.location.assign(google.login.url());
-    };
 
     return (
         <AuthLayout title="Login" description="Iniciar sessão na sua conta Hunter">
             <Head title="Login" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
+                <div className='grid gap-1'>
+                    <GithubLoginButton />
+                    <GoogleLoginButton />
+                </div>
+                <div className='grid gap-6 mt-2'>
                     <div className="grid gap-2">
                         <Label htmlFor="email">E-mail</Label>
                         <Input
@@ -109,24 +102,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LogInIcon />}
                         Iniciar sessão
                     </Button>
-                    <div className="grid gap-1">
-                        <Button variant="outline" type="button" className="w-full" onClick={handleGithubLogin} tabIndex={5} disabled={loadingGithub}>
-                            {loadingGithub ? (
-                                <LoaderCircle className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <RiGithubFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
-                            )}
-                            Continuar com GitHub
-                        </Button>
-                        <Button variant="outline" type="button" className="w-full" onClick={handleGoogleLogin} tabIndex={6} disabled={loadingGithub}>
-                            {loadingGoogle ? (
-                                <LoaderCircle className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <RiGoogleFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
-                            )}
-                            Continuar com Google
-                        </Button>
-                    </div>
                 </div>
                 <div className="text-muted-foreground text-center text-sm">
                     Você não tem uma conta?{' '}
