@@ -41,7 +41,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
     const [newMessage, setNewMessage] = useState('')
     const [conversation, setConversation] = useState<Conversation | null>(null)
     const [localLoading, setLocalLoading] = useState(true)
+    const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+    const [hasInitiallyScrolled, setHasInitiallyScrolled] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const messagesContainerRef = useRef<HTMLDivElement>(null)
+    const prevMessageCountRef = useRef<number>(0)
 
     const { closeChatWindow, minimizedWindows, toggleMinimize } = useChatContext()
     const { sendMessage, sending, markMessagesAsRead } = useChat(currentUserId);
@@ -98,6 +102,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                     const data = await response.json()
                     console.log('🔍 ChatWindow: Conversation loaded:', data)
                     setConversation(data)
+
+                    // Scroll to bottom when conversation first loads
+                    if (data.messages && data.messages.length > 0) {
+                        console.log('🔍 ChatWindow: Initial scroll to latest messages for conversation:', conversationId)
+                        setTimeout(() => {
+                            scrollToBottom()
+                            setHasInitiallyScrolled(true)
+                        }, 100)
+                    }
 
                     // Mark messages as read when conversation loads
                     if (data.unread_count && data.unread_count > 0) {
@@ -175,9 +188,36 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         }
     }, [conversationEcho, conversationId, conversation])
 
+    // Check if user is at bottom of chat (within threshold)
+    const isNearBottom = () => {
+        const container = messagesContainerRef.current
+        if (!container) return true
+
+        const { scrollTop, scrollHeight, clientHeight } = container
+        const threshold = 100 // pixels from bottom
+        return scrollHeight - scrollTop - clientHeight < threshold
+    }
+
     useEffect(() => {
-        scrollToBottom()
-    }, [conversation?.messages])
+        const currentMessageCount = conversation?.messages?.length || 0
+        const prevMessageCount = prevMessageCountRef.current
+
+        // Only apply smart scrolling rules if chat has been initially loaded
+        if (hasInitiallyScrolled) {
+            // Only scroll if:
+            // 1. Messages were added (not just conversation loaded)
+            // 2. Window is not minimized
+            // 3. User is already near the bottom (not reading history)
+            if (currentMessageCount > prevMessageCount && !isMinimized && isNearBottom()) {
+                console.log('🔍 ChatWindow: Auto-scrolling for conversation:', conversationId, 'new messages:', currentMessageCount - prevMessageCount)
+                scrollToBottom()
+            } else if (currentMessageCount > prevMessageCount && !isNearBottom()) {
+                console.log('🔍 ChatWindow: Not scrolling - user is reading history for conversation:', conversationId)
+            }
+        }
+
+        prevMessageCountRef.current = currentMessageCount
+    }, [conversation?.messages?.length, isMinimized, conversationId, hasInitiallyScrolled])
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -200,6 +240,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                     messages: [...(prev.messages || []), message]
                 }
             })
+
+            // Always scroll when user sends a message (intentional action)
+            setTimeout(() => scrollToBottom(), 50)
         } catch (error) {
             console.error('Failed to send message:', error)
         }
@@ -331,7 +374,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             {/* Messages */}
             {!isMinimized && (
                 <>
-                    <div className="flex-1 min-h-0 max-h-80 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+                    <div
+                        ref={messagesContainerRef}
+                        className="flex-1 min-h-0 max-h-80 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent"
+                    >
                         {conversation?.messages?.length === 0 ? (
                             <div className="flex flex-col items-center justify-center h-32 text-center">
                                 <div className="size-12 rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700 grid place-items-center mb-3">
