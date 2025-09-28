@@ -55,23 +55,16 @@ export const useChat = (currentUserId?: number) => {
     useEffect(() => {
         const channel = userEcho.channel();
         if (!channel || !currentUserId) {
-            console.log('🔍 useChat: Canal do usuário não disponível', {
-                channel: !!channel,
-                currentUserId: !!currentUserId
-            })
             return;
         }
 
-        console.log('🔍 useChat: Conectando ao canal do usuário:', `user.${currentUserId}`)
 
         channel
             .listen('.conversations.snapshot', (e: { conversations: Conversation[] }) => {
-                console.log('🔍 useChat: Snapshot de conversas recebido:', e.conversations)
                 setConversations(e.conversations || [])
                 setLoading(false)
             })
             .listen('.conversation.created', (e: { conversation: Conversation }) => {
-                console.log('🔍 useChat: Nova conversa criada:', e.conversation)
                 setConversations(prev => {
                     const exists = prev.some(c => c.id === e.conversation.id)
                     return exists ? prev : [e.conversation, ...prev]
@@ -87,21 +80,13 @@ export const useChat = (currentUserId?: number) => {
     useEffect(() => {
         const channel = conversationEcho.channel();
         if (!channel || !activeConversation) {
-            console.log('🔍 useChat: Canal da conversa não disponível', {
-                channel: !!channel,
-                activeConversation: !!activeConversation
-            })
             return;
         }
 
-        console.log('🔍 useChat: Conectando ao canal da conversa:', `conversation.${activeConversation.id}`)
-        console.log('🔍 useChat: Channel object:', channel)
-        console.log('🔍 useChat: Channel state:', channel.state)
 
         // Configure message listeners using useEcho hook
         channel
             .listen('.message.sent', (event: { message: Message }) => {
-                console.log('🔍 useChat: Mensagem recebida via WebSocket:', event)
                 setActiveConversation(prev => {
                     if (!prev) return prev
                     return {
@@ -121,10 +106,8 @@ export const useChat = (currentUserId?: number) => {
                 ))
             })
             .subscribed(() => {
-                console.log('🔍 useChat: Successfully subscribed to conversation channel:', `conversation.${activeConversation.id}`)
             })
             .error((error: any) => {
-                console.error('🔍 useChat: Erro no canal da conversa:', error)
             })
 
         return () => {
@@ -157,21 +140,18 @@ export const useChat = (currentUserId?: number) => {
     // Load conversations on mount
     useEffect(() => {
         if (currentUserId) {
-            console.log('🔍 useChat: Carregando conversas para o usuário:', currentUserId)
             loadConversations()
         }
     }, [currentUserId, loadConversations])
 
     const loadConversation = useCallback(async (conversationId: number) => {
         try {
-            console.log('🔍 useChat: Carregando conversa:', conversationId)
             const response = await fetch(`/conversations/${conversationId}`, {
                 headers: getAuthHeaders(),
                 credentials: 'same-origin',
             })
             if (response.ok) {
                 const data = await response.json()
-                console.log('🔍 useChat: Conversa carregada:', data)
                 setActiveConversation(data)
             } else {
                 // Fallback to mock conversation
@@ -182,18 +162,15 @@ export const useChat = (currentUserId?: number) => {
                     participants: [],
                     messages: []
                 }
-                console.log('🔍 useChat: Usando conversa mock:', mockConversation)
                 setActiveConversation(mockConversation)
             }
         } catch (error) {
-            console.error('🔍 useChat: Failed to load conversation:', error)
         }
     }, [])
 
     const sendMessage = useCallback(async (conversationId: number, content: string, type: 'text' | 'image' | 'file' = 'text', metadata?: Record<string, unknown> | null) => {
         try {
             setSending(true)
-            console.log('🔍 useChat: Enviando mensagem:', { conversationId, content, type })
 
             const response = await fetch('/messages', {
                 method: 'POST',
@@ -212,14 +189,12 @@ export const useChat = (currentUserId?: number) => {
             }
 
             const message = await response.json()
-            console.log('🔍 useChat: Mensagem enviada com sucesso:', message)
 
             // Note: Do NOT add message here manually - let WebSocket handle it
             // This prevents duplicates and ensures real-time works properly
 
             return message
         } catch (error) {
-            console.error('🔍 useChat: Failed to send message:', error)
             throw error
         } finally {
             setSending(false)
@@ -227,7 +202,6 @@ export const useChat = (currentUserId?: number) => {
     }, [])
 
     const createConversation = useCallback(async (type: 'direct' | 'group', participants: number[], title?: string) => {
-        console.log('🔍 useChat: createConversation chamado:', { type, participants, title })
         try {
             const response = await fetch('/conversations', {
                 method: 'POST',
@@ -239,30 +213,26 @@ export const useChat = (currentUserId?: number) => {
                 }),
             })
 
-            console.log('🔍 useChat: Response status:', response.status, response.ok)
 
             if (!response.ok) {
                 const errorText = await response.text()
-                console.error('🔍 useChat: Response error:', errorText)
                 throw new Error(`Failed to create conversation: ${response.status} ${errorText}`)
             }
 
             const data = await response.json()
-            console.log('🔍 useChat: Conversation data received:', data)
 
             await loadConversations()
-            console.log('🔍 useChat: Conversations reloaded')
 
             return data
         } catch (error) {
-            console.error('🔍 useChat: Failed to create conversation:', error)
             throw error
         }
     }, [loadConversations])
 
     const markMessagesAsRead = useCallback(async (conversationId: number, messageIds?: number[]) => {
         try {
-            await fetch(`/conversations/${conversationId}/messages/read`, {
+            console.log('🔍 useChat: Marking messages as read for conversation:', conversationId)
+            const response = await fetch(`/conversations/${conversationId}/messages/read`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({
@@ -270,29 +240,30 @@ export const useChat = (currentUserId?: number) => {
                 }),
             })
 
-            setConversations(prev => prev.map(conv =>
-                conv.id === conversationId
-                    ? { ...conv, unread_count: 0 }
-                    : conv
-            ))
+            if (response.ok) {
+                console.log('🔍 useChat: Successfully marked messages as read')
+                setConversations(prev => prev.map(conv =>
+                    conv.id === conversationId
+                        ? { ...conv, unread_count: 0 }
+                        : conv
+                ))
+            } else {
+                console.error('🔍 useChat: Failed to mark messages as read, status:', response.status)
+            }
         } catch (error) {
-            console.error('Failed to mark messages as read:', error)
+            console.error('🔍 useChat: Failed to mark messages as read:', error)
         }
     }, [])
 
     const getAuthHeaders = () => {
         const metaTag = document.querySelector('meta[name="csrf-token"]')
         const token = metaTag?.getAttribute('content')
-        console.log('🔍 useChat: CSRF Meta tag found:', !!metaTag)
-        console.log('🔍 useChat: CSRF Token:', token)
-        console.log('🔍 useChat: CSRF Token length:', token?.length)
 
         const headers = {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token || '',
             'X-Requested-With': 'XMLHttpRequest',
         }
-        console.log('🔍 useChat: Headers:', headers)
         return headers
     }
 

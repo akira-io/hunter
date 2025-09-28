@@ -33,7 +33,6 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
             lastUpdated: 0,
 
             setHunters: (hunters: Hunter[]) => {
-                console.log('🔍 FollowedHuntersStore: Definindo hunters:', hunters.length)
                 set({
                     hunters,
                     lastUpdated: Date.now(),
@@ -55,7 +54,6 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
                 const { hunters } = get()
                 const exists = hunters.some(h => h.id === hunter.id)
                 if (!exists) {
-                    console.log('🔍 FollowedHuntersStore: Adicionando hunter:', hunter.name)
                     set({
                         hunters: [...hunters, hunter],
                         lastUpdated: Date.now()
@@ -67,7 +65,6 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
                 const { hunters } = get()
                 const hunter = hunters.find(h => h.id === hunterId)
                 if (hunter) {
-                    console.log('🔍 FollowedHuntersStore: Removendo hunter:', hunter.name)
                     set({
                         hunters: hunters.filter(h => h.id !== hunterId),
                         lastUpdated: Date.now()
@@ -80,7 +77,6 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
             },
 
             clearHunters: () => {
-                console.log('🔍 FollowedHuntersStore: Limpando todos os hunters')
                 set({
                     hunters: [],
                     loading: false,
@@ -89,12 +85,10 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
             },
 
             refreshHunters: async () => {
-                console.log('🔍 FollowedHuntersStore: Iniciando busca de hunters seguidos...')
                 const { setLoading, setHunters } = get()
                 setLoading(true)
 
                 try {
-                    console.log('🔍 FollowedHuntersStore: Fazendo requisição para /followed-hunters')
                     const response = await fetch('/followed-hunters', {
                         headers: {
                             'Content-Type': 'application/json',
@@ -104,19 +98,15 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
                         credentials: 'same-origin',
                     })
 
-                    console.log('🔍 FollowedHuntersStore: Resposta recebida:', response.status, response.ok)
 
                     if (response.ok) {
                         const data = await response.json()
-                        console.log('🔍 FollowedHuntersStore: Dados recebidos:', data)
                         const hunters = Array.isArray(data) ? data : (data?.data ?? [])
                         setHunters(hunters)
                     } else {
-                        console.error('🔍 FollowedHuntersStore: Erro ao buscar hunters:', response.status)
                         setLoading(false)
                     }
                 } catch (error) {
-                    console.error('🔍 FollowedHuntersStore: Erro na requisição:', error)
                     setLoading(false)
                 }
             }
@@ -133,22 +123,17 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
 
             // Check if cached data is still valid (5 minutes)
             onRehydrateStorage: () => (state) => {
-                console.log('🔍 FollowedHuntersStore: Rehydrating store...')
                 if (state) {
                     const now = Date.now()
                     const maxAge = 5 * 60 * 1000 // 5 minutes
-                    console.log('🔍 FollowedHuntersStore: State found, lastUpdated:', state.lastUpdated, 'now:', now, 'diff:', now - state.lastUpdated)
 
                     if (now - state.lastUpdated > maxAge) {
-                        console.log('🔍 FollowedHuntersStore: Cache expirado, limpando...')
                         state.clearHunters()
                     } else {
-                        console.log('🔍 FollowedHuntersStore: Cache válido, carregando', state.hunters.length, 'hunters')
                         // Reset loading on rehydration
                         state.loading = false
                     }
                 } else {
-                    console.log('🔍 FollowedHuntersStore: No cached state found')
                 }
             }
         }

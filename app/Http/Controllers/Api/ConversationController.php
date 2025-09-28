@@ -212,6 +212,10 @@ final readonly class ConversationController
                     'avatar_url' => new GetAvatarAction()->handle($participant),
                 ]),
                 'messages' => $messages,
+                'unread_count' => $conversation->messages()
+                    ->where('user_id', '!=', $user->getAttribute('id'))
+                    ->whereNull('read_at')
+                    ->count(),
             ]);
         } catch (ModelNotFoundException) {
             return response()->json(['error' => 'Conversation not found'], 404);

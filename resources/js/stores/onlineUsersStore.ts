@@ -62,7 +62,6 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
             },
 
             clearUsers: () => {
-                console.log('🔍 OnlineUsersStore: Limpando todos os usuários')
                 set({
                     users: [],
                     isConnected: false,
@@ -87,10 +86,8 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
                     const maxAge = 30 * 1000 // 30 seconds
 
                     if (now - state.lastUpdated > maxAge) {
-                        console.log('🔍 OnlineUsersStore: Cache expirado, limpando...')
                         state.clearUsers()
                     } else {
-                        console.log('🔍 OnlineUsersStore: Cache válido, carregando', state.users.length, 'usuários')
                         // Reset connection status on rehydration
                         state.isConnected = false
                     }

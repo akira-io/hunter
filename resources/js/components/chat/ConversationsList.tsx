@@ -1,9 +1,9 @@
-import { useChatContext } from '@/contexts/ChatContext'
-import { useChat } from '@/hooks/useChat'
-import { shouldUseMobileChat } from '@/hooks/useDeviceDetection'
-import { router } from '@inertiajs/react'
-import { MessageCircle, User as UserIcon } from 'lucide-react'
-import React, { useEffect } from 'react'
+import { useChatContext } from '@/contexts/ChatContext';
+import { useChat } from '@/hooks/useChat';
+import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
+import { router } from '@inertiajs/react';
+import { MessageCircle, User as UserIcon } from 'lucide-react';
+import React from 'react';
 
 interface ConversationsListProps {
     currentUserId?: number
@@ -66,7 +66,6 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
                         alt={otherParticipant.name}
                         className="w-12 h-12 rounded-full object-cover"
                         onError={(e) => {
-                            console.log('🔍 Avatar failed to load:', otherParticipant.avatar_url)
                             e.currentTarget.style.display = 'none'
                             const fallback = e.currentTarget.parentElement?.querySelector('.avatar-fallback') as HTMLElement
                             if (fallback) {

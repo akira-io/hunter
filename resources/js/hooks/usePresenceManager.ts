@@ -35,10 +35,8 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
     // Load followed hunters when user logs in
     useEffect(() => {
         if (currentUserId) {
-            console.log('🔍 PresenceManager: Carregando hunters seguidos para usuário:', currentUserId)
             refreshFollowedHunters()
         } else {
-            console.log('🔍 PresenceManager: Sem usuário logado, limpando hunters seguidos')
             clearFollowedHunters()
         }
     }, [currentUserId, refreshFollowedHunters, clearFollowedHunters])
@@ -83,7 +81,6 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
             try {
                 channel
                     .here((users: OnlineUser[]) => {
-                        console.log('Test', users);
                         if (!mounted) return
                         setUsers(users)
                         setConnected(true)

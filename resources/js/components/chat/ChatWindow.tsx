@@ -38,10 +38,10 @@ interface ChatWindowProps {
 }
 
 export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentUserId }) => {
+
     const [newMessage, setNewMessage] = useState('')
     const [conversation, setConversation] = useState<Conversation | null>(null)
     const [localLoading, setLocalLoading] = useState(true)
-    const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
     const [hasInitiallyScrolled, setHasInitiallyScrolled] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const messagesContainerRef = useRef<HTMLDivElement>(null)
@@ -66,15 +66,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
     // Get the other participant (for direct conversations)
     const otherParticipant = conversation?.participants.find(p => p.id !== currentUserId)
 
-    // Debug minimization
-    React.useEffect(() => {
-        console.log('🔍 ChatWindow: Estado de minimização:', {
-            conversationId,
-            isMinimized,
-            minimizedWindows: Array.from(minimizedWindows),
-            otherParticipant: otherParticipant?.name
-        });
-    }, [conversationId, isMinimized, minimizedWindows, otherParticipant])
 
     // Check if the other participant is online
     const isOtherUserOnline = otherParticipant ?
@@ -86,7 +77,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
     useEffect(() => {
         const fetchConversation = async () => {
             try {
-                console.log('🔍 ChatWindow: Loading conversation:', conversationId)
                 setLocalLoading(true)
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
                 const response = await fetch(`/conversations/${conversationId}`, {
@@ -100,12 +90,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
 
                 if (response.ok) {
                     const data = await response.json()
-                    console.log('🔍 ChatWindow: Conversation loaded:', data)
                     setConversation(data)
 
                     // Scroll to bottom when conversation first loads
                     if (data.messages && data.messages.length > 0) {
-                        console.log('🔍 ChatWindow: Initial scroll to latest messages for conversation:', conversationId)
                         setTimeout(() => {
                             scrollToBottom()
                             setHasInitiallyScrolled(true)
@@ -115,53 +103,35 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                     // Mark messages as read when conversation loads
                     if (data.unread_count && data.unread_count > 0) {
                         await markMessagesAsRead(conversationId);
+                        // Update local conversation state
                         setConversation(prev => prev ? { ...prev, unread_count: 0 } : prev);
                     }
                 }
             } catch (error) {
-                console.error('🔍 ChatWindow: Failed to load conversation:', error)
+                console.error('Failed to load conversation:', error);
             } finally {
                 setLocalLoading(false)
             }
         }
 
         fetchConversation()
-    }, [conversationId, markMessagesAsRead])
+    }, [conversationId])
 
     // Subscribe to WebSocket for this specific conversation
     useEffect(() => {
         const channel = conversationEcho.channel();
-        if (!channel) {
-            console.log('🔍 ChatWindow: WebSocket channel not available for conversation:', conversationId)
+        if (!channel || !conversation) {
             return;
         }
-
-        // Wait a bit for conversation to load before setting up WebSocket
-        if (!conversation) {
-            console.log('🔍 ChatWindow: Waiting for conversation to load before setting up WebSocket')
-            return;
-        }
-
-        console.log('🔍 ChatWindow: Setting up WebSocket listeners for conversation:', conversationId)
-        console.log('🔍 ChatWindow: Channel state:', channel.state)
 
         const messageHandler = (event: { message: Message }) => {
-            console.log('🔍 ChatWindow: Message received via WebSocket:', event)
-
             setConversation(prev => {
-                if (!prev) {
-                    console.log('🔍 ChatWindow: No conversation loaded yet, ignoring message')
-                    return prev
-                }
+                if (!prev) return prev;
 
                 // Check if message already exists (avoid duplicates)
                 const messageExists = prev.messages?.some(msg => msg.id === event.message.id)
-                if (messageExists) {
-                    console.log('🔍 ChatWindow: Message already exists, skipping duplicate')
-                    return prev
-                }
+                if (messageExists) return prev;
 
-                console.log('🔍 ChatWindow: Adding new message via WebSocket')
                 return {
                     ...prev,
                     messages: [...(prev.messages || []), event.message],
@@ -170,11 +140,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         }
 
         const subscribeHandler = () => {
-            console.log('🔍 ChatWindow: Successfully subscribed to conversation channel:', conversationId)
+            // Successfully subscribed
         }
 
         const errorHandler = (error: any) => {
-            console.error('🔍 ChatWindow: Error in conversation channel:', error)
+            console.error('WebSocket error:', error);
         }
 
         channel
@@ -183,7 +153,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             .error(errorHandler)
 
         return () => {
-            console.log('🔍 ChatWindow: Cleaning up WebSocket for conversation:', conversationId)
             // Laravel Echo React handles cleanup automatically
         }
     }, [conversationEcho, conversationId, conversation])
@@ -209,10 +178,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             // 2. Window is not minimized
             // 3. User is already near the bottom (not reading history)
             if (currentMessageCount > prevMessageCount && !isMinimized && isNearBottom()) {
-                console.log('🔍 ChatWindow: Auto-scrolling for conversation:', conversationId, 'new messages:', currentMessageCount - prevMessageCount)
                 scrollToBottom()
-            } else if (currentMessageCount > prevMessageCount && !isNearBottom()) {
-                console.log('🔍 ChatWindow: Not scrolling - user is reading history for conversation:', conversationId)
             }
         }
 
@@ -232,7 +198,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             setNewMessage('')
 
             // Add message immediately to local state for better UX
-            console.log('🔍 ChatWindow: Adding sent message to local state:', message)
             setConversation(prev => {
                 if (!prev) return prev
                 return {
@@ -289,7 +254,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             <div
                 className={`flex items-center justify-between bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-4 py-3 ${isMinimized ? 'rounded-2xl' : 'rounded-t-2xl border-b border-zinc-200 dark:border-zinc-700'} cursor-pointer hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors`}
                 onClick={() => {
-                    console.log('🔍 ChatWindow: Clicando no header para minimizar/maximizar');
                     toggleMinimize(conversationId);
                 }}
             >
@@ -337,11 +301,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                             <span className='text-sm font-medium truncate'>
                                 {getConversationTitle()}
                             </span>
-                            {conversation?.unread_count && conversation.unread_count > 0 && (
-                                <div className='flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold text-white bg-red-500 rounded-full'>
-                                    {conversation.unread_count > 99 ? '99+' : conversation.unread_count}
-                                </div>
-                            )}
                         </div>
                         <span className="text-xs text-zinc-500 dark:text-zinc-400">
                             {isOtherUserOnline ? 'Online' : 'Offline'}
@@ -351,7 +310,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                 <div className="flex gap-1">
                     <button
                         onClick={(e) => {
-                            console.log('🔍 ChatWindow: Clicando no botão minimizar');
                             e.stopPropagation();
                             toggleMinimize(conversationId);
                         }}

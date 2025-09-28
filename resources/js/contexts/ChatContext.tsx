@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
 interface ChatContextType {
     isChatOpen: boolean
@@ -13,6 +13,7 @@ interface ChatContextType {
     switchToWindow: (conversationId: number) => void
     minimizedWindows: Set<number>
     toggleMinimize: (conversationId: number) => void
+    clearChatState: () => void
     currentUserId?: number
 }
 
@@ -31,12 +32,62 @@ interface ChatProviderProps {
     currentUserId?: number
 }
 
+const STORAGE_KEY = 'devhunter_chat_state'
+
+interface ChatState {
+    chatWindows: number[]
+    backgroundWindows: number[]
+    minimizedWindows: number[]
+}
+
+const loadChatState = (): ChatState => {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY)
+        if (stored) {
+            const parsed = JSON.parse(stored)
+            return {
+                chatWindows: parsed.chatWindows || [],
+                backgroundWindows: parsed.backgroundWindows || [],
+                minimizedWindows: parsed.minimizedWindows || []
+            }
+        }
+    } catch (error) {
+        console.error('Failed to load chat state from localStorage:', error)
+    }
+    return {
+        chatWindows: [],
+        backgroundWindows: [],
+        minimizedWindows: []
+    }
+}
+
+const saveChatState = (state: ChatState) => {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    } catch (error) {
+        console.error('Failed to save chat state to localStorage:', error)
+    }
+}
+
 export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUserId }) => {
     const [isChatOpen, setChatOpen] = useState(false)
     const [activeConversationId, setActiveConversationId] = useState<number | null>(null)
-    const [chatWindows, setChatWindows] = useState<number[]>([])
-    const [backgroundWindows, setBackgroundWindows] = useState<number[]>([])
-    const [minimizedWindows, setMinimizedWindows] = useState<Set<number>>(new Set())
+
+    // Load initial state from localStorage
+    const initialState = loadChatState()
+    const [chatWindows, setChatWindows] = useState<number[]>(initialState.chatWindows)
+    const [backgroundWindows, setBackgroundWindows] = useState<number[]>(initialState.backgroundWindows)
+    const [minimizedWindows, setMinimizedWindows] = useState<Set<number>>(new Set(initialState.minimizedWindows))
+
+    // Save state to localStorage whenever it changes
+    useEffect(() => {
+        const state: ChatState = {
+            chatWindows,
+            backgroundWindows,
+            minimizedWindows: Array.from(minimizedWindows)
+        }
+        saveChatState(state)
+    }, [chatWindows, backgroundWindows, minimizedWindows])
 
     const openChatWindow = (conversationId: number) => {
         // Remove from background windows if exists
@@ -126,6 +177,12 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
         })
     }
 
+    const clearChatState = () => {
+        setChatWindows([])
+        setBackgroundWindows([])
+        setMinimizedWindows(new Set())
+        localStorage.removeItem(STORAGE_KEY)
+    }
 
     return (
         <ChatContext.Provider
@@ -142,6 +199,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
                 switchToWindow,
                 minimizedWindows,
                 toggleMinimize,
+                clearChatState,
                 currentUserId,
             }}
         >
