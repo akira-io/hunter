@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Events\UserOffline;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -30,9 +31,9 @@ final class CleanOfflineUsersCommand extends Command
                 $cacheKey = "user_online_{$user->id}";
                 $lastSeen = Cache::get($cacheKey);
 
-                if ($lastSeen instanceof Carbon && now()->diffInMinutes($lastSeen) <= 5) {
+                if ($lastSeen instanceof CarbonInterface && abs(now()->diffInMinutes($lastSeen)) <= 5) {
                     $onlineUsers[] = $user->id;
-                } elseif ($lastSeen instanceof Carbon) {
+                } elseif ($lastSeen instanceof CarbonInterface) {
                     $offlineUsers[] = $user;
                     Cache::forget($cacheKey);
                 }
