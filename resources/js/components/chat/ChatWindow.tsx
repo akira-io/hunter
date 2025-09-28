@@ -2,6 +2,7 @@ import { useChatContext } from '@/contexts/ChatContext';
 import { useChat } from '@/hooks/useChat';
 import { useOnlineUsers } from '@/stores/onlineUsersStore';
 import { useFollowedHunters } from '@/stores/followedHuntersStore';
+import { useEcho } from '@laravel/echo-react';
 import { Minus, Send, User as UserIcon, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -39,11 +40,20 @@ interface ChatWindowProps {
 export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentUserId }) => {
     const [newMessage, setNewMessage] = useState('')
     const [conversation, setConversation] = useState<Conversation | null>(null)
-    const [loading, setLoading] = useState(true)
+    const [localLoading, setLocalLoading] = useState(true)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
     const { closeChatWindow, minimizedWindows, toggleMinimize } = useChatContext()
     const { sendMessage, sending, markMessagesAsRead } = useChat(currentUserId);
+
+    // Create a dedicated WebSocket connection for this specific conversation
+    const conversationEcho = useEcho<{ message: Message }>(
+        conversationId ? `conversation.${conversationId}` : '',
+        undefined,
+        undefined,
+        [],
+        'private'
+    );
     const onlineUsers = useOnlineUsers()
     const followedHunters = useFollowedHunters()
 
@@ -68,10 +78,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         followedHunters.some(hunter => hunter.id === otherParticipant.id && hunter.is_online)
         : false
 
+    // Load conversation locally for this specific ChatWindow
     useEffect(() => {
         const fetchConversation = async () => {
             try {
-                setLoading(true)
+                console.log('🔍 ChatWindow: Loading conversation:', conversationId)
+                setLocalLoading(true)
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
                 const response = await fetch(`/conversations/${conversationId}`, {
                     credentials: 'same-origin',
@@ -84,24 +96,84 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
 
                 if (response.ok) {
                     const data = await response.json()
+                    console.log('🔍 ChatWindow: Conversation loaded:', data)
                     setConversation(data)
 
                     // Mark messages as read when conversation loads
                     if (data.unread_count && data.unread_count > 0) {
                         await markMessagesAsRead(conversationId);
-                        // Update the local conversation to reflect 0 unread count f
                         setConversation(prev => prev ? { ...prev, unread_count: 0 } : prev);
                     }
                 }
             } catch (error) {
-                console.error('Failed to load conversation:', error)
+                console.error('🔍 ChatWindow: Failed to load conversation:', error)
             } finally {
-                setLoading(false)
+                setLocalLoading(false)
             }
         }
 
         fetchConversation()
-    }, [conversationId])
+    }, [conversationId, markMessagesAsRead])
+
+    // Subscribe to WebSocket for this specific conversation
+    useEffect(() => {
+        const channel = conversationEcho.channel();
+        if (!channel) {
+            console.log('🔍 ChatWindow: WebSocket channel not available for conversation:', conversationId)
+            return;
+        }
+
+        // Wait a bit for conversation to load before setting up WebSocket
+        if (!conversation) {
+            console.log('🔍 ChatWindow: Waiting for conversation to load before setting up WebSocket')
+            return;
+        }
+
+        console.log('🔍 ChatWindow: Setting up WebSocket listeners for conversation:', conversationId)
+        console.log('🔍 ChatWindow: Channel state:', channel.state)
+
+        const messageHandler = (event: { message: Message }) => {
+            console.log('🔍 ChatWindow: Message received via WebSocket:', event)
+
+            setConversation(prev => {
+                if (!prev) {
+                    console.log('🔍 ChatWindow: No conversation loaded yet, ignoring message')
+                    return prev
+                }
+
+                // Check if message already exists (avoid duplicates)
+                const messageExists = prev.messages?.some(msg => msg.id === event.message.id)
+                if (messageExists) {
+                    console.log('🔍 ChatWindow: Message already exists, skipping duplicate')
+                    return prev
+                }
+
+                console.log('🔍 ChatWindow: Adding new message via WebSocket')
+                return {
+                    ...prev,
+                    messages: [...(prev.messages || []), event.message],
+                }
+            })
+        }
+
+        const subscribeHandler = () => {
+            console.log('🔍 ChatWindow: Successfully subscribed to conversation channel:', conversationId)
+        }
+
+        const errorHandler = (error: any) => {
+            console.error('🔍 ChatWindow: Error in conversation channel:', error)
+        }
+
+        channel
+            .listen('.message.sent', messageHandler)
+            .subscribed(subscribeHandler)
+            .error(errorHandler)
+
+        return () => {
+            console.log('🔍 ChatWindow: Cleaning up WebSocket for conversation:', conversationId)
+            // Laravel Echo React handles cleanup automatically
+        }
+    }, [conversationEcho, conversationId, conversation])
 
     useEffect(() => {
         scrollToBottom()
@@ -119,7 +191,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             const message = await sendMessage(conversationId, newMessage.trim())
             setNewMessage('')
 
-            // Add message to local state immediately for better UX
+            // Add message immediately to local state for better UX
+            console.log('🔍 ChatWindow: Adding sent message to local state:', message)
             setConversation(prev => {
                 if (!prev) return prev
                 return {
@@ -150,7 +223,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
 
-    if (loading) {
+    if (localLoading) {
         return (
             <div className="w-80 bg-white/95 border border-zinc-200 rounded-2xl shadow-2xl backdrop-blur-lg dark:bg-zinc-900/95 dark:border-zinc-700">
                 <div className="flex items-center justify-between bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-4 py-3 rounded-t-2xl border-b border-zinc-200 dark:border-zinc-700">

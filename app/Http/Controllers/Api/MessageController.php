@@ -57,6 +57,13 @@ final readonly class MessageController
 
             $conversation->update(['last_message_at' => now()]);
 
+            logger()->debug('🔍 MessageController: Despachando evento MessageSent', [
+                'message_id' => $message->id,
+                'conversation_id' => $conversation->id,
+                'user_id' => $user->id,
+                'content' => $message->content
+            ]);
+
             MessageSent::dispatch($message);
 
             DB::commit();

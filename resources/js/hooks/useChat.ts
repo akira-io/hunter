@@ -95,6 +95,8 @@ export const useChat = (currentUserId?: number) => {
         }
 
         console.log('🔍 useChat: Conectando ao canal da conversa:', `conversation.${activeConversation.id}`)
+        console.log('🔍 useChat: Channel object:', channel)
+        console.log('🔍 useChat: Channel state:', channel.state)
 
         // Configure message listeners using useEcho hook
         channel
@@ -117,6 +119,9 @@ export const useChat = (currentUserId?: number) => {
                         }
                         : conv
                 ))
+            })
+            .subscribed(() => {
+                console.log('🔍 useChat: Successfully subscribed to conversation channel:', `conversation.${activeConversation.id}`)
             })
             .error((error: any) => {
                 console.error('🔍 useChat: Erro no canal da conversa:', error)
@@ -159,12 +164,14 @@ export const useChat = (currentUserId?: number) => {
 
     const loadConversation = useCallback(async (conversationId: number) => {
         try {
+            console.log('🔍 useChat: Carregando conversa:', conversationId)
             const response = await fetch(`/conversations/${conversationId}`, {
                 headers: getAuthHeaders(),
                 credentials: 'same-origin',
             })
             if (response.ok) {
                 const data = await response.json()
+                console.log('🔍 useChat: Conversa carregada:', data)
                 setActiveConversation(data)
             } else {
                 // Fallback to mock conversation
@@ -175,16 +182,19 @@ export const useChat = (currentUserId?: number) => {
                     participants: [],
                     messages: []
                 }
+                console.log('🔍 useChat: Usando conversa mock:', mockConversation)
                 setActiveConversation(mockConversation)
             }
         } catch (error) {
-            console.error('Failed to load conversation:', error)
+            console.error('🔍 useChat: Failed to load conversation:', error)
         }
     }, [])
 
     const sendMessage = useCallback(async (conversationId: number, content: string, type: 'text' | 'image' | 'file' = 'text', metadata?: Record<string, unknown> | null) => {
         try {
             setSending(true)
+            console.log('🔍 useChat: Enviando mensagem:', { conversationId, content, type })
+
             const response = await fetch('/messages', {
                 method: 'POST',
                 headers: getAuthHeaders(),
@@ -202,19 +212,14 @@ export const useChat = (currentUserId?: number) => {
             }
 
             const message = await response.json()
+            console.log('🔍 useChat: Mensagem enviada com sucesso:', message)
 
-            // Add message to active conversation
-            setActiveConversation(prev => {
-                if (!prev || prev.id !== conversationId) return prev
-                return {
-                    ...prev,
-                    messages: [...(prev.messages || []), message],
-                }
-            })
+            // Note: Do NOT add message here manually - let WebSocket handle it
+            // This prevents duplicates and ensures real-time works properly
 
             return message
         } catch (error) {
-            console.error('Failed to send message:', error)
+            console.error('🔍 useChat: Failed to send message:', error)
             throw error
         } finally {
             setSending(false)
