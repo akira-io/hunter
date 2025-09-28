@@ -51,28 +51,24 @@ final readonly class ConversationController
 
             /** @var Collection<int, User> $participants */
             $participants = $conversation->getRelation('participants');
-            $userId = $user->getAttribute('id');
+            $userId = $user->id;
             $otherParticipants = $participants->where('id', '!=', $userId);
 
+            /** @var User $otherParticipant */
             $otherParticipant = $otherParticipants->first();
 
-            // Ensure we have a User object for the unread count calculation
-            $userId = $user->getAttribute('id');
-
             return [
-                'id' => $conversation->getAttribute('id'),
-                'title' => $conversation->getAttribute('title') ?: $otherParticipants->pluck('name')->join(', '),
-                'type' => $conversation->getAttribute('type'),
-                'avatar_url' => $otherParticipant instanceof User ? new GetAvatarAction()->handle($otherParticipant) : null,
-                'participants' => $participants->map(function (User $participant): array {
-                    return [
-                        'id' => $participant->getAttribute('id'),
-                        'name' => $participant->getAttribute('name'),
-                        'avatar_url' => new GetAvatarAction()->handle($participant),
-                    ];
-                }),
+                'id' => $conversation->id,
+                'title' => $conversation->title ?: $otherParticipants->pluck('name')->join(', '),
+                'type' => $conversation->type,
+                'avatar_url' => new GetAvatarAction()->handle($otherParticipant),
+                'participants' => $participants->map(fn (User $participant): array => [
+                    'id' => $participant->id,
+                    'name' => $participant->id,
+                    'avatar_url' => new GetAvatarAction()->handle($participant),
+                ]),
                 'last_message' => ($lastMessage instanceof Message) ? $this->formatMessage($lastMessage) : null,
-                'last_message_at' => $conversation->getAttribute('last_message_at'),
+                'last_message_at' => $conversation->last_message_at,
                 'unread_count' => $conversation->messages()
                     ->where('user_id', '!=', $userId)
                     ->whereNull('read_at')
@@ -210,13 +206,11 @@ final readonly class ConversationController
                 'id' => $conversation->id,
                 'title' => $conversation->title,
                 'type' => $conversation->type,
-                'participants' => $participants->map(function (User $participant): array {
-                    return [
-                        'id' => $participant->id,
-                        'name' => $participant->name,
-                        'avatar_url' => new GetAvatarAction()->handle($participant),
-                    ];
-                }),
+                'participants' => $participants->map(fn (User $participant): array => [
+                    'id' => $participant->id,
+                    'name' => $participant->name,
+                    'avatar_url' => new GetAvatarAction()->handle($participant),
+                ]),
                 'messages' => $messages,
             ]);
         } catch (ModelNotFoundException) {

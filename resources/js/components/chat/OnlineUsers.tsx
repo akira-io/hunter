@@ -4,7 +4,7 @@ import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
 import { router } from '@inertiajs/react';
-import { ChevronUp, Search, User as UserIcon, UserCheck, Users, Wifi, WifiOff } from 'lucide-react';
+import { Search, User as UserIcon, UserCheck, Users, Wifi, WifiOff, XIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface ChatUsersProps {
@@ -26,30 +26,6 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
         return total + (conv.unread_count || 0);
     }, 0);
 
-    // Debug logging
-    React.useEffect(() => {
-        console.log('🔍 ChatUsers: Estado atualizado:', {
-            onlineUsers: onlineUsers.length,
-            followedHunters: followedHunters.length,
-            isConnected,
-            currentUserId,
-            conversations: conversations.length,
-            totalUnreadCount,
-            conversationsRaw: conversations
-        })
-
-        if (conversations.length > 0) {
-            console.log('🔍 ChatUsers: Conversas detalhadas:', conversations.map(conv => ({
-                id: conv.id,
-                participants: conv.participants?.map(p => ({ id: p.id, name: p.name })),
-                unread_count: conv.unread_count,
-                type: conv.type,
-                title: conv.title
-            })));
-        } else {
-            console.log('🔍 ChatUsers: Nenhuma conversa encontrada');
-        }
-    }, [onlineUsers, followedHunters, isConnected, currentUserId, conversations, totalUnreadCount])
 
     // Filter online users (excluding current user)
     const filteredOnlineUsers = onlineUsers
@@ -88,34 +64,17 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
     if (!currentUserId) {
         return null
     }
-
-    const hasContent = allUsers.length > 0
-
     const handleUserClick = async (userId: number) => {
         try {
-            console.log('🔍 ChatUsers: Clicando no usuário:', userId)
-            console.log('🔍 ChatUsers: currentUserId:', currentUserId)
-
             const conversation = await createConversation('direct', [userId])
-            console.log('🔍 ChatUsers: Conversa criada:', conversation)
 
-            if (conversation?.id) {
-                console.log('🔍 ChatUsers: Abrindo conversa:', conversation.id)
+            if (!conversation?.id) return;
+            // Check if should use mobile chat
+            if (shouldUseMobileChat()) return router.visit(`/chat/mobile/${conversation.id}`);
 
-                // Check if should use mobile chat
-                if (shouldUseMobileChat()) {
-                    console.log('🔍 ChatUsers: Redirecionando para chat mobile')
-                    router.visit(`/chat/mobile/${conversation.id}`)
-                } else {
-                    console.log('🔍 ChatUsers: Abrindo janela de chat desktop')
-                    openChatWindow(conversation.id)
-                }
-            } else {
-                console.error('🔍 ChatUsers: Conversa não tem ID:', conversation)
-            }
+            openChatWindow(conversation.id);
         } catch (error) {
-            console.error('🔍 ChatUsers: Erro ao criar conversa:', error)
-            console.error('🔍 ChatUsers: Stack trace:', error.stack)
+            console.error(error);
         }
     }
 
@@ -172,7 +131,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                                     onClick={() => setIsOpen(false)}
                                     className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full transition-colors"
                                 >
-                                    <ChevronUp size={16} className="text-zinc-600 dark:text-zinc-400" />
+                                    <XIcon size={16} className='text-zinc-600 dark:text-zinc-400' />
                                 </button>
                             </div>
 
@@ -220,7 +179,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
 
                                 {allUsers.map((item, index) => {
                                     const isOnline = filteredOnlineUsers.includes(item)
-                                    const displayName = item.username ? `${item.name} (@${item.username})` : item.name
+                                    const displayName = item.username ?? item.name;
                                     const showOfflineHeader = !isOnline && index === filteredOnlineUsers.length && offlineFollowedHunters.length > 0
                                     const unreadCount = getUnreadCountForUser(item.id);
                                     const avatarUrl = item.avatar_url;
@@ -239,14 +198,13 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                                             )}
                                             <button
                                                 type="button"
-                                                className={`w-full flex items-center gap-3 p-4 hover:bg-zinc-50 focus:bg-zinc-50 dark:hover:bg-zinc-800/60 dark:focus:bg-zinc-800/60 transition-colors duration-150 text-left border-b border-zinc-100 dark:border-zinc-800 last:border-b-0 ${
+                                                className={` cursor-pointer w-full flex items-center gap-3 p-4 hover:bg-zinc-50 focus:bg-zinc-50 dark:hover:bg-zinc-800/60 dark:focus:bg-zinc-800/60 transition-colors duration-150 text-left border-b border-zinc-100 dark:border-zinc-800 last:border-b-0 ${
                                                     unreadCount > 0
                                                         ? 'bg-red-50/50 dark:bg-red-900/10 border-l-2 border-l-red-400'
                                                         : ''
                                                 }`}
-                                                onClick={() => {
-                                                    console.log('🔍 ChatUsers: Item clicado:', { id: item.id, name: item.name, isOnline, item })
-                                                    handleUserClick(item.id)
+                                                onClick={async () => {
+                                                    await handleUserClick(item.id);
                                                     setIsOpen(false)
                                                 }}
                                             >
@@ -255,7 +213,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                                                     <>
                                                         <img
                                                             src={avatarUrl}
-                                                            alt={item.name}
+                                                            alt={displayName}
                                                             className='size-10 rounded-full object-cover ring-2 ring-white dark:ring-zinc-800'
                                                             onError={(e) => {
                                                                 const target = e.target as HTMLImageElement;

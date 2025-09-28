@@ -33,16 +33,14 @@ final readonly class MessageController
             'metadata' => 'array|nullable',
         ]);
 
+        /** @var User $user */
         $user = Auth::user();
-        if (! $user instanceof User) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
 
         try {
             /** @var Conversation $conversation */
             $conversation = Conversation::query()
                 ->whereHas('participants', function ($q) use ($user): void {
-                    $q->where('user_id', $user->getAttribute('id'));
+                    $q->where('user_id', $user->id);
                 })
                 ->findOrFail($request->input('conversation_id'));
 
@@ -50,8 +48,8 @@ final readonly class MessageController
 
             /** @var Message $message */
             $message = Message::query()->create([
-                'conversation_id' => $conversation->getAttribute('id'),
-                'user_id' => $user->getAttribute('id'),
+                'conversation_id' => $conversation->id,
+                'user_id' => $user->id,
                 'content' => $request->input('content'),
                 'type' => $request->input('type', 'text'),
                 'metadata' => $request->input('metadata'),
@@ -59,24 +57,21 @@ final readonly class MessageController
 
             $conversation->update(['last_message_at' => now()]);
 
-            $message->load('user');
-
             MessageSent::dispatch($message);
 
             DB::commit();
 
-            /** @var User $messageUser */
-            $messageUser = $message->getRelation('user');
+            $messageUser = $message->user;
 
             return response()->json([
-                'id' => $message->getAttribute('id'),
-                'content' => $message->getAttribute('content'),
-                'type' => $message->getAttribute('type'),
-                'metadata' => $message->getAttribute('metadata'),
-                'created_at' => $message->getAttribute('created_at'),
+                'id' => $message->id,
+                'content' => $message->content,
+                'type' => $message->type,
+                'metadata' => $message->metadata,
+                'created_at' => $message->created_at,
                 'user' => [
-                    'id' => $messageUser->getAttribute('id'),
-                    'name' => $messageUser->getAttribute('name'),
+                    'id' => $messageUser->id,
+                    'name' => $messageUser->name,
                     'avatar_url' => new GetAvatarAction()->handle($messageUser),
                 ],
             ], 201);

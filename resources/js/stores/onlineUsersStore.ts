@@ -1,5 +1,5 @@
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface OnlineUser {
     id: number
@@ -29,7 +29,6 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
             lastUpdated: 0,
 
             setUsers: (users: OnlineUser[]) => {
-                console.log('🔍 OnlineUsersStore: Definindo usuários:', users.length)
                 set({
                     users: users.map(u => ({ ...u, status: 'online' as const })),
                     lastUpdated: Date.now()
@@ -40,7 +39,6 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
                 const { users } = get()
                 const exists = users.some(u => u.id === user.id)
                 if (!exists) {
-                    console.log('🔍 OnlineUsersStore: Adicionando usuário:', user.name)
                     set({
                         users: [...users, { ...user, status: 'online' as const }],
                         lastUpdated: Date.now()
@@ -52,7 +50,6 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
                 const { users } = get()
                 const user = users.find(u => u.id === userId)
                 if (user) {
-                    console.log('🔍 OnlineUsersStore: Removendo usuário:', user.name)
                     set({
                         users: users.filter(u => u.id !== userId),
                         lastUpdated: Date.now()
@@ -61,7 +58,6 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
             },
 
             setConnected: (connected: boolean) => {
-                console.log('🔍 OnlineUsersStore: Status de conexão:', connected)
                 set({ isConnected: connected })
             },
 

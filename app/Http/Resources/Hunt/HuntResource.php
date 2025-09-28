@@ -60,8 +60,9 @@ final class HuntResource extends JsonResource
             $commentsCollection->each(function (Comment $comment): void {
                 $comment->has_liked = false;
             });
-            /** @var \Illuminate\Support\Collection<int, Comment> $comments */
+            /** @var Collection<int, Comment> $comments */
             $comments = $commentsCollection;
+
             return $comments;
         }
 
@@ -80,7 +81,7 @@ final class HuntResource extends JsonResource
             $comment->has_liked = (bool) $comment->has_liked;
         });
 
-        /** @var \Illuminate\Support\Collection<int, Comment> $comments */
+        /** @var Collection<int, Comment> $comments */
         $comments = $commentsWithCount;
 
         return $comments;

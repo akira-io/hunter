@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Events;
 
+use App\Actions\User\GetAvatarAction;
 use App\Models\Message;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -27,10 +28,8 @@ final class MessageSent implements ShouldBroadcastNow
      */
     public function broadcastOn(): array
     {
-        $conversationId = $this->message->getAttribute('conversation_id');
-        if (!is_numeric($conversationId)) {
-            throw new \InvalidArgumentException('Conversation ID must be numeric');
-        }
+        $conversationId = $this->message->conversation_id;
+
         return [
             new PrivateChannel('conversation.'.$conversationId),
         ];
@@ -51,37 +50,21 @@ final class MessageSent implements ShouldBroadcastNow
      */
     public function broadcastWith(): array
     {
-        $messageId = $this->message->getAttribute('id');
-        $messageContent = $this->message->getAttribute('content');
-        $messageType = $this->message->getAttribute('type');
-        $user = $this->message->getRelation('user');
 
-        if (!is_numeric($messageId) || !is_string($messageContent) || !is_string($messageType)) {
-            throw new \InvalidArgumentException('Invalid message attributes');
-        }
-
-        if (!($user instanceof \App\Models\User)) {
-            throw new \InvalidArgumentException('User relation must be a User instance');
-        }
-
-        $userId = $user->getAttribute('id');
-        $userName = $user->getAttribute('name');
-
-        if (!is_numeric($userId) || !is_string($userName)) {
-            throw new \InvalidArgumentException('Invalid user attributes');
-        }
+        $message = $this->message;
+        $user = $message->user;
 
         return [
             'message' => [
-                'id' => (int) $messageId,
-                'content' => $messageContent,
-                'type' => $messageType,
-                'metadata' => $this->message->getAttribute('metadata'),
-                'created_at' => $this->message->getAttribute('created_at'),
+                'id' => $message->id,
+                'content' => $message->content,
+                'type' => $message->type,
+                'metadata' => $message->metadata,
+                'created_at' => $message->created_at,
                 'user' => [
-                    'id' => (int) $userId,
-                    'name' => $userName,
-                    'avatar_url' => $user->getAttribute('avatar_url'),
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'avatar_url' => new GetAvatarAction()->handle($user),
                 ],
             ],
         ];

@@ -14,17 +14,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property-read  User $creator
  * @property-read  string $title
  * @property-read  string $type
  * @property-read  int $id
- * @property-read  Carbon|\Illuminate\Support\Carbon $last_message_at
+ * @property-read  Carbon|\Illuminate\Support\Carbon|null $last_message_at
  * @property-read  int $unread_count
  * @property-read  int $participants_count
  * @property-read  int $messages_count
- * @property-read  HasMany<Message, $this> $messages
+ * @property-read  Collection<int, Message> $messages
  * @property-read  Collection<int, User> $participants
  * @property-read  Message|null $latest_message
  * @property-read  Carbon $created_at
@@ -51,11 +52,10 @@ final class Conversation extends Model
      * @return Builder<self>
      */
     #[Scope]
-    public static function forUser(Builder $query, User $user): Builder
+    public function forUser(Builder $query, User $user): Builder
     {
 
         return $query->whereHas('participants', function (Builder $q) use ($user): void {
-
             $q->where('user_id', $user->id);
         });
     }
@@ -120,12 +120,12 @@ final class Conversation extends Model
     /**
      * Get the latest message for the conversation.
      *
-     * @return Builder<Message>
+     * @return HasOne <Message, $this>
      */
-    public function latestMessage(): Builder
+    public function latestMessage(): HasOne
     {
 
-        return $this->messages()->latest();
+        return $this->hasOne(Message::class)->latestOfMany();
     }
 
     /**

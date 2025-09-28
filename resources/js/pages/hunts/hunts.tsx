@@ -27,7 +27,6 @@ export default function HuntLine({ hunts }: HuntLineProps) {
                     <HuntCard key={hunt.id} hunt={hunt} />
                 ))}
             </div>
-            {/*<OnlineUsers />*/}
         </AppLayout>
     );
 }

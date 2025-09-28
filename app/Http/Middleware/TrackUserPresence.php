@@ -25,13 +25,15 @@ final readonly class TrackUserPresence
             if (! $user instanceof User) {
                 /** @var Response $response */
                 $response = $next($request);
+
                 return $response;
             }
 
             $userId = $user->getAttribute('id');
-            if (!is_numeric($userId)) {
+            if (! is_numeric($userId)) {
                 /** @var Response $response */
                 $response = $next($request);
+
                 return $response;
             }
 
@@ -50,6 +52,7 @@ final readonly class TrackUserPresence
 
         /** @var Response $response */
         $response = $next($request);
+
         return $response;
     }
 }

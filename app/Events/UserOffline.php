@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Events;
 
+use App\Actions\User\GetAvatarAction;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -52,7 +53,7 @@ final class UserOffline implements ShouldBroadcastNow
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
-                'avatar_url' => $this->user->avatar_url,
+                'avatar_url' => new GetAvatarAction()->handle($this->user),
             ],
         ];
     }

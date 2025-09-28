@@ -47,16 +47,13 @@ final class ConversationCreated implements ShouldBroadcastNow
             $title = $participantsCollection->where('id', '!=', $forUser->id)->pluck('name')->join(', ');
         }
 
-        $lastMessageAt = $model->last_message_at;
-        $lastMessageAtString = $lastMessageAt->toISOString();
-
         $this->conversation = [
             'id' => $model->id,
             'title' => $title ?: '',
             'type' => $model->type,
             'participants' => $participants,
             'last_message' => null,
-            'last_message_at' => $lastMessageAtString,
+            'last_message_at' => $model->last_message_at?->toISOString(),
             'unread_count' => 0,
         ];
     }
