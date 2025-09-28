@@ -20,8 +20,7 @@ final class MessageReceived implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct(public Message $message, public User $forUser) {
-    }
+    public function __construct(public Message $message, public User $forUser) {}
 
     /**
      * Get the channels the event should broadcast on.

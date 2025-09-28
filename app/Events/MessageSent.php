@@ -19,7 +19,8 @@ final class MessageSent implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct(public Message $message) {
+    public function __construct(public Message $message)
+    {
         //
     }
 
@@ -43,7 +44,6 @@ final class MessageSent implements ShouldBroadcastNow
             $userChannelName = 'user.'.$participant->id;
             $channels[] = new PrivateChannel($userChannelName);
         }
-
 
         return $channels;
     }

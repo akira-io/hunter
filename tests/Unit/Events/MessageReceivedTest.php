@@ -75,19 +75,19 @@ it('handles different message types correctly', function () {
     $textMessage = Message::factory()->create([
         'user_id' => $this->user->id,
         'type' => 'text',
-        'content' => 'Hello world'
+        'content' => 'Hello world',
     ]);
 
     $imageMessage = Message::factory()->create([
         'user_id' => $this->user->id,
         'type' => 'image',
-        'content' => 'image.jpg'
+        'content' => 'image.jpg',
     ]);
 
     $fileMessage = Message::factory()->create([
         'user_id' => $this->user->id,
         'type' => 'file',
-        'content' => 'document.pdf'
+        'content' => 'document.pdf',
     ]);
 
     foreach ([$textMessage, $imageMessage, $fileMessage] as $message) {
@@ -102,7 +102,7 @@ it('handles different message types correctly', function () {
 it('handles messages with metadata correctly', function () {
     $messageWithMetadata = Message::factory()->create([
         'user_id' => $this->user->id,
-        'metadata' => ['file_size' => 1024, 'mime_type' => 'image/png']
+        'metadata' => ['file_size' => 1024, 'mime_type' => 'image/png'],
     ]);
 
     $event = new MessageReceived($messageWithMetadata, $this->forUser);
@@ -114,7 +114,7 @@ it('handles messages with metadata correctly', function () {
 it('handles messages with null metadata correctly', function () {
     $messageWithoutMetadata = Message::factory()->create([
         'user_id' => $this->user->id,
-        'metadata' => null
+        'metadata' => null,
     ]);
 
     $event = new MessageReceived($messageWithoutMetadata, $this->forUser);
@@ -138,20 +138,20 @@ it('broadcasts to different users correctly', function () {
 });
 
 it('implements the correct interfaces', function () {
-    expect($this->event)->toBeInstanceOf(\Illuminate\Contracts\Broadcasting\ShouldBroadcastNow::class);
+    expect($this->event)->toBeInstanceOf(Illuminate\Contracts\Broadcasting\ShouldBroadcastNow::class);
 });
 
 it('has the correct traits', function () {
     $traits = class_uses(MessageReceived::class);
 
-    expect($traits)->toContain(\Illuminate\Foundation\Events\Dispatchable::class);
-    expect($traits)->toContain(\Illuminate\Broadcasting\InteractsWithSockets::class);
-    expect($traits)->toContain(\Illuminate\Queue\SerializesModels::class);
+    expect($traits)->toContain(Illuminate\Foundation\Events\Dispatchable::class);
+    expect($traits)->toContain(Illuminate\Broadcasting\InteractsWithSockets::class);
+    expect($traits)->toContain(Illuminate\Queue\SerializesModels::class);
 });
 
 it('maintains data consistency with message relationship', function () {
     // Create a message with a known conversation
-    $conversation = \App\Models\Conversation::factory()->create();
+    $conversation = App\Models\Conversation::factory()->create();
     $messageWithConversation = Message::factory()->create([
         'user_id' => $this->user->id,
         'conversation_id' => $conversation->id,

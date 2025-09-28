@@ -69,7 +69,7 @@ final class ConversationResource extends JsonResource
                 if (
                     $participation && isset($participation->pivot)
                     && is_object($participation->pivot)
-                    && property_exists($participation->pivot, 'joined_at')) {
+                    && isset($participation->pivot->joined_at)) {
                     return $participation->pivot->joined_at;
                 }
 

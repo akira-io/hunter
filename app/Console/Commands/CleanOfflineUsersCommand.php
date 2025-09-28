@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\Events\UserOffline;
 use App\Models\User;
-use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
