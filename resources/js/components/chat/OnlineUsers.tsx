@@ -165,7 +165,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
 
                         {/* Users List */}
                         {allUsers.length > 0 ? (
-                            <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+                            <div className='h-60 md:h-100 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent'>
                                 {filteredOnlineUsers.length > 0 && (
                                     <div className="px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 border-b border-emerald-100 dark:border-emerald-800">
                                         <div className="flex items-center gap-2">
@@ -179,7 +179,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
 
                                 {allUsers.map((item, index) => {
                                     const isOnline = filteredOnlineUsers.includes(item)
-                                    const displayName = item.username ?? item.name;
+                                    const displayName = item.name;
                                     const showOfflineHeader = !isOnline && index === filteredOnlineUsers.length && offlineFollowedHunters.length > 0
                                     const unreadCount = getUnreadCountForUser(item.id);
                                     const avatarUrl = item.avatar_url;
@@ -291,7 +291,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                                 })}
                             </div>
                         ) : (
-                            <div className="p-6 text-center">
+                            <div className='h-60 md:h-100 p-6 text-center'>
                                 <Users size={32} className="mx-auto text-zinc-400 dark:text-zinc-600 mb-2" />
                                 <p className="text-sm text-zinc-500 dark:text-zinc-400">
                                     {searchTerm
