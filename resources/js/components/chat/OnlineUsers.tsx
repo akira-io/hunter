@@ -43,8 +43,13 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
             (hunter.username && hunter.username.toLowerCase().includes(searchTerm.toLowerCase()))
         )
 
-    // Combined list: online users first, then offline followed hunters
-    const allUsers = [...filteredOnlineUsers, ...offlineFollowedHunters]
+    // Combined list: online users first, then offline followed hunters (remove duplicates)
+    const allUsers = [
+        ...filteredOnlineUsers,
+        ...offlineFollowedHunters.filter(hunter =>
+            !filteredOnlineUsers.some(onlineUser => onlineUser.id === hunter.id)
+        )
+    ]
 
     // Helper function to get unread count for a user
     const getUnreadCountForUser = (userId: number) => {

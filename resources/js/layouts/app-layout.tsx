@@ -5,7 +5,7 @@ import { usePresenceManager } from '@/hooks/usePresenceManager';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { type ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 
 interface AppLayoutProps {
@@ -16,18 +16,21 @@ interface AppLayoutProps {
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     const { auth } = usePage<{ auth: { user?: { id: number } } }>().props;
 
+    // Stabilize currentUserId to prevent unnecessary re-renders
+    const currentUserId = useMemo(() => auth.user?.id, [auth.user?.id]);
+
     // Manage presence globally
-    usePresenceManager({ currentUserId: auth.user?.id });
+    usePresenceManager({ currentUserId });
 
     return (
-        <ChatProvider currentUserId={auth.user?.id}>
+        <ChatProvider currentUserId={currentUserId}>
             <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
                 {children}
                 <Toaster />
                 {auth.user && (
                     <>
-                        <ChatContainer currentUserId={auth.user.id} />
-                        <OnlineUsers currentUserId={auth.user.id} />
+                        <ChatContainer currentUserId={currentUserId} />
+                        <OnlineUsers currentUserId={currentUserId} />
                     </>
                 )}
             </AppLayoutTemplate>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useEcho } from '@laravel/echo-react';
 
 interface User {
@@ -32,6 +32,16 @@ export const useChat = (currentUserId?: number) => {
     const [activeConversation, setActiveConversation] = useState<Conversation | null>(null)
     const [loading, setLoading] = useState(true)
     const [sending, setSending] = useState(false)
+    const messageHandlerRef = useRef<((event: any) => void) | null>(null)
+
+    // Use useEcho for user channel when we have a current user
+    const userEcho = useEcho<any>(
+        currentUserId ? `user.${currentUserId}` : '',
+        undefined,
+        undefined,
+        [],
+        'private'
+    )
 
     // Use useEcho for conversation channel when we have an active conversation
     const conversationEcho = useEcho<{ message: Message }>(
@@ -42,14 +52,68 @@ export const useChat = (currentUserId?: number) => {
         'private'
     )
 
-    // Use useEcho for user channel when we have a current user
-    const userEcho = useEcho<any>(
-        currentUserId ? `user.${currentUserId}` : '',
-        undefined,
-        undefined,
-        [],
-        'private'
-    )
+    // Listen to all messages via user channel instead of individual conversation channels
+    useEffect(() => {
+        const channel = userEcho.channel()
+        if (!channel || !currentUserId) {
+            return
+        }
+
+        // Remove any existing listener first
+        if (messageHandlerRef.current) {
+            channel.stopListening('.message.sent', messageHandlerRef.current)
+        }
+
+        console.log('🔍 useChat: Setting up global message listener on user channel')
+
+        // Listen for messages on the user channel
+        const messageHandler = (event: { message: Message, conversation_id: number }) => {
+            console.log('🔍 useChat: Global message received for conversation', event.conversation_id, 'from user', event.message.user.id)
+
+            const isMyMessage = event.message.user.id === currentUserId
+            if (isMyMessage) {
+                console.log('🔍 useChat: Ignoring my own message')
+                return // Don't increment for our own messages
+            }
+
+            // Update conversations list - increment unread count for non-active conversations
+            setConversations(prev => prev.map(conv => {
+                if (conv.id === event.conversation_id) {
+                    // Check if this conversation is currently active (using state from closure)
+                    const isActiveConversation = activeConversation?.id === event.conversation_id
+                    if (isActiveConversation) {
+                        console.log('🔍 useChat: Message for active conversation, not incrementing counter')
+                        return {
+                            ...conv,
+                            last_message: event.message,
+                            last_message_at: event.message.created_at,
+                            // Don't increment unread_count for active conversation
+                        }
+                    }
+
+                    console.log('🔍 useChat: Incrementing unread count for conversation', event.conversation_id)
+                    return {
+                        ...conv,
+                        last_message: event.message,
+                        last_message_at: event.message.created_at,
+                        unread_count: (conv.unread_count || 0) + 1
+                    }
+                }
+                return conv
+            }))
+        }
+
+        // Store reference and set up listener
+        messageHandlerRef.current = messageHandler
+        channel.listen('.message.sent', messageHandler)
+
+        return () => {
+            if (messageHandlerRef.current) {
+                channel.stopListening('.message.sent', messageHandlerRef.current)
+                messageHandlerRef.current = null
+            }
+        }
+    }, [userEcho, currentUserId]) // Removed activeConversation dependency to prevent re-execution
 
     // Subscribe to private user channel for websocket-driven bootstrapping (no HTTP)
     useEffect(() => {
@@ -87,6 +151,8 @@ export const useChat = (currentUserId?: number) => {
         // Configure message listeners using useEcho hook
         channel
             .listen('.message.sent', (event: { message: Message }) => {
+                const isMyMessage = event.message.user.id === currentUserId
+
                 setActiveConversation(prev => {
                     if (!prev) return prev
                     return {
@@ -100,7 +166,9 @@ export const useChat = (currentUserId?: number) => {
                         ? {
                             ...conv,
                             last_message: event.message,
-                            last_message_at: event.message.created_at
+                            last_message_at: event.message.created_at,
+                            // Don't increment unread_count for active conversation
+                            unread_count: conv.unread_count
                         }
                         : conv
                 ))
@@ -188,12 +256,8 @@ export const useChat = (currentUserId?: number) => {
                 throw new Error('Failed to send message')
             }
 
-            const message = await response.json()
-
-            // Note: Do NOT add message here manually - let WebSocket handle it
+            // Note: Do NOT return the message - let WebSocket handle it
             // This prevents duplicates and ensures real-time works properly
-
-            return message
         } catch (error) {
             throw error
         } finally {

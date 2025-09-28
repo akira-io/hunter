@@ -37,8 +37,20 @@ interface ChatWindowProps {
     currentUserId?: number
 }
 
-export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentUserId }) => {
+const arePropsEqual = (prevProps: ChatWindowProps, nextProps: ChatWindowProps) => {
+    console.log('🔍 ChatWindow arePropsEqual check:', {
+        prevConversationId: prevProps.conversationId,
+        nextConversationId: nextProps.conversationId,
+        prevUserId: prevProps.currentUserId,
+        nextUserId: nextProps.currentUserId,
+        conversationIdSame: prevProps.conversationId === nextProps.conversationId,
+        userIdSame: prevProps.currentUserId === nextProps.currentUserId
+    })
+    return prevProps.conversationId === nextProps.conversationId &&
+           prevProps.currentUserId === nextProps.currentUserId
+}
 
+export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentUserId }) => {
     const [newMessage, setNewMessage] = useState('')
     const [conversation, setConversation] = useState<Conversation | null>(null)
     const [localLoading, setLocalLoading] = useState(true)
@@ -100,12 +112,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                         }, 100)
                     }
 
-                    // Mark messages as read when conversation loads
-                    if (data.unread_count && data.unread_count > 0) {
-                        await markMessagesAsRead(conversationId);
-                        // Update local conversation state
-                        setConversation(prev => prev ? { ...prev, unread_count: 0 } : prev);
-                    }
+                    // Mark messages as read when conversation loads and reset unread count
+                    console.log('🔍 ChatWindow: Marking messages as read for conversation:', conversationId)
+                    await markMessagesAsRead(conversationId);
                 }
             } catch (error) {
                 console.error('Failed to load conversation:', error);
@@ -115,12 +124,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         }
 
         fetchConversation()
-    }, [conversationId])
+    }, [conversationId, markMessagesAsRead])
 
     // Subscribe to WebSocket for this specific conversation
     useEffect(() => {
         const channel = conversationEcho.channel();
-        if (!channel || !conversation) {
+        if (!channel) {
             return;
         }
 
@@ -130,7 +139,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
 
                 // Check if message already exists (avoid duplicates)
                 const messageExists = prev.messages?.some(msg => msg.id === event.message.id)
-                if (messageExists) return prev;
+                if (messageExists) {
+                    return prev;
+                }
 
                 return {
                     ...prev,
@@ -139,23 +150,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             })
         }
 
-        const subscribeHandler = () => {
-            // Successfully subscribed
-        }
-
-        const errorHandler = (error: any) => {
-            console.error('WebSocket error:', error);
-        }
-
-        channel
-            .listen('.message.sent', messageHandler)
-            .subscribed(subscribeHandler)
-            .error(errorHandler)
+        channel.listen('.message.sent', messageHandler)
 
         return () => {
             // Laravel Echo React handles cleanup automatically
         }
-    }, [conversationEcho, conversationId, conversation])
+    }, [conversationEcho, conversationId])
 
     // Check if user is at bottom of chat (within threshold)
     const isNearBottom = () => {
@@ -194,18 +194,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         if (!newMessage.trim() || sending) return
 
         try {
-            const message = await sendMessage(conversationId, newMessage.trim())
+            await sendMessage(conversationId, newMessage.trim())
             setNewMessage('')
 
-            // Add message immediately to local state for better UX
-            setConversation(prev => {
-                if (!prev) return prev
-                return {
-                    ...prev,
-                    messages: [...(prev.messages || []), message]
-                }
-            })
-
+            // Don't add message locally - let WebSocket handle it to avoid duplicates
             // Always scroll when user sends a message (intentional action)
             setTimeout(() => scrollToBottom(), 50)
         } catch (error) {
@@ -346,12 +338,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                 </p>
                             </div>
                         ) : (
-                            conversation?.messages?.map((message) => {
+                            conversation?.messages?.map((message, index) => {
                                 const isOwn = message.user.id === currentUserId
 
                                 return (
                                     <div
-                                        key={message.id}
+                                        key={`${message.id}-${index}-${message.created_at}`}
                                         className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
                                     >
                                         <div className={`flex gap-3 max-w-[85%] ${isOwn ? 'flex-row-reverse' : ''}`}>

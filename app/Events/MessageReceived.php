@@ -6,26 +6,21 @@ namespace App\Events;
 
 use App\Actions\User\GetAvatarAction;
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final class MessageSent implements ShouldBroadcastNow
+final class MessageReceived implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Message $message) {
-        logger()->debug('🔍 MessageSent: Event created', [
-            'message_id' => $message->id,
-            'conversation_id' => $message->conversation_id,
-            'content' => $message->content,
-            'user_id' => $message->user_id
-        ]);
+    public function __construct(public Message $message, public User $forUser) {
     }
 
     /**
@@ -35,27 +30,12 @@ final class MessageSent implements ShouldBroadcastNow
      */
     public function broadcastOn(): array
     {
-        $conversationId = $this->message->conversation_id;
-        $conversationChannelName = 'conversation.'.$conversationId;
+        $userId = $this->forUser->id;
+        $channelName = 'user.'.$userId;
 
-        $channels = [
-            new PrivateChannel($conversationChannelName),
+        return [
+            new PrivateChannel($channelName),
         ];
-
-        // Also broadcast to all participants' user channels for global message listening
-        $participants = $this->message->conversation->participants;
-        foreach ($participants as $participant) {
-            $userChannelName = 'user.'.$participant->id;
-            $channels[] = new PrivateChannel($userChannelName);
-        }
-
-        logger()->debug('🔍 MessageSent: Broadcasting on channels', [
-            'conversation_channel' => $conversationChannelName,
-            'user_channels' => $participants->pluck('id')->map(fn($id) => 'user.'.$id)->toArray(),
-            'message_id' => $this->message->id
-        ]);
-
-        return $channels;
     }
 
     /**
@@ -67,13 +47,12 @@ final class MessageSent implements ShouldBroadcastNow
     }
 
     /**
-     * The event's broadcast data.'
+     * The event's broadcast data.
      *
-     * @return array{message: array{id: int, content: string, type: string, metadata: mixed, created_at: mixed, user: array{id: int, name: string, avatar_url: mixed}}}
+     * @return array{message: array{id: int, content: string, type: string, metadata: mixed, created_at: mixed, user: array{id: int, name: string, avatar_url: mixed}}, conversation_id: int}
      */
     public function broadcastWith(): array
     {
-
         $message = $this->message;
         $user = $message->user;
 
