@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Auth\LoginUserAction;
 use App\Events\UserOffline;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
@@ -31,9 +32,13 @@ final readonly class AuthenticatedSessionController
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request, LoginUserAction $loginUserAction): RedirectResponse
     {
-        $request->authenticate();
+        $credentials = $request->only('email', 'password');
+
+        $remember = $request->boolean('remember');
+
+        $loginUserAction->handle($credentials, $remember);
 
         $request->session()->regenerate();
 
@@ -45,7 +50,6 @@ final readonly class AuthenticatedSessionController
      */
     public function destroy(Request $request): RedirectResponse
     {
-        // Remove presence cache so the user is no longer shown as online after logout
         /** @var User $user */
         $user = $request->user();
 

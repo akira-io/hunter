@@ -67,26 +67,6 @@ final class ProfileUpdateRequest extends FormRequest
     }
 
     /**
-     * Update the user's profile information
-     */
-    public function updateUserInformation(): bool
-    {
-
-        $user = type($this->user())->as(User::class);
-
-        $data = $this->except('avatar_url', 'background_image_url');
-        /** @var array<string, mixed> $fillData */
-        $fillData = $data;
-        $user->fill($fillData);
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        return $user->save();
-    }
-
-    /**
      * Get the avatar rules
      *
      * @return string[]

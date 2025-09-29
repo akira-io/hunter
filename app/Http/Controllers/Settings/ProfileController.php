@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Settings;
 
 use App\Actions\Profile\DeleteAccountAction;
+use App\Actions\Profile\UpdateProfileAction;
 use App\Actions\User\Profile\UpdateProfileAvatarAction;
 use App\Actions\User\Profile\UpdateProfileBackgroundAction;
 use App\Enums\SkillsEnum;
@@ -44,14 +45,14 @@ final readonly class ProfileController
      * @throws FileIsTooBig
      * @throws FileDoesNotExist
      */
-    public function update(ProfileUpdateRequest $request, UpdateProfileAvatarAction $profileAvatarAction, UpdateProfileBackgroundAction $profileBackgroundAction): RedirectResponse
+    public function update(ProfileUpdateRequest $request, UpdateProfileAvatarAction $profileAvatarAction, UpdateProfileBackgroundAction $profileBackgroundAction, UpdateProfileAction $updateProfileAction): RedirectResponse
     {
-
-        // $user = type($request->user())->as(User::class);
+        $user = type($request->user())->as(User::class);
 
         $request->updateImages($profileBackgroundAction, $profileAvatarAction);
 
-        $request->updateUserInformation();
+        $profileData = $request->except('avatar_url', 'background_image_url');
+        $updateProfileAction->handle($user, $profileData);
 
         return back();
     }
