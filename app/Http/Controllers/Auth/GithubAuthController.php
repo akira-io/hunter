@@ -35,18 +35,43 @@ final class GithubAuthController
 
         $githubUserData = GithubUser::from($githubUser)->toArray();
 
-        $user = User::query()
-            ->firstWhere('github_id', $githubUser->getId());
+        $user = User::query()->firstWhere('email', $githubUserData['email']);
 
-        if (! $user) {
-            $user = User::query()->create($githubUserData);
+        if ($user) {
+            $updateData = [
+                'github_id' => $githubUserData['github_id'],
+                'github_token' => $githubUserData['github_token'],
+                'github_refresh_token' => $githubUserData['github_refresh_token'],
+                'user_name' => $githubUserData['user_name'],
+                'github_url' => $githubUserData['github_url'],
+            ];
+
+            if (empty($user->bio)) {
+                $updateData['bio'] = $githubUserData['bio'];
+            }
+            if (empty($user->location)) {
+                $updateData['location'] = $githubUserData['location'];
+            }
+            if (empty($user->avatar_url)) {
+                $updateData['avatar_url'] = $githubUserData['avatar_url'];
+            }
+
+            $user->update($updateData);
         } else {
-            $githubUserData['bio'] = $user->bio ?? $githubUserData['bio'];
-            $githubUserData['location'] = $user->location ?? $githubUserData['location'];
-            $githubUserData['avatar_url'] = $user->avatar_url ?? $githubUserData['avatar_url'];
-            $githubUserData['email'] = $user->email ?? $githubUserData['email'];
 
-            $user->update($githubUserData);
+            $user = User::query()->firstWhere('github_id', $githubUser->getId());
+
+            if ($user) {
+
+                $githubUserData['bio'] = $user->bio ?? $githubUserData['bio'];
+                $githubUserData['location'] = $user->location ?? $githubUserData['location'];
+                $githubUserData['avatar_url'] = $user->avatar_url ?? $githubUserData['avatar_url'];
+                $githubUserData['email'] = $user->email ?? $githubUserData['email'];
+
+                $user->update($githubUserData);
+            } else {
+                $user = User::query()->create($githubUserData);
+            }
         }
 
         Auth::login($user, remember: true);
