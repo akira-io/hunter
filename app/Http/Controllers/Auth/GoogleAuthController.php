@@ -36,7 +36,7 @@ final readonly class GoogleAuthController
         /** @var User $googleUser */
         $googleUser = Socialite::driver('google')->user();
 
-        $user = $this->handleGoogleAuthAction->execute($googleUser);
+        $user = $this->handleGoogleAuthAction->handle($googleUser);
 
         Auth::login($user, remember: true);
 

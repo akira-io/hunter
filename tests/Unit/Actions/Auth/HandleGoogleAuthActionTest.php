@@ -24,14 +24,14 @@ it('creates a new user when no existing user is found', function () {
     $googleUser->refreshToken = 'google-refresh-token';
 
     // Act
-    $user = $this->action->execute($googleUser);
+    $user = $this->action->handle($googleUser);
 
     // Assert
-    expect($user)->toBeInstanceOf(User::class);
-    expect($user->email)->toBe('john@example.com');
-    expect($user->name)->toBe('John Doe');
-    expect($user->avatar_url)->toBe('https://lh3.googleusercontent.com/a/avatar.jpg');
-    expect($user->email_verified_at)->not->toBeNull();
+    expect($user)->toBeInstanceOf(User::class)
+        ->and($user->email)->toBe('john@example.com')
+        ->and($user->name)->toBe('John Doe')
+        ->and($user->avatar_url)->toBe('https://lh3.googleusercontent.com/a/avatar.jpg')
+        ->and($user->email_verified_at)->not->toBeNull();
 
     $this->assertDatabaseHas('users', [
         'email' => 'john@example.com',
@@ -57,17 +57,16 @@ it('links Google account to existing user found by email', function () {
     $googleUser->refreshToken = 'google-refresh-token';
 
     // Act
-    $user = $this->action->execute($googleUser);
+    $user = $this->action->handle($googleUser);
 
     // Assert
-    expect($user->id)->toBe($existingUser->id); // Same user
-    expect($user->email)->toBe('john@example.com'); // Email preserved
-    expect($user->name)->toBe('John Doe'); // Original name preserved (not updated from Google)
-    expect($user->avatar_url)->toBe('https://lh3.googleusercontent.com/a/google-avatar.jpg'); // Avatar updated (was null)
-    expect($user->email_verified_at)->not->toBeNull(); // Email verification updated (was null)
+    expect($user->id)->toBe($existingUser->id)
+        ->and($user->email)->toBe('john@example.com')
+        ->and($user->name)->toBe('John Doe')
+        ->and($user->avatar_url)->toBe('https://lh3.googleusercontent.com/a/google-avatar.jpg')
+        ->and($user->email_verified_at)->not->toBeNull()
+        ->and(User::where('email', 'john@example.com')->count())->toBe(1); // Same user
 
-    // Verify only one user with this email exists
-    expect(User::where('email', 'john@example.com')->count())->toBe(1);
 });
 
 it('preserves existing user data when linking Google account', function () {
@@ -88,12 +87,12 @@ it('preserves existing user data when linking Google account', function () {
     $googleUser->refreshToken = 'google-refresh-token';
 
     // Act
-    $user = $this->action->execute($googleUser);
+    $user = $this->action->handle($googleUser);
 
     // Assert
-    expect($user->id)->toBe($existingUser->id);
-    expect($user->avatar_url)->toBe('https://existing-avatar.jpg'); // Existing avatar preserved
-    expect($user->email_verified_at)->toEqual($existingUser->email_verified_at); // Existing verification preserved
+    expect($user->id)->toBe($existingUser->id)
+        ->and($user->avatar_url)->toBe('https://existing-avatar.jpg')
+        ->and($user->email_verified_at)->toEqual($existingUser->email_verified_at);
 });
 
 it('updates empty avatar from Google data', function () {
@@ -113,7 +112,7 @@ it('updates empty avatar from Google data', function () {
     $googleUser->token = 'google-token';
 
     // Act
-    $user = $this->action->execute($googleUser);
+    $user = $this->action->handle($googleUser);
 
     // Assert
     expect($user->avatar_url)->toBe('https://lh3.googleusercontent.com/a/google-avatar.jpg');
@@ -134,7 +133,7 @@ it('verifies email when user email is not verified', function () {
     $googleUser->avatar = 'https://lh3.googleusercontent.com/a/avatar.jpg';
 
     // Act
-    $user = $this->action->execute($googleUser);
+    $user = $this->action->handle($googleUser);
 
     // Assert
     expect($user->email_verified_at)->not->toBeNull();

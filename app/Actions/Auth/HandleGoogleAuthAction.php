@@ -16,13 +16,13 @@ final readonly class HandleGoogleAuthAction
      * This action implements email-first authentication strategy for Google OAuth,
      * creating new users or linking to existing accounts by email.
      */
-    public function execute(SocialiteUser $googleUser): User
+    public function handle(SocialiteUser $googleUser): User
     {
         $googleUserData = GoogleUser::from($googleUser)->toArray();
 
         $user = $this->findUserByEmail($googleUserData['email']);
 
-        if ($user) {
+        if ($user instanceof User) {
             return $this->updateExistingUser($user, $googleUserData);
         }
 
@@ -52,7 +52,7 @@ final readonly class HandleGoogleAuthAction
             $updateData['email_verified_at'] = $googleUserData['email_verified_at'];
         }
 
-        if (! empty($updateData)) {
+        if ($updateData !== []) {
             $user->update($updateData);
         }
 

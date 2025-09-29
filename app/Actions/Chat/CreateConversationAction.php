@@ -41,7 +41,7 @@ final readonly class CreateConversationAction
             }
 
             $existingConversation = $this->findExistingDirectConversation($creator, $otherUser);
-            if ($existingConversation) {
+            if ($existingConversation instanceof Conversation) {
                 return [
                     'id' => $existingConversation->getAttribute('id'),
                     'message' => 'Conversation already exists',

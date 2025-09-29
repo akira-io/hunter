@@ -33,7 +33,7 @@ final readonly class MarkMessagesAsReadAction
             ->where('user_id', '!=', $user->getAttribute('id'))
             ->whereNull('read_at');
 
-        if (! empty($messageIds)) {
+        if ($messageIds !== []) {
             $query->whereIn('id', $messageIds);
         }
 

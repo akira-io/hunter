@@ -22,13 +22,13 @@ final readonly class HandleGithubAuthAction
 
         $user = $this->findUserByEmail($githubUserData['email']);
 
-        if ($user) {
+        if ($user instanceof User) {
             return $this->linkGithubToExistingUser($user, $githubUserData);
         }
 
         $user = $this->findUserByGithubId($githubUser->getId());
 
-        if ($user) {
+        if ($user instanceof User) {
             return $this->updateExistingGithubUser($user, $githubUserData);
         }
 
