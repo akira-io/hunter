@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 arch()->preset()->php();
 arch()->preset()->laravel()
-    ->ignoring(['App\Http\Controllers\Auth\GithubAuthController', 'App\Http\Controllers\Api\MessageController']);
+    ->ignoring(
+        [
+            'App\Http\Controllers\Auth\GithubAuthController',
+            'App\Http\Controllers\Api\MessageController',
+            'App\Http\Controllers\Auth\GoogleAuthController',
+        ]);
 arch()->preset()->security();
 
 arch('controllers')

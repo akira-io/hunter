@@ -14,7 +14,8 @@
             "likeable",
             "huntings",
             "commitlint",
-            "paginator"
+            "paginator",
+            "ds"
         ],
         "paths": [
             "resources",

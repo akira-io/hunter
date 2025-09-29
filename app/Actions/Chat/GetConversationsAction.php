@@ -38,7 +38,8 @@ final readonly class GetConversationsAction
             ->orderBy('last_message_at', 'desc')
             ->get();
 
-        return $conversationsCollection->map(function (Conversation $conversation) use ($user): array {
+        /** @var array<int, array<string, mixed>> $result */
+        $result = $conversationsCollection->map(function (Conversation $conversation) use ($user): array {
             /** @var Collection<int, Message> $messages */
             $messages = $conversation->getRelation('messages');
             $lastMessage = $messages->first();
@@ -68,7 +69,9 @@ final readonly class GetConversationsAction
                     ->whereNull('read_at')
                     ->count(),
             ];
-        })->toArray();
+        })->values()->toArray();
+
+        return $result;
     }
 
     /**

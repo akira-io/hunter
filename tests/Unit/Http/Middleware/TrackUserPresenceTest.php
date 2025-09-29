@@ -11,7 +11,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
@@ -77,12 +76,18 @@ test('handle when auth user is not User instance - forces lines 25-30', function
     };
 
     // Mock Auth facade directly to ensure we hit the exact code path
-    Auth::swap(new class($customUser) {
+    Auth::swap(new class($customUser)
+    {
         private $user;
 
         public function __construct($user)
         {
             $this->user = $user;
+        }
+
+        public function __call($method, $parameters)
+        {
+            return null;
         }
 
         public function check(): bool
@@ -94,12 +99,6 @@ test('handle when auth user is not User instance - forces lines 25-30', function
         {
             return $this->user; // Returns our custom non-User object
         }
-
-        public function __call($method, $parameters)
-        {
-            // Handle any other methods that might be called
-            return null;
-        }
     });
 
     $middleware = new TrackUserPresence();
@@ -109,6 +108,7 @@ test('handle when auth user is not User instance - forces lines 25-30', function
     $originalResponse = response('lines-25-30-covered', 418); // Use unique status code
     $next = function ($request) use (&$nextCalled, $originalResponse) {
         $nextCalled = true;
+
         return $originalResponse;
     };
 
@@ -166,12 +166,18 @@ test('handle when user has non-numeric id using spy - forces lines 33-38', funct
         ->andReturn('NaN'); // Non-numeric value
 
     // Use Auth::swap to ensure proper authentication flow
-    Auth::swap(new class($spy) {
+    Auth::swap(new class($spy)
+    {
         private $user;
 
         public function __construct($user)
         {
             $this->user = $user;
+        }
+
+        public function __call($method, $parameters)
+        {
+            return null;
         }
 
         public function check(): bool
@@ -183,11 +189,6 @@ test('handle when user has non-numeric id using spy - forces lines 33-38', funct
         {
             return $this->user; // Returns our spy user
         }
-
-        public function __call($method, $parameters)
-        {
-            return null;
-        }
     });
 
     $middleware = new TrackUserPresence();
@@ -197,6 +198,7 @@ test('handle when user has non-numeric id using spy - forces lines 33-38', funct
     $originalResponse = response('lines-33-38-covered', 422); // Use unique status code
     $next = function ($request) use (&$nextCalled, $originalResponse) {
         $nextCalled = true;
+
         return $originalResponse;
     };
 
@@ -213,7 +215,7 @@ test('handle when user has non-numeric id using spy - forces lines 33-38', funct
     Event::assertNotDispatched(ConversationsSnapshot::class);
 
     // Ensure no cache was set for the non-numeric ID
-    expect(Cache::has("user_online_NaN"))->toBeFalse();
+    expect(Cache::has('user_online_NaN'))->toBeFalse();
 });
 
 test('handle with cache miss triggers events and cache set', function () {
@@ -382,5 +384,3 @@ test('middleware handles user with complex id types correctly using spies', func
         expect($response->getContent())->toBe("handled-{$description}");
     }
 });
-
-
