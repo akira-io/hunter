@@ -15,7 +15,7 @@ export const usePresence = ({ userId }: UsePresenceProps) => {
 
         return () => {
             try {
-                // @ts-expect-error echo presence handles disconnect automatically
+                // Echo presence handles disconnect automatically
                 presence?.leave?.()
             } catch {
                 // noop

@@ -1,7 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Head, usePage } from '@inertiajs/react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Head } from '@inertiajs/react';
 import { ArrowLeft, Send, User as UserIcon } from 'lucide-react';
 import { useChat } from '@/hooks/useChat';
+import { usePresence } from '@/hooks/usePresence';
+import { usePresenceManager } from '@/hooks/usePresenceManager';
+import { useEcho } from '@laravel/echo-react';
+import { useOnlineUsers } from '@/stores/onlineUsersStore';
+import { useFollowedHunters } from '@/stores/followedHuntersStore';
 
 interface User {
     id: number;
@@ -13,7 +18,7 @@ interface Message {
     id: number;
     content: string;
     type: 'text' | 'image' | 'file';
-    metadata?: any;
+    metadata?: Record<string, unknown>;
     created_at: string;
     user: User;
 }
@@ -39,8 +44,29 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
 
     const { sendMessage, sending } = useChat(currentUser.id);
 
-    // Get the other participant (for direct conversations)
+    // Add presence management to keep user online while in mobile chat
+    usePresence({ userId: currentUser.id });
+    usePresenceManager({ currentUserId: currentUser.id });
+
+    // WebSocket connection for real-time message updates
+    const conversationEcho = useEcho<{ message: Message }>(
+        conversationId ? `conversation.${conversationId}` : '',
+        undefined,
+        undefined,
+        [],
+        'private'
+    );
+
+
     const otherParticipant = conversation?.participants.find(p => p.id !== currentUser.id);
+
+    const onlineUsers = useOnlineUsers();
+    const followedHunters = useFollowedHunters();
+
+    const isOtherUserOnline = otherParticipant ?
+        onlineUsers.some(user => user.id === otherParticipant.id) ||
+        followedHunters.some(hunter => hunter.id === otherParticipant.id && hunter.is_online)
+        : false;
 
     useEffect(() => {
         const fetchConversation = async () => {
@@ -70,6 +96,35 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
         fetchConversation();
     }, [conversationId]);
 
+
+    useEffect(() => {
+        const channel = conversationEcho.channel();
+        if (!channel || !conversationId) {
+            return;
+        }
+
+        const messageHandler = (event: { message: Message }) => {
+            setConversation(prev => {
+                if (!prev) return prev;
+
+                const messageExists = prev.messages?.some(msg => msg.id === event.message.id);
+                if (messageExists) {
+                    return prev;
+                }
+
+                return {
+                    ...prev,
+                    messages: [...(prev.messages || []), event.message]
+                };
+            });
+        };
+
+        channel.listen('.message.sent', messageHandler);
+
+        return () => {
+        };
+    }, [conversationEcho, conversationId]);
+
     useEffect(() => {
         scrollToBottom();
     }, [conversation?.messages]);
@@ -83,19 +138,13 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
         if (!newMessage.trim() || sending) return;
 
         try {
-            const message = await sendMessage(conversationId, newMessage.trim());
+            await sendMessage(conversationId, newMessage.trim());
             setNewMessage('');
 
-            // Add message to local state immediately for better UX
-            setConversation(prev => {
-                if (!prev) return prev;
-                return {
-                    ...prev,
-                    messages: [...(prev.messages || []), message]
-                };
-            });
+            setTimeout(() => scrollToBottom(), 100);
         } catch (error) {
             console.error('Failed to send message:', error);
+            // Could add a toast notification here for better UX
         }
     };
 
@@ -128,14 +177,22 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
     }
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex flex-col">
+        <div className='h-screen bg-zinc-50 dark:bg-zinc-900 flex flex-col mobile-chat-container'>
             <Head title={`Chat - ${getConversationTitle()}`} />
-
-            {/* Header */}
-            <div className="bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+            {/* Mobile viewport meta for proper rendering */}
+            <Head>
+                <meta name='viewport'
+                      content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+                <meta name='mobile-web-app-capable' content='yes' />
+                <meta name='apple-mobile-web-app-capable' content='yes' />
+                <meta name='apple-mobile-web-app-status-bar-style' content='default' />
+            </Head>
+            {/* Header - Fixed at top */}
+            <div className='bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 px-4 py-3 flex items-center gap-3 flex-shrink-0 z-20'>
                 <button
                     onClick={goBack}
                     className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg transition-colors"
+                    data-testid='mobile-chat-back-button'
                 >
                     <ArrowLeft size={20} className="text-zinc-600 dark:text-zinc-400" />
                 </button>
@@ -148,27 +205,51 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
                                 src={otherParticipant.avatar_url}
                                 alt={otherParticipant.name}
                                 className="size-10 rounded-full object-cover"
+                                data-testid='conversation-avatar'
                             />
                         ) : (
-                            <div className="size-10 rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600 flex items-center justify-center">
+                            <div
+                                className='size-10 rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600 flex items-center justify-center'
+                                data-testid='conversation-avatar'
+                            >
                                 <UserIcon size={20} className="text-zinc-600 dark:text-zinc-300" />
                             </div>
                         )}
+                        {/* Status indicator for direct conversations */}
+                        {conversation?.type === 'direct' && otherParticipant && (
+                            <div className={`absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-white dark:border-zinc-800 ${
+                                isOtherUserOnline
+                                    ? 'bg-emerald-400'
+                                    : 'bg-zinc-400'
+                            }`} />
+                        )}
                     </div>
-
-                    <div>
+                    <div className='flex-1'>
                         <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                             {getConversationTitle()}
                         </h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                            {conversation?.type === 'direct' ? 'Direct message' : 'Group chat'}
-                        </p>
+                        <div className='flex items-center gap-2'>
+                            <p className='text-sm text-zinc-500 dark:text-zinc-400'>
+                                {conversation?.type === 'direct' ? 'Conversa direta' : 'Chat em grupo'}
+                            </p>
+                            {conversation?.type === 'direct' && otherParticipant && (
+                                <>
+                                    <span className='text-xs text-zinc-400'>•</span>
+                                    <span className={`text-xs font-medium ${
+                                        isOtherUserOnline
+                                            ? 'text-emerald-600 dark:text-emerald-400'
+                                            : 'text-zinc-500 dark:text-zinc-400'
+                                    }`}>
+                                        {isOtherUserOnline ? 'Online' : 'Offline'}
+                                    </span>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Messages - Scrollable area between fixed header and input */}
+            <div className='flex-1 overflow-y-auto p-4 space-y-4 min-h-0'>
                 {conversation?.messages?.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-center">
                         <div className="size-16 rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700 grid place-items-center mb-4">
@@ -188,9 +269,10 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
                         return (
                             <div
                                 key={message.id}
-                                className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
+                                className={`flex ${isOwn ? 'justify-end' : 'justify-start'} w-full`}
+                                data-testid='chat-message'
                             >
-                                <div className={`flex gap-3 max-w-[85%] ${isOwn ? 'flex-row-reverse' : ''}`}>
+                                <div className={`flex gap-3 max-w-[85%] min-w-0 ${isOwn ? 'flex-row-reverse' : ''}`}>
                                     <div className="flex-shrink-0">
                                         {message.user.avatar_url ? (
                                             <img
@@ -206,11 +288,16 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
                                     </div>
                                     <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
                                         <div
-                                            className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                                            className={`px-4 py-3 rounded-2xl text-sm leading-relaxed mobile-chat-message break-words whitespace-pre-wrap ${
                                                 isOwn
                                                     ? 'bg-gradient-to-r from-purple-500 to-purple-700 text-white'
                                                     : 'bg-white text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700'
                                             }`}
+                                            style={{
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'anywhere',
+                                                hyphens: 'auto'
+                                            }}
                                         >
                                             {message.content}
                                         </div>
@@ -225,22 +312,40 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
                 )}
                 <div ref={messagesEndRef} />
             </div>
-
-            {/* Message Input */}
-            <div className="bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700 p-4">
-                <form onSubmit={handleSendMessage} className="flex gap-3">
-                    <input
-                        type="text"
+            {/* Message Input - Fixed at bottom */}
+            <div className='bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700 p-4 flex-shrink-0 safe-area-inset-bottom z-20'>
+                <form onSubmit={handleSendMessage} className='flex gap-3 items-end'>
+                    <textarea
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
-                        className="flex-1 px-4 py-3 border border-zinc-200 dark:border-zinc-600 rounded-2xl bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                handleSendMessage(e);
+                            }
+                        }}
+                        placeholder='Digite uma mensagem... (Shift+Enter para nova linha)'
+                        className='flex-1 px-4 py-3 border border-zinc-200 dark:border-zinc-600 rounded-2xl bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all mobile-message-input resize-none'
                         disabled={sending}
+                        autoComplete='off'
+                        data-testid='mobile-message-input'
+                        rows={1}
+                        style={{
+                            minHeight: '44px',
+                            maxHeight: '120px',
+                            height: 'auto'
+                        }}
+                        onInput={(e) => {
+                            const target = e.target as HTMLTextAreaElement;
+                            target.style.height = 'auto';
+                            target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                        }}
                     />
                     <button
                         type="submit"
                         disabled={!newMessage.trim() || sending}
                         className="px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-2xl hover:from-purple-600 hover:to-purple-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                        data-testid='mobile-send-button'
                     >
                         <Send size={18} />
                     </button>

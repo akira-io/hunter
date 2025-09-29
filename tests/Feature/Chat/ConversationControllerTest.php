@@ -6,8 +6,6 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 
 use function Pest\Laravel\actingAs;
 
