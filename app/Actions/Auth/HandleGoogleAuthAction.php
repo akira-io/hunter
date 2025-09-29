@@ -20,7 +20,9 @@ final readonly class HandleGoogleAuthAction
     {
         $googleUserData = GoogleUser::from($googleUser)->toArray();
 
-        $user = $this->findUserByEmail($googleUserData['email']);
+        /** @var string $email */
+        $email = $googleUserData['email'] ?? '';
+        $user = $this->findUserByEmail($email);
 
         if ($user instanceof User) {
             return $this->updateExistingUser($user, $googleUserData);
@@ -39,6 +41,9 @@ final readonly class HandleGoogleAuthAction
 
     /**
      * Update existing user with Google data if necessary.
+     */
+    /**
+     * @param  array<string, mixed>  $googleUserData
      */
     private function updateExistingUser(User $user, array $googleUserData): User
     {
@@ -61,6 +66,9 @@ final readonly class HandleGoogleAuthAction
 
     /**
      * Create a new user from Google data.
+     */
+    /**
+     * @param  array<string, mixed>  $googleUserData
      */
     private function createNewUser(array $googleUserData): User
     {

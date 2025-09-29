@@ -20,7 +20,9 @@ final readonly class HandleGithubAuthAction
     {
         $githubUserData = GithubUser::from($githubUser)->toArray();
 
-        $user = $this->findUserByEmail($githubUserData['email']);
+        /** @var string $email */
+        $email = $githubUserData['email'] ?? '';
+        $user = $this->findUserByEmail($email);
 
         if ($user instanceof User) {
             return $this->linkGithubToExistingUser($user, $githubUserData);
@@ -54,6 +56,9 @@ final readonly class HandleGithubAuthAction
     /**
      * Link GitHub account to existing user (likely from Google auth).
      */
+    /**
+     * @param  array<string, mixed>  $githubUserData
+     */
     private function linkGithubToExistingUser(User $user, array $githubUserData): User
     {
         $updateData = [
@@ -84,6 +89,9 @@ final readonly class HandleGithubAuthAction
     /**
      * Update existing GitHub user with fresh data.
      */
+    /**
+     * @param  array<string, mixed>  $githubUserData
+     */
     private function updateExistingGithubUser(User $user, array $githubUserData): User
     {
         $githubUserData['bio'] = $user->bio ?? $githubUserData['bio'];
@@ -91,13 +99,18 @@ final readonly class HandleGithubAuthAction
         $githubUserData['avatar_url'] = $user->avatar_url ?? $githubUserData['avatar_url'];
         $githubUserData['email'] = $user->email ?? $githubUserData['email'];
 
-        $user->update($githubUserData);
+        /** @var array<string, mixed> $updateData */
+        $updateData = $githubUserData;
+        $user->update($updateData);
 
         return $user;
     }
 
     /**
      * Create a new user from GitHub data.
+     */
+    /**
+     * @param  array<string, mixed>  $githubUserData
      */
     private function createNewUser(array $githubUserData): User
     {

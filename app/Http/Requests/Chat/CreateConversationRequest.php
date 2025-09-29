@@ -53,7 +53,10 @@ final class CreateConversationRequest extends FormRequest
      */
     public function getType(): string
     {
-        return $this->validated('type');
+        /** @var string $type */
+        $type = $this->validated('type');
+
+        return $type;
     }
 
     /**
@@ -63,7 +66,10 @@ final class CreateConversationRequest extends FormRequest
      */
     public function getParticipants(): array
     {
-        return $this->validated('participants', []);
+        /** @var array<int> $participants */
+        $participants = $this->validated('participants', []);
+
+        return $participants;
     }
 
     /**
@@ -71,6 +77,9 @@ final class CreateConversationRequest extends FormRequest
      */
     public function getTitle(): ?string
     {
-        return $this->validated('title');
+        /** @var string|null $title */
+        $title = $this->validated('title');
+
+        return $title;
     }
 }

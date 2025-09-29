@@ -13,6 +13,9 @@ use Spatie\RouteAttributes\Attributes\Get;
 
 final readonly class GoogleAuthController
 {
+    /**
+     * Constructor to inject the HandleGoogleAuthAction dependency.
+     */
     public function __construct(
         private HandleGoogleAuthAction $handleGoogleAuthAction
     ) {}

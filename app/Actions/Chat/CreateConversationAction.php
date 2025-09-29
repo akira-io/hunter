@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 use Throwable;
 
 final readonly class CreateConversationAction
@@ -22,6 +23,10 @@ final readonly class CreateConversationAction
      * @param  array<int>  $participantIds
      *
      * @throws Throwable
+     */
+    /**
+     * @param  array<int>  $participantIds
+     * @return array<string, mixed>
      */
     public function handle(User $creator, string $type, array $participantIds, ?string $title = null): array
     {
@@ -50,7 +55,8 @@ final readonly class CreateConversationAction
             }
         }
 
-        return DB::transaction(function () use ($creator, $type, $title, $filteredParticipantIds): array {
+        /** @var array<string, mixed> $transactionResult */
+        $transactionResult = DB::transaction(function () use ($creator, $type, $title, $filteredParticipantIds): array {
             $conversation = Conversation::query()->create([
                 'title' => $title,
                 'type' => $type,
@@ -67,6 +73,8 @@ final readonly class CreateConversationAction
                 'existing' => false,
             ];
         });
+
+        return $transactionResult;
     }
 
     /**
@@ -97,7 +105,12 @@ final readonly class CreateConversationAction
 
         /** @var array<int, array{joined_at: Carbon, is_admin: bool}> $attachData */
         $attachData = [];
-        $creatorId = (int) $creator->getAttribute('id');
+        /** @var mixed $creatorIdAttribute */
+        $creatorIdAttribute = $creator->getAttribute('id');
+        if (! is_int($creatorIdAttribute) && ! is_string($creatorIdAttribute)) {
+            throw new InvalidArgumentException('Creator ID must be int or string');
+        }
+        $creatorId = (int) $creatorIdAttribute;
 
         foreach ($allParticipants as $id) {
             if (is_numeric($id)) {

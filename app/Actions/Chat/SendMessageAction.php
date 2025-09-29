@@ -31,7 +31,8 @@ final readonly class SendMessageAction
 
         $conversation = $this->findConversationForUser($user, $conversationId);
 
-        return DB::transaction(function () use ($user, $conversation, $content, $type, $metadata): Message {
+        /** @var Message $result */
+        $result = DB::transaction(function () use ($user, $conversation, $content, $type, $metadata): Message {
 
             /** @var Message $message */
             $message = Message::query()->create([
@@ -50,6 +51,8 @@ final readonly class SendMessageAction
 
             return $message;
         });
+
+        return $result;
     }
 
     /**

@@ -13,6 +13,9 @@ use Spatie\RouteAttributes\Attributes\Get;
 
 final readonly class GithubAuthController
 {
+    /**
+     * Constructor to inject the HandleGithubAuthAction dependency.
+     */
     public function __construct(
         private HandleGithubAuthAction $handleGithubAuthAction
     ) {}

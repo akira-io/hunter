@@ -50,6 +50,9 @@ final class MarkMessagesAsReadRequest extends FormRequest
      */
     public function getMessageIds(): array
     {
-        return $this->validated('message_ids', []);
+        /** @var array<int> $messageIds */
+        $messageIds = $this->validated('message_ids', []);
+
+        return $messageIds;
     }
 }
