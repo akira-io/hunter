@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Auth;
 
+use App\DataTransferObjects\Auth\LoginCredentials;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -15,17 +16,16 @@ final readonly class LoginUserAction
     /**
      * Attempt to authenticate the user with the given credentials.
      *
-     * @param  array<string, mixed>  $credentials
-     *
      * @throws ValidationException
      */
-    public function handle(array $credentials, bool $remember = false, ?string $ip = null): bool
+    public function handle(LoginCredentials $credentials): bool
     {
-        $throttleKey = $this->getThrottleKey($credentials['email'], $ip ?? request()->ip());
+        $ip = $credentials->ip ?? request()->ip();
+        $throttleKey = $this->getThrottleKey($credentials->email, $ip);
 
         $this->ensureIsNotRateLimited($throttleKey);
 
-        if (! Auth::attempt($credentials, $remember)) {
+        if (! Auth::attempt($credentials->toArray(), $credentials->remember)) {
             RateLimiter::hit($throttleKey);
 
             throw ValidationException::withMessages([

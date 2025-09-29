@@ -25,10 +25,10 @@ final class SendMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'conversation_id' => 'required|exists:conversations,id',
-            'content' => 'required|string|max:10000',
-            'type' => 'in:text,image,file',
-            'metadata' => 'array|nullable',
+            'conversation_id' => ['required', 'exists:conversations,id'],
+            'content' => ['required', 'string', 'max:10000'],
+            'type' => ['in:text,image,file'],
+            'metadata' => ['array', 'nullable'],
         ];
     }
 

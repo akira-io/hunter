@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\LoginUserAction;
+use App\DataTransferObjects\Auth\LoginCredentials;
 use App\Events\UserOffline;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
@@ -34,11 +35,13 @@ final readonly class AuthenticatedSessionController
      */
     public function store(LoginRequest $request, LoginUserAction $loginUserAction): RedirectResponse
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = LoginCredentials::from(
+            credentials: $request->only('email', 'password'),
+            remember: $request->boolean('remember'),
+            ip: $request->ip()
+        );
 
-        $remember = $request->boolean('remember');
-
-        $loginUserAction->handle($credentials, $remember);
+        $loginUserAction->handle($credentials);
 
         $request->session()->regenerate();
 

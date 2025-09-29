@@ -28,9 +28,9 @@ final readonly class FollowController
         $user = $request->user();
 
         /** @var User $userToFollow */
-        $userToFollow = User::query()->find($request->validated('user_id'));
+        $userToFollow = User::query()->findOrFail($request->validated('user_id'));
 
-        $followUserAction->handle($user, $userToFollow);
+        $followUserAction->handle(follower: $user, userToFollow: $userToFollow);
 
         return back();
     }

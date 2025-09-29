@@ -24,8 +24,8 @@ final class MarkMessagesAsReadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'message_ids' => 'array',
-            'message_ids.*' => 'integer|exists:messages,id',
+            'message_ids' => ['array'],
+            'message_ids.*' => ['integer', 'exists:messages,id'],
         ];
     }
 

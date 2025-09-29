@@ -27,9 +27,9 @@ final readonly class UnFollowController
         $user = $request->user();
 
         /** @var User $userToUnFollow */
-        $userToUnFollow = User::query()->find($request->validated('user_id'));
+        $userToUnFollow = User::query()->findOrFail($request->validated('user_id'));
 
-        $unfollowUserAction->handle($user, $userToUnFollow);
+        $unfollowUserAction->handle(follower: $user, userToUnfollow: $userToUnFollow);
 
         return back();
     }

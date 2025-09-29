@@ -4,23 +4,21 @@ declare(strict_types=1);
 
 namespace App\Actions\Hunt;
 
+use App\DataTransferObjects\Hunt\CreateHuntData;
 use App\Models\Hunt;
 use App\Models\User;
-use Illuminate\Http\UploadedFile;
 
 final readonly class CreateHuntAction
 {
     /**
      * Create a new hunt for the given user.
-     *
-     * @param  array<string, mixed>  $huntData
      */
-    public function handle(User $user, array $huntData, ?UploadedFile $image = null): Hunt
+    public function handle(User $user, CreateHuntData $huntData): Hunt
     {
-        $hunt = $user->hunts()->create($huntData);
+        $hunt = $user->hunts()->create($huntData->toArray());
 
-        if ($image !== null) {
-            $hunt->addMedia($image)->toMediaCollection('hunts');
+        if ($huntData->image !== null) {
+            $hunt->addMedia($huntData->image)->toMediaCollection('hunts');
         }
 
         return $hunt;

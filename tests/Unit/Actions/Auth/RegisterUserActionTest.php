@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\Auth\RegisterUserAction;
+use App\DataTransferObjects\Auth\RegisterUserData;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
@@ -12,11 +13,11 @@ test('it can register a new user', function () {
     Event::fake();
 
     $action = new RegisterUserAction();
-    $userData = [
+    $userData = RegisterUserData::fromArray([
         'name' => 'John Doe',
         'email' => 'john@example.com',
         'password' => 'password123',
-    ];
+    ]);
 
     $user = $action->handle($userData);
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Profile;
 
 use App\Actions\Profile\UpdateAcademicBackgroundAction;
+use App\DataTransferObjects\Profile\AcademicBackgroundData;
 use App\Http\Requests\Profile\AcademicBackgroundRequest;
 use App\Models\AcademicBackground;
 use App\Models\User;
@@ -26,9 +27,10 @@ final readonly class AcademicBackgroundController
     {
         $user = type($request->user())->as(User::class);
 
-        $validatedData = (array) $request->validated();
-
-        $updateAcademicBackgroundAction->handle($user, $validatedData);
+        $updateAcademicBackgroundAction->handle(
+            user: $user,
+            academicData: AcademicBackgroundData::fromRequest(request: $request)
+        );
 
         return to_route('profile.edit');
     }

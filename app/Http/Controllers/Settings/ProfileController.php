@@ -8,7 +8,9 @@ use App\Actions\Profile\DeleteAccountAction;
 use App\Actions\Profile\UpdateProfileAction;
 use App\Actions\User\Profile\UpdateProfileAvatarAction;
 use App\Actions\User\Profile\UpdateProfileBackgroundAction;
+use App\DataTransferObjects\Profile\UpdateProfileData;
 use App\Enums\SkillsEnum;
+use App\Http\Requests\Settings\DeleteAccountRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -51,8 +53,10 @@ final readonly class ProfileController
 
         $request->updateImages($profileBackgroundAction, $profileAvatarAction);
 
-        $profileData = $request->except('avatar_url', 'background_image_url');
-        $updateProfileAction->handle($user, $profileData);
+        $updateProfileAction->handle(
+            user: $user,
+            profileData: UpdateProfileData::fromRequest(request: $request)
+        );
 
         return back();
     }
@@ -60,15 +64,11 @@ final readonly class ProfileController
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request, DeleteAccountAction $deleteAccountAction): RedirectResponse
+    public function destroy(DeleteAccountRequest $request, DeleteAccountAction $deleteAccountAction): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = type($request->user())->as(User::class);
 
-        $deleteAccountAction->handle($user);
+        $deleteAccountAction->handle(user: $user);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

@@ -31,7 +31,7 @@ final readonly class HuntCommentController
 
         $content = $request->string('content')->value();
 
-        $createCommentAction->handle($user, $hunt, $content);
+        $createCommentAction->handle(user: $user, commentable: $hunt, content: $content);
 
         return back();
     }

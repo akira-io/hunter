@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\Hunt\CreateHuntAction;
 use App\Actions\Hunt\DeleteHuntAction;
 use App\Actions\Hunt\GetHuntsAction;
+use App\DataTransferObjects\Hunt\CreateHuntData;
 use App\Http\Requests\Hunt\CreateHuntRequest;
 use App\Http\Requests\Hunt\DeleteHuntRequest;
 use App\Http\Resources\Hunt\HuntResource;
@@ -36,7 +37,7 @@ final readonly class HuntController
         /** @var User $user */
         $user = $request->user();
 
-        $hunts = $getHuntsAction->handle($user);
+        $hunts = $getHuntsAction->handle(user: $user);
 
         return Inertia::render('hunts/hunts', [
             'hunts' => HuntResource::collection($hunts),
@@ -52,10 +53,10 @@ final readonly class HuntController
         /** @var User $user */
         $user = $request->user();
 
-        $huntData = $request->except('image');
-        $image = $request->hasFile('image') ? $request->file('image') : null;
-
-        $createHuntAction->handle($user, $huntData, $image);
+        $createHuntAction->handle(
+            user: $user,
+            huntData: CreateHuntData::fromRequest(request: $request)
+        );
 
         return to_route('hunts.index');
     }
@@ -66,7 +67,7 @@ final readonly class HuntController
     #[Delete(uri: '/{hunt}', name: 'hunts.destroy')]
     public function destroy(DeleteHuntRequest $request, Hunt $hunt, DeleteHuntAction $deleteHuntAction): RedirectResponse
     {
-        $deleteHuntAction->handle($hunt);
+        $deleteHuntAction->handle(hunt: $hunt);
 
         return back();
     }

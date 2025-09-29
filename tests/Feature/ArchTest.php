@@ -11,6 +11,7 @@ arch()->preset()->laravel()
             'App\Http\Controllers\Auth\GithubAuthController',
             'App\Http\Controllers\Api\MessageController',
             'App\Http\Controllers\Auth\GoogleAuthController',
+            'App\Http\Requests',
         ]);
 arch()->preset()->security();
 

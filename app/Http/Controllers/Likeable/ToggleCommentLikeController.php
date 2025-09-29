@@ -24,7 +24,7 @@ final readonly class ToggleCommentLikeController
         /** @var User $user */
         $user = $request->user();
 
-        $toggleLikeAction->handle($user, $comment);
+        $toggleLikeAction->handle(user: $user, likeable: $comment);
 
         return to_route('hunts.index');
     }

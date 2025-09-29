@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\ResetPasswordAction;
+use App\DataTransferObjects\Auth\PasswordResetData;
+use App\Http\Requests\Auth\NewPasswordRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,15 +32,11 @@ final readonly class NewPasswordController
      *
      * @throws ValidationException
      */
-    public function store(Request $request, ResetPasswordAction $resetPasswordAction): RedirectResponse
+    public function store(NewPasswordRequest $request, ResetPasswordAction $resetPasswordAction): RedirectResponse
     {
-        $credentials = $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $status = $resetPasswordAction->handle($credentials);
+        $status = $resetPasswordAction->handle(
+            resetData: PasswordResetData::fromRequest(request: $request)
+        );
 
         if ($status === Password::PASSWORD_RESET) {
             return to_route('login')->with('status', __($status));

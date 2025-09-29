@@ -24,7 +24,7 @@ final readonly class ToggleHuntLikeController
         /** @var User $user */
         $user = $request->user();
 
-        $toggleLikeAction->handle($user, $hunt);
+        $toggleLikeAction->handle(user: $user, likeable: $hunt);
 
         return to_route('hunts.index');
     }

@@ -24,10 +24,10 @@ final class CreateConversationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|in:direct,group',
-            'participants' => 'required|array|min:1',
-            'participants.*' => 'exists:users,id',
-            'title' => 'nullable|string|max:255',
+            'type' => ['required', 'in:direct,group'],
+            'participants' => ['required', 'array', 'min:1'],
+            'participants.*' => ['exists:users,id'],
+            'title' => ['nullable', 'string', 'max:255'],
         ];
     }
 
