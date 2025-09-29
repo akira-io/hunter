@@ -7,6 +7,12 @@ parameters:
 			path: app/Actions/Chat/GetConversationMessagesAction.php
 
 		-
+			message: '#^Parameter \#1 \$relations of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Conversation\>\:\:with\(\) expects array\<array\|\(Closure\(Illuminate\\Database\\Eloquent\\Relations\\Relation\<\*, \*, \*\>\)\: mixed\)\|string\>\|string, array\{0\: ''participants'', messages\: Closure\(Illuminate\\Database\\Eloquent\\Relations\\HasMany\|Laravel\\Scout\\Builder\)\: void\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Actions/Chat/GetConversationsAction.php
+
+		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\HasMany\|Illuminate\\Database\\Query\\Builder\:\:with\(\)\.$#'
 			identifier: method.notFound
 			count: 1

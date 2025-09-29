@@ -9,6 +9,8 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Scout\Builder;
 
 final readonly class GetConversationsAction
 {
@@ -30,7 +32,7 @@ final readonly class GetConversationsAction
         $conversationsCollection = $user->conversations()
             ->with([
                 'participants',
-                'messages' => function ($query): void {
+                'messages' => function (Builder|HasMany $query): void {
                     // @phpstan-ignore-next-line
                     $query->latest()->limit(1)->with('user');
                 },
