@@ -37,10 +37,7 @@ final readonly class GetHuntersAction
         /** @var Collection<int, User> $collection */
         $collection = $paginator->getCollection();
 
-        // Attach follow status before mapping to arrays
-        if ($user) {
-            $user->attachFollowStatus($collection);
-        }
+        $user?->attachFollowStatus($collection);
 
         /** @var Collection<int, array<string, mixed>> $hunters */
         $hunters = $collection->map(
