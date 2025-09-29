@@ -161,14 +161,155 @@
 }
 
 @layer utilities {
+    /* Smooth animations and transitions */
+    .animate-smooth {
+        @apply transition-all duration-300 ease-out;
+    }
+
+    .animate-smooth-fast {
+        @apply transition-all duration-200 ease-out;
+    }
+
+    .animate-smooth-slow {
+        @apply transition-all duration-500 ease-out;
+    }
+
+    .animate-float {
+        @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg;
+    }
+
+    .animate-scale {
+        @apply transition-all duration-300 ease-out hover:scale-[1.02];
+    }
+
+    .animate-glow {
+        @apply transition-all duration-300 ease-out hover:shadow-xl hover:shadow-primary/25;
+    }
+
+    /* Enhanced card effects - mais conservador */
     .effect {
         @apply transition-transform duration-500 ease-in-out odd:-rotate-1 even:rotate-1 hover:rotate-0 hover:duration-600;
 
         backface-visibility: hidden;
         transform-style: preserve-3d;
-
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Subtle enhanced button effects */
+    .btn-enhanced {
+        @apply transition-all duration-200 ease-out hover:shadow-lg active:scale-95;
+    }
+
+    /* Gradient animations */
+    .gradient-animate {
+        background: linear-gradient(-45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+        background-size: 400% 400%;
+        animation: gradient-shift 8s ease infinite;
+    }
+
+    @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Subtle glass effects para casos específicos */
+    .glass-overlay {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .dark .glass-overlay {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Enhanced focus states */
+    .focus-enhanced {
+        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2;
+    }
+
+    /* Skeleton loading mais sutil */
+    .skeleton-shimmer {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .skeleton-shimmer::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 2s infinite;
+    }
+
+    .dark .skeleton-shimmer::after {
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+        );
+    }
+
+    @keyframes shimmer {
+        to { left: 100%; }
+    }
+
+    /* Background patterns */
+    .bg-grid-small-black\/\[0\.02\] {
+        background-image: radial-gradient(circle, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+        background-size: 16px 16px;
+    }
+
+    .bg-grid-small-white\/\[0\.02\] {
+        background-image: radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 16px 16px;
+    }
+
+    /* Enhanced glassmorphism with better browser support */
+    @supports (backdrop-filter: blur(16px)) {
+        .glass {
+            backdrop-filter: blur(16px) saturate(180%);
+        }
+        .glass-subtle {
+            backdrop-filter: blur(8px) saturate(150%);
+        }
+        .glass-strong {
+            backdrop-filter: blur(24px) saturate(200%);
+        }
+    }
+
+    @supports not (backdrop-filter: blur(16px)) {
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .glass-subtle {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.25);
+        }
+    }
+
+    /* Improved button interactions */
+    .button-press {
+        @apply active:scale-95 active:duration-75;
+    }
+
+    /* Parallax scroll effect */
+    .parallax-slow {
+        transform: translateZ(0);
+        will-change: transform;
     }
 
     /* Mobile chat specific utilities */
