@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Settings;
 
+use App\Actions\Profile\DeleteAccountAction;
 use App\Actions\User\Profile\UpdateProfileAvatarAction;
 use App\Actions\User\Profile\UpdateProfileBackgroundAction;
 use App\Enums\SkillsEnum;
@@ -12,7 +13,6 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
@@ -59,7 +59,7 @@ final readonly class ProfileController
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request, DeleteAccountAction $deleteAccountAction): RedirectResponse
     {
         $request->validate([
             'password' => ['required', 'current_password'],
@@ -67,9 +67,7 @@ final readonly class ProfileController
 
         $user = type($request->user())->as(User::class);
 
-        Auth::logout();
-
-        $user->delete();
+        $deleteAccountAction->handle($user);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

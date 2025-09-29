@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\Hunt\CreateHuntAction;
+use App\Actions\Hunt\DeleteHuntAction;
+use App\Actions\Hunt\GetHuntsAction;
 use App\Http\Requests\Hunt\CreateHuntRequest;
 use App\Http\Requests\Hunt\DeleteHuntRequest;
 use App\Http\Resources\Hunt\HuntResource;
@@ -28,19 +31,15 @@ final readonly class HuntController
      * Display the hunt line.
      */
     #[Get(uri: '/', name: 'hunts.index')]
-    public function index(Request $request): Response
+    public function index(Request $request, GetHuntsAction $getHuntsAction): Response
     {
         /** @var User $user */
         $user = $request->user();
 
-        //        dd(Hunt::latest()->first()->comments);
-
-        $hunts = Hunt::query()
-            ->latest()
-            ->paginate();
+        $hunts = $getHuntsAction->handle($user);
 
         return Inertia::render('hunts/hunts', [
-            'hunts' => HuntResource::collection($user->attachLikeStatus($hunts)),
+            'hunts' => HuntResource::collection($hunts),
         ]);
     }
 
@@ -48,10 +47,15 @@ final readonly class HuntController
      * Store a new hunt.
      */
     #[Post(uri: '/', name: 'hunts.store')]
-    public function store(CreateHuntRequest $request): RedirectResponse
+    public function store(CreateHuntRequest $request, CreateHuntAction $createHuntAction): RedirectResponse
     {
+        /** @var User $user */
+        $user = $request->user();
 
-        $request->store();
+        $huntData = $request->except('image');
+        $image = $request->hasFile('image') ? $request->file('image') : null;
+
+        $createHuntAction->handle($user, $huntData, $image);
 
         return to_route('hunts.index');
     }
@@ -60,9 +64,9 @@ final readonly class HuntController
      * Delete a hunt.
      */
     #[Delete(uri: '/{hunt}', name: 'hunts.destroy')]
-    public function destroy(DeleteHuntRequest $request, Hunt $hunt): RedirectResponse
+    public function destroy(DeleteHuntRequest $request, Hunt $hunt, DeleteHuntAction $deleteHuntAction): RedirectResponse
     {
-        $request->destroy($hunt);
+        $deleteHuntAction->handle($hunt);
 
         return back();
     }
