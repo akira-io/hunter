@@ -121,37 +121,6 @@ test('handle when auth user is not User instance - forces lines 25-30', function
         ->and($response->getContent())->toBe('lines-25-30-covered');
 });
 
-test('handle when user id is not numeric using database manipulation', function () {
-    // Create a real user but modify database to have non-numeric ID
-    $user = User::factory()->create();
-
-    // Directly update database with non-numeric ID
-    DB::table('users')
-        ->where('id', $user->id)
-        ->update(['id' => 'uuid-string-not-numeric']);
-
-    // Refresh the user to get the modified ID
-    $user->refresh();
-
-    // Use direct authentication with this modified user
-    $this->actingAs($user);
-
-    $middleware = new TrackUserPresence();
-    $request = Request::create('/', 'GET');
-
-    $nextCalled = false;
-    $next = function ($request) use (&$nextCalled) {
-        $nextCalled = true;
-
-        return response('middleware executed with non-numeric id');
-    };
-
-    $response = $middleware->handle($request, $next);
-
-    expect($response->getContent())->toBe('middleware executed with non-numeric id')
-        ->and($nextCalled)->toBeTrue();
-})->skip('Database constraint prevents non-numeric IDs in production');
-
 // Note: Cache tests moved to more comprehensive versions below
 
 test('handle when user has null id attribute using spy', function () {
