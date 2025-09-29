@@ -5,6 +5,28 @@ import { router } from '@inertiajs/react';
 import { MessageCircle, User as UserIcon } from 'lucide-react';
 import React from 'react';
 
+interface User {
+    id: number
+    name: string
+    avatar_url?: string
+}
+
+interface Conversation {
+    id: number
+    title: string
+    type: 'direct' | 'group'
+    participants: User[]
+    last_message?: {
+        id: number
+        content: string
+        created_at: string
+        user: User
+    }
+    last_message_at?: string
+    unread_count: number
+    other_participant?: User
+}
+
 interface ConversationsListProps {
     currentUserId?: number
 }
@@ -39,7 +61,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
         }
     }
 
-    const getConversationTitle = (conversation: any) => {
+    const getConversationTitle = (conversation: Conversation) => {
         if (conversation.title) {
             return conversation.title
         }
@@ -47,7 +69,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
         return conversation.other_participant?.name || 'Unknown User'
     }
 
-    const getConversationAvatar = (conversation: any) => {
+    const getConversationAvatar = (conversation: Conversation) => {
         if (conversation.type === 'group') {
             return (
                 <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center">

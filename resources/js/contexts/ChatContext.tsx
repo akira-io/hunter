@@ -50,7 +50,7 @@ interface ChatContextType {
     loadConversations: () => Promise<void>
     loadConversation: (conversationId: number) => Promise<void>
     sendMessage: (conversationId: number, content: string, type?: 'text' | 'image' | 'file', metadata?: Record<string, unknown> | null) => Promise<void>
-    createConversation: (type: 'direct' | 'group', participants: number[], title?: string) => Promise<any>
+    createConversation: (type: 'direct' | 'group', participants: number[], title?: string) => Promise<Conversation>
     markMessagesAsRead: (conversationId: number, messageIds?: number[]) => Promise<void>
     setActiveConversation: (conversation: Conversation | null) => void
 }

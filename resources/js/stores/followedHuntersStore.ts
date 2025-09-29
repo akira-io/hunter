@@ -106,7 +106,7 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
                     } else {
                         setLoading(false)
                     }
-                } catch (error) {
+                } catch {
                     setLoading(false)
                 }
             }
@@ -133,7 +133,6 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
                         // Reset loading on rehydration
                         state.loading = false
                     }
-                } else {
                 }
             }
         }

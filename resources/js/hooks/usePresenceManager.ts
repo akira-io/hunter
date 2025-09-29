@@ -102,7 +102,7 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
 
                         updateHunterOnlineStatus(user.id, false)
                     })
-                    .error((error: any) => {
+                    .error((error: Error) => {
                         console.log(error);
                         if (!mounted) return
                         setConnected(false)

@@ -16,6 +16,11 @@ interface Message {
     user: User
 }
 
+interface MessageEvent {
+    message: Message
+    conversation_id: number
+}
+
 interface Conversation {
     id: number
     title: string
@@ -32,10 +37,10 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
     const [activeConversation, setActiveConversation] = useState<Conversation | null>(null)
     const [loading, setLoading] = useState(true)
     const [sending, setSending] = useState(false)
-    const messageHandlerRef = useRef<((event: any) => void) | null>(null)
+    const messageHandlerRef = useRef<((event: MessageEvent) => void) | null>(null)
 
     // Use useEcho for user channel when we have a current user
-    const userEcho = useEcho<any>(
+    const userEcho = useEcho<MessageEvent>(
         currentUserId ? `user.${currentUserId}` : '',
         undefined,
         undefined,
@@ -149,8 +154,6 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
         // Configure message listeners using useEcho hook
         channel
             .listen('.message.sent', (event: { message: Message }) => {
-                const isMyMessage = event.message.user.id === currentUserId
-
                 setActiveConversation(prev => {
                     if (!prev) return prev
                     return {
@@ -173,7 +176,8 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
             })
             .subscribed(() => {
             })
-            .error((error: any) => {
+            .error((error: Error) => {
+                console.error('Echo channel error:', error)
             })
 
         return () => {
@@ -231,6 +235,7 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
                 setActiveConversation(mockConversation)
             }
         } catch (error) {
+            console.error('Failed to mark messages as read:', error)
         }
     }, [])
 
@@ -257,6 +262,7 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
             // Note: Do NOT return the message - let WebSocket handle it
             // This prevents duplicates and ensures real-time works properly
         } catch (error) {
+            console.error('Failed to send message:', error)
             throw error
         } finally {
             setSending(false)
@@ -287,6 +293,7 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
 
             return data
         } catch (error) {
+            console.error('Failed to create conversation:', error)
             throw error
         }
     }, [loadConversations])

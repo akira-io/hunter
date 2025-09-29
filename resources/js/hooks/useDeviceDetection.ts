@@ -78,7 +78,6 @@ export const shouldUseMobileChat = (): boolean => {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     const userAgent = navigator.userAgent.toLowerCase();
-    const touchSupported = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     // Check orientation: landscape if width > height
     const isLandscape = screenWidth > screenHeight;

@@ -28,7 +28,7 @@ export function GoogleLoginButton() {
             window.addEventListener('beforeunload', () => clearTimeout(timeoutId));
 
             window.location.assign(google.login.url());
-        } catch (err) {
+        } catch {
             setLoading(false);
             toast({
                 title: 'Erro no Google',

@@ -9,7 +9,7 @@ interface Message {
     id: number
     content: string
     type: 'text' | 'image' | 'file'
-    metadata?: any
+    metadata?: Record<string, unknown> | null
     created_at: string
     user: {
         id: number
@@ -36,18 +36,6 @@ interface ChatWindowProps {
     currentUserId?: number
 }
 
-const arePropsEqual = (prevProps: ChatWindowProps, nextProps: ChatWindowProps) => {
-    console.log('🔍 ChatWindow arePropsEqual check:', {
-        prevConversationId: prevProps.conversationId,
-        nextConversationId: nextProps.conversationId,
-        prevUserId: prevProps.currentUserId,
-        nextUserId: nextProps.currentUserId,
-        conversationIdSame: prevProps.conversationId === nextProps.conversationId,
-        userIdSame: prevProps.currentUserId === nextProps.currentUserId
-    })
-    return prevProps.conversationId === nextProps.conversationId &&
-           prevProps.currentUserId === nextProps.currentUserId
-}
 
 export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentUserId }) => {
     const [newMessage, setNewMessage] = useState('')

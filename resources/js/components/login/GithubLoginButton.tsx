@@ -28,7 +28,7 @@ export function GithubLoginButton() {
             window.addEventListener('beforeunload', () => clearTimeout(timeoutId));
 
             window.location.assign(github.login.url());
-        } catch (err) {
+        } catch {
             setLoading(false);
             toast({
                 title: 'Erro no GitHub',
