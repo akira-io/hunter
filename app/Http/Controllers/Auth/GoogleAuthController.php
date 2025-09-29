@@ -4,47 +4,39 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
+use App\Actions\Auth\HandleGoogleAuthAction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User;
 use Spatie\RouteAttributes\Attributes\Get;
 
 final readonly class GoogleAuthController
 {
+    public function __construct(
+        private HandleGoogleAuthAction $handleGoogleAuthAction
+    ) {}
+
     /**
-     * Redirect the user to the GitHub authentication page.
+     * Redirect the user to the Google authentication page.
      */
     #[Get('/auth/google', name: 'google.login')]
-    public function index(): RedirectResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+    public function redirect(): RedirectResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
-
         return Socialite::driver('google')
             ->redirect();
     }
 
     /**
-     * Obtain the user information from GitHub.
+     * Obtain the user information from Google.
      */
     #[Get('/auth/google/callback', name: 'google.callback')]
-    public function store(): RedirectResponse
+    public function callback(): RedirectResponse
     {
-        /** @var \Laravel\Socialite\Two\User $googleUser */
+        /** @var User $googleUser */
         $googleUser = Socialite::driver('google')->user();
 
-        $user = User::query()->firstOrCreate(
-            [
-                'email' => $googleUser->getEmail(),
-            ],
-            [
-                'name' => $googleUser->getName(),
-                'avatar_url' => $googleUser->getAvatar(),
-                'password' => Hash::make(Str::random(32)),
-                'email_verified_at' => now(),
-            ]
-        );
+        $user = $this->handleGoogleAuthAction->execute($googleUser);
 
         Auth::login($user, remember: true);
 
