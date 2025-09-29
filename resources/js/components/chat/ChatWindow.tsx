@@ -56,6 +56,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
     const [hasInitiallyScrolled, setHasInitiallyScrolled] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const messagesContainerRef = useRef<HTMLDivElement>(null)
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
     const prevMessageCountRef = useRef<number>(0)
 
     const { closeChatWindow, minimizedWindows, toggleMinimize, sendMessage, sending, markMessagesAsRead, conversations } = useChatContext()
@@ -189,6 +190,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
+    const resetTextareaHeight = () => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = '40px'; // Reset to minimum height
+        }
+    }
+
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!newMessage.trim() || sending) return
@@ -197,6 +205,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             await sendMessage(conversationId, newMessage.trim())
             setNewMessage('')
 
+            // Reset textarea height to normal
+            resetTextareaHeight()
+
             // Don't add message locally - let WebSocket handle it to avoid duplicates
             // Always scroll when user sends a message (intentional action)
             setTimeout(() => scrollToBottom(), 50)
@@ -204,6 +215,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             console.error('Failed to send message:', error)
         }
     }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage(e);
+        }
+    };
 
 
     const getConversationTitle = () => {
@@ -362,12 +380,16 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                             </div>
                                             <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} min-w-0 flex-1`}>
                                                 <div
-                                                    className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words word-wrap overflow-wrap-anywhere ${
+                                                    className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words whitespace-pre-wrap ${
                                                         isOwn
                                                             ? 'bg-gradient-to-r from-purple-500 to-purple-700 text-white shadow-md'
                                                             : 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 shadow-sm'
                                                     }`}
-                                                    style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                                                    style={{
+                                                        wordBreak: 'break-word',
+                                                        overflowWrap: 'anywhere',
+                                                        whiteSpace: 'pre-wrap'
+                                                    }}
                                                 >
                                                     {message.content}
                                                 </div>
@@ -386,14 +408,26 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                     {/* Message Input */}
                     <form onSubmit={handleSendMessage}
                           className='border-t border-zinc-200 dark:border-zinc-700 px-3 py-2 bg-zinc-50/50 dark:bg-zinc-800/50 rounded-b-2xl'>
-                        <div className='flex gap-2'>
-                            <input
-                                type="text"
+                        <div className='flex gap-2 items-end'>
+                            <textarea
+                                ref={textareaRef}
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyDown={handleKeyDown}
                                 placeholder="Digite uma mensagem..."
-                                className='flex-1 px-3 py-2 border border-zinc-200 dark:border-zinc-600 rounded-xl bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent text-sm transition-all'
+                                className='flex-1 px-3 py-2 border border-zinc-200 dark:border-zinc-600 rounded-xl bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent text-sm transition-all resize-none'
                                 disabled={sending}
+                                rows={1}
+                                style={{
+                                    minHeight: '40px',
+                                    maxHeight: '120px',
+                                    height: 'auto'
+                                }}
+                                onInput={(e) => {
+                                    const target = e.target as HTMLTextAreaElement;
+                                    target.style.height = 'auto';
+                                    target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                                }}
                             />
                             <button
                                 type="submit"

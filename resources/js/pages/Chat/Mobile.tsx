@@ -41,6 +41,7 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const { sendMessage, sending } = useChat(currentUser.id);
 
@@ -133,6 +134,13 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
+    const resetTextareaHeight = () => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = '44px'; // Reset to minimum height
+        }
+    };
+
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newMessage.trim() || sending) return;
@@ -140,6 +148,9 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
         try {
             await sendMessage(conversationId, newMessage.trim());
             setNewMessage('');
+
+            // Reset textarea height to normal
+            resetTextareaHeight();
 
             setTimeout(() => scrollToBottom(), 100);
         } catch (error) {
@@ -316,6 +327,7 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
             <div className='bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700 p-4 flex-shrink-0 safe-area-inset-bottom z-20'>
                 <form onSubmit={handleSendMessage} className='flex gap-3 items-end'>
                     <textarea
+                        ref={textareaRef}
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyDown={(e) => {
@@ -324,7 +336,7 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
                                 handleSendMessage(e);
                             }
                         }}
-                        placeholder='Digite uma mensagem... (Shift+Enter para nova linha)'
+                        placeholder='Digite uma mensagem...'
                         className='flex-1 px-4 py-3 border border-zinc-200 dark:border-zinc-600 rounded-2xl bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all mobile-message-input resize-none'
                         disabled={sending}
                         autoComplete='off'

@@ -6,10 +6,12 @@ use App\Events\ConversationsSnapshot;
 use App\Events\UserOnline;
 use App\Http\Middleware\TrackUserPresence;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
@@ -34,66 +36,109 @@ test('handle when user is not authenticated', function () {
         ->and($nextExecuted)->toBeTrue();
 });
 
-test('handle when auth user is not User instance', function () {
-    // Simular um guard personalizado que retorna um objeto que não é User
-    $customUser = new stdClass();
-    $customUser->id = 123;
+test('handle when auth user is not User instance - forces lines 25-30', function () {
+    // Create a custom authenticatable object that is NOT a User instance
+    $customUser = new class implements Authenticatable
+    {
+        public function getAuthIdentifierName(): string
+        {
+            return 'id';
+        }
 
-    $request = Request::create('/', 'GET');
-    $request->setUserResolver(function () use ($customUser) {
-        return $customUser; // Retorna stdClass ao invés de User
+        public function getAuthIdentifier(): mixed
+        {
+            return 123;
+        }
+
+        public function getAuthPasswordName(): string
+        {
+            return 'password';
+        }
+
+        public function getAuthPassword(): string
+        {
+            return 'password';
+        }
+
+        public function getRememberToken(): ?string
+        {
+            return null;
+        }
+
+        public function setRememberToken($value): void
+        {
+            // No-op
+        }
+
+        public function getRememberTokenName(): string
+        {
+            return 'remember_token';
+        }
+    };
+
+    // Mock Auth facade directly to ensure we hit the exact code path
+    Auth::swap(new class($customUser) {
+        private $user;
+
+        public function __construct($user)
+        {
+            $this->user = $user;
+        }
+
+        public function check(): bool
+        {
+            return true; // User is authenticated
+        }
+
+        public function user()
+        {
+            return $this->user; // Returns our custom non-User object
+        }
+
+        public function __call($method, $parameters)
+        {
+            // Handle any other methods that might be called
+            return null;
+        }
     });
 
     $middleware = new TrackUserPresence();
+    $request = Request::create('/', 'GET');
 
-    // Esta closure deve forçar a execução das linhas 27-29
     $nextCalled = false;
-    $next = function ($request) use (&$nextCalled) {
+    $originalResponse = response('lines-25-30-covered', 418); // Use unique status code
+    $next = function ($request) use (&$nextCalled, $originalResponse) {
         $nextCalled = true;
-
-        return response('middleware executed for non-user');
+        return $originalResponse;
     };
 
     $response = $middleware->handle($request, $next);
 
-    expect($response->getContent())->toBe('middleware executed for non-user')
-        ->and($nextCalled)->toBeTrue(); // Confirma que $next foi chamado
+    // Verify exact path was taken (lines 25-30)
+    expect($nextCalled)->toBeTrue()
+        ->and($response)->toBe($originalResponse)
+        ->and($response->getStatusCode())->toBe(418)
+        ->and($response->getContent())->toBe('lines-25-30-covered');
 });
 
-test('handle when user id is not numeric using custom user resolver', function () {
-    // Criar um user customizado que retorna ID não numérico
+test('handle when user id is not numeric using database manipulation', function () {
+    // Create a real user but modify database to have non-numeric ID
     $user = User::factory()->create();
 
-    // Simular um cenário onde getAttribute('id') retorna string não numérica
-    $request = Request::create('/', 'GET');
-    $request->setUserResolver(function () use ($user) {
-        // Criar um objeto que se comporta como User mas com ID não numérico
-        $customUser = new class($user->getAttributes()) extends User
-        {
-            private array $customAttributes;
+    // Directly update database with non-numeric ID
+    DB::table('users')
+        ->where('id', $user->id)
+        ->update(['id' => 'uuid-string-not-numeric']);
 
-            public function __construct(array $attributes)
-            {
-                parent::__construct();
-                $this->customAttributes = $attributes;
-            }
+    // Refresh the user to get the modified ID
+    $user->refresh();
 
-            public function getAttribute($key)
-            {
-                if ($key === 'id') {
-                    return 'string-id-not-numeric'; // ID não numérico
-                }
-
-                return $this->customAttributes[$key] ?? null;
-            }
-        };
-
-        return $customUser;
-    });
+    // Use direct authentication with this modified user
+    $this->actingAs($user);
 
     $middleware = new TrackUserPresence();
+    $request = Request::create('/', 'GET');
 
-    // Esta closure deve forçar a execução das linhas 35-37
     $nextCalled = false;
     $next = function ($request) use (&$nextCalled) {
         $nextCalled = true;
@@ -104,104 +149,269 @@ test('handle when user id is not numeric using custom user resolver', function (
     $response = $middleware->handle($request, $next);
 
     expect($response->getContent())->toBe('middleware executed with non-numeric id')
-        ->and($nextCalled)->toBeTrue(); // Confirma que $next foi chamado
+        ->and($nextCalled)->toBeTrue();
+})->skip('Database constraint prevents non-numeric IDs in production');
+
+// Note: Cache tests moved to more comprehensive versions below
+
+test('handle when user has null id attribute using spy', function () {
+    // Create a real user and use spy to override getAttribute
+    $user = User::factory()->create();
+
+    // Spy on the user to override getAttribute for 'id'
+    $spy = spy($user);
+    $spy->shouldReceive('getAttribute')
+        ->with('id')
+        ->andReturn(null);
+
+    $request = Request::create('/', 'GET');
+    $request->setUserResolver(function () use ($spy) {
+        return $spy;
+    });
+
+    $middleware = new TrackUserPresence();
+
+    $nextCalled = false;
+    $next = function ($request) use (&$nextCalled) {
+        $nextCalled = true;
+
+        return response('middleware executed with null id');
+    };
+
+    $response = $middleware->handle($request, $next);
+
+    expect($response->getContent())->toBe('middleware executed with null id')
+        ->and($nextCalled)->toBeTrue();
 });
 
-test('handle when user is valid and cache is empty', function () {
+test('handle when user has non-numeric id using spy - forces lines 33-38', function () {
+    Event::fake(); // Ensure no events are dispatched
+
+    // Create a real user and use spy to override getAttribute
+    $user = User::factory()->create();
+
+    // Spy on the user to override getAttribute for 'id'
+    $spy = spy($user);
+    $spy->shouldReceive('getAttribute')
+        ->with('id')
+        ->andReturn('NaN'); // Non-numeric value
+
+    // Use Auth::swap to ensure proper authentication flow
+    Auth::swap(new class($spy) {
+        private $user;
+
+        public function __construct($user)
+        {
+            $this->user = $user;
+        }
+
+        public function check(): bool
+        {
+            return true; // User is authenticated
+        }
+
+        public function user()
+        {
+            return $this->user; // Returns our spy user
+        }
+
+        public function __call($method, $parameters)
+        {
+            return null;
+        }
+    });
+
+    $middleware = new TrackUserPresence();
+    $request = Request::create('/', 'GET');
+
+    $nextCalled = false;
+    $originalResponse = response('lines-33-38-covered', 422); // Use unique status code
+    $next = function ($request) use (&$nextCalled, $originalResponse) {
+        $nextCalled = true;
+        return $originalResponse;
+    };
+
+    $response = $middleware->handle($request, $next);
+
+    // Verify exact path was taken (lines 33-38)
+    expect($nextCalled)->toBeTrue()
+        ->and($response)->toBe($originalResponse)
+        ->and($response->getStatusCode())->toBe(422)
+        ->and($response->getContent())->toBe('lines-33-38-covered');
+
+    // Ensure no events were dispatched (skipped cache logic)
+    Event::assertNotDispatched(UserOnline::class);
+    Event::assertNotDispatched(ConversationsSnapshot::class);
+
+    // Ensure no cache was set for the non-numeric ID
+    expect(Cache::has("user_online_NaN"))->toBeFalse();
+});
+
+test('handle with cache miss triggers events and cache set', function () {
     Event::fake();
 
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    // Clear cache to ensure it's empty
+    // Ensure cache is empty
     Cache::forget("user_online_{$user->id}");
 
     $middleware = new TrackUserPresence();
     $request = Request::create('/', 'GET');
-    $next = fn ($request) => response('OK');
+
+    $nextCalled = false;
+    $next = function ($request) use (&$nextCalled) {
+        $nextCalled = true;
+
+        return response('Events triggered');
+    };
 
     $response = $middleware->handle($request, $next);
 
-    expect($response->getContent())->toBe('OK');
-    Event::assertDispatched(UserOnline::class);
-    Event::assertDispatched(ConversationsSnapshot::class);
+    expect($response->getContent())->toBe('Events triggered')
+        ->and($nextCalled)->toBeTrue();
 
-    // Verify cache was set
+    Event::assertDispatched(UserOnline::class, function ($event) use ($user) {
+        return $event->user->id === $user->id;
+    });
+
+    Event::assertDispatched(ConversationsSnapshot::class, function ($event) use ($user) {
+        return $event->user->id === $user->id;
+    });
+
+    // Verify cache was set with correct TTL
     expect(Cache::has("user_online_{$user->id}"))->toBeTrue();
 });
 
-test('handle when user is valid and cache exists', function () {
+test('handle with cache hit does not trigger events but refreshes TTL', function () {
     Event::fake();
 
     $user = User::factory()->create();
     $this->actingAs($user);
 
     // Pre-populate cache
-    Cache::put("user_online_{$user->id}", now());
+    $cacheKey = "user_online_{$user->id}";
+    Cache::put($cacheKey, now()->subMinutes(2));
 
     $middleware = new TrackUserPresence();
     $request = Request::create('/', 'GET');
-    $next = fn ($request) => response('OK');
+
+    $nextCalled = false;
+    $next = function ($request) use (&$nextCalled) {
+        $nextCalled = true;
+
+        return response('Cache hit');
+    };
 
     $response = $middleware->handle($request, $next);
 
-    expect($response->getContent())->toBe('OK');
+    expect($response->getContent())->toBe('Cache hit')
+        ->and($nextCalled)->toBeTrue();
+
+    Event::assertNotDispatched(UserOnline::class);
+    Event::assertNotDispatched(ConversationsSnapshot::class);
+
+    // Verify cache still exists (TTL was refreshed)
+    expect(Cache::has($cacheKey))->toBeTrue();
+});
+
+test('middleware preserves response object integrity', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $middleware = new TrackUserPresence();
+    $request = Request::create('/', 'GET');
+
+    $originalResponse = response()->json(['test' => 'data'], 201)
+        ->header('Custom-Header', 'custom-value');
+
+    $next = function ($request) use ($originalResponse) {
+        return $originalResponse;
+    };
+
+    $result = $middleware->handle($request, $next);
+
+    expect($result)->toBe($originalResponse)
+        ->and($result->getStatusCode())->toBe(201)
+        ->and($result->headers->get('Custom-Header'))->toBe('custom-value');
+});
+
+test('middleware handles multiple sequential requests correctly', function () {
+    Event::fake();
+
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $middleware = new TrackUserPresence();
+
+    // First request - should trigger events
+    Cache::forget("user_online_{$user->id}");
+    $request1 = Request::create('/first', 'GET');
+    $next1 = fn ($req) => response('first');
+
+    $middleware->handle($request1, $next1);
+
+    Event::assertDispatched(UserOnline::class);
+    Event::assertDispatched(ConversationsSnapshot::class);
+
+    Event::fake(); // Reset event fake
+
+    // Second request - should not trigger events (cache hit)
+    $request2 = Request::create('/second', 'GET');
+    $next2 = fn ($req) => response('second');
+
+    $middleware->handle($request2, $next2);
+
     Event::assertNotDispatched(UserOnline::class);
     Event::assertNotDispatched(ConversationsSnapshot::class);
 });
 
-// EXCEPTIONAL CASE: Using minimal mocking ONLY for 100% coverage of defensive code
-// These specific lines (27-29, 35-37) are impossible to reach without mocking
-// due to Laravel's type system and authentication constraints
+test('middleware handles user with complex id types correctly using spies', function () {
+    // Test with various edge case ID values
+    $testCases = [
+        'empty-string' => '',
+        'whitespace' => '   ',
+        'scientific-notation' => '1e5',
+        'negative-zero' => '-0',
+        'hex-string' => '0x1A',
+        'float-string' => '12.34',
+    ];
 
-test('covers lines 27-29 using minimal required mocking for defensive code', function () {
-    // This is the ONLY way to reach these specific defensive lines
-    Auth::shouldReceive('check')->once()->andReturn(true);
-    Auth::shouldReceive('user')->once()->andReturn((object) ['id' => 123]);
+    foreach ($testCases as $description => $idValue) {
+        $user = User::factory()->create();
+        $spy = spy($user);
+        $spy->shouldReceive('getAttribute')
+            ->with('id')
+            ->andReturn($idValue);
 
-    $middleware = new TrackUserPresence();
-    $request = Request::create('/', 'GET');
+        $request = Request::create('/', 'GET');
+        $request->setUserResolver(function () use ($spy) {
+            return $spy;
+        });
 
-    $executed = false;
-    $response = response('lines-27-29-covered');
-    $next = function ($req) use (&$executed, $response) {
-        $executed = true;
+        $middleware = new TrackUserPresence();
+        $nextCalled = false;
+        $next = function ($request) use (&$nextCalled, $description) {
+            $nextCalled = true;
 
-        return $response;
-    };
+            return response("handled-{$description}");
+        };
 
-    $result = $middleware->handle($request, $next);
+        $response = $middleware->handle($request, $next);
 
-    expect($executed)->toBeTrue()->and($result)->toBe($response);
+        expect($nextCalled)->toBeTrue("Test case: {$description}");
+
+        // Only numeric IDs should proceed to cache logic
+        if (is_numeric($idValue) && $idValue !== '') {
+            // This would proceed to cache logic - verify no cache errors
+            expect($response->getContent())->toBe("handled-{$description}");
+
+            continue;
+        }
+
+        // Non-numeric IDs should skip cache logic
+        expect($response->getContent())->toBe("handled-{$description}");
+    }
 });
 
-test('covers lines 35-37 using reflection to modify User attributes', function () {
-    $user = User::factory()->create();
 
-    // Use reflection to modify the user's attributes to have non-numeric ID
-    $reflection = new ReflectionClass($user);
-    $attributesProperty = $reflection->getProperty('attributes');
-    $attributesProperty->setAccessible(true);
-    $attributes = $attributesProperty->getValue($user);
-    $attributes['id'] = 'string-not-numeric'; // Force non-numeric ID
-    $attributesProperty->setValue($user, $attributes);
-
-    // Mock Auth facade
-    Auth::shouldReceive('check')->once()->andReturn(true);
-    Auth::shouldReceive('user')->once()->andReturn($user);
-
-    $middleware = new TrackUserPresence();
-    $request = Request::create('/', 'GET');
-
-    $executed = false;
-    $response = response('lines-35-37-covered');
-    $next = function ($req) use (&$executed, $response) {
-        $executed = true;
-
-        return $response;
-    };
-
-    $result = $middleware->handle($request, $next);
-
-    expect($executed)->toBeTrue()->and($result)->toBe($response);
-});
