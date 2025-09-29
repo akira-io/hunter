@@ -19,6 +19,7 @@ import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon, CircleAlertIcon, GraduationCap, PlusIcon, TrashIcon } from 'lucide-react';
 import { FormEvent } from 'react';
+import * as React from 'react';
 
 import {
     AlertDialog,
@@ -62,6 +63,8 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
     const { toast } = useToast();
 
     const { isOpen, set } = useAcademicBackground();
+    const [startDateOpen, setStartDateOpen] = React.useState(false);
+    const [endDateOpen, setEndDateOpen] = React.useState(false);
 
     const {
         data,
@@ -238,7 +241,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="start_date">Data de Início *</Label>
-                            <Popover>
+                            <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
                                 <PopoverTrigger asChild>
                                     <Button
                                         id="start_date"
@@ -264,7 +267,10 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         mode="single"
                                         captionLayout='dropdown'
                                         selected={data.start_date}
-                                        onSelect={(date) => setData('start_date', date ? date : new Date())}
+                                        onSelect={(date) => {
+                                            setData('start_date', date ? date : new Date());
+                                            setStartDateOpen(false);
+                                        }}
                                     />
                                 </PopoverContent>
                             </Popover>
@@ -272,7 +278,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="start_date">Data de Fim</Label>
-                            <Popover>
+                            <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
                                 <PopoverTrigger asChild>
                                     <Button
                                         id="end_date"
@@ -298,7 +304,10 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         captionLayout='dropdown'
                                         mode="single"
                                         selected={data.end_date ? data.end_date : undefined}
-                                        onSelect={(date) => setData('end_date', date ? date : new Date())}
+                                        onSelect={(date) => {
+                                            setData('end_date', date);
+                                            setEndDateOpen(false);
+                                        }}
                                     />
                                 </PopoverContent>
                             </Popover>
