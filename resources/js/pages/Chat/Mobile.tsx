@@ -43,7 +43,7 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const { sendMessage, sending } = useChat(currentUser.id);
+    const { sendMessage, sending, markMessagesAsRead } = useChat(currentUser.id);
 
     // Add presence management to keep user online while in mobile chat
     usePresence({ userId: currentUser.id });
@@ -86,6 +86,8 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
                 if (response.ok) {
                     const data = await response.json();
                     setConversation(data);
+                    // Mark messages as read when conversation is opened
+                    markMessagesAsRead(conversationId);
                 }
             } catch (error) {
                 console.error('Failed to load conversation:', error);
@@ -113,6 +115,11 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
                     return prev;
                 }
 
+                // Mark new messages as read since the conversation is active
+                if (event.message.user.id !== currentUser.id) {
+                    markMessagesAsRead(conversationId, [event.message.id]);
+                }
+
                 return {
                     ...prev,
                     messages: [...(prev.messages || []), event.message]
@@ -129,6 +136,15 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
     useEffect(() => {
         scrollToBottom();
     }, [conversation?.messages]);
+
+    // Mark messages as read when component unmounts (user leaves chat)
+    useEffect(() => {
+        return () => {
+            if (conversationId) {
+                markMessagesAsRead(conversationId);
+            }
+        };
+    }, [conversationId, markMessagesAsRead]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -324,7 +340,7 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
                 <div ref={messagesEndRef} />
             </div>
             {/* Message Input - Fixed at bottom */}
-            <div className='bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700 p-4 flex-shrink-0 safe-area-inset-bottom z-20'>
+            <div className='bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700 p-4 flex-shrink-0 safe-area-inset-bottom mobile-input-container'>
                 <form onSubmit={handleSendMessage} className='flex gap-3 items-end'>
                     <textarea
                         ref={textareaRef}
