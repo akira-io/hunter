@@ -7,6 +7,7 @@ namespace App\Actions\Chat;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 final readonly class MarkMessagesAsReadAction
@@ -23,11 +24,12 @@ final readonly class MarkMessagesAsReadAction
 
         /** @var Conversation $conversation */
         $conversation = Conversation::query()
-            ->whereHas('participants', function ($q) use ($user): void {
+            ->whereHas('participants', function (Builder $q) use ($user): void {
                 $q->where('user_id', $user->getAttribute('id'));
             })
             ->findOrFail($conversationId);
 
+        /** @var Builder<Message> $query */
         $query = Message::query()
             ->where('conversation_id', $conversation->getAttribute('id'))
             ->where('user_id', '!=', $user->getAttribute('id'))
@@ -37,6 +39,7 @@ final readonly class MarkMessagesAsReadAction
             $query->whereIn('id', $messageIds);
         }
 
+        /** @var int $updatedCount */
         $updatedCount = $query->update(['read_at' => now()]);
 
         $conversation->participants()->updateExistingPivot($user->getAttribute('id'), [

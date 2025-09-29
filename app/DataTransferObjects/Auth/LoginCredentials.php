@@ -24,8 +24,8 @@ final readonly class LoginCredentials
     public static function from(array $credentials, bool $remember = false, ?string $ip = null): self
     {
         return new self(
-            email: $credentials['email'],
-            password: $credentials['password'],
+            email: (string) $credentials['email'],
+            password: (string) $credentials['password'],
             remember: $remember,
             ip: $ip,
         );

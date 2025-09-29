@@ -21,6 +21,7 @@ final readonly class TrackUserPresence
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
+            /** @var mixed $user */
             $user = Auth::user();
             if (! $user instanceof User) {
                 /** @var Response $response */
@@ -29,6 +30,7 @@ final readonly class TrackUserPresence
                 return $response;
             }
 
+            /** @var mixed $userId */
             $userId = $user->getAttribute('id');
             if (! is_numeric($userId)) {
                 /** @var Response $response */

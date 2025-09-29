@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Auth;
 
 use App\DataTransferObjects\Auth\PasswordResetData;
+use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -17,7 +18,7 @@ final readonly class ResetPasswordAction
      */
     public function handle(PasswordResetData $resetData): string
     {
-        return Password::reset($resetData->toArray(), function ($user, $password): void {
+        $status = Password::reset($resetData->toArray(), function (User $user, string $password): void {
             $user->forceFill([
                 'password' => Hash::make($password),
             ])->setRememberToken(Str::random(60));
@@ -26,5 +27,7 @@ final readonly class ResetPasswordAction
 
             event(new PasswordReset($user));
         });
+
+        return (string) $status;
     }
 }

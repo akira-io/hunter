@@ -7,6 +7,7 @@ namespace App\Actions\Hunt;
 use App\DataTransferObjects\Hunt\CreateHuntData;
 use App\Models\Hunt;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 
 final readonly class CreateHuntAction
 {
@@ -17,7 +18,7 @@ final readonly class CreateHuntAction
     {
         $hunt = $user->hunts()->create($huntData->toArray());
 
-        if ($huntData->image !== null) {
+        if ($huntData->image instanceof UploadedFile) {
             $hunt->addMedia($huntData->image)->toMediaCollection('hunts');
         }
 

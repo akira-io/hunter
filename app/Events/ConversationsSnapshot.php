@@ -10,7 +10,9 @@ use App\Models\Message;
 use App\Models\User;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -33,6 +35,7 @@ final class ConversationsSnapshot implements ShouldBroadcastNow
      */
     public function broadcastOn(): array
     {
+
         $userId = $this->user->id;
 
         return [new PrivateChannel('user.'.$userId)];
@@ -43,24 +46,26 @@ final class ConversationsSnapshot implements ShouldBroadcastNow
      */
     public function broadcastAs(): string
     {
+
         return 'conversations.snapshot';
     }
 
     /**
      * The event's broadcast data.'
      *
-     * @return array{conversations: array<int, array{id:int,title:?string,type:string,participants:array<int,array{id:int,name:string,avatar_url:?string}>,last_message:array{id:int,content:string,type:string,created_at:mixed,user:array{id:int,name:string}}|null,last_message_at:mixed,unread_count:int}>}
+     * @return array{conversations: array<int,
+     *     array{id:int,title:?string,type:string,participants:array<int,array{id:int,name:string,avatar_url:?string}>,last_message:array{id:int,content:string,type:string,created_at:mixed,user:array{id:int,name:string}}|null,last_message_at:mixed,unread_count:int}>}
      */
     public function broadcastWith(): array
     {
+
         $user = $this->user;
 
         /** @var Collection<int, Conversation> $conversationsCollection */
         $conversationsCollection = $user->conversations()
             ->with([
                 'participants',
-                'messages' => function ($query): void {
-                    // @phpstan-ignore-next-line
+                'messages' => function (Builder|HasMany $query): void {
                     $query->latest()->limit(1)->with('user');
                 },
             ])
@@ -68,6 +73,7 @@ final class ConversationsSnapshot implements ShouldBroadcastNow
             ->get();
 
         $conversations = $conversationsCollection->map(function (Conversation $conversation) use ($user): array {
+
             /** @var Collection<int, Message> $messages */
             $messages = $conversation->messages;
             $lastMessage = $messages->first();
@@ -86,10 +92,14 @@ final class ConversationsSnapshot implements ShouldBroadcastNow
 
             return [
                 'id' => $conversation->id,
-                'title' => $conversationTitle ?: ($otherParticipants->pluck('name')->join(', ') ?: 'Conversation #'.$conversationId),
+                'title' => $conversationTitle
+                    ?: ($otherParticipants->pluck('name')->join(', ')
+                        ?: 'Conversation #'.$conversationId),
                 'type' => $conversationType,
-                'avatar_url' => ($firstOtherParticipant instanceof User) ? new GetAvatarAction()->handle($firstOtherParticipant) : null,
+                'avatar_url' => ($firstOtherParticipant instanceof User)
+                    ? new GetAvatarAction()->handle($firstOtherParticipant) : null,
                 'participants' => $participants->map(static function (User $participant): array {
+
                     $participantId = $participant->id;
                     $participantName = $participant->name;
                     $participantAvatarUrl = $participant->avatar_url;

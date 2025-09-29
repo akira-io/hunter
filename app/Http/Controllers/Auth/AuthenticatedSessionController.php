@@ -35,13 +35,16 @@ final readonly class AuthenticatedSessionController
      */
     public function store(LoginRequest $request, LoginUserAction $loginUserAction): RedirectResponse
     {
-        $credentials = LoginCredentials::from(
-            credentials: $request->only('email', 'password'),
+        /** @var array<string, mixed> $credentials */
+        $credentials = $request->only('email', 'password');
+
+        $loginCredentials = LoginCredentials::from(
+            credentials: $credentials,
             remember: $request->boolean('remember'),
-            ip: $request->ip()
+            ip: (string) $request->ip()
         );
 
-        $loginUserAction->handle($credentials);
+        $loginUserAction->handle($loginCredentials);
 
         $request->session()->regenerate();
 

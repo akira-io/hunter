@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Throwable;
@@ -31,6 +32,7 @@ final readonly class CreateConversationAction
     public function handle(User $creator, string $type, array $participantIds, ?string $title = null): array
     {
 
+        /** @var SupportCollection<int, int> $filteredParticipantIds */
         $filteredParticipantIds = collect($participantIds)
             ->filter(fn (int $id): bool => $id !== $creator->getAttribute('id'))
             ->values();
@@ -40,11 +42,13 @@ final readonly class CreateConversationAction
         }
 
         if ($type === 'direct') {
+            /** @var User|null $otherUser */
             $otherUser = User::query()->find($filteredParticipantIds->first());
             if (! $otherUser instanceof User) {
                 throw new Exception('Invalid participant');
             }
 
+            /** @var Conversation|null $existingConversation */
             $existingConversation = $this->findExistingDirectConversation($creator, $otherUser);
             if ($existingConversation instanceof Conversation) {
                 return [
@@ -57,6 +61,7 @@ final readonly class CreateConversationAction
 
         /** @var array<string, mixed> $transactionResult */
         $transactionResult = DB::transaction(function () use ($creator, $type, $title, $filteredParticipantIds): array {
+            /** @var Conversation $conversation */
             $conversation = Conversation::query()->create([
                 'title' => $title,
                 'type' => $type,
@@ -97,10 +102,11 @@ final readonly class CreateConversationAction
     /**
      * Attach participants to conversation.
      *
-     * @param  \Illuminate\Support\Collection<int, int>  $participantIds
+     * @param  SupportCollection<int, int>  $participantIds
      */
-    private function attachParticipants(Conversation $conversation, User $creator, $participantIds): void
+    private function attachParticipants(Conversation $conversation, User $creator, SupportCollection $participantIds): void
     {
+        /** @var SupportCollection<int, mixed> $allParticipants */
         $allParticipants = $participantIds->concat([$creator->getAttribute('id')]);
 
         /** @var array<int, array{joined_at: Carbon, is_admin: bool}> $attachData */
@@ -112,6 +118,7 @@ final readonly class CreateConversationAction
         }
         $creatorId = (int) $creatorIdAttribute;
 
+        /** @var mixed $id */
         foreach ($allParticipants as $id) {
             if (is_numeric($id)) {
                 $intId = (int) $id;

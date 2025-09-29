@@ -40,6 +40,7 @@ final readonly class MessageController
         $user = Auth::user();
 
         try {
+            /** @var \App\Models\Message $message */
             $message = $this->sendMessageAction->handle(
                 $user,
                 $request->getConversationId(),
@@ -48,6 +49,7 @@ final readonly class MessageController
                 $request->getMetadata()
             );
 
+            /** @var User $messageUser */
             $messageUser = $message->user;
 
             return response()->json([
@@ -74,13 +76,15 @@ final readonly class MessageController
      */
     public function markAsRead(MarkMessagesAsReadRequest $request, int $conversationId): JsonResponse
     {
+        /** @var mixed $user */
         $user = Auth::user();
         if (! $user instanceof User) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         try {
-            $this->markMessagesAsReadAction->handle(
+            /** @var int $updatedCount */
+            $updatedCount = $this->markMessagesAsReadAction->handle(
                 $user,
                 $conversationId,
                 $request->getMessageIds()
@@ -97,6 +101,7 @@ final readonly class MessageController
      */
     public function destroy(int $id): JsonResponse
     {
+        /** @var mixed $user */
         $user = Auth::user();
         if (! $user instanceof User) {
             return response()->json(['error' => 'Unauthorized'], 401);

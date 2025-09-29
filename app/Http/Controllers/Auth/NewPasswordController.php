@@ -43,7 +43,7 @@ final readonly class NewPasswordController
         }
 
         throw ValidationException::withMessages([
-            'email' => [__(type($status)->asString())],
+            'email' => [__($status)],
         ]);
     }
 }

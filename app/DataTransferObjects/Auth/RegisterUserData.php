@@ -25,9 +25,9 @@ final readonly class RegisterUserData
     public static function fromArray(array $data): self
     {
         return new self(
-            name: $data['name'],
-            email: $data['email'],
-            password: $data['password'],
+            name: (string) $data['name'],
+            email: (string) $data['email'],
+            password: (string) $data['password'],
         );
     }
 
@@ -37,9 +37,9 @@ final readonly class RegisterUserData
     public static function fromRequest(RegisterRequest $request): self
     {
         return new self(
-            name: $request->input('name'),
-            email: $request->input('email'),
-            password: $request->input('password'),
+            name: (string) $request->input('name'),
+            email: (string) $request->input('email'),
+            password: (string) $request->input('password'),
         );
     }
 }

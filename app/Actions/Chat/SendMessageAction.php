@@ -8,6 +8,7 @@ use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -29,6 +30,7 @@ final readonly class SendMessageAction
         ?array $metadata = null
     ): Message {
 
+        /** @var Conversation $conversation */
         $conversation = $this->findConversationForUser($user, $conversationId);
 
         /** @var Message $result */
@@ -43,7 +45,8 @@ final readonly class SendMessageAction
                 'metadata' => $metadata,
             ]);
 
-            $conversation->update(['last_message_at' => now()]);
+            /** @var bool $updated */
+            $updated = $conversation->update(['last_message_at' => now()]);
 
             MessageSent::dispatch($message);
 
@@ -64,12 +67,12 @@ final readonly class SendMessageAction
     {
         /** @var Conversation|null $conversation */
         $conversation = Conversation::query()
-            ->whereHas('participants', function ($q) use ($user): void {
+            ->whereHas('participants', function (Builder $q) use ($user): void {
                 $q->where('user_id', $user->id);
             })
             ->find($conversationId);
 
-        if (! $conversation) {
+        if (! $conversation instanceof Conversation) {
             throw new ModelNotFoundException('Conversation not found or user is not a participant');
         }
 

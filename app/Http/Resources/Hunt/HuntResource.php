@@ -8,6 +8,8 @@ use App\Http\Resources\Commentable\CommentResource;
 use App\Models\Comment;
 use App\Models\Hunt;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
@@ -51,11 +53,11 @@ final class HuntResource extends JsonResource
         /** @var User|null $user */
         $user = request()->user();
 
-        /** @var \Illuminate\Database\Eloquent\Builder<Comment> $builder */
+        /** @var Builder<Comment> $builder */
         $builder = $this->comments()->orderByDesc('created_at');
 
         if ($user === null) {
-            /** @var \Illuminate\Database\Eloquent\Collection<int, Comment> $commentsCollection */
+            /** @var EloquentCollection<int, Comment> $commentsCollection */
             $commentsCollection = $builder->get();
             $commentsCollection->each(function (Comment $comment): void {
                 $comment->has_liked = false;
@@ -66,16 +68,15 @@ final class HuntResource extends JsonResource
             return $comments;
         }
 
+        /** @var Builder<Comment> $builderWithCount */
         $builderWithCount = $builder
             ->withCount([
-                'likes as has_liked' => function ($q) use ($user): void {
-                    if (is_object($q) && method_exists($q, 'where')) {
-                        $q->where('user_id', $user->getAttribute('id'));
-                    }
+                'likes as has_liked' => function (Builder $q) use ($user): void {
+                    $q->where('user_id', $user->getAttribute('id'));
                 },
             ]);
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, Comment> $commentsWithCount */
+        /** @var EloquentCollection<int, Comment> $commentsWithCount */
         $commentsWithCount = $builderWithCount->get();
         $commentsWithCount->each(function (Comment $comment): void {
             $comment->has_liked = (bool) $comment->has_liked;

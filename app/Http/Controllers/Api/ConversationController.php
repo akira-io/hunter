@@ -33,11 +33,13 @@ final readonly class ConversationController
      */
     public function index(): JsonResponse
     {
+        /** @var mixed $user */
         $user = Auth::user();
         if (! $user instanceof User) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        /** @var array<int, array<string, mixed>> $conversations */
         $conversations = $this->getConversationsAction->handle($user);
 
         return response()->json($conversations);
@@ -50,12 +52,14 @@ final readonly class ConversationController
      */
     public function store(CreateConversationRequest $request): JsonResponse
     {
+        /** @var mixed $user */
         $user = Auth::user();
         if (! $user instanceof User) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         try {
+            /** @var array<string, mixed> $result */
             $result = $this->createConversationAction->handle(
                 $user,
                 $request->getType(),
@@ -63,6 +67,7 @@ final readonly class ConversationController
                 $request->getTitle()
             );
 
+            /** @var int $statusCode */
             $statusCode = $result['existing'] ? 200 : 201;
 
             return response()->json([
@@ -84,12 +89,14 @@ final readonly class ConversationController
      */
     public function show(int $id): JsonResponse
     {
+        /** @var mixed $user */
         $user = Auth::user();
         if (! $user instanceof User) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         try {
+            /** @var array<string, mixed> $conversationData */
             $conversationData = $this->getConversationMessagesAction->handle($user, $id);
 
             return response()->json($conversationData);
@@ -103,6 +110,7 @@ final readonly class ConversationController
      */
     public function destroy(int $id): JsonResponse
     {
+        /** @var mixed $user */
         $user = Auth::user();
         if (! $user instanceof User) {
             return response()->json(['error' => 'Unauthorized'], 401);

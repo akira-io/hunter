@@ -26,10 +26,10 @@ final readonly class PasswordResetData
     public static function fromArray(array $data): self
     {
         return new self(
-            token: $data['token'],
-            email: $data['email'],
-            password: $data['password'],
-            passwordConfirmation: $data['password_confirmation'],
+            token: (string) $data['token'],
+            email: (string) $data['email'],
+            password: (string) $data['password'],
+            passwordConfirmation: (string) $data['password_confirmation'],
         );
     }
 
@@ -39,10 +39,10 @@ final readonly class PasswordResetData
     public static function fromRequest(NewPasswordRequest $request): self
     {
         return new self(
-            token: $request->input('token'),
-            email: $request->input('email'),
-            password: $request->input('password'),
-            passwordConfirmation: $request->input('password_confirmation'),
+            token: (string) $request->input('token'),
+            email: (string) $request->input('email'),
+            password: (string) $request->input('password'),
+            passwordConfirmation: (string) $request->input('password_confirmation'),
         );
     }
 

@@ -8,6 +8,7 @@ use App\Actions\User\GetAvatarAction;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -31,7 +32,7 @@ final readonly class GetConversationMessagesAction
     {
         /** @var Conversation $conversation */
         $conversation = Conversation::query()
-            ->whereHas('participants', function ($q) use ($user): void {
+            ->whereHas('participants', function (Builder $q) use ($user): void {
                 $q->where('user_id', $user->getAttribute('id'));
             })
             ->findOrFail($conversationId);
@@ -42,6 +43,7 @@ final readonly class GetConversationMessagesAction
             ->orderBy('created_at', 'asc')
             ->get();
 
+        /** @var Collection<int, array{id: mixed, content: mixed, type: mixed, metadata: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}> $messages */
         $messages = $messagesCollection->map(fn (Message $message): array => $this->formatMessage($message));
 
         /** @var Collection<int, User> $participants */
@@ -71,6 +73,7 @@ final readonly class GetConversationMessagesAction
      */
     private function formatMessage(Message $message): array
     {
+        /** @var User $user */
         $user = $message->user;
 
         return [

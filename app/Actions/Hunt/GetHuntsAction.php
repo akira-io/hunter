@@ -12,6 +12,8 @@ final readonly class GetHuntsAction
 {
     /**
      * Get paginated hunts with like status for the given user.
+     *
+     * @return LengthAwarePaginator<int, Hunt>
      */
     public function handle(User $user): LengthAwarePaginator
     {
@@ -19,6 +21,9 @@ final readonly class GetHuntsAction
             ->latest()
             ->paginate();
 
-        return $user->attachLikeStatus($hunts);
+        /** @var LengthAwarePaginator<int, Hunt> $result */
+        $result = $user->attachLikeStatus($hunts);
+
+        return $result;
     }
 }

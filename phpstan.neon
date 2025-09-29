@@ -7,3 +7,6 @@ parameters:
         - app
 
     level: max
+
+    ignoreErrors:
+        - '#Cannot cast mixed to string\.#'

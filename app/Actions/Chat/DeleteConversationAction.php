@@ -7,6 +7,7 @@ namespace App\Actions\Chat;
 use App\Models\Conversation;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 final readonly class DeleteConversationAction
@@ -20,14 +21,15 @@ final readonly class DeleteConversationAction
     {
         /** @var Conversation $conversation */
         $conversation = Conversation::query()
-            ->whereHas('participants', function ($q) use ($user): void {
+            ->whereHas('participants', function (Builder $q) use ($user): void {
                 $q->where('user_id', $user->getAttribute('id'));
             })
             ->with('creator')
             ->findOrFail($conversationId);
 
+        /** @var User $creator */
         $creator = $conversation->getRelation('creator');
-        if ($creator instanceof User && $creator->getAttribute('id') !== $user->getAttribute('id')) {
+        if ($creator->getAttribute('id') !== $user->getAttribute('id')) {
             throw new Exception('Unauthorized');
         }
 

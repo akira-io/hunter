@@ -43,14 +43,20 @@ final class CreateHuntRequest extends FormRequest
      */
     public function store(): Hunt
     {
-
+        /** @var User $user */
         $user = type($this->user())->as(User::class);
 
+        /** @var array<string, mixed> $huntData */
+        $huntData = $this->except('image');
+
+        /** @var Hunt $hunt */
         $hunt = $user->hunts()
-            ->create($this->except('image'));
+            ->create($huntData);
 
         if ($this->hasFile('image')) {
-            $hunt->addMedia(type($this->file('image'))->as(UploadedFile::class))
+            /** @var UploadedFile $imageFile */
+            $imageFile = type($this->file('image'))->as(UploadedFile::class);
+            $hunt->addMedia($imageFile)
                 ->toMediaCollection('hunts');
         }
 

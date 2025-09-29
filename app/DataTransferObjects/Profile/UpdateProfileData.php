@@ -26,10 +26,10 @@ final readonly class UpdateProfileData
     public static function fromArray(array $data): self
     {
         return new self(
-            name: $data['name'],
-            email: $data['email'],
-            bio: $data['bio'] ?? null,
-            location: $data['location'] ?? null,
+            name: (string) $data['name'],
+            email: (string) $data['email'],
+            bio: isset($data['bio']) ? (string) $data['bio'] : null,
+            location: isset($data['location']) ? (string) $data['location'] : null,
         );
     }
 
@@ -39,10 +39,10 @@ final readonly class UpdateProfileData
     public static function fromRequest(ProfileUpdateRequest $request): self
     {
         return new self(
-            name: $request->input('name'),
-            email: $request->input('email'),
-            bio: $request->input('bio'),
-            location: $request->input('location'),
+            name: (string) $request->input('name'),
+            email: (string) $request->input('email'),
+            bio: $request->input('bio') ? (string) $request->input('bio') : null,
+            location: $request->input('location') ? (string) $request->input('location') : null,
         );
     }
 
@@ -58,6 +58,6 @@ final readonly class UpdateProfileData
             'email' => $this->email,
             'bio' => $this->bio,
             'location' => $this->location,
-        ], fn ($value) => $value !== null);
+        ], fn (?string $value): bool => $value !== null);
     }
 }

@@ -18,16 +18,19 @@ final readonly class HandleGithubAuthAction
      */
     public function handle(SocialiteUser $githubUser): User
     {
+        /** @var array<string, mixed> $githubUserData */
         $githubUserData = GithubUser::from($githubUser)->toArray();
 
         /** @var string $email */
         $email = $githubUserData['email'] ?? '';
+        /** @var User|null $user */
         $user = $this->findUserByEmail($email);
 
         if ($user instanceof User) {
             return $this->linkGithubToExistingUser($user, $githubUserData);
         }
 
+        /** @var User|null $user */
         $user = $this->findUserByGithubId($githubUser->getId());
 
         if ($user instanceof User) {
@@ -42,7 +45,10 @@ final readonly class HandleGithubAuthAction
      */
     private function findUserByEmail(string $email): ?User
     {
-        return User::query()->firstWhere('email', $email);
+        /** @var User|null $user */
+        $user = User::query()->firstWhere('email', $email);
+
+        return $user;
     }
 
     /**
@@ -50,7 +56,10 @@ final readonly class HandleGithubAuthAction
      */
     private function findUserByGithubId(string $githubId): ?User
     {
-        return User::query()->firstWhere('github_id', $githubId);
+        /** @var User|null $user */
+        $user = User::query()->firstWhere('github_id', $githubId);
+
+        return $user;
     }
 
     /**
@@ -61,6 +70,7 @@ final readonly class HandleGithubAuthAction
      */
     private function linkGithubToExistingUser(User $user, array $githubUserData): User
     {
+        /** @var array<string, mixed> $updateData */
         $updateData = [
             'github_id' => $githubUserData['github_id'],
             'github_token' => $githubUserData['github_token'],
@@ -114,6 +124,9 @@ final readonly class HandleGithubAuthAction
      */
     private function createNewUser(array $githubUserData): User
     {
-        return User::query()->create($githubUserData);
+        /** @var User $user */
+        $user = User::query()->create($githubUserData);
+
+        return $user;
     }
 }

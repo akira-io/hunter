@@ -27,11 +27,11 @@ final readonly class AcademicBackgroundData
     public static function fromArray(array $data): self
     {
         return new self(
-            degree: $data['degree'],
-            fieldOfStudy: $data['field_of_study'],
-            startDate: $data['start_date'],
-            endDate: $data['end_date'] ?? null,
-            institution: $data['institution'],
+            degree: (string) $data['degree'],
+            fieldOfStudy: (string) $data['field_of_study'],
+            startDate: (string) $data['start_date'],
+            endDate: isset($data['end_date']) ? (string) $data['end_date'] : null,
+            institution: (string) $data['institution'],
         );
     }
 
@@ -41,11 +41,11 @@ final readonly class AcademicBackgroundData
     public static function fromRequest(AcademicBackgroundRequest $request): self
     {
         return new self(
-            degree: $request->input('degree'),
-            fieldOfStudy: $request->input('field_of_study'),
-            startDate: $request->input('start_date'),
-            endDate: $request->input('end_date'),
-            institution: $request->input('institution')
+            degree: (string) $request->input('degree'),
+            fieldOfStudy: (string) $request->input('field_of_study'),
+            startDate: (string) $request->input('start_date'),
+            endDate: $request->input('end_date') ? (string) $request->input('end_date') : null,
+            institution: (string) $request->input('institution')
         );
     }
 

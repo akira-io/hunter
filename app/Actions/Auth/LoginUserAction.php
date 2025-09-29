@@ -20,7 +20,7 @@ final readonly class LoginUserAction
      */
     public function handle(LoginCredentials $credentials): bool
     {
-        $ip = $credentials->ip ?? request()->ip();
+        $ip = $credentials->ip ?? (string) request()->ip();
         $throttleKey = $this->getThrottleKey($credentials->email, $ip);
 
         $this->ensureIsNotRateLimited($throttleKey);
