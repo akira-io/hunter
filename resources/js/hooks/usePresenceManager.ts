@@ -1,7 +1,7 @@
 import '@/config/echo';
 import { useClearFollowedHunters, useRefreshFollowedHunters, useUpdateHunterOnlineStatus } from '@/stores/followedHuntersStore';
 import { useAddUser, useClearUsers, useRemoveUser, useSetConnected, useSetUsers } from '@/stores/onlineUsersStore';
-import { useEcho } from '@laravel/echo-react';
+import { useEchoPresence } from '@laravel/echo-react';
 import { useEffect } from 'react';
 
 interface OnlineUser {
@@ -45,7 +45,7 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
     }, [currentUserId, clearUsers]);
 
     // Use useEcho hook for presence channel
-    const presence = useEcho<OnlineUser>(currentUserId ? 'presence' : '', undefined, undefined, [], 'private');
+    const presence = useEchoPresence<OnlineUser>(currentUserId ? 'presence' : '', undefined, undefined, []);
 
     // Manage presence channel
     useEffect(() => {

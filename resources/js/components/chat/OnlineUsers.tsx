@@ -170,7 +170,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                                 )}
 
                                 {allUsers.map((item, index) => {
-                                    const isOnline = filteredOnlineUsers.some(user => user.id === item.id);
+                                    const isOnline = filteredOnlineUsers.some((user) => user.id === item.id);
                                     const displayName = item.name;
                                     const showOfflineHeader = !isOnline && index === filteredOnlineUsers.length && offlineFollowedHunters.length > 0;
                                     const unreadCount = getUnreadCountForUser(item.id);
