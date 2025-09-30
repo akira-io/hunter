@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { LoaderCircle } from 'lucide-react';
-import { RiGithubFill } from '@remixicon/react';
-import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import github from '@/routes/github';
+import { RiGithubFill } from '@remixicon/react';
+import { LoaderCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export function GithubLoginButton() {
     const [loading, setLoading] = useState(false);
@@ -61,20 +61,11 @@ export function GithubLoginButton() {
     }, [loading, toast]);
 
     return (
-        <Button
-            variant='outline'
-            type='button'
-            className='w-full'
-            onClick={handleGithubLogin}
-            tabIndex={1}
-            disabled={loading}
-        >
+        <Button variant="outline" type="button" className="w-full" onClick={handleGithubLogin} tabIndex={1} disabled={loading}>
             {loading ? (
-                <LoaderCircle className='h-4 w-4 animate-spin' />
+                <LoaderCircle className="h-4 w-4 animate-spin" />
             ) : (
-                <RiGithubFill className='me-1 text-[#333333] dark:text-white/60'
-                              size={16}
-                              aria-hidden='true' />
+                <RiGithubFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
             )}
             {loading ? 'Conectando com GitHub...' : 'Continuar com GitHub'}
         </Button>

@@ -3,6 +3,8 @@ import { LoaderCircle, LogInIcon } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
+import { GithubLoginButton } from '@/components/login/GithubLoginButton';
+import { GoogleLoginButton } from '@/components/login/GoogleLoginButton';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -11,8 +13,6 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { login, register } from '@/routes';
 import password from '@/routes/password';
-import { GithubLoginButton } from '@/components/login/GithubLoginButton';
-import { GoogleLoginButton } from '@/components/login/GoogleLoginButton';
 
 type LoginForm = {
     email: string;
@@ -25,10 +25,7 @@ interface LoginProps {
     canResetPassword: boolean;
 }
 
-
 export default function Login({ status, canResetPassword }: LoginProps) {
-
-
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         email: '',
         password: '',
@@ -42,16 +39,15 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         });
     };
 
-
     return (
         <AuthLayout title="Login" description="Iniciar sessão na sua conta Hunter">
             <Head title="Login" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className='grid gap-1'>
+                <div className="grid gap-1">
                     <GithubLoginButton />
                     <GoogleLoginButton />
                 </div>
-                <div className='grid gap-6 mt-2'>
+                <div className="mt-2 grid gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="email">E-mail</Label>
                         <Input

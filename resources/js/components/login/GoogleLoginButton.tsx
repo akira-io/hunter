@@ -1,9 +1,9 @@
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import google from '@/routes/google';
 import { LoaderCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { RiGoogleFill } from 'react-icons/ri';
-import { useState, useEffect } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
 
 export function GoogleLoginButton() {
     const [loading, setLoading] = useState(false);
@@ -61,20 +61,11 @@ export function GoogleLoginButton() {
     }, [loading, toast]);
 
     return (
-        <Button
-            variant='outline'
-            type='button'
-            className='w-full'
-            onClick={handleLogin}
-            tabIndex={6}
-            disabled={loading}
-        >
+        <Button variant="outline" type="button" className="w-full" onClick={handleLogin} tabIndex={6} disabled={loading}>
             {loading ? (
-                <LoaderCircle className='h-4 w-4 animate-spin' />
+                <LoaderCircle className="h-4 w-4 animate-spin" />
             ) : (
-                <RiGoogleFill className='me-1 text-[#333333] dark:text-white/60'
-                              size={16}
-                              aria-hidden='true' />
+                <RiGoogleFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
             )}
             {loading ? 'Conectando com Google...' : 'Continuar com Google'}
         </Button>

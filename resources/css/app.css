@@ -183,7 +183,7 @@
     }
 
     .animate-glow {
-        @apply transition-all duration-300 ease-out hover:shadow-xl hover:shadow-primary/25;
+        @apply hover:shadow-primary/25 transition-all duration-300 ease-out hover:shadow-xl;
     }
 
     /* Enhanced card effects - mais conservador */
@@ -209,9 +209,15 @@
     }
 
     @keyframes gradient-shift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
     }
 
     /* Subtle glass effects para casos específicos */
@@ -227,7 +233,7 @@
 
     /* Enhanced focus states */
     .focus-enhanced {
-        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2;
+        @apply focus-visible:ring-primary/50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
     }
 
     /* Skeleton loading mais sutil */
@@ -243,26 +249,18 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.2),
-            transparent
-        );
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         animation: shimmer 2s infinite;
     }
 
     .dark .skeleton-shimmer::after {
-        background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.1),
-            transparent
-        );
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
     }
 
     @keyframes shimmer {
-        to { left: 100%; }
+        to {
+            left: 100%;
+        }
     }
 
     /* Background patterns */

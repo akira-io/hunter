@@ -1,28 +1,28 @@
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface Hunter {
-    id: number
-    name: string
-    avatar_url?: string
-    username?: string
-    level?: number
-    is_online?: boolean
+    id: number;
+    name: string;
+    avatar_url?: string;
+    username?: string;
+    level?: number;
+    is_online?: boolean;
 }
 
 interface FollowedHuntersState {
-    hunters: Hunter[]
-    loading: boolean
-    lastUpdated: number
+    hunters: Hunter[];
+    loading: boolean;
+    lastUpdated: number;
 
     // Actions
-    setHunters: (hunters: Hunter[]) => void
-    updateHunterOnlineStatus: (hunterId: number, isOnline: boolean) => void
-    addHunter: (hunter: Hunter) => void
-    removeHunter: (hunterId: number) => void
-    setLoading: (loading: boolean) => void
-    clearHunters: () => void
-    refreshHunters: () => Promise<void>
+    setHunters: (hunters: Hunter[]) => void;
+    updateHunterOnlineStatus: (hunterId: number, isOnline: boolean) => void;
+    addHunter: (hunter: Hunter) => void;
+    removeHunter: (hunterId: number) => void;
+    setLoading: (loading: boolean) => void;
+    clearHunters: () => void;
+    refreshHunters: () => Promise<void>;
 }
 
 export const useFollowedHuntersStore = create<FollowedHuntersState>()(
@@ -36,57 +36,53 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
                 set({
                     hunters,
                     lastUpdated: Date.now(),
-                    loading: false
-                })
+                    loading: false,
+                });
             },
 
             updateHunterOnlineStatus: (hunterId: number, isOnline: boolean) => {
-                const { hunters } = get()
-                const updatedHunters = hunters.map(hunter =>
-                    hunter.id === hunterId
-                        ? { ...hunter, is_online: isOnline }
-                        : hunter
-                )
-                set({ hunters: updatedHunters })
+                const { hunters } = get();
+                const updatedHunters = hunters.map((hunter) => (hunter.id === hunterId ? { ...hunter, is_online: isOnline } : hunter));
+                set({ hunters: updatedHunters });
             },
 
             addHunter: (hunter: Hunter) => {
-                const { hunters } = get()
-                const exists = hunters.some(h => h.id === hunter.id)
+                const { hunters } = get();
+                const exists = hunters.some((h) => h.id === hunter.id);
                 if (!exists) {
                     set({
                         hunters: [...hunters, hunter],
-                        lastUpdated: Date.now()
-                    })
+                        lastUpdated: Date.now(),
+                    });
                 }
             },
 
             removeHunter: (hunterId: number) => {
-                const { hunters } = get()
-                const hunter = hunters.find(h => h.id === hunterId)
+                const { hunters } = get();
+                const hunter = hunters.find((h) => h.id === hunterId);
                 if (hunter) {
                     set({
-                        hunters: hunters.filter(h => h.id !== hunterId),
-                        lastUpdated: Date.now()
-                    })
+                        hunters: hunters.filter((h) => h.id !== hunterId),
+                        lastUpdated: Date.now(),
+                    });
                 }
             },
 
             setLoading: (loading: boolean) => {
-                set({ loading })
+                set({ loading });
             },
 
             clearHunters: () => {
                 set({
                     hunters: [],
                     loading: false,
-                    lastUpdated: 0
-                })
+                    lastUpdated: 0,
+                });
             },
 
             refreshHunters: async () => {
-                const { setLoading, setHunters } = get()
-                setLoading(true)
+                const { setLoading, setHunters } = get();
+                setLoading(true);
 
                 try {
                     const response = await fetch('/followed-hunters', {
@@ -96,20 +92,19 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
                             'X-Requested-With': 'XMLHttpRequest',
                         },
                         credentials: 'same-origin',
-                    })
-
+                    });
 
                     if (response.ok) {
-                        const data = await response.json()
-                        const hunters = Array.isArray(data) ? data : (data?.data ?? [])
-                        setHunters(hunters)
+                        const data = await response.json();
+                        const hunters = Array.isArray(data) ? data : (data?.data ?? []);
+                        setHunters(hunters);
                     } else {
-                        setLoading(false)
+                        setLoading(false);
                     }
                 } catch {
-                    setLoading(false)
+                    setLoading(false);
                 }
-            }
+            },
         }),
         {
             name: 'devhunter-followed-hunters',
@@ -118,35 +113,35 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
             // Only persist hunters and lastUpdated
             partialize: (state) => ({
                 hunters: state.hunters,
-                lastUpdated: state.lastUpdated
+                lastUpdated: state.lastUpdated,
             }),
 
             // Check if cached data is still valid (5 minutes)
             onRehydrateStorage: () => (state) => {
                 if (state) {
-                    const now = Date.now()
-                    const maxAge = 5 * 60 * 1000 // 5 minutes
+                    const now = Date.now();
+                    const maxAge = 5 * 60 * 1000; // 5 minutes
 
                     if (now - state.lastUpdated > maxAge) {
-                        state.clearHunters()
+                        state.clearHunters();
                     } else {
                         // Reset loading on rehydration
-                        state.loading = false
+                        state.loading = false;
                     }
                 }
-            }
-        }
-    )
-)
+            },
+        },
+    ),
+);
 
 // Selector helpers for better performance
-export const useFollowedHunters = () => useFollowedHuntersStore(state => state.hunters)
-export const useFollowedHuntersLoading = () => useFollowedHuntersStore(state => state.loading)
+export const useFollowedHunters = () => useFollowedHuntersStore((state) => state.hunters);
+export const useFollowedHuntersLoading = () => useFollowedHuntersStore((state) => state.loading);
 
 // Individual action selectors
-export const useSetFollowedHunters = () => useFollowedHuntersStore(state => state.setHunters)
-export const useUpdateHunterOnlineStatus = () => useFollowedHuntersStore(state => state.updateHunterOnlineStatus)
-export const useAddFollowedHunter = () => useFollowedHuntersStore(state => state.addHunter)
-export const useRemoveFollowedHunter = () => useFollowedHuntersStore(state => state.removeHunter)
-export const useRefreshFollowedHunters = () => useFollowedHuntersStore(state => state.refreshHunters)
-export const useClearFollowedHunters = () => useFollowedHuntersStore(state => state.clearHunters)
+export const useSetFollowedHunters = () => useFollowedHuntersStore((state) => state.setHunters);
+export const useUpdateHunterOnlineStatus = () => useFollowedHuntersStore((state) => state.updateHunterOnlineStatus);
+export const useAddFollowedHunter = () => useFollowedHuntersStore((state) => state.addHunter);
+export const useRemoveFollowedHunter = () => useFollowedHuntersStore((state) => state.removeHunter);
+export const useRefreshFollowedHunters = () => useFollowedHuntersStore((state) => state.refreshHunters);
+export const useClearFollowedHunters = () => useFollowedHuntersStore((state) => state.clearHunters);

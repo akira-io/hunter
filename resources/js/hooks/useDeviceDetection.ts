@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface DeviceInfo {
     isMobile: boolean;
@@ -35,14 +35,9 @@ export const useDeviceDetection = (): DeviceInfo => {
 
             // Additional check for user agent (more reliable for some cases)
             const userAgent = navigator.userAgent.toLowerCase();
-            const mobileUserAgents = [
-                'android', 'iphone', 'ipad', 'ipod', 'blackberry',
-                'windows phone', 'mobile', 'tablet'
-            ];
+            const mobileUserAgents = ['android', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone', 'mobile', 'tablet'];
 
-            const userAgentIsMobile = mobileUserAgents.some(agent =>
-                userAgent.includes(agent)
-            );
+            const userAgentIsMobile = mobileUserAgents.some((agent) => userAgent.includes(agent));
 
             // For tablets in landscape, treat as desktop even if user agent says mobile
             const shouldTreatAsDesktop = isLandscape && screenWidth >= 768;
@@ -82,14 +77,9 @@ export const shouldUseMobileChat = (): boolean => {
     // Check orientation: landscape if width > height
     const isLandscape = screenWidth > screenHeight;
 
-    const mobileUserAgents = [
-        'android', 'iphone', 'ipad', 'ipod', 'blackberry',
-        'windows phone', 'mobile', 'tablet'
-    ];
+    const mobileUserAgents = ['android', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone', 'mobile', 'tablet'];
 
-    const userAgentIsMobile = mobileUserAgents.some(agent =>
-        userAgent.includes(agent)
-    );
+    const userAgentIsMobile = mobileUserAgents.some((agent) => userAgent.includes(agent));
 
     // For tablets in landscape mode (768px+), use desktop behavior
     if (isLandscape && screenWidth >= 768) {
@@ -100,9 +90,5 @@ export const shouldUseMobileChat = (): boolean => {
     // 1. Screen width is less than 768px (definitely mobile), OR
     // 2. Portrait mode and screen width is less than 1024px, OR
     // 3. User agent indicates mobile device and not landscape with good width
-    return (
-        screenWidth < 768 ||
-        (!isLandscape && screenWidth < 1024) ||
-        (userAgentIsMobile && screenWidth < 768)
-    );
+    return screenWidth < 768 || (!isLandscape && screenWidth < 1024) || (userAgentIsMobile && screenWidth < 768);
 };

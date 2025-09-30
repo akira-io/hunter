@@ -1,14 +1,7 @@
 import InputError from '@/components/input-error';
 import { ProfileCard } from '@/components/profile-card';
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Option } from '@/components/ui/multiselect';
@@ -18,8 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon, CircleAlertIcon, GraduationCap, PlusIcon, TrashIcon } from 'lucide-react';
-import { FormEvent } from 'react';
 import * as React from 'react';
+import { FormEvent } from 'react';
 
 import {
     AlertDialog,
@@ -30,7 +23,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger
+    AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
@@ -261,11 +254,11 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className='w-auto p-2 overflow-hidden ' align='start' forceMount>
+                                <PopoverContent className="w-auto overflow-hidden p-2" align="start" forceMount>
                                     <Calendar
-                                        className='min-h-[360px] w-[300px] rounded-md bg-background p-3'
+                                        className="bg-background min-h-[360px] w-[300px] rounded-md p-3"
                                         mode="single"
-                                        captionLayout='dropdown'
+                                        captionLayout="dropdown"
                                         selected={data.start_date}
                                         onSelect={(date) => {
                                             setData('start_date', date ? date : new Date());
@@ -298,10 +291,10 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className='w-full p-2' align='start' forceMount>
+                                <PopoverContent className="w-full p-2" align="start" forceMount>
                                     <Calendar
-                                        className='min-h-[360px] w-[300px] rounded-md bg-background p-3'
-                                        captionLayout='dropdown'
+                                        className="bg-background min-h-[360px] w-[300px] rounded-md p-3"
+                                        captionLayout="dropdown"
                                         mode="single"
                                         selected={data.end_date ? data.end_date : undefined}
                                         onSelect={(date) => {

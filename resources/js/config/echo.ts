@@ -1,8 +1,8 @@
-import Pusher from 'pusher-js';
 import { configureEcho } from '@laravel/echo-react';
+import Pusher from 'pusher-js';
 
 // Expose Pusher for Echo (Reverb speaks the Pusher protocol)
-window.Pusher = Pusher
+window.Pusher = Pusher;
 
 // Configure Echo to use Laravel Reverb based on Vite env vars
 configureEcho({
@@ -20,6 +20,6 @@ configureEcho({
             'X-Requested-With': 'XMLHttpRequest',
         },
     },
-})
+});
 
-export default window.Echo
+export default window.Echo;

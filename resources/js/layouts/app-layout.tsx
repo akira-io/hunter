@@ -1,3 +1,4 @@
+import { ChatContainer } from '@/components/chat/ChatContainer';
 import { OnlineUsers } from '@/components/chat/OnlineUsers';
 import { Toaster } from '@/components/ui/toaster';
 import { ChatProvider } from '@/contexts/ChatContext';
@@ -6,7 +7,6 @@ import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { type ReactNode, useMemo } from 'react';
-import { ChatContainer } from '@/components/chat/ChatContainer';
 
 interface AppLayoutProps {
     children: ReactNode;

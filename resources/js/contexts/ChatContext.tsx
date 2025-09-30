@@ -1,248 +1,253 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { useChat } from '@/hooks/useChat'
+import { useChat } from '@/hooks/useChat';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface User {
-    id: number
-    name: string
-    avatar_url?: string
+    id: number;
+    name: string;
+    avatar_url?: string;
 }
 
 interface Message {
-    id: number
-    content: string
-    type: 'text' | 'image' | 'file'
-    metadata?: Record<string, unknown> | null
-    created_at: string
-    user: User
+    id: number;
+    content: string;
+    type: 'text' | 'image' | 'file';
+    metadata?: Record<string, unknown> | null;
+    created_at: string;
+    user: User;
 }
 
 interface Conversation {
-    id: number
-    title: string
-    type: 'direct' | 'group'
-    participants: User[]
-    last_message?: Message
-    last_message_at?: string
-    unread_count: number
-    messages?: Message[]
+    id: number;
+    title: string;
+    type: 'direct' | 'group';
+    participants: User[];
+    last_message?: Message;
+    last_message_at?: string;
+    unread_count: number;
+    messages?: Message[];
 }
 
 interface ChatContextType {
-    isChatOpen: boolean
-    setChatOpen: (open: boolean) => void
-    activeConversationId: number | null
-    setActiveConversationId: (id: number | null) => void
-    chatWindows: number[]
-    backgroundWindows: number[]
-    openChatWindow: (conversationId: number) => void
-    closeChatWindow: (conversationId: number) => void
-    closeBackgroundWindow: (conversationId: number) => void
-    switchToWindow: (conversationId: number) => void
-    minimizedWindows: Set<number>
-    toggleMinimize: (conversationId: number) => void
-    clearChatState: () => void
-    currentUserId?: number
+    isChatOpen: boolean;
+    setChatOpen: (open: boolean) => void;
+    activeConversationId: number | null;
+    setActiveConversationId: (id: number | null) => void;
+    chatWindows: number[];
+    backgroundWindows: number[];
+    openChatWindow: (conversationId: number) => void;
+    closeChatWindow: (conversationId: number) => void;
+    closeBackgroundWindow: (conversationId: number) => void;
+    switchToWindow: (conversationId: number) => void;
+    minimizedWindows: Set<number>;
+    toggleMinimize: (conversationId: number) => void;
+    clearChatState: () => void;
+    currentUserId?: number;
     // Chat data and functions
-    conversations: Conversation[]
-    activeConversation: Conversation | null
-    loading: boolean
-    sending: boolean
-    loadConversations: () => Promise<void>
-    loadConversation: (conversationId: number) => Promise<void>
-    sendMessage: (conversationId: number, content: string, type?: 'text' | 'image' | 'file', metadata?: Record<string, unknown> | null) => Promise<void>
-    createConversation: (type: 'direct' | 'group', participants: number[], title?: string) => Promise<Conversation>
-    markMessagesAsRead: (conversationId: number, messageIds?: number[]) => Promise<void>
-    setActiveConversation: (conversation: Conversation | null) => void
+    conversations: Conversation[];
+    activeConversation: Conversation | null;
+    loading: boolean;
+    sending: boolean;
+    loadConversations: () => Promise<void>;
+    loadConversation: (conversationId: number) => Promise<void>;
+    sendMessage: (
+        conversationId: number,
+        content: string,
+        type?: 'text' | 'image' | 'file',
+        metadata?: Record<string, unknown> | null,
+    ) => Promise<void>;
+    createConversation: (type: 'direct' | 'group', participants: number[], title?: string) => Promise<Conversation>;
+    markMessagesAsRead: (conversationId: number, messageIds?: number[]) => Promise<void>;
+    setActiveConversation: (conversation: Conversation | null) => void;
 }
 
-const ChatContext = createContext<ChatContextType | undefined>(undefined)
+const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const useChatContext = () => {
-    const context = useContext(ChatContext)
+    const context = useContext(ChatContext);
     if (!context) {
-        throw new Error('useChatContext must be used within a ChatProvider')
+        throw new Error('useChatContext must be used within a ChatProvider');
     }
-    return context
-}
+    return context;
+};
 
 interface ChatProviderProps {
-    children: React.ReactNode
-    currentUserId?: number
+    children: React.ReactNode;
+    currentUserId?: number;
 }
 
-const STORAGE_KEY = 'devhunter_chat_state'
+const STORAGE_KEY = 'devhunter_chat_state';
 
 interface ChatState {
-    chatWindows: number[]
-    backgroundWindows: number[]
-    minimizedWindows: number[]
+    chatWindows: number[];
+    backgroundWindows: number[];
+    minimizedWindows: number[];
 }
 
 const loadChatState = (): ChatState => {
     try {
-        const stored = localStorage.getItem(STORAGE_KEY)
+        const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
-            const parsed = JSON.parse(stored)
+            const parsed = JSON.parse(stored);
             return {
                 chatWindows: parsed.chatWindows || [],
                 backgroundWindows: parsed.backgroundWindows || [],
-                minimizedWindows: parsed.minimizedWindows || []
-            }
+                minimizedWindows: parsed.minimizedWindows || [],
+            };
         }
     } catch (error) {
-        console.error('Failed to load chat state from localStorage:', error)
+        console.error('Failed to load chat state from localStorage:', error);
     }
     return {
         chatWindows: [],
         backgroundWindows: [],
-        minimizedWindows: []
-    }
-}
+        minimizedWindows: [],
+    };
+};
 
 const saveChatState = (state: ChatState) => {
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (error) {
-        console.error('Failed to save chat state to localStorage:', error)
+        console.error('Failed to save chat state to localStorage:', error);
     }
-}
+};
 
 export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUserId }) => {
-    const [isChatOpen, setChatOpen] = useState(false)
-    const [activeConversationId, setActiveConversationId] = useState<number | null>(null)
+    const [isChatOpen, setChatOpen] = useState(false);
+    const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
 
     // Load initial state from localStorage
-    const initialState = loadChatState()
-    const [chatWindows, setChatWindows] = useState<number[]>(initialState.chatWindows)
-    const [backgroundWindows, setBackgroundWindows] = useState<number[]>(initialState.backgroundWindows)
-    const [minimizedWindows, setMinimizedWindows] = useState<Set<number>>(new Set(initialState.minimizedWindows))
+    const initialState = loadChatState();
+    const [chatWindows, setChatWindows] = useState<number[]>(initialState.chatWindows);
+    const [backgroundWindows, setBackgroundWindows] = useState<number[]>(initialState.backgroundWindows);
+    const [minimizedWindows, setMinimizedWindows] = useState<Set<number>>(new Set(initialState.minimizedWindows));
 
     // Use the central chat hook with chat window state
-    const chatHook = useChat(currentUserId, chatWindows, minimizedWindows)
+    const chatHook = useChat(currentUserId, chatWindows, minimizedWindows);
 
     // Save state to localStorage whenever it changes
     useEffect(() => {
         const state: ChatState = {
             chatWindows,
             backgroundWindows,
-            minimizedWindows: Array.from(minimizedWindows)
-        }
-        saveChatState(state)
-    }, [chatWindows, backgroundWindows, minimizedWindows])
+            minimizedWindows: Array.from(minimizedWindows),
+        };
+        saveChatState(state);
+    }, [chatWindows, backgroundWindows, minimizedWindows]);
 
     const openChatWindow = (conversationId: number) => {
         // Remove from background windows if exists
-        setBackgroundWindows(prev => prev.filter(id => id !== conversationId))
+        setBackgroundWindows((prev) => prev.filter((id) => id !== conversationId));
 
-        setChatWindows(prev => {
+        setChatWindows((prev) => {
             if (prev.includes(conversationId)) {
-                return prev // Already visible
+                return prev; // Already visible
             }
 
             if (prev.length < 1) {
                 // Space available, just add
-                return [...prev, conversationId]
+                return [...prev, conversationId];
             } else {
                 // Move current to background, add new one
-                const [current] = prev
-                setBackgroundWindows(bg => bg.includes(current) ? bg : [...bg, current])
-                return [conversationId]
+                const [current] = prev;
+                setBackgroundWindows((bg) => (bg.includes(current) ? bg : [...bg, current]));
+                return [conversationId];
             }
-        })
+        });
 
-        setMinimizedWindows(prev => {
-            const newSet = new Set(prev)
-            newSet.delete(conversationId)
-            return newSet
-        })
-    }
+        setMinimizedWindows((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(conversationId);
+            return newSet;
+        });
+    };
 
     const closeChatWindow = (conversationId: number) => {
-        setChatWindows(prev => {
-            const filtered = prev.filter(id => id !== conversationId)
+        setChatWindows((prev) => {
+            const filtered = prev.filter((id) => id !== conversationId);
 
             // If we have space and background windows, promote one
             if (filtered.length < 1 && backgroundWindows.length > 0) {
-                const [nextWindow, ...restBackground] = backgroundWindows
-                setBackgroundWindows(restBackground)
-                return [...filtered, nextWindow]
+                const [nextWindow, ...restBackground] = backgroundWindows;
+                setBackgroundWindows(restBackground);
+                return [...filtered, nextWindow];
             }
 
-            return filtered
-        })
+            return filtered;
+        });
 
-        setBackgroundWindows(prev => prev.filter(id => id !== conversationId))
-        setMinimizedWindows(prev => {
-            const newSet = new Set(prev)
-            newSet.delete(conversationId)
-            return newSet
-        })
-    }
+        setBackgroundWindows((prev) => prev.filter((id) => id !== conversationId));
+        setMinimizedWindows((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(conversationId);
+            return newSet;
+        });
+    };
 
     const switchToWindow = (conversationId: number) => {
         // Move window from background to visible
         if (backgroundWindows.includes(conversationId)) {
-            setBackgroundWindows(prev => prev.filter(id => id !== conversationId))
+            setBackgroundWindows((prev) => prev.filter((id) => id !== conversationId));
 
-            setChatWindows(prev => {
+            setChatWindows((prev) => {
                 if (prev.length < 1) {
-                    return [...prev, conversationId]
+                    return [...prev, conversationId];
                 } else {
                     // Move current window to background
-                    const currentWindow = prev[0]
-                    setBackgroundWindows(bg => [...bg, currentWindow])
-                    return [conversationId]
+                    const currentWindow = prev[0];
+                    setBackgroundWindows((bg) => [...bg, currentWindow]);
+                    return [conversationId];
                 }
-            })
+            });
 
             // Ensure the chat is not minimized when opened from background
-            setMinimizedWindows(prev => {
-                const newSet = new Set(prev)
-                newSet.delete(conversationId)
-                return newSet
-            })
+            setMinimizedWindows((prev) => {
+                const newSet = new Set(prev);
+                newSet.delete(conversationId);
+                return newSet;
+            });
 
             // Mark messages as read when opening from background
-            chatHook.markMessagesAsRead(conversationId).catch(error => {
-                console.error('Failed to mark messages as read when opening from background:', error)
-            })
+            chatHook.markMessagesAsRead(conversationId).catch((error) => {
+                console.error('Failed to mark messages as read when opening from background:', error);
+            });
         }
-    }
+    };
 
     const closeBackgroundWindow = (conversationId: number) => {
-        setBackgroundWindows(prev => prev.filter(id => id !== conversationId))
-        setMinimizedWindows(prev => {
-            const newSet = new Set(prev)
-            newSet.delete(conversationId)
-            return newSet
-        })
-    }
+        setBackgroundWindows((prev) => prev.filter((id) => id !== conversationId));
+        setMinimizedWindows((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(conversationId);
+            return newSet;
+        });
+    };
 
     const toggleMinimize = (conversationId: number) => {
-        setMinimizedWindows(prev => {
-            const newSet = new Set(prev)
-            const wasMinimized = newSet.has(conversationId)
+        setMinimizedWindows((prev) => {
+            const newSet = new Set(prev);
+            const wasMinimized = newSet.has(conversationId);
 
             if (wasMinimized) {
                 // Restoring from minimized - mark messages as read
-                newSet.delete(conversationId)
+                newSet.delete(conversationId);
                 // Call markMessagesAsRead when restoring
-                chatHook.markMessagesAsRead(conversationId).catch(error => {
-                    console.error('Failed to mark messages as read when restoring chat:', error)
-                })
+                chatHook.markMessagesAsRead(conversationId).catch((error) => {
+                    console.error('Failed to mark messages as read when restoring chat:', error);
+                });
             } else {
-                newSet.add(conversationId)
+                newSet.add(conversationId);
             }
-            return newSet
-        })
-    }
+            return newSet;
+        });
+    };
 
     const clearChatState = () => {
-        setChatWindows([])
-        setBackgroundWindows([])
-        setMinimizedWindows(new Set())
-        localStorage.removeItem(STORAGE_KEY)
-    }
+        setChatWindows([]);
+        setBackgroundWindows([]);
+        setMinimizedWindows(new Set());
+        localStorage.removeItem(STORAGE_KEY);
+    };
 
     return (
         <ChatContext.Provider
@@ -276,5 +281,5 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
         >
             {children}
         </ChatContext.Provider>
-    )
-}
+    );
+};

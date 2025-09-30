@@ -5,15 +5,7 @@ import { HighlightedSkills } from '@/components/profile/HighlightedSkills';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle
-} from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useSanitizeExternalUrl, useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { useTruncate } from '@/hooks/use-truncate-text';
 import { cn } from '@/lib/utils';
@@ -62,13 +54,15 @@ function OnboardingLink({ url, name, children }: { url: string | undefined; name
     const sanitizedUrl = useSanitizeExternalUrl(url);
 
     return sanitizedUrl ? (
-        <a key={name}
-           href={sanitizedUrl}
-           target='_blank'
-           rel='noopener noreferrer'
-           className='text-muted-foreground hover:text-primary'
-           aria-label={`Abrir ${name} em nova aba`}>
-        {children}
+        <a
+            key={name}
+            href={sanitizedUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-primary"
+            aria-label={`Abrir ${name} em nova aba`}
+        >
+            {children}
         </a>
     ) : null;
 }
