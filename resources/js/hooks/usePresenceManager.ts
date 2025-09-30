@@ -45,7 +45,7 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
     }, [currentUserId, clearUsers]);
 
     // Use useEcho hook for presence channel
-    const presence = useEcho<OnlineUser>(currentUserId ? 'presence' : '', undefined, undefined, [], 'presence');
+    const presence = useEcho<OnlineUser>(currentUserId ? 'presence' : '', undefined, undefined, [], 'private');
 
     // Manage presence channel
     useEffect(() => {
@@ -68,7 +68,9 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
             }
 
             try {
-                channel
+                // Type assertion for presence channel methods
+                const presenceChannel = channel as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+                presenceChannel
                     .here((users: OnlineUser[]) => {
                         if (!mounted) return;
                         setUsers(users);
@@ -116,5 +118,5 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
                 clearTimeout(retryTimeout);
             }
         };
-    }, [presence, currentUserId]);
+    }, [presence, currentUserId]); // eslint-disable-line react-hooks/exhaustive-deps
 };

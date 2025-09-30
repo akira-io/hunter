@@ -96,7 +96,7 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
         };
 
         fetchConversation();
-    }, [conversationId]);
+    }, [conversationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         const channel = conversationEcho.channel();
@@ -128,7 +128,7 @@ export default function MobileChat({ conversationId, currentUser }: MobileChatPr
         channel.listen('.message.sent', messageHandler);
 
         return () => {};
-    }, [conversationEcho, conversationId]);
+    }, [conversationEcho, conversationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         scrollToBottom();

@@ -110,7 +110,7 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
                 messageHandlerRef.current = null;
             }
         };
-    }, [userEcho, currentUserId]); // Removed activeConversation dependency to prevent re-execution
+    }, [userEcho, currentUserId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Subscribe to private user channel for websocket-driven bootstrapping (no HTTP)
     useEffect(() => {
@@ -220,9 +220,10 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
                 const mockConversation = {
                     id: conversationId,
                     title: `Debug Chat ${conversationId}`,
-                    type: 'direct',
+                    type: 'direct' as const,
                     participants: [],
                     messages: [],
+                    unread_count: 0,
                 };
                 setActiveConversation(mockConversation);
             }

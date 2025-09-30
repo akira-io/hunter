@@ -170,7 +170,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                                 )}
 
                                 {allUsers.map((item, index) => {
-                                    const isOnline = filteredOnlineUsers.includes(item);
+                                    const isOnline = filteredOnlineUsers.some(user => user.id === item.id);
                                     const displayName = item.name;
                                     const showOfflineHeader = !isOnline && index === filteredOnlineUsers.length && offlineFollowedHunters.length > 0;
                                     const unreadCount = getUnreadCountForUser(item.id);
@@ -260,7 +260,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                                                                 Offline
                                                             </>
                                                         )}
-                                                        {!isOnline && item.level && (
+                                                        {!isOnline && 'level' in item && item.level && (
                                                             <span className="ml-1 text-purple-600 dark:text-purple-400">• Nível {item.level}</span>
                                                         )}
                                                     </div>
