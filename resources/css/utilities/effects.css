@@ -1,0 +1,69 @@
+/**
+ * Visual Effects Utilities
+ * Glass effects, gradients, patterns, and focus states
+ */
+
+@layer utilities {
+    /* Glass effects with better browser support */
+    @supports (backdrop-filter: blur(16px)) {
+        .glass {
+            backdrop-filter: blur(16px) saturate(180%);
+        }
+        .glass-subtle {
+            backdrop-filter: blur(8px) saturate(150%);
+        }
+        .glass-strong {
+            backdrop-filter: blur(24px) saturate(200%);
+        }
+    }
+
+    @supports not (backdrop-filter: blur(16px)) {
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .glass-subtle {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.25);
+        }
+    }
+
+    /* Subtle glass overlay */
+    .glass-overlay {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .dark .glass-overlay {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Enhanced focus states */
+    .focus-enhanced {
+        @apply focus-visible:ring-primary/50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
+    }
+
+    /* Background patterns */
+    .bg-grid-small-black\/\[0\.02\] {
+        background-image: radial-gradient(circle, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+        background-size: 16px 16px;
+    }
+
+    .bg-grid-small-white\/\[0\.02\] {
+        background-image: radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 16px 16px;
+    }
+
+    /* Gradient background */
+    .gradient {
+        @apply dark:bg-gradient-to-t dark:from-zinc-900 dark:to-zinc-900/50;
+    }
+
+    /* Parallax scroll effect */
+    .parallax-slow {
+        transform: translateZ(0);
+        will-change: transform;
+    }
+}
