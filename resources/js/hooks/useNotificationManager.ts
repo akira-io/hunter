@@ -18,6 +18,7 @@ interface NotificationData {
         avatar_url?: string;
     };
     created_at: string;
+    created_at_human: string;
     read_at: string | null;
 }
 
@@ -67,6 +68,7 @@ export const useNotificationManager = ({ currentUserId }: UseNotificationManager
                             data: notification as unknown as Record<string, unknown>,
                             read_at: notification.read_at,
                             created_at: notification.created_at,
+                            created_at_human: notification.created_at_human
                         });
 
                         // Show browser notification if permission granted

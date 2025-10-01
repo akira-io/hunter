@@ -9,6 +9,7 @@ interface Notification {
     data: Record<string, unknown>;
     read_at: string | null;
     created_at: string;
+    created_at_human: string;
 }
 
 interface NotificationState {
