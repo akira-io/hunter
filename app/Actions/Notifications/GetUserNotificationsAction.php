@@ -11,6 +11,8 @@ final readonly class GetUserNotificationsAction
 {
     /**
      * Get user notifications with formatted data
+     *
+     * @return array{notifications: array<int, array{id: string, type: string, title: string, message: string, data: array<string, mixed>, read_at: string|null, created_at: string, created_at_human: string}>, unread_count: int}
      */
     public function handle(User $user, int $limit = 50, bool $unreadOnly = true): array
     {
@@ -24,17 +26,26 @@ final readonly class GetUserNotificationsAction
         $notifications = $query
             ->limit($limit)
             ->get()
-            ->map(fn (DatabaseNotification $notification): array => [
-                'id' => $notification->id,
-                'type' => $notification->data['type'] ?? 'default',
-                'title' => $notification->data['title'] ?? '',
-                'message' => $notification->data['message'] ?? '',
-                'data' => $notification->data,
-                'read_at' => $notification->read_at?->toISOString(),
-                'created_at' => $notification->created_at->toISOString(),
-                'created_at_human' => $notification->created_at->diffForHumans(),
-            ])
-            ->toArray();
+            ->map(function (DatabaseNotification $notification): array {
+                /** @var array<string, mixed> $data */
+                $data = $notification->data;
+
+                /** @var string|null $readAt */
+                $readAt = $notification->read_at?->toISOString() ?? null;
+
+                return [
+                    'id' => (string) $notification->id,
+                    'type' => (string) ($data['type'] ?? 'default'),
+                    'title' => (string) ($data['title'] ?? ''),
+                    'message' => (string) ($data['message'] ?? ''),
+                    'data' => $data,
+                    'read_at' => $readAt,
+                    'created_at' => (string) ($notification->created_at?->toISOString() ?? ''),
+                    'created_at_human' => (string) ($notification->created_at?->diffForHumans() ?? ''),
+                ];
+            })
+            ->values()
+            ->all();
 
         $unreadCount = $user->unreadNotifications()->count();
 

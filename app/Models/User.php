@@ -48,6 +48,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read  string|null $bluesky_url
  * @property-read  string|null $website_url
  * @property-read  string|null $youtube_url
+ * @property-read  \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $unreadNotifications
+ *
+ * @method void markAsRead()
  */
 final class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
@@ -214,11 +217,11 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         // If the value is numeric, treat it as an ID
         if (is_numeric($value)) {
-            return $this->where('id', $value)->first();
+            return self::query()->where('id', $value)->first();
         }
 
         // Otherwise, treat it as a username
-        return $this->where('user_name', $value)->first();
+        return self::query()->where('user_name', $value)->first();
     }
 
     /**

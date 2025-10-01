@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
 use Inertia\Response;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
@@ -32,7 +33,7 @@ final readonly class NotificationController
 
         // Get filter parameter
         $filter = $request->get('filter', 'all'); // 'all', 'unread', 'read'
-        $page = (int) $request->get('page', 1);
+        $page = max(1, (int) $request->get('page', 1));
         $perPage = 20;
         $offset = ($page - 1) * $perPage;
 
@@ -52,16 +53,21 @@ final readonly class NotificationController
             ->offset($offset)
             ->limit($perPage)
             ->get()
-            ->map(fn ($notification): array => [
-                'id' => $notification->id,
-                'type' => $notification->data['type'] ?? 'default',
-                'title' => $notification->data['title'] ?? '',
-                'message' => $notification->data['message'] ?? '',
-                'data' => $notification->data,
-                'read_at' => $notification->read_at?->toISOString(),
-                'created_at' => $notification->created_at->toISOString(),
-                'created_at_human' => $notification->created_at->diffForHumans(),
-            ]);
+            ->map(function (DatabaseNotification $notification): array {
+                /** @var array<string, mixed> $data */
+                $data = $notification->data;
+
+                return [
+                    'id' => (string) $notification->id,
+                    'type' => (string) ($data['type'] ?? 'default'),
+                    'title' => (string) ($data['title'] ?? ''),
+                    'message' => (string) ($data['message'] ?? ''),
+                    'data' => $data,
+                    'read_at' => $notification->read_at?->toISOString(),
+                    'created_at' => $notification->created_at?->toISOString() ?? '',
+                    'created_at_human' => $notification->created_at?->diffForHumans() ?? '',
+                ];
+            });
 
         // Calculate pagination info
         $totalPages = (int) ceil($totalNotifications / $perPage);
@@ -97,13 +103,9 @@ final readonly class NotificationController
         /** @var User $user */
         $user = $request->user();
 
-        if (! $user) {
-            abort(401, 'Unauthenticated');
-        }
-
         $notification = $markNotificationAsReadAction->handle($user, $id);
 
-        if (! $notification instanceof \Illuminate\Notifications\DatabaseNotification) {
+        if (! $notification instanceof DatabaseNotification) {
             abort(404, 'Notification not found');
         }
 
@@ -121,10 +123,6 @@ final readonly class NotificationController
         /** @var User $user */
         $user = $request->user();
 
-        if (! $user) {
-            abort(401, 'Unauthenticated');
-        }
-
         $markAllNotificationsAsReadAction->handle($user);
 
         return back();
@@ -140,10 +138,6 @@ final readonly class NotificationController
     ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
-
-        if (! $user) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
-        }
 
         $unreadCount = $getUnreadNotificationCountAction->handle($user);
 

@@ -20,9 +20,9 @@ final readonly class FollowUserAction
     {
         $follower->follow($userToFollow);
 
-        // Send notification to the user being followed if they have follow notifications enabled
+        /** @var array<string, mixed> $settings */
         $settings = $userToFollow->notification_settings ?? [];
-        if ($settings['follow_notifications'] ?? true) {
+        if (($settings['follow_notifications'] ?? true) === true) {
             $userToFollow->notify(new UserFollowedNotification($follower));
         }
     }

@@ -8,6 +8,7 @@ use App\Actions\Notifications\GetUnreadNotificationCountAction;
 use App\Actions\Notifications\GetUserNotificationsAction;
 use App\Actions\Notifications\MarkAllNotificationsAsReadAction;
 use App\Actions\Notifications\MarkNotificationAsReadAction;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,7 @@ final readonly class NotificationController
      */
     public function index(Request $request, GetUserNotificationsAction $getUserNotificationsAction): JsonResponse
     {
+        /** @var User|null $user */
         $user = $request->user();
 
         if (! $user) {
@@ -37,6 +39,7 @@ final readonly class NotificationController
         string $id,
         MarkNotificationAsReadAction $markNotificationAsReadAction
     ): JsonResponse {
+        /** @var User|null $user */
         $user = $request->user();
 
         if (! $user) {
@@ -59,6 +62,7 @@ final readonly class NotificationController
         Request $request,
         MarkAllNotificationsAsReadAction $markAllNotificationsAsReadAction
     ): JsonResponse {
+        /** @var User|null $user */
         $user = $request->user();
 
         if (! $user) {
@@ -77,6 +81,7 @@ final readonly class NotificationController
         Request $request,
         GetUnreadNotificationCountAction $getUnreadNotificationCountAction
     ): JsonResponse {
+        /** @var User|null $user */
         $user = $request->user();
 
         if (! $user) {
