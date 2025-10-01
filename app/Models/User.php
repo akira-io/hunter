@@ -211,20 +211,6 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     /**
-     * Resolve route model binding for both ID and username
-     */
-    public function resolveRouteBinding($value, $field = null): ?self
-    {
-        // If the value is numeric, treat it as an ID
-        if (is_numeric($value)) {
-            return self::query()->where('id', $value)->first();
-        }
-
-        // Otherwise, treat it as a username
-        return self::query()->where('user_name', $value)->first();
-    }
-
-    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
