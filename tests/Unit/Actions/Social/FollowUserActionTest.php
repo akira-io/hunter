@@ -30,3 +30,51 @@ test('it prevents following yourself', function () {
         $action->handle($user, $user);
     })->toThrow(CannotFollowYourSelfException::class);
 });
+
+test('it sends notification when follow notifications are enabled', function () {
+    Notification::fake();
+
+    $follower = User::factory()->create();
+    $userToFollow = User::factory()->create([
+        'notification_settings' => ['follow_notifications' => true],
+    ]);
+    $action = new FollowUserAction();
+
+    $action->handle($follower, $userToFollow);
+
+    Notification::assertSentTo(
+        $userToFollow,
+        App\Notifications\UserFollowedNotification::class
+    );
+});
+
+test('it does not send notification when follow notifications are disabled', function () {
+    Notification::fake();
+
+    $follower = User::factory()->create();
+    $userToFollow = User::factory()->create([
+        'notification_settings' => ['follow_notifications' => false],
+    ]);
+    $action = new FollowUserAction();
+
+    $action->handle($follower, $userToFollow);
+
+    Notification::assertNothingSent();
+});
+
+test('it sends notification by default when notification_settings is null', function () {
+    Notification::fake();
+
+    $follower = User::factory()->create();
+    $userToFollow = User::factory()->create([
+        'notification_settings' => null,
+    ]);
+    $action = new FollowUserAction();
+
+    $action->handle($follower, $userToFollow);
+
+    Notification::assertSentTo(
+        $userToFollow,
+        App\Notifications\UserFollowedNotification::class
+    );
+});

@@ -168,3 +168,41 @@ it('updates existing GitHub user found by github_id', function () {
     expect($user->email)->toBe('john@example.com'); // Preserved
     expect($user->github_token)->toBe('new-github-token'); // Updated
 });
+
+it('updates avatar_url when linking GitHub to user with empty avatar', function () {
+    // Arrange - Create existing user with no avatar
+    $existingUser = User::factory()->create([
+        'email' => 'john@example.com',
+        'name' => 'John Doe',
+        'github_id' => null,
+        'bio' => null,
+        'location' => null,
+        'avatar_url' => null,
+    ]);
+
+    $githubUser = new SocialiteUser();
+    $githubUser->id = 'github-123';
+    $githubUser->nickname = 'johndoe';
+    $githubUser->name = 'John Doe';
+    $githubUser->email = 'john@example.com';
+    $githubUser->avatar = 'https://github.com/avatar.jpg';
+    $githubUser->token = 'github-token';
+    $githubUser->refreshToken = 'github-refresh-token';
+
+    $githubUser->setRaw([
+        'login' => 'johndoe',
+        'bio' => 'Developer',
+        'location' => 'Earth',
+        'html_url' => 'https://github.com/johndoe',
+    ]);
+
+    // Act
+    $user = $this->action->handle($githubUser);
+
+    // Assert
+    expect($user->id)->toBe($existingUser->id)
+        ->and($user->avatar_url)->toBe('https://github.com/avatar.jpg')
+        ->and($user->bio)->toBe('Developer')
+        ->and($user->location)->toBe('Earth');
+    // Avatar updated from GitHub
+});

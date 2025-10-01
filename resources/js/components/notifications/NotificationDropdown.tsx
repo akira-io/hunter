@@ -9,6 +9,7 @@ import NotificationController from '@/actions/App/Http/Controllers/Notification/
 import { router } from '@inertiajs/react';
 import { Bell, Check, User as UserIcon, X } from 'lucide-react';
 import React, { useEffect, useRef } from 'react';
+import { User } from '@/types';
 
 interface NotificationDropdownProps {
     isOpen: boolean;
@@ -145,8 +146,8 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
                 ) : (
                     <div className="divide-y divide-zinc-200 dark:divide-zinc-700">
                         {unreadNotifications.map((notification) => {
-                            const follower = notification.data.follower as any;
-                            const followerName = follower?.name || 'Usuário';
+                            const follower = notification.data.follower as User;
+                            const followerName = follower?.name || 'Utilizador';
 
                             return (
                                 <div

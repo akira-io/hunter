@@ -53,7 +53,7 @@ final class UserFollowedNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Você tem um novo seguidor!')
-            ->line("O usuário {$this->follower->name} (@{$this->follower->user_name}) começou a seguir você.")
+            ->line("{$this->follower->name} (@{$this->follower->user_name}) começou a seguir você.")
             ->action('Ver perfil', route('public.profile.show', ['user' => $this->follower->id]))
             ->line('Continue construindo conexões incríveis!');
     }

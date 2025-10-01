@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,14 @@ Route::middleware('auth:sanctum')->group(function () {
             ->update(['read_at' => now()]);
 
         return response()->json(['status' => 'updated']);
+    });
+
+    // Notifications API
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::put('/{id}', [NotificationController::class, 'update']);
+        Route::post('/mark-all-read', [NotificationController::class, 'store']);
+        Route::get('/unread-count', [NotificationController::class, 'show']);
     });
 
 });

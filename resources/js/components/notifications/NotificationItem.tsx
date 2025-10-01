@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import NotificationController from '@/actions/App/Http/Controllers/Notification/NotificationController';
-import { Notification } from '@/types';
+import { Notification, User } from '@/types';
 import { router } from '@inertiajs/react';
 import { User as UserIcon } from 'lucide-react';
 import React from 'react';
@@ -20,7 +20,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
     hideUnreadDot = false
 }) => {
     const isUnread = !notification.read_at;
-    const follower = notification.data.follower as any;
+    const follower = notification.data.follower as User;
 
     const handleMarkAsRead = async () => {
         if (onClick) {

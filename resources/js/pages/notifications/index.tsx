@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Pagination } from '@/components/ui/pagination';
 import Layout from '@/layouts/app-layout';
-import { Notification, NotificationCounts, PaginationInfo, SharedData } from '@/types';
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Notification, NotificationCounts, PaginationInfo } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { Bell, Check } from 'lucide-react';
 import React from 'react';
 import NotificationController from '@/actions/App/Http/Controllers/Notification/NotificationController';
@@ -26,8 +26,6 @@ export default function Notifications({
                                                filter,
                                                counts,
                                            }: NotificationsPageProps) {
-    const { auth } = usePage<SharedData>().props;
-
     const handleNotificationClick = async (notification: Notification) => {
         // Marcar como lida se estiver não lida
         if (!notification.read_at) {
