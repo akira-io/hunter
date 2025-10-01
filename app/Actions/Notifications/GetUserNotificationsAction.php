@@ -24,18 +24,16 @@ final readonly class GetUserNotificationsAction
         $notifications = $query
             ->limit($limit)
             ->get()
-            ->map(function (DatabaseNotification $notification) {
-                return [
-                    'id' => $notification->id,
-                    'type' => $notification->data['type'] ?? 'default',
-                    'title' => $notification->data['title'] ?? '',
-                    'message' => $notification->data['message'] ?? '',
-                    'data' => $notification->data,
-                    'read_at' => $notification->read_at?->toISOString(),
-                    'created_at' => $notification->created_at->toISOString(),
-                    'created_at_human' => $notification->created_at->diffForHumans(),
-                ];
-            })
+            ->map(fn (DatabaseNotification $notification): array => [
+                'id' => $notification->id,
+                'type' => $notification->data['type'] ?? 'default',
+                'title' => $notification->data['title'] ?? '',
+                'message' => $notification->data['message'] ?? '',
+                'data' => $notification->data,
+                'read_at' => $notification->read_at?->toISOString(),
+                'created_at' => $notification->created_at->toISOString(),
+                'created_at_human' => $notification->created_at->diffForHumans(),
+            ])
             ->toArray();
 
         $unreadCount = $user->unreadNotifications()->count();

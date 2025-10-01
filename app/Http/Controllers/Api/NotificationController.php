@@ -45,7 +45,7 @@ final readonly class NotificationController
 
         $notification = $markNotificationAsReadAction->handle($user, $id);
 
-        if (! $notification) {
+        if (! $notification instanceof \Illuminate\Notifications\DatabaseNotification) {
             return response()->json(['error' => 'Notification not found'], 404);
         }
 

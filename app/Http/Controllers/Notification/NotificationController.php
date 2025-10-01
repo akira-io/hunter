@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Notification;
 
 use App\Actions\Notifications\GetUnreadNotificationCountAction;
-use App\Actions\Notifications\GetUserNotificationsAction;
 use App\Actions\Notifications\MarkAllNotificationsAsReadAction;
 use App\Actions\Notifications\MarkNotificationAsReadAction;
 use App\Models\User;
@@ -26,7 +25,7 @@ final readonly class NotificationController
      * Display all notifications for the authenticated user with pagination
      */
     #[Get('/', name: 'notifications.index')]
-    public function index(Request $request, GetUserNotificationsAction $getUserNotificationsAction): Response
+    public function index(Request $request): Response
     {
         /** @var User $user */
         $user = $request->user();
@@ -53,18 +52,16 @@ final readonly class NotificationController
             ->offset($offset)
             ->limit($perPage)
             ->get()
-            ->map(function ($notification) {
-                return [
-                    'id' => $notification->id,
-                    'type' => $notification->data['type'] ?? 'default',
-                    'title' => $notification->data['title'] ?? '',
-                    'message' => $notification->data['message'] ?? '',
-                    'data' => $notification->data,
-                    'read_at' => $notification->read_at?->toISOString(),
-                    'created_at' => $notification->created_at->toISOString(),
-                    'created_at_human' => $notification->created_at->diffForHumans(),
-                ];
-            });
+            ->map(fn ($notification): array => [
+                'id' => $notification->id,
+                'type' => $notification->data['type'] ?? 'default',
+                'title' => $notification->data['title'] ?? '',
+                'message' => $notification->data['message'] ?? '',
+                'data' => $notification->data,
+                'read_at' => $notification->read_at?->toISOString(),
+                'created_at' => $notification->created_at->toISOString(),
+                'created_at_human' => $notification->created_at->diffForHumans(),
+            ]);
 
         // Calculate pagination info
         $totalPages = (int) ceil($totalNotifications / $perPage);
@@ -106,7 +103,7 @@ final readonly class NotificationController
 
         $notification = $markNotificationAsReadAction->handle($user, $id);
 
-        if (! $notification) {
+        if (! $notification instanceof \Illuminate\Notifications\DatabaseNotification) {
             abort(404, 'Notification not found');
         }
 

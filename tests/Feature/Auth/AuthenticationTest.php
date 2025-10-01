@@ -38,7 +38,7 @@ test('users can not authenticate with invalid password', function () {
 
 test('users can logout', function () {
     Event::fake();
-    
+
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->post('/logout');
