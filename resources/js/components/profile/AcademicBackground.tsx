@@ -1,6 +1,9 @@
+import { HunterConfirmDialog } from '@/components/core/HuntDialog';
 import InputError from '@/components/input-error';
 import { ProfileCard } from '@/components/profile-card';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,29 +11,15 @@ import { Option } from '@/components/ui/multiselect';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { useForm } from '@inertiajs/react';
-import { format } from 'date-fns';
-import { CalendarIcon, CircleAlertIcon, GraduationCap, PlusIcon, TrashIcon } from 'lucide-react';
-import * as React from 'react';
-import { FormEvent } from 'react';
-
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Calendar } from '@/components/ui/calendar';
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import profile from '@/routes/profile';
 import { useAcademicBackground } from '@/stores/academicBackground';
 import { AcademicBackground as AcademicBackgroundType } from '@/types';
+import { useForm } from '@inertiajs/react';
+import { format } from 'date-fns';
+import { CalendarIcon, GraduationCap, PlusIcon } from 'lucide-react';
+import * as React from 'react';
+import { FormEvent } from 'react';
 
 interface AcademicBackgroundForm {
     institution: string;
@@ -125,28 +114,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                         <CardTitle className="flex w-full items-center gap-1 text-sm font-semibold">
                             <GraduationCap /> {education.degree}
                             <div className="flex-1" />
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <TrashIcon className="text-red-500" size={20} />
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
-                                        <div className="flex size-9 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
-                                            <CircleAlertIcon className="cursor-pointer opacity-80" size={16} />
-                                        </div>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>Eliminar Formação ?</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                Tem a certeza que deseja eliminar esta formação académica? Esta ação não pode ser desfeita.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                    </div>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => deleteEducation(education.id)}>Confirm</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                            <HunterConfirmDialog processing={processing} onConfirm={() => deleteEducation(education.id)} title="Hunt" />
                         </CardTitle>
                         <CardContent className="-mt-2 grid w-full grid-cols-1 items-center gap-4 border-t-1 pt-4 md:grid-cols-2">
                             <div className="flex flex-col items-start justify-start">
@@ -240,7 +208,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         id="start_date"
                                         variant={'outline'}
                                         className={cn(
-                                            'group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]',
+                                            'group w-full justify-between rounded-md border-zinc-200 bg-white/95 px-3 font-normal shadow-2xl outline-offset-0 backdrop-blur-lg outline-none hover:bg-white focus-visible:outline-[3px] dark:border-zinc-700 dark:bg-zinc-900/95 dark:hover:bg-zinc-900',
                                             !data.start_date && 'text-muted-foreground',
                                         )}
                                     >
@@ -254,9 +222,9 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto overflow-hidden p-2" align="start" forceMount>
+                                <PopoverContent className="w-auto overflow-hidden p-0" align="start" forceMount>
                                     <Calendar
-                                        className="bg-background min-h-[360px] w-[300px] rounded-md p-3"
+                                        className="min-h-[360px] w-[300px]"
                                         mode="single"
                                         captionLayout="dropdown"
                                         selected={data.start_date}
@@ -277,7 +245,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         id="end_date"
                                         variant={'outline'}
                                         className={cn(
-                                            'group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]',
+                                            'group w-full justify-between rounded-md border-zinc-200 bg-white/95 px-3 font-normal shadow-2xl outline-offset-0 backdrop-blur-lg outline-none hover:bg-white focus-visible:outline-[3px] dark:border-zinc-700 dark:bg-zinc-900/95 dark:hover:bg-zinc-900',
                                             !data.end_date && 'text-muted-foreground',
                                         )}
                                     >
@@ -291,9 +259,9 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-full p-2" align="start" forceMount>
+                                <PopoverContent className="w-auto overflow-hidden p-0" align="start" forceMount>
                                     <Calendar
-                                        className="bg-background min-h-[360px] w-[300px] rounded-md p-3"
+                                        className="min-h-[360px] w-[300px]"
                                         captionLayout="dropdown"
                                         mode="single"
                                         selected={data.end_date ? data.end_date : undefined}

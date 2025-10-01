@@ -50,9 +50,10 @@ export default function UnfollowButton({ user, className }: UnfollowButtonProps)
                 </Button>
             </DialogTrigger>
             <DialogContent className="p-6">
-                <DialogTitle>Deixar de Seguir ?</DialogTitle>
+                <DialogTitle>
+                    Deixar de Seguir <b>{user.name}</b> ?
+                </DialogTitle>
                 <DialogDescription className="pt-4">
-                    Você tem certeza que deseja deixar de seguir <b>{user.name}</b> ? <br />
                     <span className="text-muted-foreground text-sm">Você pode voltar a segui-lo a qualquer momento.</span>
                 </DialogDescription>
                 <DialogFooter className="pt-4">

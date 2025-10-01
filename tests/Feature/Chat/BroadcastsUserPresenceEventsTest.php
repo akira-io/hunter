@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Event;
 use function Pest\Laravel\actingAs;
 
 it('broadcasts UserOnline on first authenticated request and UserOffline on logout', function () {
-    Event::fake([UserOnline::class, UserOffline::class]);
+    Event::fake();
 
     $user = User::factory()->create();
 

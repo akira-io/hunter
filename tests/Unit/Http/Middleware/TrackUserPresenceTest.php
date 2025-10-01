@@ -287,6 +287,8 @@ test('handle with cache hit does not trigger events but refreshes TTL', function
 });
 
 test('middleware preserves response object integrity', function () {
+    Event::fake();
+
     $user = User::factory()->create();
     $this->actingAs($user);
 

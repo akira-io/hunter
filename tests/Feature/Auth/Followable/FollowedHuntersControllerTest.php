@@ -6,6 +6,7 @@ use App\Actions\User\GetAvatarAction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 
 use function Pest\Laravel\actingAs;
 
@@ -13,6 +14,7 @@ uses(RefreshDatabase::class);
 
 describe('FollowedHuntersController', function () {
     beforeEach(function () {
+        Event::fake();
         $this->user = User::factory()->create();
         actingAs($this->user);
     });

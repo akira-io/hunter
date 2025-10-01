@@ -7,6 +7,7 @@ namespace App\Actions\Social;
 use Akira\Followable\Exceptions\CannotFollowYourSelfException;
 use Akira\Followable\Exceptions\FollowableTraitNotFoundException;
 use App\Models\User;
+use App\Notifications\UserFollowedNotification;
 
 final readonly class FollowUserAction
 {
@@ -18,5 +19,11 @@ final readonly class FollowUserAction
     public function handle(User $follower, User $userToFollow): void
     {
         $follower->follow($userToFollow);
+
+        /** @var array<string, mixed> $settings */
+        $settings = $userToFollow->notification_settings ?? [];
+        if (($settings['follow_notifications'] ?? true) === true) {
+            $userToFollow->notify(new UserFollowedNotification($follower));
+        }
     }
 }

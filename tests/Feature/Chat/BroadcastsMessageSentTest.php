@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Event;
 use function Pest\Laravel\actingAs;
 
 it('dispatches MessageSent event when a message is posted', function () {
-    Event::fake([MessageSent::class]);
+    Event::fake();
 
     $sender = User::factory()->create();
     $receiver = User::factory()->create();

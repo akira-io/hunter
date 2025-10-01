@@ -33,6 +33,7 @@ test('to array', function () {
             'bluesky_url',
             'website_url',
             'youtube_url',
+            'notification_settings',
         ]);
 });
 

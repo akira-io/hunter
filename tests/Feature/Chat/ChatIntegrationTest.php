@@ -12,7 +12,7 @@ use function Pest\Laravel\actingAs;
 
 describe('Chat Integration', function () {
     beforeEach(function () {
-        Event::fake([MessageSent::class]);
+        Event::fake();
     });
 
     it('can create complete chat flow between two users', function () {

@@ -2,6 +2,7 @@ import { ChatContainer } from '@/components/chat/ChatContainer';
 import { OnlineUsers } from '@/components/chat/OnlineUsers';
 import { Toaster } from '@/components/ui/toaster';
 import { ChatProvider } from '@/contexts/ChatContext';
+import { useNotificationManager } from '@/hooks/useNotificationManager';
 import { usePresenceManager } from '@/hooks/usePresenceManager';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -21,6 +22,9 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
 
     // Manage presence globally
     usePresenceManager({ currentUserId });
+
+    // Manage notifications globally
+    useNotificationManager({ currentUserId });
 
     return (
         <ChatProvider currentUserId={currentUserId}>

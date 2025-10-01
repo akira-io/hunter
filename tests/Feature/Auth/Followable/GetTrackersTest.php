@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Event;
+
 beforeEach(function () {
+    Event::fake();
     $this->user = actingAsAuthUser();
     $this->hunter = App\Models\User::factory()->create();
 });

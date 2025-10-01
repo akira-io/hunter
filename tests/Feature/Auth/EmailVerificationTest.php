@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\URL;
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('email verification screen can be rendered', function () {
+    Event::fake();
+
     $user = User::factory()->unverified()->create();
 
     $response = $this->actingAs($user)->get('/verify-email');
@@ -50,6 +52,8 @@ test('email is not verified with invalid hash', function () {
 });
 
 test('verification notification is sent to unverified user', function () {
+    Event::fake();
+
     $user = User::factory()->unverified()->create();
 
     $response = $this->actingAs($user)
@@ -61,6 +65,8 @@ test('verification notification is sent to unverified user', function () {
 });
 
 test('verification notification is not sent to verified user', function () {
+    Event::fake();
+
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -70,6 +76,8 @@ test('verification notification is not sent to verified user', function () {
 });
 
 test('verified user is redirected from verification screen', function () {
+    Event::fake();
+
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->get('/verify-email');
@@ -78,6 +86,8 @@ test('verified user is redirected from verification screen', function () {
 });
 
 test('already verified user is redirected when trying to verify again', function () {
+    Event::fake();
+
     $user = User::factory()->create();
 
     $verificationUrl = URL::temporarySignedRoute(

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Support\Facades\Event;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -36,6 +37,8 @@ test('users can not authenticate with invalid password', function () {
 });
 
 test('users can logout', function () {
+    Event::fake();
+
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->post('/logout');

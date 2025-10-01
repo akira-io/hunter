@@ -15,7 +15,8 @@
             "huntings",
             "commitlint",
             "paginator",
-            "ds"
+            "ds",
+            "broadcastable"
         ],
         "paths": [
             "resources",
