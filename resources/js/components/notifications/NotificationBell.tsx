@@ -31,22 +31,17 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ currentUserI
         <div className="relative">
             <button
                 onClick={handleToggle}
-                className={`relative rounded-lg p-2 transition-all duration-200 touch-manipulation ${
-                    isOpen
-                        ? 'bg-accent text-accent-foreground'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                className={`relative touch-manipulation rounded-lg p-2 transition-all duration-200 ${
+                    isOpen ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                 }`}
                 data-testid="notification-bell"
                 aria-label={`Notificações${unreadCount > 0 ? ` (${unreadCount} não lidas)` : ''}`}
                 aria-expanded={isOpen}
             >
-                <Bell
-                    size={20}
-                    className={`transition-transform duration-200 ${isOpen ? 'scale-110' : ''}`}
-                />
+                <Bell size={20} className={`transition-transform duration-200 ${isOpen ? 'scale-110' : ''}`} />
                 {unreadCount > 0 && (
                     <span
-                        className="absolute -right-0.5 -top-0.5 flex h-5 w-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white shadow-sm ring-2 ring-background animate-pulse"
+                        className="ring-background absolute -top-0.5 -right-0.5 flex h-5 w-5 min-w-[20px] animate-pulse items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white shadow-sm ring-2"
                         data-testid="notification-badge"
                     >
                         {unreadCount > 99 ? '99+' : unreadCount}
@@ -54,12 +49,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ currentUserI
                 )}
             </button>
 
-            {isOpen && (
-                <NotificationDropdown
-                    isOpen={isOpen}
-                    onClose={() => setIsOpen(false)}
-                />
-            )}
+            {isOpen && <NotificationDropdown isOpen={isOpen} onClose={() => setIsOpen(false)} />}
         </div>
     );
 };

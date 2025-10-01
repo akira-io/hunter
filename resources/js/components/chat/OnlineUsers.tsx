@@ -3,7 +3,7 @@ import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';
 import { router } from '@inertiajs/react';
-import { Search, User as UserIcon, UserCheck, Users, Wifi, WifiOff, XIcon } from 'lucide-react';
+import { Search, UserCheck, User as UserIcon, Users, Wifi, WifiOff, XIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface ChatUsersProps {
@@ -77,13 +77,13 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
     };
 
     return (
-        <div className='fixed right-6 bottom-6 z-40'>
+        <div className="fixed right-6 bottom-6 z-40">
             {/* Avatar Button with Badge */}
             <div className="relative">
                 <button
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
-                    className='relative size-14 rounded-full bg-gradient-to-br from-purple-500 to-purple-800 shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95'
+                    className="relative size-14 rounded-full bg-gradient-to-br from-purple-500 to-purple-800 shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95"
                 >
                     {/*<div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-sm" />*/}
                     <div className="relative flex h-full items-center justify-center">
@@ -114,7 +114,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                 >
                     <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white/95 shadow-2xl backdrop-blur-lg dark:border-zinc-700 dark:bg-zinc-900/95">
                         {/* Header */}
-                        <div className='border-b border-zinc-200 bg-gradient-to-r  px-4 py-3 dark:border-zinc-700 dark:from-zinc-800 dark:to-zinc-800'>
+                        <div className="border-b border-zinc-200 bg-gradient-to-r px-4 py-3 dark:border-zinc-700 dark:from-zinc-800 dark:to-zinc-800">
                             <div className="mb-3 flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <Users size={16} className="text-zinc-600 dark:text-zinc-400" />

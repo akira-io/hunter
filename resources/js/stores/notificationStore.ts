@@ -60,11 +60,9 @@ export const useNotificationStore = create<NotificationState>()(
             markAsRead: (notificationId: string) => {
                 const { notifications } = get();
                 const updatedNotifications = notifications.map((notification) =>
-                    notification.id === notificationId
-                        ? { ...notification, read_at: new Date().toISOString() }
-                        : notification
+                    notification.id === notificationId ? { ...notification, read_at: new Date().toISOString() } : notification,
                 );
-                const wasUnread = notifications.find(n => n.id === notificationId && !n.read_at);
+                const wasUnread = notifications.find((n) => n.id === notificationId && !n.read_at);
                 set({
                     notifications: updatedNotifications,
                     unreadCount: wasUnread ? Math.max(0, get().unreadCount - 1) : get().unreadCount,

@@ -13,15 +13,15 @@ export function NavUser({ className }: ComponentProps<'ul'>) {
         <div className={cn('flex items-center', className)}>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button className='flex items-center gap-2 rounded-lg p-2 text-sm transition-all duration-200 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground'>
+                    <button className="hover:bg-accent/50 focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex items-center gap-2 rounded-lg p-2 text-sm transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
                         <UserInfo user={auth.user} />
                         {/*<ChevronsUpDown className='size-4 text-muted-foreground transition-transform duration-200 data-[state=open]:rotate-180' />*/}
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                    className='z-[200] w-64 rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800'
-                    align='end'
-                    side='bottom'
+                    className="z-[200] w-64 rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800"
+                    align="end"
+                    side="bottom"
                     sideOffset={8}
                     alignOffset={-16}
                     avoidCollisions={true}

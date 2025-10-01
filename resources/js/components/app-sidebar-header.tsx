@@ -23,20 +23,18 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
             <div className="flex-1"></div>
 
             {/* Right side - Actions (Fixed position to avoid sidebar push) */}
-            <div className="fixed right-3 top-0 flex h-16 items-center gap-2 md:right-6">
+            <div className="fixed top-0 right-3 flex h-16 items-center gap-2 md:right-6">
                 {/* Mobile search button */}
                 <div className="block md:hidden">
                     <SearchHunt />
                 </div>
 
                 {/* Desktop search */}
-                <div className="hidden max-w-md w-full md:block">
+                <div className="hidden w-full max-w-md md:block">
                     <SearchHunt />
                 </div>
 
-                {auth.user && (
-                    <NotificationBell currentUserId={auth.user.id} />
-                )}
+                {auth.user && <NotificationBell currentUserId={auth.user.id} />}
 
                 <NavUser />
             </div>

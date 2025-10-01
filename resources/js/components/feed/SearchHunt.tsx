@@ -9,7 +9,7 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-    CommandShortcut
+    CommandShortcut,
 } from '@/components/ui/command';
 import { home } from '@/routes';
 import hunts from '@/routes/hunts';
@@ -35,24 +35,24 @@ export default function SearchHunt() {
         <>
             {/* Desktop search bar */}
             <button
-                className='border-input bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 hidden w-90 max-w-md rounded-lg border px-3 py-2 text-sm shadow-sm transition-[color,box-shadow] outline-none hover:bg-accent/50 focus-visible:ring-[3px] md:inline-flex md:mr-2'
+                className="border-input bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 hover:bg-accent/50 hidden w-90 max-w-md rounded-lg border px-3 py-2 text-sm shadow-sm transition-[color,box-shadow] outline-none focus-visible:ring-[3px] md:mr-2 md:inline-flex"
                 onClick={() => setOpen(true)}
             >
                 <span className="flex grow items-center">
-                    <SearchIcon className='text-muted-foreground/80 mr-3' size={16} aria-hidden='true' />
-                    <span className='text-muted-foreground/70 font-normal'>Pesquisar...</span>
+                    <SearchIcon className="text-muted-foreground/80 mr-3" size={16} aria-hidden="true" />
+                    <span className="text-muted-foreground/70 font-normal">Pesquisar...</span>
                 </span>
-                <kbd className='bg-muted text-muted-foreground ml-auto inline-flex h-5 max-h-full items-center rounded border px-1.5 font-[inherit] text-[0.625rem] font-medium'>
+                <kbd className="bg-muted text-muted-foreground ml-auto inline-flex h-5 max-h-full items-center rounded border px-1.5 font-[inherit] text-[0.625rem] font-medium">
                     ⌘K
                 </kbd>
             </button>
             {/* Mobile search icon */}
             <button
-                className='text-muted-foreground/80 hover:text-foreground rounded-lg p-2 transition-colors hover:bg-accent/50 md:hidden'
+                className="text-muted-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-lg p-2 transition-colors md:hidden"
                 onClick={() => setOpen(true)}
-                aria-label='Pesquisar'
+                aria-label="Pesquisar"
             >
-                <SearchIcon size={20} aria-hidden='true' />
+                <SearchIcon size={20} aria-hidden="true" />
             </button>
             <CommandDialog open={open} onOpenChange={setOpen}>
                 <CommandInput placeholder="Type a command or search..." />

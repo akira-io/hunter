@@ -1,6 +1,6 @@
+import NotificationController from '@/actions/App/Http/Controllers/Notification/NotificationController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import NotificationController from '@/actions/App/Http/Controllers/Notification/NotificationController';
 import { Notification, User } from '@/types';
 import { router } from '@inertiajs/react';
 import { User as UserIcon } from 'lucide-react';
@@ -13,12 +13,7 @@ interface NotificationItemProps {
     hideUnreadDot?: boolean;
 }
 
-export const NotificationItem: React.FC<NotificationItemProps> = ({
-    notification,
-    onClick,
-    className = "",
-    hideUnreadDot = false
-}) => {
+export const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onClick, className = '', hideUnreadDot = false }) => {
     const isUnread = !notification.read_at;
     const follower = notification.data.follower as User;
 
@@ -30,12 +25,16 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
 
         // Default click behavior - mark as read
         if (isUnread) {
-            router.post(NotificationController.read.url({ id: notification.id }), {}, {
-                preserveScroll: true,
-                onError: (error) => {
-                    console.error('Failed to mark notification as read:', error);
-                }
-            });
+            router.post(
+                NotificationController.read.url({ id: notification.id }),
+                {},
+                {
+                    preserveScroll: true,
+                    onError: (error) => {
+                        console.error('Failed to mark notification as read:', error);
+                    },
+                },
+            );
         }
     };
 
@@ -78,35 +77,27 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
                     >
                         {follower?.avatar_url ? (
                             <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
-                                <AvatarImage
-                                    src={follower.avatar_url}
-                                    alt={follower.name}
-                                    className="object-cover"
-                                />
+                                <AvatarImage src={follower.avatar_url} alt={follower.name} className="object-cover" />
                                 <AvatarFallback>
                                     <UserIcon size={16} />
                                 </AvatarFallback>
                             </Avatar>
                         ) : (
-                            <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600 transition-opacity hover:opacity-80">
+                            <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 transition-opacity hover:opacity-80 dark:from-zinc-700 dark:to-zinc-600">
                                 <UserIcon size={16} className="text-zinc-600 dark:text-zinc-300" />
                             </div>
                         )}
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                            <h4 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 leading-tight">
-                                {notification.title}
-                            </h4>
-                            {isUnread && !hideUnreadDot && (
-                                <div className="h-2 w-2 flex-shrink-0 rounded-full bg-purple-500"></div>
-                            )}
+                            <h4 className="text-sm leading-tight font-medium text-zinc-900 dark:text-zinc-100">{notification.title}</h4>
+                            {isUnread && !hideUnreadDot && <div className="h-2 w-2 flex-shrink-0 rounded-full bg-purple-500"></div>}
                         </div>
-                        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
                             <span
-                                className="cursor-pointer hover:underline transition-all"
+                                className="cursor-pointer transition-all hover:underline"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleProfileClick();
@@ -116,9 +107,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
                             </span>
                             {notification.message.replace(followerName, '')}
                         </p>
-                        <p className="mt-2 text-xs text-zinc-500">
-                            {notification.created_at_human}
-                        </p>
+                        <p className="mt-2 text-xs text-zinc-500">{notification.created_at_human}</p>
                     </div>
                 </div>
             </CardContent>
