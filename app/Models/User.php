@@ -94,6 +94,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'bluesky_url',
         'website_url',
         'youtube_url',
+        'notification_settings',
     ];
 
     /**
@@ -207,6 +208,20 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     /**
+     * Resolve route model binding for both ID and username
+     */
+    public function resolveRouteBinding($value, $field = null): ?self
+    {
+        // If the value is numeric, treat it as an ID
+        if (is_numeric($value)) {
+            return $this->where('id', $value)->first();
+        }
+
+        // Otherwise, treat it as a username
+        return $this->where('user_name', $value)->first();
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -218,6 +233,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'password' => 'hashed',
             'created_at' => 'datetime:d-m-Y',
             'skills' => 'array',
+            'notification_settings' => 'array',
         ];
     }
 }

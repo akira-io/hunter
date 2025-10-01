@@ -1,4 +1,4 @@
-import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout } from '@/routes';
@@ -17,44 +17,63 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
     const cleanup = useMobileNavigation();
 
     return (
-        <>
-            <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+        <div className='divide-y divide-zinc-200 dark:divide-zinc-700'>
+            {/* User Info Section */}
+            <div className='px-3 py-3 sm:px-4 sm:py-3'>
+                <div className='flex items-center gap-2 text-left text-sm'>
                     <UserInfo user={user} />
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-medium">{user.name}</span>
-                        <span className="text-muted-foreground truncate text-xs">{user.email}</span>
+                        <span className='truncate font-semibold text-zinc-900 dark:text-zinc-100'>{user.name}</span>
+                        <span className='truncate text-xs text-zinc-500 dark:text-zinc-400'>{user.email}</span>
                     </div>
                 </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            </div>
+            {/* Account Section */}
+            <div className='py-1'>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={hunts.index()} as="button" prefetch onClick={cleanup}>
-                        <RssIcon className="mr-2" />
-                        Hunt Line
+                    <Link className='block w-full px-3 py-2 sm:px-4 sm:py-2'
+                          href={hunts.index()}
+                          as='button'
+                          prefetch
+                          onClick={cleanup}>
+                        <RssIcon className='mr-2 size-4 text-zinc-500 dark:text-zinc-400' />
+                        <span className='text-zinc-900 dark:text-zinc-100'>Hunt Line</span>
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={profile.edit()} as="button" prefetch onClick={cleanup}>
-                        <UserIcon className="mr-2" />
-                        Perfil
+                    <Link className='block w-full px-3 py-2 sm:px-4 sm:py-2'
+                          href={profile.edit()}
+                          as='button'
+                          prefetch
+                          onClick={cleanup}>
+                        <UserIcon className='mr-2 size-4 text-zinc-500 dark:text-zinc-400' />
+                        <span className='text-zinc-900 dark:text-zinc-100'>Perfil</span>
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={password.edit()} as="button" prefetch onClick={cleanup}>
-                        <Settings className="mr-2" />
-                        Minha Conta
+                    <Link className='block w-full px-3 py-2 sm:px-4 sm:py-2'
+                          href={password.edit()}
+                          as='button'
+                          prefetch
+                          onClick={cleanup}>
+                        <Settings className='mr-2 size-4 text-zinc-500 dark:text-zinc-400' />
+                        <span className='text-zinc-900 dark:text-zinc-100'>Minha Conta</span>
                     </Link>
                 </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-                <Link className="block w-full" method="post" href={logout.post()} as="button" onClick={cleanup}>
-                    <LogOut className="mr-2" />
-                    Sair
-                </Link>
-            </DropdownMenuItem>
-        </>
+            </div>
+            {/* Logout Section */}
+            <div className='py-1'>
+                <DropdownMenuItem asChild>
+                    <Link className='block w-full px-3 py-2 text-red-600 dark:text-red-400 sm:px-4 sm:py-2'
+                          method='post'
+                          href={logout.post()}
+                          as='button'
+                          onClick={cleanup}>
+                        <LogOut className='mr-2 size-4' />
+                        <span>Sair</span>
+                    </Link>
+                </DropdownMenuItem>
+            </div>
+        </div>
     );
 }

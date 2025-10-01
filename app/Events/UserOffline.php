@@ -8,11 +8,11 @@ use App\Actions\User\GetAvatarAction;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final class UserOffline implements ShouldBroadcastNow
+final class UserOffline implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

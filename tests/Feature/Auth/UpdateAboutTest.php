@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Event;
+
 it('should update about section', function () {
+    Event::fake();
 
     $user = App\Models\User::factory()->create();
 

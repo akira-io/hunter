@@ -6,11 +6,13 @@ use App\Actions\Chat\CreateConversationAction;
 use App\Models\Conversation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
 
 describe('CreateConversationAction', function () {
     beforeEach(function () {
+        Event::fake();
         $this->action = new CreateConversationAction();
         $this->creator = User::factory()->create();
     });

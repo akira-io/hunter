@@ -98,3 +98,29 @@ export interface Comment {
     likes_count: number;
     has_liked: boolean;
 }
+
+export interface Notification {
+    id: string;
+    type: string;
+    title: string;
+    message: string;
+    data: Record<string, unknown>;
+    read_at: string | null;
+    created_at: string;
+    created_at_human: string;
+}
+
+export interface PaginationInfo {
+    current_page: number;
+    per_page: number;
+    total: number;
+    total_pages: number;
+    has_next_page: boolean;
+    has_prev_page: boolean;
+}
+
+export interface NotificationCounts {
+    all: number;
+    unread: number;
+    read: number;
+}

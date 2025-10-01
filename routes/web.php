@@ -68,6 +68,7 @@ Route::middleware('auth:web')->group(static function () {
 
     // Followed hunters
     Route::get('/followed-hunters', [App\Http\Controllers\Api\FollowedHuntersController::class, 'index']);
+
 });
 
 require __DIR__.'/settings.php';

@@ -57,4 +57,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json(['status' => 'updated']);
     });
+
 });

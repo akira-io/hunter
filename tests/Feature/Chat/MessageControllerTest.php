@@ -13,6 +13,7 @@ use function Pest\Laravel\actingAs;
 
 describe('MessageController', function () {
     beforeEach(function () {
+        Event::fake();
         $this->user = User::factory()->create();
         $this->otherUser = User::factory()->create();
         $this->conversation = Conversation::factory()->create();
@@ -27,8 +28,6 @@ describe('MessageController', function () {
 
     describe('store', function () {
         it('creates message successfully', function () {
-            Event::fake([MessageSent::class]);
-
             $response = $this->postJson('/messages', [
                 'conversation_id' => $this->conversation->id,
                 'content' => 'Hello, World!',
@@ -187,8 +186,6 @@ describe('MessageController', function () {
         });
 
         it('rolls back transaction on failure', function () {
-            Event::fake([MessageSent::class]);
-
             // Force an exception by creating invalid conversation state
             $invalidConversation = Conversation::factory()->create();
             $invalidConversation->delete(); // Delete but keep ID

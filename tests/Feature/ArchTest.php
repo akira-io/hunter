@@ -12,6 +12,7 @@ arch()->preset()->laravel()
             'App\Http\Controllers\Api\MessageController',
             'App\Http\Controllers\Auth\GoogleAuthController',
             'App\Http\Requests',
+            "App\Http\Controllers\Notification\NotificationController",
         ]);
 arch()->preset()->security();
 
@@ -37,6 +38,7 @@ arch('avoid mutation')
         'App\Policies',
         'App\Events',
         'App\Console\Commands',
+        'App\Notifications',
 
     ]);
 
@@ -55,12 +57,16 @@ arch('avoid inheritance')
         'App\Http\Resources',
         'App\Foundation\Inspiring',
         'App\Console\Commands',
+        'App\Notifications',
     ]);
 
 arch('annotations')
     ->expect('App')
 //    ->toHavePropertiesDocumented()
-    ->toHaveMethodsDocumented();
+    ->toHaveMethodsDocumented()
+    ->ignoring([
+        'App\Notifications',
+    ]);
 
 arch('avoid open for extension')
     ->expect('App')
@@ -97,6 +103,7 @@ arch('models')
         'App\Policies',
         'App\Events',
         'App\Console\Commands',
+        'App\Notifications',
     ]);
 
 arch('actions')

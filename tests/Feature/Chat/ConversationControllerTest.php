@@ -6,11 +6,13 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 
 use function Pest\Laravel\actingAs;
 
 describe('ConversationController', function () {
     beforeEach(function () {
+        Event::fake();
         $this->user = User::factory()->create();
         actingAs($this->user);
     });

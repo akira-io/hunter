@@ -7,12 +7,12 @@ namespace App\Events;
 use App\Models\Conversation;
 use App\Models\User;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final class ConversationCreated implements ShouldBroadcastNow
+final class ConversationCreated implements ShouldBroadcast
 {
     use Dispatchable, SerializesModels;
 
