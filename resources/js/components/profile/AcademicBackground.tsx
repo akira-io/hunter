@@ -124,28 +124,6 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                             <HunterConfirmDialog processing={processing}
                                                  onConfirm={() => deleteEducation(education.id)}
                                                  title='Hunt' />
-                            {/*<AlertDialog>*/}
-                            {/*    <AlertDialogTrigger asChild>*/}
-                            {/*        <TrashIcon className="text-red-500" size={20} />*/}
-                            {/*    </AlertDialogTrigger>*/}
-                            {/*    <AlertDialogContent>*/}
-                            {/*        <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">*/}
-                            {/*            <div className="flex size-9 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">*/}
-                            {/*                <CircleAlertIcon className="cursor-pointer opacity-80" size={16} />*/}
-                            {/*            </div>*/}
-                            {/*            <AlertDialogHeader>*/}
-                            {/*                <AlertDialogTitle>Eliminar Formação ?</AlertDialogTitle>*/}
-                            {/*                <AlertDialogDescription>*/}
-                            {/*                    Tem a certeza que deseja eliminar esta formação académica? Esta ação não pode ser desfeita.*/}
-                            {/*                </AlertDialogDescription>*/}
-                            {/*            </AlertDialogHeader>*/}
-                            {/*        </div>*/}
-                            {/*        <AlertDialogFooter>*/}
-                            {/*            <AlertDialogCancel>Cancel</AlertDialogCancel>*/}
-                            {/*            <AlertDialogAction onClick={() => deleteEducation(education.id)}>Confirm</AlertDialogAction>*/}
-                            {/*        </AlertDialogFooter>*/}
-                            {/*    </AlertDialogContent>*/}
-                            {/*</AlertDialog>*/}
                         </CardTitle>
                         <CardContent className="-mt-2 grid w-full grid-cols-1 items-center gap-4 border-t-1 pt-4 md:grid-cols-2">
                             <div className="flex flex-col items-start justify-start">
