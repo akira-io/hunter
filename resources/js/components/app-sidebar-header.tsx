@@ -2,18 +2,22 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import SearchHunt from '@/components/feed/SearchHunt';
 import { NavUser } from '@/components/nav-user';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { usePage } from '@inertiajs/react';
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
     const { auth } = usePage<{ auth: { user?: { id: number } } }>().props;
+    const { state, isMobile } = useSidebar();
+
+    // Calcula o offset baseado no estado do sidebar (apenas em desktop quando expandido)
+    const sidebarOffset = !isMobile && state === 'expanded' ? 'calc(var(--sidebar-width) + 0.75rem)' : undefined;
 
     return (
-        <header className="gradient bg-card border-sidebar-border/50 fixed z-50 flex h-16 w-full shrink-0 items-center border-b backdrop-blur-md transition-[width] ease-linear">
+        <header className="gradient bg-card/80 border-sidebar-border/50 supports-[backdrop-filter]:bg-card/60 fixed z-50 flex h-16 w-full shrink-0 items-center border-b backdrop-blur-md transition-[width] ease-linear">
             {/* Left side - Navigation */}
             <div className="flex items-center gap-2 px-3 md:px-6">
-                <SidebarTrigger className="-ml-1" />
+                <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground -ml-1 transition-colors" />
                 <div className="hidden sm:block">
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
                 </div>
@@ -23,7 +27,10 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
             <div className="flex-1"></div>
 
             {/* Right side - Actions (Fixed position to avoid sidebar push) */}
-            <div className="fixed top-0 right-3 flex h-16 items-center gap-2 md:right-15">
+            <div
+                className="fixed top-0 right-3 flex h-16 items-center gap-2 transition-[right] duration-200 ease-linear md:right-15"
+                style={sidebarOffset ? { right: sidebarOffset } : undefined}
+            >
                 {/* Mobile search button */}
                 <div className="block md:hidden">
                     <SearchHunt />

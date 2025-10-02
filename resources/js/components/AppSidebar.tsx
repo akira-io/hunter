@@ -12,7 +12,7 @@ import { AiFillGithub } from 'react-icons/ai';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Hunt Line',
+        title: 'Hunts',
         href: hunts.index.url(),
         icon: RssIcon,
     },
@@ -54,23 +54,23 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     return (
-        <Sidebar collapsible="icon" variant="sidebar">
-            <SidebarHeader>
+        <Sidebar collapsible="icon" variant="sidebar" className="border-border/50 border-r">
+            <SidebarHeader className="border-border/50 border-b">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href="/" prefetch>
-                                <AppLogo />
+                        <SidebarMenuButton size="lg" asChild className="group hover:bg-accent/50 transition-all duration-200">
+                            <Link href="/" prefetch className="flex items-center gap-2">
+                                <AppLogo className="transition-transform duration-200 group-hover:scale-105" />
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            <SidebarContent>
+            <SidebarContent className="gap-0 py-4">
                 <NavMain items={mainNavItems} />
             </SidebarContent>
-            <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+            <SidebarFooter className="mt-auto border-t-0 pb-4">
+                <NavFooter items={footerNavItems} />
             </SidebarFooter>
         </Sidebar>
     );
