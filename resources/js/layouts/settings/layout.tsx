@@ -76,8 +76,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                 </aside>
 
                 {/* Content */}
-                <div className="flex-1">
-                    <Card className="gradient p-6">
+                <div className="flex-1 overflow-auto">
+                    <Card className="gradient p-4 sm:p-6">
                         <CardContent className="p-0">{children}</CardContent>
                     </Card>
                 </div>

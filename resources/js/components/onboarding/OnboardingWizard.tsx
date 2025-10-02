@@ -232,7 +232,7 @@ export function OnboardingWizard({ isOpen, onClose, onComplete }: OnboardingWiza
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleSkip()}>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="bg-background max-h-[100vh] overflow-y-auto rounded-lg p-6 shadow-lg md:max-w-2xl">
                 {/* Header */}
                 <div className="border-b pb-4">
                     <div className="mb-3 flex items-center justify-between">
