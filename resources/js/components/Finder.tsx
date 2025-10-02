@@ -12,6 +12,9 @@ interface FinderProps {
 }
 
 export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
+    // Remove duplicatas baseado no ID
+    const uniqueUsers = users.filter((user, index, self) => index === self.findIndex((u) => u.id === user.id));
+
     return (
         <>
             <div className="my-10 flex w-full max-w-xl flex-col items-center justify-center dark:text-white">
@@ -30,8 +33,8 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
                 </form>
             </div>
             <div className="grid w-full max-w-7xl grid-cols-1 justify-center gap-4 transition-all duration-1 sm:grid-cols-2 md:px-10 xl:grid-cols-3">
-                {users.map((user) => (
-                    <Onboarding user={user} key={String(user.id)} />
+                {uniqueUsers.map((user) => (
+                    <Onboarding user={user} key={`user-${user.id}`} />
                 ))}
             </div>
             <ScrollDown className="bg-foreground fixed bottom-0 h-8 w-8 rounded-md text-white dark:text-zinc-900" />

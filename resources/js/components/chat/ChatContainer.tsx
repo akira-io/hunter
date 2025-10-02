@@ -1,7 +1,8 @@
+import { UserAvatar } from '@/components/UserAvatar';
 import { useChatContext } from '@/contexts/ChatContext';
 import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
 import { router } from '@inertiajs/react';
-import { User as UserIcon, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import React from 'react';
 import { ChatWindow } from './ChatWindow';
 
@@ -57,33 +58,12 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) =
                                     className="flex w-full items-center gap-2 px-3 py-2 pr-8 text-left"
                                 >
                                     {/* Avatar */}
-                                    <div className="relative shrink-0">
-                                        {otherParticipant?.avatar_url ? (
-                                            <>
-                                                <img
-                                                    src={otherParticipant.avatar_url}
-                                                    alt={otherParticipant.name}
-                                                    className="size-6 rounded-full object-cover ring-1 ring-white/20"
-                                                    onError={(e) => {
-                                                        const target = e.target as HTMLImageElement;
-                                                        target.style.display = 'none';
-                                                        const fallback = target.nextElementSibling as HTMLElement;
-                                                        if (fallback) fallback.style.display = 'grid';
-                                                    }}
-                                                />
-                                                <div
-                                                    className="grid size-6 place-items-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 ring-2 ring-white dark:from-zinc-700 dark:to-zinc-600 dark:ring-zinc-800"
-                                                    style={{ display: 'none' }}
-                                                >
-                                                    <UserIcon size={10} className="text-zinc-600 dark:text-zinc-300" />
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-zinc-300 to-zinc-400 ring-1 ring-white/20 dark:from-zinc-600 dark:to-zinc-700">
-                                                <UserIcon size={12} className="text-zinc-600 dark:text-zinc-300" />
-                                            </div>
-                                        )}
-                                    </div>
+                                    <UserAvatar
+                                        avatarUrl={otherParticipant?.avatar_url}
+                                        userName={otherParticipant?.name || 'Unknown'}
+                                        className="size-6 ring-1 ring-white/20"
+                                        fallbackClassName="text-[10px]"
+                                    />
 
                                     <span className="flex-1 truncate">{getConversationTitle(conversationId)}</span>
                                     {unreadCount > 0 && (

@@ -67,7 +67,9 @@ export function OnboardingWizard({ isOpen, onClose, onComplete }: OnboardingWiza
                         <Users className="text-primary h-8 w-8" />
                     </div>
                     <h3 className="text-center text-xl font-bold">Complete seu Perfil</h3>
-                    <p className="text-muted-foreground text-center text-sm">Um perfil completo ajuda outros desenvolvedores a conhecerem você melhor!</p>
+                    <p className="text-muted-foreground text-center text-sm">
+                        Um perfil completo ajuda outros desenvolvedores a conhecerem você melhor!
+                    </p>
                     <Card className="gradient bg-card">
                         <CardContent className="space-y-3 p-4">
                             <div className="flex items-center gap-3">

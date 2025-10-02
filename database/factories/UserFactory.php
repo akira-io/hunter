@@ -37,7 +37,8 @@ final class UserFactory extends Factory
             'github_id' => fake()->unique()->numberBetween(1, 1000000),
             'github_token' => fake()->uuid(),
             'github_refresh_token' => fake()->uuid(),
-            'avatar_url' => fake()->imageUrl(),
+            // 50% chance de não ter avatar para testar fallback
+            'avatar_url' => fake()->boolean(50) ? null : fake()->imageUrl(),
             'github_url' => fake()->url(),
             'twitter_url' => fake()->url(),
             'linkedin_url' => fake()->url(),

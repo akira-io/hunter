@@ -1,9 +1,9 @@
 import { HuntComments } from '@/components/commentable/HuntComments';
 import DeleteHunt from '@/components/feed/DeleteHunt';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { UserAvatar } from '@/components/UserAvatar';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
@@ -30,7 +30,6 @@ export function HuntCard({ hunt }: HuntCardProps) {
     const { auth } = usePage<SharedData>().props;
     const [isOpenComments, setOpenComments] = useState(false);
 
-    const sanitizedAvatarUrl = useSanitizeImageUrl(hunt.owner.avatar_url);
     const sanitizedImageUrl = useSanitizeImageUrl(hunt.image_url);
 
     function gotoProfile() {
@@ -41,10 +40,7 @@ export function HuntCard({ hunt }: HuntCardProps) {
         <>
             <Card className="relative mx-auto mb-4 w-full max-w-xl">
                 <CardHeader className="flex flex-row items-start gap-4">
-                    <Avatar onClick={gotoProfile}>
-                        <AvatarImage src={sanitizedAvatarUrl} className="object-cover" />
-                        <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
+                    <UserAvatar avatarUrl={hunt.owner.avatar_url} userName={hunt.owner.name} className="cursor-pointer" onClick={gotoProfile} />
                     <div className="flex flex-col">
                         <CardTitle className="cursor-pointer text-base font-semibold" onClick={gotoProfile}>
                             {hunt.owner.name}
