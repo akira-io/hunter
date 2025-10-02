@@ -1,13 +1,14 @@
 import { HuntCard } from '@/components/feed/HuntCard';
 import { FollowButton } from '@/components/followable/FollowButton';
 import UnfollowButton from '@/components/followable/UnfollowButton';
-import Onboarding, { OnboardingAvatar } from '@/components/Onboarding';
+import { OnboardingAvatar } from '@/components/Onboarding';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import UserCard from '@/components/UserCard';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import AppLayout from '@/layouts/app-layout';
@@ -111,7 +112,7 @@ function Hunters({ hunters }: { hunters: User[] }) {
             <NoData count={hunters.length} />
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {hunters.map((hunter) => (
-                    <Onboarding user={hunter} key={hunter.id} />
+                    <UserCard user={hunter} key={hunter.id} />
                 ))}
             </div>
         </>

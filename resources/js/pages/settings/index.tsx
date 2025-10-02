@@ -33,7 +33,7 @@ export default function SettingsIndex() {
             <div className="container mx-auto max-w-4xl px-4 py-6">
                 <Heading title="Definições" description="Gerencie as configurações da sua conta" />
 
-                <div className="space-y-2 md:space-y-0 grid  md:gap-2 md:grid-cols-2 md:items-center md:justify-center">
+                <div className="grid space-y-2 md:grid-cols-2 md:items-center md:justify-center md:gap-2 md:space-y-0">
                     {settingsItems.map((item) => (
                         <Link key={item.href} href={item.href}>
                             <Card className="gradient group cursor-pointer transition-all hover:shadow-lg active:scale-[0.99]">
