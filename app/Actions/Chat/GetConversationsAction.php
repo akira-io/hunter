@@ -28,16 +28,14 @@ final readonly class GetConversationsAction
      */
     public function handle(User $user): array
     {
+        $query = $user->conversations();
+
+        $query->with('participants');
+        // @phpstan-ignore-next-line
+        $query->with(['messages' => fn (HasMany $query) => $query->latest()->limit(1)->with('user')]);
+
         /** @var Collection<int, Conversation> $conversationsCollection */
-        $conversationsCollection = $user->conversations()
-            ->with([
-                'participants',
-                'messages' => function (Builder|HasMany $query): void {
-                    // @phpstan-ignore-next-line
-                    $query->latest()->limit(1)->with('user');
-                },
-            ])
-            ->orderBy('last_message_at', 'desc')
+        $conversationsCollection = $query->orderBy('last_message_at', 'desc')
             ->get();
 
         /** @var array<int, array<string, mixed>> $result */

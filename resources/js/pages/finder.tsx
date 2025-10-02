@@ -2,11 +2,10 @@ import { SectionHeader } from '@/components/feed/SectionHeader';
 import { Finder as FinderComponent } from '@/components/Finder';
 import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/app-layout';
-import finder from '@/routes/finder';
 import { type BreadcrumbItem, User } from '@/types';
-import { Head, InfiniteScroll, router } from '@inertiajs/react';
+import { Head, InfiniteScroll } from '@inertiajs/react';
 import { ListFilterPlusIcon } from 'lucide-react';
-import React, { useState } from 'react';
+import React from 'react';
 
 interface FinderProps {
     users: {
@@ -20,26 +19,8 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/finder',
     },
 ];
+
 export default function Finder({ users }: FinderProps) {
-    const [isSearchLoading, setIsSearchLoading] = useState(false);
-
-    function search(e: React.ChangeEvent<HTMLInputElement>) {
-        e.preventDefault();
-        setIsSearchLoading(true);
-        router.get(
-            finder.index().url,
-            { q: e.target.value },
-            {
-                preserveScroll: true,
-                preserveState: true,
-                replace: true,
-                onFinish: () => {
-                    setIsSearchLoading(false);
-                },
-            },
-        );
-    }
-
     return (
         <Layout breadcrumbs={breadcrumbs}>
             <Head title="Finder" />
@@ -51,7 +32,7 @@ export default function Finder({ users }: FinderProps) {
             </div>
             <div className="mb-50 flex w-full flex-col items-center justify-start px-4 opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                 <InfiniteScroll data="users">
-                    <FinderComponent users={users.data} onSearch={search} isSearchLoading={isSearchLoading} />
+                    <FinderComponent users={users.data} />
                 </InfiniteScroll>
             </div>
         </Layout>

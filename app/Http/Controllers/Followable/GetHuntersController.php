@@ -26,6 +26,7 @@ final readonly class GetHuntersController
 
         $paginator = $user->followers()->paginate(20);
         $followersWithStatus = $user->attachFollowStatus($paginator);
+        /** @var \Illuminate\Support\Collection<int, \Illuminate\Database\Eloquent\Model&object{pivot: \Illuminate\Database\Eloquent\Relations\Pivot}> $followersWithStatus */
         $paginator->setCollection($followersWithStatus);
 
         return inertia('followable/hunters', [

@@ -26,6 +26,7 @@ final readonly class GetHuntingsController
         $user = type($request->user())->as(User::class);
         $paginator = $user->followings()->with(['followable'])->paginate(20);
         $followingsWithStatus = $user->attachFollowStatus($paginator);
+        /** @var \Illuminate\Support\Collection<(int|string), mixed> $followingsWithStatus */
         $paginator->setCollection($followingsWithStatus);
 
         return inertia('followable/huntings', [

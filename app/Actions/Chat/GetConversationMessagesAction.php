@@ -37,13 +37,12 @@ final readonly class GetConversationMessagesAction
             })
             ->findOrFail($conversationId);
 
-        /** @var Collection<int, Message> $messagesCollection */
         $messagesCollection = $conversation->messages()
             ->with('user')
             ->orderBy('created_at', 'asc')
             ->get();
 
-        /** @var Collection<int, array{id: mixed, content: mixed, type: mixed, metadata: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}> $messages */
+        /** @var \Illuminate\Support\Collection<int, array{id: mixed, content: mixed, type: mixed, metadata: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}> $messages */
         $messages = $messagesCollection->map(fn (Message $message): array => $this->formatMessage($message));
 
         /** @var Collection<int, User> $participants */

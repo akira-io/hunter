@@ -19,7 +19,7 @@ final class NotificationUpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, mixed>
+     * @return array<string, array<int, string>>
      */
     public function rules(): array
     {
@@ -27,6 +27,27 @@ final class NotificationUpdateRequest extends FormRequest
             'follow_notifications' => ['required', 'boolean'],
             'email_notifications' => ['required', 'boolean'],
             'browser_notifications' => ['required', 'boolean'],
+        ];
+    }
+
+    /**
+     * Get the validated data from the request.
+     *
+     * @param  array<array-key, mixed>|int|string|null  $key
+     * @return array<string, bool>
+     */
+    public function validated($key = null, $default = null): array
+    {
+        $validated = parent::validated($key, $default);
+
+        if (! is_array($validated)) {
+            throw new \RuntimeException('Expected array from validated data');
+        }
+
+        return [
+            'follow_notifications' => (bool) ($validated['follow_notifications'] ?? false),
+            'email_notifications' => (bool) ($validated['email_notifications'] ?? false),
+            'browser_notifications' => (bool) ($validated['browser_notifications'] ?? false),
         ];
     }
 

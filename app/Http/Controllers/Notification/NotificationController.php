@@ -47,7 +47,11 @@ final readonly class NotificationController
 
         return inertia('notifications/index', [
             'notifications' => \Inertia\Inertia::scroll(
-                fn () => $notifications->through(function (DatabaseNotification $notification): array {
+                fn () => $notifications->through(function (mixed $notification): array {
+                    if (! $notification instanceof DatabaseNotification) {
+                        throw new \RuntimeException('Expected DatabaseNotification instance');
+                    }
+
                     /** @var array<string, mixed> $data */
                     $data = $notification->data;
 

@@ -61,15 +61,14 @@ final class ConversationsSnapshot implements ShouldBroadcast
 
         $user = $this->user;
 
+        $query = $user->conversations();
+
+        $query->with('participants');
+        // @phpstan-ignore-next-line
+        $query->with(['messages' => fn (HasMany $query) => $query->latest()->limit(1)->with('user')]);
+
         /** @var Collection<int, Conversation> $conversationsCollection */
-        $conversationsCollection = $user->conversations()
-            ->with([
-                'participants',
-                'messages' => function (Builder|HasMany $query): void {
-                    $query->latest()->limit(1)->with('user');
-                },
-            ])
-            ->orderBy('last_message_at', 'desc')
+        $conversationsCollection = $query->orderBy('last_message_at', 'desc')
             ->get();
 
         $conversations = $conversationsCollection->map(function (Conversation $conversation) use ($user): array {
