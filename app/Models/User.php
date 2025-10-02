@@ -10,6 +10,7 @@ use Akira\Followable\Concerns\Follower;
 use Akira\LaravelAuthLogs\Concerns\AuthLogs;
 use Akira\Likeable\Concerns\Liker;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -49,6 +50,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read  string|null $website_url
  * @property-read  string|null $youtube_url
  * @property-read  \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $unreadNotifications
+ * @property-read CarbonInterface $onboarding_completed_at
+ * @property-read bool $onboarding_completed
  *
  * @method void markAsRead()
  */
@@ -98,6 +101,8 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'website_url',
         'youtube_url',
         'notification_settings',
+        'onboarding_completed_at',
+        'onboarding_completed',
     ];
 
     /**
@@ -223,6 +228,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'created_at' => 'datetime:d-m-Y',
             'skills' => 'array',
             'notification_settings' => 'array',
+            'onboarding_completed_at' => 'datetime',
         ];
     }
 }

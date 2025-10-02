@@ -40,6 +40,8 @@ final class UserResource extends JsonResource
             'bluesky_url' => $this->bluesky_url,
             'website_url' => $this->website_url,
             'youtube_url' => $this->youtube_url,
+            'onboarding_completed' => $this->onboarding_completed,
+            'onboarding_completed_at' => $this->onboarding_completed_at,
         ];
     }
 }
