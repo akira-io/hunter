@@ -44,7 +44,7 @@ final readonly class OnboardingController
      * Reset onboarding status (for replay tutorial)
      */
     #[Post('/reset', name: 'onboarding.reset')]
-    public function delete(ResetOnboardingRequest $request): RedirectResponse
+    public function destroy(ResetOnboardingRequest $request): RedirectResponse
     {
         $user = type($request->user())->as(User::class);
 

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Illuminate\Support\Facades\Event;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -37,14 +36,20 @@ test('users can not authenticate with invalid password', function () {
 });
 
 test('users can logout', function () {
-    Event::fake();
-
     $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->post('/logout');
+    $this->actingAs($user);
 
-    $this->assertGuest();
+    // Verify user is authenticated before logout
+    $this->assertAuthenticated();
+
+    $response = $this->post('/logout');
+
     $response->assertRedirect('/');
+
+    // Make another request to verify user is logged out
+    $this->get('/')->assertOk();
+    $this->assertGuest();
 });
 
 test('users are rate limited after too many login attempts', function () {

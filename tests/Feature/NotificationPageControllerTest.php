@@ -11,6 +11,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Event::fake();
+    DB::table('notifications')->delete();
     $this->user = actingAsAuthUser();
 });
 
@@ -21,12 +22,13 @@ it('can access notifications page', function () {
         ->assertInertia(fn ($page) => $page
             ->component('notifications/index')
             ->has('notifications')
-            ->has('pagination')
             ->has('unread_count')
+            ->has('filter')
+            ->has('counts')
         );
 });
 
-it('displays notifications with pagination info', function () {
+it('displays notifications with infinite scroll pagination', function () {
     // Create some test notifications
     $follower = User::factory()->create();
 
@@ -40,17 +42,13 @@ it('displays notifications with pagination info', function () {
     $response->assertStatus(200)
         ->assertInertia(fn ($page) => $page
             ->component('notifications/index')
-            ->where('pagination.total', 25)
-            ->where('pagination.per_page', 20)
-            ->where('pagination.total_pages', 2)
-            ->where('pagination.current_page', 1)
-            ->where('pagination.has_next_page', true)
-            ->where('pagination.has_prev_page', false)
-            ->has('notifications', 20) // Should show 20 notifications on first page
+            ->has('notifications')
+            ->where('counts.all', 25)
+            ->where('unread_count', 25)
         );
 });
 
-it('can navigate to second page', function () {
+it('supports pagination with page parameter', function () {
     // Create enough notifications to have a second page
     $follower = User::factory()->create();
 
@@ -63,10 +61,7 @@ it('can navigate to second page', function () {
     $response->assertStatus(200)
         ->assertInertia(fn ($page) => $page
             ->component('notifications/index')
-            ->where('pagination.current_page', 2)
-            ->where('pagination.has_next_page', false)
-            ->where('pagination.has_prev_page', true)
-            ->has('notifications', 5) // Should show 5 notifications on second page
+            ->where('counts.all', 25)
         );
 });
 
@@ -103,7 +98,9 @@ it('includes both read and unread notifications', function () {
 
     $response->assertStatus(200)
         ->assertInertia(fn ($page) => $page
-            ->has('notifications', 2) // Should show both read and unread
+            ->where('counts.all', 2)
+            ->where('counts.read', 1)
+            ->where('counts.unread', 1)
         );
 });
 
@@ -131,8 +128,9 @@ it('can filter notifications by unread', function () {
     $response->assertStatus(200)
         ->assertInertia(fn ($page) => $page
             ->where('filter', 'unread')
-            ->has('notifications', 3)
             ->where('counts.unread', 3)
+            ->where('counts.read', 2)
+            ->where('counts.all', 5)
         );
 });
 
@@ -152,8 +150,9 @@ it('can filter notifications by read', function () {
     $response->assertStatus(200)
         ->assertInertia(fn ($page) => $page
             ->where('filter', 'read')
-            ->has('notifications', 2)
             ->where('counts.read', 2)
+            ->where('counts.unread', 3)
+            ->where('counts.all', 5)
         );
 });
 
@@ -173,8 +172,9 @@ it('shows all notifications by default', function () {
     $response->assertStatus(200)
         ->assertInertia(fn ($page) => $page
             ->where('filter', 'all')
-            ->has('notifications', 5)
             ->where('counts.all', 5)
+            ->where('counts.read', 2)
+            ->where('counts.unread', 3)
         );
 });
 

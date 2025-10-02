@@ -47,6 +47,13 @@ final class UserFactory extends Factory
             'location' => fake()->city(),
             'bio' => fake()->sentence(),
             'skills' => fake()->randomElements(SkillsEnum::get(), 10),
+            'onboarding_completed' => true,
+            'onboarding_completed_at' => now(),
+            'notification_settings' => json_encode([
+                'follow_notifications' => true,
+                'email_notifications' => true,
+                'browser_notifications' => true,
+            ]),
         ];
     }
 

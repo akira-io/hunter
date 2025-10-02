@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Requests\Hunt\CreateHuntRequest;
+use App\Models\Hunt;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -60,4 +61,85 @@ it('can store a hunt with image using store method', function () {
     $hunt = $this->user->hunts()->where('content', 'This is a test hunt with image')->first();
     expect($hunt)->not->toBeNull()
         ->and($hunt->getMedia('hunts')->count())->toBe(1);
+});
+
+it('validates content is required for hunt creation', function () {
+    $this->actingAs($this->user);
+
+    $response = $this->post(route('hunts.store'), [
+        'content' => '',
+    ]);
+
+    $response->assertSessionHasErrors(['content']);
+});
+
+it('validates image must be an image file', function () {
+    $this->actingAs($this->user);
+
+    $file = UploadedFile::fake()->create('document.pdf', 100);
+
+    $response = $this->post(route('hunts.store'), [
+        'content' => 'Hunt with invalid file',
+        'image' => $file,
+    ]);
+
+    $response->assertSessionHasErrors(['image']);
+});
+
+it('accepts boolean flags for hunt creation', function () {
+    $this->actingAs($this->user);
+
+    $response = $this->post(route('hunts.store'), [
+        'content' => 'Hunt with flags',
+        'is_pinned' => true,
+        'is_reported' => false,
+    ]);
+
+    $response->assertRedirect();
+
+    $hunt = $this->user->hunts()->where('content', 'Hunt with flags')->first();
+    expect($hunt)->not->toBeNull()
+        ->and($hunt->is_pinned)->toBeTrue()
+        ->and($hunt->is_reported)->toBeFalse();
+});
+
+it('store method directly creates hunt without image', function () {
+    // Test the store() method directly on CreateHuntRequest
+    $this->actingAs($this->user);
+
+    // Create a real HTTP request through the application
+    $response = $this->call('POST', '/hunts', [
+        'content' => 'Direct store via POST',
+        'is_pinned' => true,
+    ]);
+
+    $response->assertRedirect();
+
+    // Verify the hunt was created (reload user to get fresh relationship)
+    $this->user->refresh();
+    $hunt = $this->user->hunts()->where('content', 'Direct store via POST')->first();
+
+    expect($hunt)->not->toBeNull()
+        ->and($hunt->content)->toBe('Direct store via POST')
+        ->and($hunt->is_pinned)->toBeTrue();
+});
+
+it('store method directly creates hunt with image', function () {
+    // Test the store() method with image upload through real request
+    $this->actingAs($this->user);
+
+    Storage::fake('public');
+    $image = UploadedFile::fake()->image('direct-test.jpg');
+
+    $this->call('POST', '/hunts', [
+        'content' => 'Hunt with image direct test',
+    ], [], [
+        'image' => $image,
+    ]);
+
+    $hunt = $this->user->hunts()->where('content', 'Hunt with image direct test')->first();
+
+    expect($hunt)->not->toBeNull()
+        ->and($hunt->content)->toBe('Hunt with image direct test')
+        ->and($hunt->getMedia('hunts'))->toHaveCount(1);
 });

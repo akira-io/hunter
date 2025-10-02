@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Hunt;
 
-use App\Models\Hunt;
-use App\Models\User;
 use App\Rules\Rules\WithoutBlankCharactersRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\UploadedFile;
 
 final class CreateHuntRequest extends FormRequest
 {
@@ -36,30 +33,5 @@ final class CreateHuntRequest extends FormRequest
     {
 
         return true;
-    }
-
-    /**
-     * Create a Hunt
-     */
-    public function store(): Hunt
-    {
-        /** @var User $user */
-        $user = type($this->user())->as(User::class);
-
-        /** @var array<string, mixed> $huntData */
-        $huntData = $this->except('image');
-
-        /** @var Hunt $hunt */
-        $hunt = $user->hunts()
-            ->create($huntData);
-
-        if ($this->hasFile('image')) {
-            /** @var UploadedFile $imageFile */
-            $imageFile = type($this->file('image'))->as(UploadedFile::class);
-            $hunt->addMedia($imageFile)
-                ->toMediaCollection('hunts');
-        }
-
-        return $hunt;
     }
 }

@@ -131,6 +131,23 @@ it('returns null metadata when not provided', function () {
     expect($request->getMetadata())->toBeNull();
 });
 
+it('handles string conversation id correctly', function () {
+    // Test with string conversation ID (should work since validation converts it)
+    $request = SendMessageRequest::createFrom(
+        request()->create('/api/messages', 'POST', [
+            'conversation_id' => (string) $this->conversation->id,
+            'content' => 'Test message',
+        ]),
+        new SendMessageRequest
+    );
+
+    $request->setContainer(app());
+    $request->setUserResolver(fn () => $this->user);
+    $request->validateResolved();
+
+    expect($request->getConversationId())->toBe($this->conversation->id);
+});
+
 it('has custom error messages', function () {
     $request = new SendMessageRequest;
     $messages = $request->messages();

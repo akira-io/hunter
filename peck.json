@@ -16,7 +16,8 @@
             "commitlint",
             "paginator",
             "ds",
-            "broadcastable"
+            "broadcastable",
+            "onboarding"
         ],
         "paths": [
             "resources",

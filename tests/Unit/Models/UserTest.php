@@ -34,8 +34,8 @@ test('to array', function () {
             'website_url',
             'youtube_url',
             'notification_settings',
-            'onboarding_completed_at',
             'onboarding_completed',
+            'onboarding_completed_at',
         ]);
 });
 
