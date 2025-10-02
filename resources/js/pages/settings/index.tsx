@@ -3,7 +3,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import password from '@/routes/password';
 import { Link } from '@inertiajs/react';
-import { ChevronRight, KeyRound, Palette } from 'lucide-react';
+import { Bell, ChevronRight, KeyRound, Palette } from 'lucide-react';
+import { notifications } from '@/routes/settings';
+import { appearance } from '@/routes';
 
 interface SettingItem {
     title: string;
@@ -16,13 +18,19 @@ const settingsItems: SettingItem[] = [
     {
         title: 'Senha',
         description: 'Altere sua senha de acesso',
-        href: password.edit(),
+        href: password.edit().url,
         icon: <KeyRound className="size-5" />,
+    },
+    {
+        title: 'Notificações',
+        description: 'Gerencie suas preferências de notificação',
+        href: notifications().url,
+        icon: <Bell className="size-5" />,
     },
     {
         title: 'Aparência',
         description: 'Personalize o tema da aplicação',
-        href: '/settings/appearance',
+        href: appearance().url,
         icon: <Palette className="size-5" />,
     },
 ];

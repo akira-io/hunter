@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import password from '@/routes/password';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, KeyRound, Palette } from 'lucide-react';
+import { ArrowLeft, Bell, KeyRound, Palette } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
@@ -13,6 +13,11 @@ const sidebarNavItems: NavItem[] = [
         title: 'Dados de Acesso',
         href: password.edit().url,
         icon: <KeyRound className="mr-2 size-4" />,
+    },
+    {
+        title: 'Notificações',
+        href: '/settings/notifications',
+        icon: <Bell className="mr-2 size-4" />,
     },
     {
         title: 'Aparência',
