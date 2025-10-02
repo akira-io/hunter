@@ -1,10 +1,12 @@
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     usePage();
+    const { isMobile, setOpenMobile } = useSidebar();
+
     // Helper to check if route is active - using window.location.pathname like settings layout
     const isRouteActive = (href: string) => {
         if (typeof window === 'undefined') return false;
@@ -16,10 +18,16 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
         return currentPath === itemPath || currentPath.startsWith(itemPath + '/');
     };
 
+    const handleLinkClick = () => {
+        if (isMobile) {
+            setOpenMobile(false);
+        }
+    };
+
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel className="text-muted-foreground/70 text-xs font-semibold tracking-wider uppercase">Menu</SidebarGroupLabel>
-            <SidebarMenu className="gap-1">
+            <SidebarMenu className="gap-2">
                 {items.map((item) => {
                     const isActive = isRouteActive(item.href);
                     return (
@@ -29,11 +37,11 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 isActive={isActive}
                                 tooltip={{ children: item.title }}
                                 className={cn(
-                                    'group hover:bg-accent/50 transition-all duration-200',
+                                    'group hover:bg-accent/50 h-11 transition-all duration-200',
                                     isActive && 'bg-accent text-accent-foreground font-medium shadow-sm',
                                 )}
                             >
-                                <Link href={item.href} prefetch className="flex items-center gap-3">
+                                <Link href={item.href} prefetch className="flex items-center gap-3 py-2.5" onClick={handleLinkClick}>
                                     {item.icon && (
                                         <item.icon
                                             className={cn(
@@ -42,7 +50,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                             )}
                                         />
                                     )}
-                                    <span className="truncate">{item.title}</span>
+                                    <span className="truncate text-[15px]">{item.title}</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
