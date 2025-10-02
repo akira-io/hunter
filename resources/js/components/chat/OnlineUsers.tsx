@@ -3,7 +3,7 @@ import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';
 import { router } from '@inertiajs/react';
-import { Search, UserCheck, User as UserIcon, Users, Wifi, WifiOff, XIcon } from 'lucide-react';
+import { MessageCircleMoreIcon, Search, User as UserIcon, UserCheck, Users, Wifi, WifiOff, XIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface ChatUsersProps {
@@ -87,7 +87,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                 >
                     {/*<div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-sm" />*/}
                     <div className="relative flex h-full items-center justify-center">
-                        <Users size={24} className="text-white" />
+                        <MessageCircleMoreIcon size={24} className="text-white" />
                     </div>
 
                     {/* Badge with unread messages count */}
