@@ -98,7 +98,9 @@ export default function Password() {
                             <InputError message={errors.password_confirmation} />
                         </div>
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Guardar password</Button>
+                            <Button disabled={processing} variant="gradient">
+                                Guardar password
+                            </Button>
                             <Transition
                                 show={recentlySuccessful}
                                 enter="transition ease-in-out"

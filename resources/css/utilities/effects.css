@@ -66,4 +66,20 @@
         transform: translateZ(0);
         will-change: transform;
     }
+
+    /**
+     * CSS Effects and Visual Enhancements
+     */
+    /* Button Gradients - Purple Theme */
+    .btn-gradient-primary {
+        @apply bg-gradient-to-br from-purple-500 to-purple-800 text-white shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95;
+    }
+
+    .btn-gradient-secondary {
+        @apply bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95;
+    }
+
+    .btn-gradient-outline {
+        @apply bg-gradient-to-br from-transparent to-transparent border-2 border-purple-500 text-purple-600 shadow-sm transition-all duration-200 hover:from-purple-50 hover:to-purple-100 hover:shadow-md active:scale-95 dark:text-purple-400 dark:border-purple-400 dark:hover:from-purple-900/20 dark:hover:to-purple-800/20;
+    }
 }

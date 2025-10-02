@@ -1,7 +1,8 @@
-import { useRefreshNotifications, useUnreadCount } from '@/stores/notificationStore';
+import { useUnreadCount } from '@/stores/notificationStore';
 import { Bell } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { NotificationDropdown } from './NotificationDropdown';
+import { router } from '@inertiajs/react';
 
 interface NotificationBellProps {
     currentUserId?: number;
@@ -10,20 +11,17 @@ interface NotificationBellProps {
 export const NotificationBell: React.FC<NotificationBellProps> = ({ currentUserId }) => {
     const [isOpen, setIsOpen] = useState(false);
     const unreadCount = useUnreadCount();
-    const refreshNotifications = useRefreshNotifications();
-
-    // Load notifications when component mounts
-    useEffect(() => {
-        if (currentUserId) {
-            refreshNotifications();
-        }
-    }, [currentUserId, refreshNotifications]);
 
     const handleToggle = () => {
-        setIsOpen(!isOpen);
-        if (!isOpen) {
-            // Refresh when opening
-            refreshNotifications();
+        // Check if it's mobile (screen width < 640px which is Tailwind's 'sm' breakpoint)
+        const isMobile = window.innerWidth < 640;
+
+        if (isMobile) {
+            // On mobile, navigate directly to notifications page
+            router.visit('/notifications');
+        } else {
+            // On desktop, toggle dropdown
+            setIsOpen(!isOpen);
         }
     };
 
@@ -31,7 +29,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ currentUserI
         <div className="relative">
             <button
                 onClick={handleToggle}
-                className={`relative touch-manipulation rounded-lg p-2 transition-all duration-200 ${
+                className={`relative cursor-pointer touch-manipulation rounded-lg p-2 transition-all duration-200 ${
                     isOpen ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                 }`}
                 data-testid="notification-bell"

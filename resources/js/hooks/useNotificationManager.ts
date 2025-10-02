@@ -1,9 +1,20 @@
-import { useAddNotification, useRefreshNotifications } from '@/stores/notificationStore';
+import { useAddNotification, useSetNotifications } from '@/stores/notificationStore';
 import { useEcho } from '@laravel/echo-react';
 import { useEffect } from 'react';
 
 interface UseNotificationManagerProps {
     currentUserId?: number;
+    notifications?: Array<{
+        id: string;
+        type: string;
+        title: string;
+        message: string;
+        data: Record<string, unknown>;
+        read_at: string | null;
+        created_at: string;
+        created_at_human: string;
+    }>;
+    unreadCount?: number;
 }
 
 interface NotificationData {
@@ -22,19 +33,19 @@ interface NotificationData {
     read_at: string | null;
 }
 
-export const useNotificationManager = ({ currentUserId }: UseNotificationManagerProps) => {
+export const useNotificationManager = ({ currentUserId, notifications, unreadCount }: UseNotificationManagerProps) => {
     const addNotification = useAddNotification();
-    const refreshNotifications = useRefreshNotifications();
+    const setNotifications = useSetNotifications();
 
     // Use Echo for private notification channel
     const notificationEcho = useEcho<NotificationData>(currentUserId ? `App.Models.User.${currentUserId}` : '', undefined, undefined, [], 'private');
 
-    // Load notifications when user logs in
+    // Sync Inertia notifications data with store
     useEffect(() => {
-        if (currentUserId) {
-            refreshNotifications();
+        if (notifications) {
+            setNotifications(notifications);
         }
-    }, [currentUserId, refreshNotifications]);
+    }, [notifications, setNotifications]);
 
     // Listen for real-time notifications
     useEffect(() => {

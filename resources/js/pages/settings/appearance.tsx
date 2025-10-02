@@ -9,6 +9,7 @@ import { BookOpen } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import OnboardingController from '@/actions/App/Http/Controllers/OnboardingController';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,12 +20,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Appearance() {
     const handleReplayTutorial = () => {
-        router.post('/onboarding/reset', {}, {
-            preserveScroll: true,
-            onSuccess: () => {
-                window.location.reload();
+        router.post(
+            OnboardingController.deleteMethod.url(),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    window.location.reload();
+                },
             },
-        });
+        );
     };
 
     return (

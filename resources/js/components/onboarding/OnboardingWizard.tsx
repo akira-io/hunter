@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { router } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, BookOpen, Heart, Rocket, Users } from 'lucide-react';
-import { useState } from 'react';
 import { Progress } from '@/components/ui/progress';
+import { router } from '@inertiajs/react';
+import { BookOpen, Heart, Rocket, Users } from 'lucide-react';
+import { useState } from 'react';
 
 interface OnboardingWizardProps {
     isOpen: boolean;
@@ -262,20 +262,16 @@ export function OnboardingWizard({ isOpen, onClose, onComplete }: OnboardingWiza
                 <div className="border-t pt-4">
                     <div className="flex items-center justify-between">
                         <Button variant="ghost" onClick={handleBack} disabled={currentStep === 0}>
-                            <ArrowLeft className="mr-2 h-4 w-4" />
                             Voltar
                         </Button>
-
                         <div className="flex gap-2">
                             {currentStep < steps.length - 1 ? (
-                                <Button onClick={handleNext}>
+                                <Button onClick={handleNext} variant="gradient">
                                     Próximo
-                                    <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             ) : (
-                                <Button onClick={handleComplete}>
-                                    Finalizar
-                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                <Button onClick={handleComplete} variant="gradient">
+                                    Concluir
                                 </Button>
                             )}
                         </div>
