@@ -3,7 +3,7 @@ import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';
 import { router } from '@inertiajs/react';
-import { MessageCircleMoreIcon, Search, User as UserIcon, UserCheck, Users, Wifi, WifiOff, XIcon } from 'lucide-react';
+import { MessageCircleMoreIcon, Search, UserCheck, User as UserIcon, Users, Wifi, WifiOff, XIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface ChatUsersProps {

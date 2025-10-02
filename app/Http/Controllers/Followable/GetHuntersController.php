@@ -29,7 +29,7 @@ final readonly class GetHuntersController
         $paginator->setCollection($followersWithStatus);
 
         return inertia('followable/hunters', [
-            'followers' => Inertia::scroll(fn () => $paginator),
+            'followers' => Inertia::scroll($paginator),
         ]);
     }
 }

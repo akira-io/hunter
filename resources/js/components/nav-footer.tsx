@@ -13,23 +13,20 @@ export function NavFooter({
     items: NavItem[];
 }) {
     return (
-        <SidebarGroup {...props} className={cn('group-data-[collapsible=icon]:p-0 border-t border-border/50 pt-2', className)}>
+        <SidebarGroup {...props} className={cn('border-border/50 border-t pt-2 group-data-[collapsible=icon]:p-0', className)}>
             <SidebarGroupContent>
                 <SidebarMenu className="gap-1">
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 asChild
-                                className="group text-muted-foreground transition-all duration-200 hover:bg-accent/50 hover:text-foreground"
+                                className="group text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-all duration-200"
                             >
-                                <a 
-                                    href={item.href} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-between gap-2"
-                                >
+                                <a href={item.href} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-3">
-                                        {item.icon && <Icon iconNode={item.icon} className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />}
+                                        {item.icon && (
+                                            <Icon iconNode={item.icon} className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                                        )}
                                         <span className="truncate text-sm">{item.title}</span>
                                     </div>
                                     <ExternalLink className="h-3 w-3 opacity-0 transition-opacity duration-200 group-hover:opacity-50" />

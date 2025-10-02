@@ -42,7 +42,9 @@ export default function Appearance() {
                                 <BookOpen className="h-5 w-5 flex-shrink-0" />
                                 Tutorial de Boas-Vindas
                             </CardTitle>
-                            <CardDescription className="text-sm">Reveja o tutorial para relembrar as principais funcionalidades do DevHunter</CardDescription>
+                            <CardDescription className="text-sm">
+                                Reveja o tutorial para relembrar as principais funcionalidades do DevHunter
+                            </CardDescription>
                         </CardHeader>
                         <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
                             <Button onClick={handleReplayTutorial} className="w-full cursor-pointer sm:w-auto" disabled={processing}>

@@ -16,14 +16,14 @@ export function NavUser({ className }: ComponentProps<'ul'>) {
                 <DropdownMenuTrigger asChild>
                     <Button
                         variant="secondary"
-                        className="hover:bg-accent focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-accent-foreground data-[state=open]:ring-2 data-[state=open]:ring-ring/20 flex w-10 items-center gap-2 rounded-full p-2 text-sm transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                        className="hover:bg-accent focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-accent-foreground data-[state=open]:ring-ring/20 flex w-10 items-center gap-2 rounded-full p-2 text-sm transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none data-[state=open]:ring-2"
                     >
                         <UserInfo user={auth.user} />
                         {/*<ChevronsUpDown className='size-4 text-muted-foreground transition-transform duration-200 data-[state=open]:rotate-180' />*/}
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                    className="z-[200] w-64 rounded-lg border border-border bg-card shadow-lg"
+                    className="border-border bg-card z-[200] w-64 rounded-lg border shadow-lg"
                     align="end"
                     side="bottom"
                     sideOffset={8}

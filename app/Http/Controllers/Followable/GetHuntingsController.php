@@ -24,10 +24,12 @@ final readonly class GetHuntingsController
     {
         /*** @var User $user */
         $user = type($request->user())->as(User::class);
-        $followings = $user->followings()->with(['followable'])->paginate(20);
+        $paginator = $user->followings()->with(['followable'])->paginate(20);
+        $followingsWithStatus = $user->attachFollowStatus($paginator);
+        $paginator->setCollection($followingsWithStatus);
 
         return inertia('followable/huntings', [
-            'followings' => $user->attachFollowStatus($followings),
+            'followings' => \Inertia\Inertia::scroll($paginator),
         ]);
     }
 }
