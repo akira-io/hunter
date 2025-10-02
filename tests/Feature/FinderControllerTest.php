@@ -22,7 +22,7 @@ it('displays the finder page', function () {
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('finder')
         ->has('users')
-        ->has('paginator')
+        ->has('users.data')
     );
 });
 
@@ -40,8 +40,7 @@ it('displays random users when no search query is provided', function () {
     $response->assertStatus(200);
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('finder')
-        ->has('users', 6) // We created 5 users in beforeEach + 1 auth user
-        ->has('paginator')
+        ->has('users.data', 6) // We created 5 users in beforeEach + 1 auth user
     );
 });
 
@@ -57,7 +56,7 @@ it('searches for users when a query is provided', function () {
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('finder')
         ->has('users')
-        ->has('paginator')
+        ->has('users.data')
     );
 
     // We can't directly assert on the search results because the search is handled by the GetHuntersAction
@@ -73,7 +72,7 @@ it('loads academic backgrounds for users', function () {
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('finder')
         ->has('users')
-        ->has('paginator')
+        ->has('users.data')
     );
 
     // We can't directly assert that academic backgrounds are loaded because we're not mocking

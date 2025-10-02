@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/app-layout';
 import finder from '@/routes/finder';
 import { type BreadcrumbItem, User } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, InfiniteScroll, router } from '@inertiajs/react';
 import { ListFilterPlusIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface FinderProps {
-    users: User[];
+    users: {
+        data: User[];
+    };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -48,7 +50,9 @@ export default function Finder({ users }: FinderProps) {
                 </Button>
             </div>
             <div className="mb-50 flex w-full flex-col items-center justify-start px-4 opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                <FinderComponent users={users} onSearch={search} isSearchLoading={isSearchLoading} />
+                <InfiniteScroll data="users">
+                    <FinderComponent users={users.data} onSearch={search} isSearchLoading={isSearchLoading} />
+                </InfiniteScroll>
             </div>
         </Layout>
     );
