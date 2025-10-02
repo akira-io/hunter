@@ -24,15 +24,14 @@ final class GetHuntersActionTest extends TestCase
         $request = Request::create('/hunters', 'GET', []);
 
         // Act
-        [$hunters, $resultPaginator] = (new GetHuntersAction())->handle($request, $perPage);
+        $paginator = (new GetHuntersAction())->handle($request, $perPage);
 
         // Assert
-        $this->assertInstanceOf(Collection::class, $hunters);
-        $this->assertCount(3, $hunters);
-        $this->assertInstanceOf(LengthAwarePaginator::class, $resultPaginator);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $paginator);
+        $this->assertCount(3, $paginator);
 
         // Check mapping keys
-        $first = $hunters->first();
+        $first = $paginator->first();
         $this->assertArrayHasKey('id', $first);
         $this->assertArrayHasKey('name', $first);
         $this->assertArrayHasKey('email', $first);
@@ -66,15 +65,15 @@ final class GetHuntersActionTest extends TestCase
         $request = Request::create('/hunters?q=laravel', 'GET', ['q' => 'laravel']);
 
         // Act
-        [$hunters, $resultPaginator] = (new GetHuntersAction())->handle($request, $perPage);
+        $paginator = (new GetHuntersAction())->handle($request, $perPage);
 
         // Assert
-        $this->assertInstanceOf(Collection::class, $hunters);
-        $this->assertInstanceOf(LengthAwarePaginator::class, $resultPaginator);
+        // Paginator now contains the collection
+        $this->assertInstanceOf(LengthAwarePaginator::class, $paginator);
 
         // Note: Since we're using real search which depends on the search implementation,
         // we just verify the structure is correct
-        foreach ($hunters as $hunter) {
+        foreach ($paginator as $hunter) {
             $this->assertArrayHasKey('id', $hunter);
             $this->assertArrayHasKey('name', $hunter);
         }
@@ -90,14 +89,14 @@ final class GetHuntersActionTest extends TestCase
         $request->setUserResolver(fn () => $authUser);
 
         // Act
-        [$hunters, $resultPaginator] = (new GetHuntersAction())->handle($request, $perPage);
+        $paginator = (new GetHuntersAction())->handle($request, $perPage);
 
         // Assert
-        $this->assertInstanceOf(Collection::class, $hunters);
-        $this->assertInstanceOf(LengthAwarePaginator::class, $resultPaginator);
+        // Paginator now contains the collection
+        $this->assertInstanceOf(LengthAwarePaginator::class, $paginator);
 
         // Check that follow status is attached
-        foreach ($hunters as $hunter) {
+        foreach ($paginator as $hunter) {
             $this->assertArrayHasKey('has_followed', $hunter);
             $this->assertIsBool($hunter['has_followed']);
         }
@@ -110,13 +109,13 @@ final class GetHuntersActionTest extends TestCase
         $request = Request::create('/hunters', 'GET');
 
         // Act
-        [$hunters, $resultPaginator] = (new GetHuntersAction())->handle($request, $perPage);
+        $paginator = (new GetHuntersAction())->handle($request, $perPage);
 
         // Assert
-        $this->assertInstanceOf(Collection::class, $hunters);
-        $this->assertCount(0, $hunters);
-        $this->assertSame($perPage, $resultPaginator->perPage());
-        $this->assertSame(0, $resultPaginator->total());
+        // Paginator now contains the collection
+        $this->assertCount(0, $paginator);
+        $this->assertSame($perPage, $paginator->perPage());
+        $this->assertSame(0, $paginator->total());
     }
 
     public function test_handle_prefers_media_urls_over_fallbacks_when_present(): void
@@ -127,10 +126,10 @@ final class GetHuntersActionTest extends TestCase
         $request = Request::create('/hunters', 'GET');
 
         // Act
-        [$hunters] = (new GetHuntersAction())->handle($request, $perPage);
+        $paginator = (new GetHuntersAction())->handle($request, $perPage);
 
         // Assert
-        $row = $hunters->first();
+        $row = $paginator->first();
 
         // Since the user doesn't have media attached, it should use the fallback avatar_url
         $this->assertSame('https://fallback.example.com/avatar.jpg', $row['avatar_url']);
@@ -148,15 +147,15 @@ final class GetHuntersActionTest extends TestCase
         $request->setUserResolver(fn () => null);
 
         // Act
-        [$hunters, $resultPaginator] = (new GetHuntersAction())->handle($request, $perPage);
+        $paginator = (new GetHuntersAction())->handle($request, $perPage);
 
         // Assert
-        $this->assertInstanceOf(Collection::class, $hunters);
-        $this->assertCount(2, $hunters);
-        $this->assertInstanceOf(LengthAwarePaginator::class, $resultPaginator);
+        // Paginator now contains the collection
+        $this->assertCount(2, $paginator);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $paginator);
 
         // Should not have follow status when not authenticated
-        foreach ($hunters as $hunter) {
+        foreach ($paginator as $hunter) {
             $this->assertArrayNotHasKey('has_followed', $hunter);
         }
     }
@@ -169,11 +168,11 @@ final class GetHuntersActionTest extends TestCase
         $request = Request::create('/hunters', 'GET');
 
         // Act
-        [$hunters, $resultPaginator] = (new GetHuntersAction())->handle($request, $perPage);
+        $paginator = (new GetHuntersAction())->handle($request, $perPage);
 
         // Assert
-        $this->assertInstanceOf(Collection::class, $hunters);
-        $this->assertInstanceOf(LengthAwarePaginator::class, $resultPaginator);
+        // Paginator now contains the collection
+        $this->assertInstanceOf(LengthAwarePaginator::class, $paginator);
 
         // This test verifies that the relationship is loaded without errors
         // The actual verification happens in the action when it calls load('academicBackgrounds')

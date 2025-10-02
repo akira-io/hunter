@@ -71,29 +71,32 @@ export function ProfileCompletion({ skills, academicBackgrounds }: ProfileComple
     const profileCompletionPercentage = calculateProfileCompletion(profileCompletion);
 
     return (
-        <section className="bg-card gradient effect max-w-4xl rounded-lg p-6">
+        <section className="bg-card gradient max-w-4xl rounded-lg p-6">
             <div className="mb-4 flex w-full items-center justify-between">
                 <div>
                     <h3 className="text-foreground text-lg font-semibold">
                         {profileCompletionPercentage < 100 ? 'Complete seu perfil' : 'Perfil Completo'}
                     </h3>
-                    <p className="text-sm text-gray-500">Perfis completos atraem mais oportunidades!</p>
+                    <p className="text-muted-foreground text-sm">Perfis completos atraem mais oportunidades!</p>
                 </div>
                 {profileCompletionPercentage < 100 && (
-                    <span className="text-sm text-gray-400">
+                    <span className="text-muted-foreground text-sm">
                         {Math.round((profileCompletion.filter((item) => item.done).length / profileCompletion.length) * 100)}% completo
                     </span>
                 )}
             </div>
-            <div className="mb-6 h-2 overflow-hidden rounded-full bg-gray-700">
-                <div className="h-full bg-green-500 transition-all" style={{ width: `${profileCompletionPercentage}%` }} />
+            <div className="bg-secondary mb-6 h-2 overflow-hidden rounded-full">
+                <div className="bg-primary h-full transition-all" style={{ width: `${profileCompletionPercentage}%` }} />
             </div>
             {profileCompletionPercentage < 100 && (
                 <div className="grid grid-cols-2 gap-4">
                     {profileCompletion.map((item) => (
                         <label key={item.label} className="flex cursor-pointer items-center space-x-2" onClick={() => !item.done && item.onclick?.()}>
-                            <Checkbox checked={item.done} className="h-4 w-4 rounded border-gray-600 text-green-500 focus:ring-0" />
-                            <span className={`text-sm ${item.done ? 'text-gray-500 line-through' : ''}`}>{item.label}</span>
+                            <Checkbox
+                                checked={item.done}
+                                className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground h-4 w-4 rounded focus:ring-0"
+                            />
+                            <span className={`text-sm ${item.done ? 'text-muted-foreground line-through' : 'text-foreground'}`}>{item.label}</span>
                         </label>
                     ))}
                 </div>

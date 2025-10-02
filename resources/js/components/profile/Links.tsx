@@ -79,7 +79,7 @@ export function ProfileLinks({ user }: { user: User }) {
 
     return (
         <>
-            <Card className="effect gradient mt-4 -mb-14 w-full p-4 md:w-80">
+            <Card className="gradient mt-4 -mb-14 w-full p-4 md:w-80">
                 <CardDescription className="flex items-center justify-between text-sm">
                     Links
                     <Button variant="ghost" onClick={open}>

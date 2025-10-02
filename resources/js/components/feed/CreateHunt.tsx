@@ -86,7 +86,7 @@ export function CreateHunt() {
                                     key={index}
                                     src={src}
                                     alt={`Preview ${index}`}
-                                    className="effect max-h-50 w-full rounded-xl border-2 object-cover shadow-lg transition-all duration-300 hover:scale-105"
+                                    className="max-h-50 w-full rounded-xl border-2 object-cover shadow-lg transition-all duration-300 hover:scale-105"
                                 />
                             ))}
                         </div>

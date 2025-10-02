@@ -33,9 +33,6 @@ final readonly class NotificationController
 
         // Get filter parameter
         $filter = $request->get('filter', 'all'); // 'all', 'unread', 'read'
-        $page = max(1, (int) $request->get('page', 1));
-        $perPage = 20;
-        $offset = ($page - 1) * $perPage;
 
         // Build query based on filter
         $query = $user->notifications()->latest();
@@ -46,44 +43,26 @@ final readonly class NotificationController
             $query->whereNotNull('read_at');
         }
 
-        // Get total count for pagination
-        $totalNotifications = $query->count();
-
-        $notifications = $query
-            ->offset($offset)
-            ->limit($perPage)
-            ->get()
-            ->map(function (DatabaseNotification $notification): array {
-                /** @var array<string, mixed> $data */
-                $data = $notification->data;
-
-                return [
-                    'id' => (string) $notification->id,
-                    'type' => (string) ($data['type'] ?? 'default'),
-                    'title' => (string) ($data['title'] ?? ''),
-                    'message' => (string) ($data['message'] ?? ''),
-                    'data' => $data,
-                    'read_at' => $notification->read_at?->toISOString(),
-                    'created_at' => $notification->created_at?->toISOString() ?? '',
-                    'created_at_human' => $notification->created_at?->diffForHumans() ?? '',
-                ];
-            });
-
-        // Calculate pagination info
-        $totalPages = (int) ceil($totalNotifications / $perPage);
-        $hasNextPage = $page < $totalPages;
-        $hasPrevPage = $page > 1;
+        $notifications = $query->paginate(20);
 
         return inertia('notifications/index', [
-            'notifications' => $notifications->toArray(),
-            'pagination' => [
-                'current_page' => $page,
-                'per_page' => $perPage,
-                'total' => $totalNotifications,
-                'total_pages' => $totalPages,
-                'has_next_page' => $hasNextPage,
-                'has_prev_page' => $hasPrevPage,
-            ],
+            'notifications' => \Inertia\Inertia::scroll(
+                fn () => $notifications->through(function (DatabaseNotification $notification): array {
+                    /** @var array<string, mixed> $data */
+                    $data = $notification->data;
+
+                    return [
+                        'id' => (string) $notification->id,
+                        'type' => (string) ($data['type'] ?? 'default'),
+                        'title' => (string) ($data['title'] ?? ''),
+                        'message' => (string) ($data['message'] ?? ''),
+                        'data' => $data,
+                        'read_at' => $notification->read_at?->toISOString(),
+                        'created_at' => $notification->created_at?->toISOString() ?? '',
+                        'created_at_human' => $notification->created_at?->diffForHumans() ?? '',
+                    ];
+                })
+            ),
             'unread_count' => $user->unreadNotifications()->count(),
             'filter' => $filter,
             'counts' => [

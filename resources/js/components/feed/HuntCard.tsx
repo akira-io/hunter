@@ -20,13 +20,13 @@ interface HuntCardProps {
 export function HuntCardConnector() {
     return (
         <>
-            <div className="effect absolute -top-10 left-5 flex h-10 w-1 items-center justify-center rounded-full bg-white text-xs dark:bg-zinc-900" />
-            <div className="effect bg-card absolute -top-10 right-5 flex h-10 w-1 items-center justify-center rounded-full text-xs dark:bg-zinc-900" />
+            <div className="absolute -top-10 left-5 flex h-10 w-1 items-center justify-center rounded-full bg-white text-xs dark:bg-zinc-900" />
+            <div className="bg-card absolute -top-10 right-5 flex h-10 w-1 items-center justify-center rounded-full text-xs dark:bg-zinc-900" />
         </>
     );
 }
 
-export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
+export function HuntCard({ hunt }: HuntCardProps) {
     const { auth } = usePage<SharedData>().props;
     const [isOpenComments, setOpenComments] = useState(false);
 
@@ -39,7 +39,7 @@ export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
 
     return (
         <>
-            <Card className="relative mx-auto w-full max-w-xl">
+            <Card className="relative mx-auto mb-4 w-full max-w-xl">
                 <CardHeader className="flex flex-row items-start gap-4">
                     <Avatar onClick={gotoProfile}>
                         <AvatarImage src={sanitizedAvatarUrl} className="object-cover" />
@@ -65,7 +65,7 @@ export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
                                 <EllipsisVerticalIcon />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="effect gradient">
+                        <DropdownMenuContent className="gradient">
                             <DropdownMenuItem>
                                 <Share2Icon size={16} className="opacity-60" aria-hidden="true" />
                                 Partilhar
@@ -120,7 +120,6 @@ export function HuntCard({ hunt, ligatures = true }: HuntCardProps) {
                         <HuntComments isOpen={isOpenComments} hunt={hunt} />
                     </div>
                 )}
-                {ligatures && <HuntCardConnector />}
             </Card>
         </>
     );

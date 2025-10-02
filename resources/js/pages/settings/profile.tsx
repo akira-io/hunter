@@ -46,8 +46,8 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                     <div className="mb-4 w-full md:hidden">
                         <ProfileCompletion academicBackgrounds={academicBackgrounds} skills={highlightedSkills} />
                     </div>
-                    <Card className="gradient effect w-full items-center justify-center p-6 md:w-80">
-                        <CardContent className="effect flex flex-col items-center text-center">
+                    <Card className="gradient w-full items-center justify-center p-6 md:w-80">
+                        <CardContent className="flex flex-col items-center text-center">
                             <ProfileAvatarCard />
                             <h2 className="mt-4 text-xl font-semibold">
                                 <Link href={publicRoutes.profile.show.url(auth.user.id)} prefetch>
@@ -64,7 +64,7 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                                 </p>
                             </div>
                         </CardContent>
-                        <div className="effect grid grid-cols-2 items-end justify-end gap-4">
+                        <div className="grid grid-cols-2 items-end justify-end gap-4">
                             <Link href={followable.followers.url()} className="flex gap-1 text-xs">
                                 <b>{followers}</b> Hunters
                             </Link>

@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { UserMenuContent } from '@/components/user-menu-content';
@@ -13,10 +14,13 @@ export function NavUser({ className }: ComponentProps<'ul'>) {
         <div className={cn('flex items-center', className)}>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button className="hover:bg-accent/50 focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex items-center gap-2 rounded-lg p-2 text-sm transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
+                    <Button
+                        variant="secondary"
+                        className="hover:bg-accent/50 focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex w-10 items-center gap-2 rounded-full p-2 text-sm transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                    >
                         <UserInfo user={auth.user} />
                         {/*<ChevronsUpDown className='size-4 text-muted-foreground transition-transform duration-200 data-[state=open]:rotate-180' />*/}
-                    </button>
+                    </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                     className="z-[200] w-64 rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800"
