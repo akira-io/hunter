@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { type BreadcrumbItem } from '@/types';
 import { BookOpen } from 'lucide-react';
 
+import OnboardingController from '@/actions/App/Http/Controllers/OnboardingController';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
@@ -19,12 +20,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Appearance() {
     const handleReplayTutorial = () => {
-        router.post('/onboarding/reset', {}, {
-            preserveScroll: true,
-            onSuccess: () => {
-                window.location.reload();
+        router.post(
+            OnboardingController.deleteMethod.url(),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    window.location.reload();
+                },
             },
-        });
+        );
     };
 
     return (

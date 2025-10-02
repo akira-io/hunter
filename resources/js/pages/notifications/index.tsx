@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Layout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
+import { useSetNotifications } from '@/stores/notificationStore';
 import { Notification, NotificationCounts } from '@/types';
 import { Head, InfiniteScroll, Link, router } from '@inertiajs/react';
 import { Bell, Check } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface NotificationsPageProps {
     notifications: {
@@ -19,6 +21,15 @@ interface NotificationsPageProps {
 }
 
 export default function Notifications({ notifications, unread_count, filter, counts }: NotificationsPageProps) {
+    const setNotifications = useSetNotifications();
+
+    // Sync Inertia data with store
+    useEffect(() => {
+        if (notifications?.data) {
+            setNotifications(notifications.data);
+        }
+    }, [notifications?.data, setNotifications]);
+
     const handleNotificationClick = async (notification: Notification) => {
         // Marcar como lida se estiver não lida
         if (!notification.read_at) {

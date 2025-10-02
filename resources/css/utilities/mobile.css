@@ -21,6 +21,15 @@
         padding-right: env(safe-area-inset-right);
     }
 
+    /* Safe area positioning utilities for modals */
+    .safe-top {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
     /* Mobile chat container optimizations */
     .mobile-chat-container {
         /* Prevent zoom on input focus */

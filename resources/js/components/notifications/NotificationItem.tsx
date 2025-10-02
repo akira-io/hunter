@@ -60,7 +60,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
 
     return (
         <Card
-            className={`transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${
+            className={`dark:hover:bg-zinc-800/50, mt-2 transition-colors hover:border-purple-200 hover:bg-purple-50/50 dark:hover:border-purple-100 dark:hover:bg-purple-900/10 ${
                 isUnread ? 'border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/10' : ''
             } ${className}`}
             onClick={handleMarkAsRead}

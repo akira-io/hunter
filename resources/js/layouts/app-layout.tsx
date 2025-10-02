@@ -17,7 +17,13 @@ interface AppLayoutProps {
 }
 
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
-    const { auth } = usePage<{ auth: { user?: { id: number } } }>().props;
+    const page = usePage<{
+        auth: { user?: { id: number } };
+        notifications?: { data: unknown[] };
+        unread_count?: number;
+    }>();
+
+    const { auth, notifications, unread_count } = page.props;
 
     // Stabilize currentUserId to prevent unnecessary re-renders
     const currentUserId = useMemo(() => auth.user?.id, [auth.user?.id]);
@@ -25,8 +31,12 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     // Manage presence globally
     usePresenceManager({ currentUserId });
 
-    // Manage notifications globally
-    useNotificationManager({ currentUserId });
+    // Manage notifications globally - pass Inertia data if available
+    useNotificationManager({
+        currentUserId,
+        notifications: notifications?.data,
+        unreadCount: unread_count,
+    });
 
     // Manage onboarding wizard
     const { showOnboarding, closeOnboarding } = useOnboarding();

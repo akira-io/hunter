@@ -38,8 +38,12 @@ export const useNotificationStore = create<NotificationState>()(
             lastUpdated: 0,
 
             setNotifications: (notifications: Notification[]) => {
+                // Calculate unread count from the notifications themselves
+                const calculatedUnreadCount = notifications.filter((n) => !n.read_at).length;
+
                 set({
                     notifications,
+                    unreadCount: calculatedUnreadCount,
                     lastUpdated: Date.now(),
                     loading: false,
                 });
@@ -99,29 +103,11 @@ export const useNotificationStore = create<NotificationState>()(
             },
 
             refreshNotifications: async () => {
-                const { setLoading, setNotifications, setUnreadCount } = get();
-                setLoading(true);
-
-                try {
-                    const response = await fetch('/api/notifications', {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                            'X-Requested-With': 'XMLHttpRequest',
-                        },
-                        credentials: 'same-origin',
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        setNotifications(data.notifications || []);
-                        setUnreadCount(data.unread_count || 0);
-                    } else {
-                        setLoading(false);
-                    }
-                } catch {
-                    setLoading(false);
-                }
+                // In Reverb/WebSocket setup, notifications are pushed via real-time events
+                // This function just recalculates unread count from existing notifications
+                const { notifications } = get();
+                const calculatedUnreadCount = notifications.filter((n) => !n.read_at).length;
+                set({ unreadCount: calculatedUnreadCount });
             },
         }),
         {
