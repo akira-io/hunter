@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import type { ToastActionElement, ToastProps } from '@/components/ui/toast';
 
-const TOAST_LIMIT = 2;
-const TOAST_REMOVE_DELAY = 5000;
+const TOAST_LIMIT = 1;
+const TOAST_REMOVE_DELAY = 2000;
 
 type ToasterToast = ToastProps & {
     id: string;
@@ -138,6 +138,23 @@ type Toast = Omit<ToasterToast, 'id'>;
 
 function toast({ ...props }: Toast) {
     const id = genId();
+
+    // Remove toasts duplicados com a mesma descrição
+    if (props.description) {
+        const existingToast = memoryState.toasts.find((t) => t.description === props.description && t.open);
+        if (existingToast) {
+            // Já existe um toast com essa mensagem, não cria outro
+            return {
+                id: existingToast.id,
+                dismiss: () => dispatch({ type: 'DISMISS_TOAST', toastId: existingToast.id }),
+                update: (updateProps: ToasterToast) =>
+                    dispatch({
+                        type: 'UPDATE_TOAST',
+                        toast: { ...updateProps, id: existingToast.id },
+                    }),
+            };
+        }
+    }
 
     const update = (props: ToasterToast) =>
         dispatch({
