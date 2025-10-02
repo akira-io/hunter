@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 Route::middleware('auth:web')->group(static function () {
+
     // Chat mobile page
     Route::get('/chat/mobile/{conversation}', function ($conversationId) {
         $user = auth()->user();

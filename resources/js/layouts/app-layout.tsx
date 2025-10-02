@@ -1,8 +1,10 @@
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { OnlineUsers } from '@/components/chat/OnlineUsers';
+import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 import { Toaster } from '@/components/ui/toaster';
 import { ChatProvider } from '@/contexts/ChatContext';
 import { useNotificationManager } from '@/hooks/useNotificationManager';
+import { useOnboarding } from '@/hooks/useOnboarding';
 import { usePresenceManager } from '@/hooks/usePresenceManager';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -26,6 +28,9 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     // Manage notifications globally
     useNotificationManager({ currentUserId });
 
+    // Manage onboarding wizard
+    const { showOnboarding, closeOnboarding } = useOnboarding();
+
     return (
         <ChatProvider currentUserId={currentUserId}>
             <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
@@ -35,6 +40,7 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                     <>
                         <ChatContainer currentUserId={currentUserId} />
                         <OnlineUsers currentUserId={currentUserId} />
+                        <OnboardingWizard isOpen={showOnboarding} onClose={closeOnboarding} />
                     </>
                 )}
             </AppLayoutTemplate>
