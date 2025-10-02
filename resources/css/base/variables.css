@@ -3,6 +3,21 @@
  * Define all color, spacing, and other design tokens
  */
 
+/* Global gradient backgrounds for entire application */
+html {
+    background: var(--background);
+    background-image: var(--background);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+body {
+    background: var(--background);
+    background-image: var(--background);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
 @theme {
     --font-sans:
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
