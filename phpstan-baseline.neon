@@ -31,7 +31,19 @@ parameters:
 			path: app/Http/Controllers/Followable/GetHuntersController.php
 
 		-
+			message: '#^Parameter \#1 \$collection of method Illuminate\\Pagination\\AbstractPaginator\<\(int\|string\),mixed\>\:\:setCollection\(\) expects Illuminate\\Support\\Collection\<\(int\|string\), mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Followable/GetHuntingsController.php
+
+		-
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<\(int\|string\),mixed\>\:\:through\(\) expects callable\(mixed, int\|string\)\: array\{id\: string, type\: string, title\: string, message\: string, data\: array\<string, mixed\>, read_at\: mixed, created_at\: mixed, created_at_human\: mixed\}, Closure\(Illuminate\\Notifications\\DatabaseNotification\)\: array\{id\: string, type\: string, title\: string, message\: string, data\: array\<string, mixed\>, read_at\: mixed, created_at\: mixed, created_at_human\: mixed\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: app/Http/Controllers/Notification/NotificationController.php
+
+		-
+			message: '#^Parameter \#2 \$settings of method App\\Actions\\Settings\\UpdateNotificationSettingsAction\:\:handle\(\) expects array\<string, bool\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Settings/NotificationController.php
