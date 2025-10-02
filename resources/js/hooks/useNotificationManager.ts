@@ -33,7 +33,7 @@ interface NotificationData {
     read_at: string | null;
 }
 
-export const useNotificationManager = ({ currentUserId, notifications, unreadCount }: UseNotificationManagerProps) => {
+export const useNotificationManager = ({ currentUserId, notifications }: UseNotificationManagerProps) => {
     const addNotification = useAddNotification();
     const setNotifications = useSetNotifications();
 

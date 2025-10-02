@@ -8,7 +8,7 @@ interface NotificationBellProps {
     currentUserId?: number;
 }
 
-export const NotificationBell: React.FC<NotificationBellProps> = ({ currentUserId }) => {
+export const NotificationBell: React.FC<NotificationBellProps> = () => {
     const [isOpen, setIsOpen] = useState(false);
     const unreadCount = useUnreadCount();
 

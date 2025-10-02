@@ -19,7 +19,7 @@ interface AppLayoutProps {
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     const page = usePage<{
         auth: { user?: { id: number } };
-        notifications?: { data: any[] };
+        notifications?: { data: unknown[] };
         unread_count?: number;
     }>();
 
