@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Followable;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
@@ -23,10 +24,12 @@ final readonly class GetHuntersController
         /*** @var User $user */
         $user = type($request->user())->as(User::class);
 
-        $followers = $user->followers()->paginate(20);
+        $paginator = $user->followers()->paginate(20);
+        $followersWithStatus = $user->attachFollowStatus($paginator);
+        $paginator->setCollection($followersWithStatus);
 
         return inertia('followable/hunters', [
-            'followers' => $user->attachFollowStatus($followers),
+            'followers' => Inertia::scroll(fn () => $paginator),
         ]);
     }
 }

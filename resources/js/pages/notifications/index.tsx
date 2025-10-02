@@ -3,22 +3,22 @@ import { SectionHeader } from '@/components/feed/SectionHeader';
 import { NotificationItem } from '@/components/notifications/NotificationItem';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Pagination } from '@/components/ui/pagination';
 import Layout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
-import { Notification, NotificationCounts, PaginationInfo } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Notification, NotificationCounts } from '@/types';
+import { Head, InfiniteScroll, Link, router } from '@inertiajs/react';
 import { Bell, Check } from 'lucide-react';
 
 interface NotificationsPageProps {
-    notifications: Notification[];
-    pagination: PaginationInfo;
+    notifications: {
+        data: Notification[];
+    };
     unread_count: number;
     filter: string;
     counts: NotificationCounts;
 }
 
-export default function Notifications({ notifications, pagination, unread_count, filter, counts }: NotificationsPageProps) {
+export default function Notifications({ notifications, unread_count, filter, counts }: NotificationsPageProps) {
     const handleNotificationClick = async (notification: Notification) => {
         // Marcar como lida se estiver não lida
         if (!notification.read_at) {
@@ -95,7 +95,7 @@ export default function Notifications({ notifications, pagination, unread_count,
 
                 {/* Notifications List */}
                 <div className="space-y-4">
-                    {notifications.length === 0 ? (
+                    {notifications.data.length === 0 ? (
                         <Card>
                             <CardContent className="flex flex-col items-center justify-center p-8 text-center">
                                 <div className="mb-4 grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700">
@@ -106,23 +106,18 @@ export default function Notifications({ notifications, pagination, unread_count,
                             </CardContent>
                         </Card>
                     ) : (
-                        notifications.map((notification) => (
-                            <NotificationItem
-                                key={notification.id}
-                                notification={notification}
-                                onClick={handleNotificationClick}
-                                hideUnreadDot={filter === 'read'}
-                            />
-                        ))
+                        <InfiniteScroll data="notifications">
+                            {notifications.data.map((notification) => (
+                                <NotificationItem
+                                    key={notification.id}
+                                    notification={notification}
+                                    onClick={handleNotificationClick}
+                                    hideUnreadDot={filter === 'read'}
+                                />
+                            ))}
+                        </InfiniteScroll>
                     )}
                 </div>
-
-                {/* Pagination */}
-                {pagination.total_pages > 1 && (
-                    <div className="mt-8">
-                        <Pagination pagination={pagination} baseUrl={NotificationController.index.url()} showInfo={true} queryParams={{ filter }} />
-                    </div>
-                )}
             </div>
         </Layout>
     );

@@ -81,7 +81,7 @@ function OnboardingLinks({ links }: { links: { name: string; url: string | undef
 
 function OnboardingSkills({ skills }: { skills: User['skills'] }) {
     return (
-        <div className="effect gradient bg-card mt-8 flex w-full flex-col items-start gap-2 space-y-6 rounded-lg p-4">
+        <div className="gradient bg-card mt-8 flex w-full flex-col items-start gap-2 space-y-6 rounded-lg p-4">
             <small>Skills</small>
             {skills?.length == 0 && <small className="dark:text-muted text-xs text-gray-300">nenhuma skill definida</small>}
             <div className="-mt-4 flex flex-wrap items-center gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -93,7 +93,7 @@ function OnboardingSkills({ skills }: { skills: User['skills'] }) {
 
 function OnboardingAbout({ about }: { about: string | undefined }) {
     return (
-        <div className="effect gradient bg-card flex w-full flex-col items-start gap-2 space-y-6 rounded-lg p-4">
+        <div className="gradient bg-card flex w-full flex-col items-start gap-2 space-y-6 rounded-lg p-4">
             <small>Sobre</small>
             {!about && <small className="dark:text-muted -mt-6 text-xs text-gray-300">nenhuma informação disponivel</small>}
             {about && <div className="-mt-4">{about}</div>}
@@ -188,7 +188,7 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
             </Card>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="w-ful overflow-auto">
-                    <DialogHeader className="effect bg-card gradient sticky mb-0 w-full items-center justify-between rounded-lg px-4 pb-2 shadow-lg">
+                    <DialogHeader className="bg-card gradient sticky mb-0 w-full items-center justify-between rounded-lg px-4 pb-2 shadow-lg">
                         <div className="flex w-full items-start justify-start pt-4">
                             <OnboardingAvatar avatarUrl={user.avatar_url} />
                             <div className="ml-2 flex flex-col gap-1 text-left">

@@ -18,7 +18,7 @@ it('should renders welcome page with users paginated by 15', function () {
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('welcome')
-            ->has('paginator', fn (AssertableInertia $paginator) => $paginator
+            ->has('users', fn (AssertableInertia $users) => $users
                 ->where('per_page', 15)
                 ->where('total', 25)
                 ->has('data', 15)
@@ -32,7 +32,7 @@ it('should renders welcome page with users paginated by 15', function () {
 
     $props = $inertiaResponse->getData()['page']['props'];
 
-    $paginator = $props['paginator'];
+    $paginator = $props['users'];
 
     Assert::assertSame(25, $paginator['total']);
     Assert::assertSame(15, $paginator['per_page']);
@@ -64,7 +64,7 @@ it('renders second page with remaining users and proper pagination structure', f
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('welcome')
-            ->has('paginator', fn (AssertableInertia $paginator) => $paginator
+            ->has('users', fn (AssertableInertia $users) => $users
                 ->where('per_page', 15)
                 ->where('total', 25)
                 ->has('data', 15)
@@ -76,7 +76,7 @@ it('renders second page with remaining users and proper pagination structure', f
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('welcome')
-            ->has('paginator', fn (AssertableInertia $paginator) => $paginator
+            ->has('users', fn (AssertableInertia $users) => $users
                 ->where('per_page', 15)
                 ->where('total', 25)
                 ->has('data', 10) // remaining 10 users
@@ -87,13 +87,13 @@ it('renders second page with remaining users and proper pagination structure', f
     /** @var Inertia\Response $inertiaResponse1 */
     $inertiaResponse1 = $first->getOriginalContent();
     $props1 = $inertiaResponse1->getData()['page']['props'];
-    $data1 = $props1['paginator']['data'];
+    $data1 = $props1['users']['data'];
     $ids1 = collect($data1)->pluck('id')->all();
 
     /** @var Inertia\Response $inertiaResponse2 */
     $inertiaResponse2 = $second->getOriginalContent();
     $props2 = $inertiaResponse2->getData()['page']['props'];
-    $data2 = $props2['paginator']['data'];
+    $data2 = $props2['users']['data'];
     $ids2 = collect($data2)->pluck('id')->all();
 
     // Verify we got valid user IDs
@@ -120,7 +120,7 @@ it('treats invalid page values correctly and returns proper structure', function
         $inertia = $response->getOriginalContent();
         $props = $inertia->getData()['page']['props'];
 
-        return $props['paginator'];
+        return $props['users'];
     };
 
     $paginator1 = $extractPaginatorData($page1);
@@ -153,7 +153,7 @@ it('returns an empty dataset when requesting a page beyond the last', function (
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('welcome')
-            ->has('paginator', fn (AssertableInertia $paginator) => $paginator
+            ->has('users', fn (AssertableInertia $users) => $users
                 ->where('per_page', 15)
                 ->where('total', 25)
                 ->has('data', 0)
@@ -164,7 +164,7 @@ it('returns an empty dataset when requesting a page beyond the last', function (
     /** @var Inertia\Response $inertiaResponse */
     $inertiaResponse = $response->getOriginalContent();
     $props = $inertiaResponse->getData()['page']['props'];
-    Assert::assertSame(0, count($props['paginator']['data']));
+    Assert::assertSame(0, count($props['users']['data']));
 });
 
 it('renders gracefully when there are no users', function () {
@@ -177,7 +177,7 @@ it('renders gracefully when there are no users', function () {
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('welcome')
-            ->has('paginator', fn (AssertableInertia $paginator) => $paginator
+            ->has('users', fn (AssertableInertia $users) => $users
                 ->where('per_page', 15)
                 ->where('total', 0)
                 ->has('data', 0)
@@ -188,8 +188,8 @@ it('renders gracefully when there are no users', function () {
     /** @var Inertia\Response $inertiaResponse */
     $inertiaResponse = $response->getOriginalContent();
     $props = $inertiaResponse->getData()['page']['props'];
-    Assert::assertSame(0, $props['paginator']['total']);
-    Assert::assertCount(0, $props['paginator']['data']);
+    Assert::assertSame(0, $props['users']['total']);
+    Assert::assertCount(0, $props['users']['data']);
 });
 
 it('renders a single full page when total equals per_page (15)', function () {
@@ -203,7 +203,7 @@ it('renders a single full page when total equals per_page (15)', function () {
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('welcome')
-            ->has('paginator', fn (AssertableInertia $paginator) => $paginator
+            ->has('users', fn (AssertableInertia $users) => $users
                 ->where('per_page', 15)
                 ->where('total', 15)
                 ->has('data', 15)
@@ -214,7 +214,7 @@ it('renders a single full page when total equals per_page (15)', function () {
     /** @var Inertia\Response $inertiaResponse */
     $inertiaResponse = $response->getOriginalContent();
     $props = $inertiaResponse->getData()['page']['props'];
-    $returnedIds = collect($props['paginator']['data'])->pluck('id')->all();
+    $returnedIds = collect($props['users']['data'])->pluck('id')->all();
     $expectedIds = User::pluck('id')->all();
 
     sort($returnedIds);

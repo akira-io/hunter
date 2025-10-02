@@ -40,7 +40,7 @@ final readonly class HuntController
         $hunts = $getHuntsAction->handle(user: $user);
 
         return Inertia::render('hunts/hunts', [
-            'hunts' => HuntResource::collection($hunts),
+            'hunts' => Inertia::scroll(fn () => HuntResource::collection($hunts)),
         ]);
     }
 

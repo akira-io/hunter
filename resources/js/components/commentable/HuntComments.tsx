@@ -102,7 +102,7 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
                                                         <EllipsisVerticalIcon />
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent className="effect gradient">
+                                                <DropdownMenuContent className="gradient">
                                                     <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                                         <DeleteComment comment={comment} />
                                                     </DropdownMenuItem>

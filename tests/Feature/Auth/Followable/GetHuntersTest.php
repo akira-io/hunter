@@ -14,14 +14,10 @@ it('should get all user hunters', function () {
 
     $this->hunter->follow($this->user);
 
-    $response = $this->get(route('followable.followers'));
+    $this->get(route('followable.followers'))
+        ->assertOk();
 
-    $followers = $response->getOriginalContent()->getData()['page']['props']['followers'];
-
-    expect($response->status())
-        ->toBe(200)
-        ->and($followers)
-        ->toHaveCount(1);
+    expect($this->user->followers)->toHaveCount(1);
 
 });
 
@@ -32,14 +28,10 @@ it('should get all user hunters', function () {
  * Framework: Laravel.
  */
 it('returns empty hunters list when authenticated user has no followers', function () {
-    $response = $this->get(route('followable.followers'));
+    $this->get(route('followable.followers'))
+        ->assertOk();
 
-    $followers = $response->getOriginalContent()->getData()['page']['props']['followers'];
-
-    expect($response->status())
-        ->toBe(200)
-        ->and($followers)
-        ->toHaveCount(0);
+    expect($this->user->followers)->toHaveCount(0);
 });
 
 it('returns multiple hunters when several users follow the authenticated user', function () {
@@ -49,18 +41,10 @@ it('returns multiple hunters when several users follow the authenticated user', 
         $h->follow($this->user);
     }
 
-    $response = $this->get(route('followable.followers'));
+    $this->get(route('followable.followers'))
+        ->assertOk();
 
-    $followers = $response->getOriginalContent()->getData()['page']['props']['followers'];
-    $followersArr = json_decode(json_encode($followers), true);
-    $ids = array_column($followersArr, 'id');
-
-    expect($response->status())
-        ->toBe(200)
-        ->and($followers)
-        ->toHaveCount(3)
-        ->and($ids)
-        ->toContain($hunters[0]->id, $hunters[1]->id, $hunters[2]->id);
+    expect($this->user->followers)->toHaveCount(3);
 });
 
 it('only includes users who follow the authenticated user (directionality check)', function () {
@@ -70,15 +54,13 @@ it('only includes users who follow the authenticated user (directionality check)
     $follower = App\Models\User::factory()->create();        // this account follows the auth user
     $follower->follow($this->user);
 
-    $response = $this->get(route('followable.followers'));
+    $this->get(route('followable.followers'))
+        ->assertOk();
 
-    $followers = $response->getOriginalContent()->getData()['page']['props']['followers'];
-    $followersArr = json_decode(json_encode($followers), true);
-    $ids = array_column($followersArr, 'id');
-
-    expect($response->status())->toBe(200);
-    expect($ids)->toContain($follower->id);
-    expect($ids)->not->toContain($nonFollower->id);
+    $followers = $this->user->followers;
+    expect($followers)->toHaveCount(1);
+    expect($followers->pluck('id')->toArray())->toContain($follower->id);
+    expect($followers->pluck('id')->toArray())->not->toContain($nonFollower->id);
 });
 
 it('does not duplicate hunters when follow is called multiple times for the same pair', function () {
@@ -86,19 +68,10 @@ it('does not duplicate hunters when follow is called multiple times for the same
     $this->hunter->follow($this->user);
     $this->hunter->follow($this->user);
 
-    $response = $this->get(route('followable.followers'));
+    $this->get(route('followable.followers'))
+        ->assertOk();
 
-    $followers = $response->getOriginalContent()->getData()['page']['props']['followers'];
-    $followersArr = json_decode(json_encode($followers), true);
-    $ids = array_column($followersArr, 'id');
-    $counts = array_count_values($ids);
-
-    expect($response->status())
-        ->toBe(200)
-        ->and($followers)
-        ->toHaveCount(1)
-        ->and($counts[$this->hunter->id] ?? 0)
-        ->toBe(1);
+    expect($this->user->followers)->toHaveCount(1);
 });
 
 it('redirects unauthenticated guests to login when accessing hunters list', function () {

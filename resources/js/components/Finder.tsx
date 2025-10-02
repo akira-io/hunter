@@ -8,7 +8,7 @@ import { ChangeEvent } from 'react';
 interface FinderProps {
     users: User[];
     onSearch: (event: ChangeEvent<HTMLInputElement>) => void;
-    isSearchLoading: boolean;
+    isSearchLoading?: boolean;
 }
 
 export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
