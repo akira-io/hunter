@@ -1,11 +1,5 @@
 import NotificationController from '@/actions/App/Http/Controllers/Notification/NotificationController';
-import {
-    useMarkAllAsRead,
-    useMarkAsRead,
-    useNotificationLoading,
-    useNotifications,
-    useUnreadCount
-} from '@/stores/notificationStore';
+import { useMarkAllAsRead, useMarkAsRead, useNotificationLoading, useNotifications, useUnreadCount } from '@/stores/notificationStore';
 import { User } from '@/types';
 import { router } from '@inertiajs/react';
 import { Bell, Check, User as UserIcon, X } from 'lucide-react';

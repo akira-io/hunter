@@ -1,8 +1,8 @@
 import { useUnreadCount } from '@/stores/notificationStore';
+import { router } from '@inertiajs/react';
 import { Bell } from 'lucide-react';
 import React, { useState } from 'react';
 import { NotificationDropdown } from './NotificationDropdown';
-import { router } from '@inertiajs/react';
 
 interface NotificationBellProps {
     currentUserId?: number;

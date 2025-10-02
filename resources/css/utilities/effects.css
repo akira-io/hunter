@@ -80,7 +80,7 @@
     }
 
     .btn-gradient-outline {
-        @apply bg-gradient-to-br from-transparent to-transparent border-2 border-purple-500 text-purple-600 shadow-sm transition-all duration-200 hover:from-purple-50 hover:to-purple-100 hover:shadow-md active:scale-95 dark:text-purple-400 dark:border-purple-400 dark:hover:from-purple-900/20 dark:hover:to-purple-800/20;
+        @apply border-2 border-purple-500 bg-gradient-to-br from-transparent to-transparent text-purple-600 shadow-sm transition-all duration-200 hover:from-purple-50 hover:to-purple-100 hover:shadow-md active:scale-95 dark:border-purple-400 dark:text-purple-400 dark:hover:from-purple-900/20 dark:hover:to-purple-800/20;
     }
 
     /* Background Gradients - Purple Theme */

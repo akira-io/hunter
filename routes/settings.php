@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {
-    Route::redirect('settings', 'settings/profile');
+    Route::get('settings', function () {
+        return Inertia::render('settings/index');
+    })->name('settings.index');
 
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('settings/profile', [ProfileController::class, 'update'])->name('profile.update');

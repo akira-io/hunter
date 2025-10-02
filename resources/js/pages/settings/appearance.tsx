@@ -7,9 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { type BreadcrumbItem } from '@/types';
 import { BookOpen } from 'lucide-react';
 
+import OnboardingController from '@/actions/App/Http/Controllers/OnboardingController';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import OnboardingController from '@/actions/App/Http/Controllers/OnboardingController';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

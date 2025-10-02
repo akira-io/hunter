@@ -43,9 +43,9 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full px-3 py-2 sm:px-4 sm:py-2" href={password.edit()} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full px-3 py-2 sm:px-4 sm:py-2" href="/settings" as="button" prefetch onClick={cleanup}>
                         <Settings className="mr-2 size-4 text-zinc-500 dark:text-zinc-400" />
-                        <span className="text-zinc-900 dark:text-zinc-100">Minha Conta</span>
+                        <span className="text-zinc-900 dark:text-zinc-100">Definições</span>
                     </Link>
                 </DropdownMenuItem>
             </div>
