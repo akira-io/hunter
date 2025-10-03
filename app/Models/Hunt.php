@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -43,6 +44,7 @@ final class Hunt extends Model implements HasMedia
 
     use InteractsWithMedia;
     use Likeable;
+    use Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -77,6 +79,23 @@ final class Hunt extends Model implements HasMedia
         return Attribute::make(
             get: fn (string $value): string => $this->created_at->diffForHumans(),
         );
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'content' => $this->content,
+            'owner_id' => $this->owner_id,
+            'owner_name' => $this->owner->name,
+            'owner_username' => $this->owner->user_name,
+            'created_at' => $this->created_at->timestamp,
+        ];
     }
 
     /**

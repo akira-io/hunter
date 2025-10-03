@@ -1,5 +1,5 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import SearchHunt from '@/components/feed/SearchHunt';
+import { GlobalSearch } from '@/components/GlobalSearch';
 import { NavUser } from '@/components/nav-user';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
@@ -31,15 +31,8 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 className="fixed top-0 right-3 flex h-16 items-center gap-2 transition-[right] duration-200 ease-linear md:right-15"
                 style={sidebarOffset ? { right: sidebarOffset } : undefined}
             >
-                {/* Mobile search button */}
-                <div className="block md:hidden">
-                    <SearchHunt />
-                </div>
-
-                {/* Desktop search */}
-                <div className="hidden w-full max-w-md md:block">
-                    <SearchHunt />
-                </div>
+                {/* Global Search */}
+                <GlobalSearch />
 
                 {auth.user && <NotificationBell currentUserId={auth.user.id} />}
 
