@@ -19,7 +19,7 @@ final readonly class GlobalSearchResponseDto
     public function toArray(): array
     {
         return [
-            'groups' => array_map(fn (SearchGroupDto $group) => $group->toArray(), $this->groups),
+            'groups' => array_map(fn (SearchGroupDto $group): array => $group->toArray(), $this->groups),
         ];
     }
 }

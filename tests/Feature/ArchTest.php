@@ -77,7 +77,8 @@ arch('avoid abstraction')
     ->expect('App')
     ->not->toBeAbstract()
     ->ignoring([
-        'App/Http/Controllers/Controller',
+        'App\Http\Controllers\Controller',
+        'App\Contracts',
     ]);
 
 arch('factories')

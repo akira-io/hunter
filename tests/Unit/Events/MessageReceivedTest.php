@@ -21,17 +21,17 @@ beforeEach(function () {
 });
 
 it('can be instantiated with message and user', function () {
-    expect($this->event)->toBeInstanceOf(MessageReceived::class);
-    expect($this->event->message)->toBe($this->message);
-    expect($this->event->forUser)->toBe($this->forUser);
+    expect($this->event)->toBeInstanceOf(MessageReceived::class)
+        ->and($this->event->message)->toBe($this->message)
+        ->and($this->event->forUser)->toBe($this->forUser);
 });
 
 it('broadcasts on the correct private channel', function () {
     $channels = $this->event->broadcastOn();
 
-    expect($channels)->toHaveCount(1);
-    expect($channels[0])->toBeInstanceOf(PrivateChannel::class);
-    expect($channels[0]->name)->toBe("private-user.{$this->forUser->id}");
+    expect($channels)->toHaveCount(1)
+        ->and($channels[0])->toBeInstanceOf(PrivateChannel::class)
+        ->and($channels[0]->name)->toBe("private-user.{$this->forUser->id}");
 });
 
 it('broadcasts with the correct event name', function () {
@@ -45,21 +45,20 @@ it('broadcasts with the correct data structure', function () {
 
     // Test message structure
     $messageData = $broadcastData['message'];
-    expect($messageData)->toHaveKeys(['id', 'content', 'type', 'metadata', 'created_at', 'user']);
-    expect($messageData['id'])->toBe($this->message->id);
-    expect($messageData['content'])->toBe($this->message->content);
-    expect($messageData['type'])->toBe($this->message->type);
-    expect($messageData['metadata'])->toBe($this->message->metadata);
-    expect($messageData['created_at'])->toEqual($this->message->created_at);
+    expect($messageData)->toHaveKeys(['id', 'content', 'type', 'metadata', 'created_at', 'user'])
+        ->and($messageData['id'])->toBe($this->message->id)
+        ->and($messageData['content'])->toBe($this->message->content)
+        ->and($messageData['type'])->toBe($this->message->type)
+        ->and($messageData['metadata'])->toBe($this->message->metadata)
+        ->and($messageData['created_at'])->toEqual($this->message->created_at);
 
     // Test user structure within message
     $userData = $messageData['user'];
-    expect($userData)->toHaveKeys(['id', 'name', 'avatar_url']);
-    expect($userData['id'])->toBe($this->user->id);
-    expect($userData['name'])->toBe($this->user->name);
-
+    expect($userData)->toHaveKeys(['id', 'name', 'avatar_url'])
+        ->and($userData['id'])->toBe($this->user->id)
+        ->and($userData['name'])->toBe($this->user->name)
+        ->and($broadcastData['conversation_id'])->toBe($this->message->conversation_id);
     // Test conversation_id
-    expect($broadcastData['conversation_id'])->toBe($this->message->conversation_id);
 });
 
 it('includes avatar URL from GetAvatarAction', function () {
@@ -94,8 +93,8 @@ it('handles different message types correctly', function () {
         $event = new MessageReceived($message, $this->forUser);
         $broadcastData = $event->broadcastWith();
 
-        expect($broadcastData['message']['type'])->toBe($message->type);
-        expect($broadcastData['message']['content'])->toBe($message->content);
+        expect($broadcastData['message']['type'])->toBe($message->type)
+            ->and($broadcastData['message']['content'])->toBe($message->content);
     }
 });
 
@@ -138,15 +137,15 @@ it('broadcasts to different users correctly', function () {
 });
 
 it('implements the correct interfaces', function () {
-    expect($this->event)->toBeInstanceOf(Illuminate\Contracts\Broadcasting\ShouldBroadcastNow::class);
+    expect($this->event)->toBeInstanceOf(Illuminate\Contracts\Broadcasting\ShouldBroadcast::class);
 });
 
 it('has the correct traits', function () {
     $traits = class_uses(MessageReceived::class);
 
-    expect($traits)->toContain(Illuminate\Foundation\Events\Dispatchable::class);
-    expect($traits)->toContain(Illuminate\Broadcasting\InteractsWithSockets::class);
-    expect($traits)->toContain(Illuminate\Queue\SerializesModels::class);
+    expect($traits)->toContain(Illuminate\Foundation\Events\Dispatchable::class)
+        ->and($traits)->toContain(Illuminate\Broadcasting\InteractsWithSockets::class)
+        ->and($traits)->toContain(Illuminate\Queue\SerializesModels::class);
 });
 
 it('maintains data consistency with message relationship', function () {
@@ -160,8 +159,8 @@ it('maintains data consistency with message relationship', function () {
     $event = new MessageReceived($messageWithConversation, $this->forUser);
     $broadcastData = $event->broadcastWith();
 
-    expect($broadcastData['conversation_id'])->toBe($conversation->id);
-    expect($broadcastData['message']['id'])->toBe($messageWithConversation->id);
+    expect($broadcastData['conversation_id'])->toBe($conversation->id)
+        ->and($broadcastData['message']['id'])->toBe($messageWithConversation->id);
 });
 
 it('works with fresh message instances', function () {
@@ -172,8 +171,8 @@ it('works with fresh message instances', function () {
     $event = new MessageReceived($freshMessage, $freshUser);
     $broadcastData = $event->broadcastWith();
 
-    expect($broadcastData['message']['id'])->toBe($freshMessage->id);
-    expect($broadcastData['conversation_id'])->toBe($freshMessage->conversation_id);
+    expect($broadcastData['message']['id'])->toBe($freshMessage->id)
+        ->and($broadcastData['conversation_id'])->toBe($freshMessage->conversation_id);
 
     $channels = $event->broadcastOn();
     expect($channels[0]->name)->toBe("private-user.{$freshUser->id}");

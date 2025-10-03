@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Actions\Settings\UpdateNotificationSettingsAction;
 use App\Http\Requests\Settings\NotificationUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,14 +20,20 @@ use Spatie\RouteAttributes\Attributes\Prefix;
 #[Prefix('settings/notifications')]
 final readonly class NotificationController
 {
+    /**
+     * Create a new controller instance.
+     */
     public function __construct(
         private UpdateNotificationSettingsAction $updateNotificationSettingsAction
     ) {}
 
+    /**
+     * Display the notification settings form.
+     */
     #[Get('/', name: 'settings.notifications')]
     public function edit(Request $request): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
 
         return Inertia::render('settings/notifications', [
@@ -38,10 +45,13 @@ final readonly class NotificationController
         ]);
     }
 
+    /**
+     * Update the notification settings.
+     */
     #[Patch('/', name: 'settings.notifications.update')]
     public function update(NotificationUpdateRequest $request): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
 
         $this->updateNotificationSettingsAction->handle($user, $request->validated());

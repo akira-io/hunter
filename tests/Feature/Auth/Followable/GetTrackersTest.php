@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Event;
 
+uses()->group('followable');
+
 beforeEach(function () {
     Event::fake();
     $this->user = actingAsAuthUser();
@@ -20,7 +22,7 @@ it('should get all trackers', function () {
 
     expect($response->status())
         ->toBe(200)
-        ->and($trackers)
+        ->and($trackers['data'])
         ->toHaveCount(1);
 
 });

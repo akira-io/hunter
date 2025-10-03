@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\DataTransferObjects\Search\GlobalSearchResponseDto;
 use App\Models\Hunt;
 use App\Models\User;
@@ -105,7 +107,7 @@ describe('GlobalSearchService', function () {
                 expect($group->type)->toBeString()->not->toBeEmpty();
                 expect($group->label)->toBeString()->not->toBeEmpty();
                 expect($group->icon)->toBeString()->not->toBeEmpty();
-                expect($group->results)->toBeInstanceOf(\Illuminate\Support\Collection::class);
+                expect($group->results)->toBeInstanceOf(Illuminate\Support\Collection::class);
                 expect($group->priority)->toBeInt()->toBeGreaterThan(0);
             }
         })->skip('Requires Meilisearch');
@@ -159,7 +161,7 @@ describe('GlobalSearchService', function () {
     describe('Edge Cases', function () {
         test('handles null gracefully', function () {
             expect(fn () => $this->service->search(null))
-                ->toThrow(\TypeError::class);
+                ->toThrow(TypeError::class);
         });
 
         test('handles numeric query', function () {

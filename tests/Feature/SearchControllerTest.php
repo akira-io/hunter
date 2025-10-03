@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Hunt;
 use App\Models\User;
 
@@ -167,7 +169,6 @@ describe('SearchController', function () {
                 ->getJson('/api/search?q=123')
                 ->assertStatus(200);
         });
-
 
         test('handles URL encoded query', function () {
             actingAs($this->user)

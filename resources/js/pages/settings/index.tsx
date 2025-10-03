@@ -1,11 +1,11 @@
 import Heading from '@/components/heading';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
+import { appearance } from '@/routes';
 import password from '@/routes/password';
+import { notifications } from '@/routes/settings';
 import { Link } from '@inertiajs/react';
 import { Bell, ChevronRight, KeyRound, Palette } from 'lucide-react';
-import { notifications } from '@/routes/settings';
-import { appearance } from '@/routes';
 
 interface SettingItem {
     title: string;

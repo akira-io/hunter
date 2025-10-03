@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 final readonly class SearchGroupDto
 {
     /**
-     * @param  Collection<int, SearchResultDto>  $results
+     * @param  Collection<int, SearchResult>  $results
      */
     public function __construct(
         public string $type,
@@ -28,7 +28,7 @@ final readonly class SearchGroupDto
             'type' => $this->type,
             'label' => $this->label,
             'icon' => $this->icon,
-            'results' => $this->results->map(fn (SearchResultDto $result) => $result->toArray())->toArray(),
+            'results' => $this->results->map(fn (SearchResult $result): array => $result->toArray())->toArray(),
             'priority' => $this->priority,
         ];
     }

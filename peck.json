@@ -17,7 +17,9 @@
             "paginator",
             "ds",
             "broadcastable",
-            "onboarding"
+            "onboarding",
+            "dto",
+            "laravel's"
         ],
         "paths": [
             "resources",

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use App\DataTransferObjects\Search\GlobalSearchResponseDto;
 use App\DataTransferObjects\Search\SearchGroupDto;
-use App\DataTransferObjects\Search\SearchResultDto;
+use App\DataTransferObjects\Search\SearchResult;
 
 describe('SearchResultDto', function () {
     test('can be instantiated with all properties', function () {
-        $dto = new SearchResultDto(
+        $dto = new SearchResult(
             id: '123',
             title: 'Test Title',
             subtitle: 'Test Subtitle',
@@ -26,7 +28,7 @@ describe('SearchResultDto', function () {
     });
 
     test('can be instantiated with null optional fields', function () {
-        $dto = new SearchResultDto(
+        $dto = new SearchResult(
             id: '123',
             title: 'Test Title',
             subtitle: null,
@@ -42,7 +44,7 @@ describe('SearchResultDto', function () {
     });
 
     test('toArray returns all properties', function () {
-        $dto = new SearchResultDto(
+        $dto = new SearchResult(
             id: '123',
             title: 'Test Title',
             subtitle: 'Test Subtitle',
@@ -61,7 +63,7 @@ describe('SearchResultDto', function () {
     });
 
     test('toArray preserves null values', function () {
-        $dto = new SearchResultDto(
+        $dto = new SearchResult(
             id: '123',
             title: 'Test Title',
             subtitle: null,
@@ -78,7 +80,7 @@ describe('SearchResultDto', function () {
     });
 
     test('is readonly', function () {
-        $dto = new SearchResultDto(
+        $dto = new SearchResult(
             id: '123',
             title: 'Test Title',
             subtitle: null,
@@ -87,11 +89,11 @@ describe('SearchResultDto', function () {
             url: '/test-url',
         );
 
-        expect(fn () => $dto->id = '456')->toThrow(\Error::class);
+        expect(fn () => $dto->id = '456')->toThrow(Error::class);
     });
 
     test('can be serialized to JSON', function () {
-        $dto = new SearchResultDto(
+        $dto = new SearchResult(
             id: '123',
             title: 'Test Title',
             subtitle: 'Test Subtitle',
@@ -112,7 +114,7 @@ describe('SearchResultDto', function () {
     });
 
     test('handles empty metadata', function () {
-        $dto = new SearchResultDto(
+        $dto = new SearchResult(
             id: '123',
             title: 'Test',
             subtitle: null,
@@ -134,7 +136,7 @@ describe('SearchResultDto', function () {
             'bool' => true,
         ];
 
-        $dto = new SearchResultDto(
+        $dto = new SearchResult(
             id: '123',
             title: 'Test',
             subtitle: null,
@@ -151,8 +153,8 @@ describe('SearchResultDto', function () {
 describe('SearchGroupDto', function () {
     test('can be instantiated with all properties', function () {
         $results = collect([
-            new SearchResultDto('1', 'Title 1', null, null, null, '/url-1'),
-            new SearchResultDto('2', 'Title 2', null, null, null, '/url-2'),
+            new SearchResult('1', 'Title 1', null, null, null, '/url-1'),
+            new SearchResult('2', 'Title 2', null, null, null, '/url-2'),
         ]);
 
         $dto = new SearchGroupDto(
@@ -172,8 +174,8 @@ describe('SearchGroupDto', function () {
 
     test('toArray returns all properties with mapped results', function () {
         $results = collect([
-            new SearchResultDto('1', 'Title 1', null, null, null, '/url-1'),
-            new SearchResultDto('2', 'Title 2', null, null, null, '/url-2'),
+            new SearchResult('1', 'Title 1', null, null, null, '/url-1'),
+            new SearchResult('2', 'Title 2', null, null, null, '/url-2'),
         ]);
 
         $dto = new SearchGroupDto(
@@ -217,12 +219,12 @@ describe('SearchGroupDto', function () {
             priority: 1,
         );
 
-        expect(fn () => $dto->type = 'hunts')->toThrow(\Error::class);
+        expect(fn () => $dto->type = 'hunts')->toThrow(Error::class);
     });
 
     test('can be serialized to JSON', function () {
         $results = collect([
-            new SearchResultDto('1', 'Title', null, null, null, '/url'),
+            new SearchResult('1', 'Title', null, null, null, '/url'),
         ]);
 
         $dto = new SearchGroupDto(
@@ -273,7 +275,7 @@ describe('GlobalSearchResponseDto', function () {
 
     test('toArray maps all groups correctly', function () {
         $results = collect([
-            new SearchResultDto('1', 'Title', null, null, null, '/url'),
+            new SearchResult('1', 'Title', null, null, null, '/url'),
         ]);
 
         $groups = [
@@ -294,12 +296,12 @@ describe('GlobalSearchResponseDto', function () {
     test('is readonly', function () {
         $dto = new GlobalSearchResponseDto(groups: []);
 
-        expect(fn () => $dto->groups = [])->toThrow(\Error::class);
+        expect(fn () => $dto->groups = [])->toThrow(Error::class);
     });
 
     test('can be serialized to JSON', function () {
         $results = collect([
-            new SearchResultDto('1', 'Title', null, null, null, '/url'),
+            new SearchResult('1', 'Title', null, null, null, '/url'),
         ]);
 
         $groups = [
@@ -319,12 +321,12 @@ describe('GlobalSearchResponseDto', function () {
 
     test('handles complex nested structure', function () {
         $results1 = collect([
-            new SearchResultDto('1', 'User 1', 'subtitle', 'desc', 'img', '/u1', ['meta' => 'data']),
-            new SearchResultDto('2', 'User 2', null, null, null, '/u2'),
+            new SearchResult('1', 'User 1', 'subtitle', 'desc', 'img', '/u1', ['meta' => 'data']),
+            new SearchResult('2', 'User 2', null, null, null, '/u2'),
         ]);
 
         $results2 = collect([
-            new SearchResultDto('3', 'Hunt 1', 'by User', '2 hours ago', null, '/h1'),
+            new SearchResult('3', 'Hunt 1', 'by User', '2 hours ago', null, '/h1'),
         ]);
 
         $groups = [

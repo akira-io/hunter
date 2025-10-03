@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\Social\FollowUserAction;
 use App\Models\User;
 use App\Notifications\UserFollowedNotification;
@@ -247,17 +249,17 @@ describe('Edge Cases', function () {
 
     test('multiple users with different settings receive notifications correctly', function () {
         $follower = User::factory()->create();
-        
+
         $userWithNotificationsEnabled = User::factory()->create([
             'notification_settings' => ['follow_notifications' => true],
         ]);
-        
+
         $userWithNotificationsDisabled = User::factory()->create([
             'notification_settings' => ['follow_notifications' => false],
         ]);
 
         $action = new FollowUserAction;
-        
+
         $action->handle($follower, $userWithNotificationsEnabled);
         $action->handle($follower, $userWithNotificationsDisabled);
 

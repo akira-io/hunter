@@ -28,7 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Notifications({ notificationSettings }: NotificationsProps) {
     const { toast } = useToast();
-    
+
     const { data, setData, patch, processing } = useForm<NotificationSettings>({
         follow_notifications: notificationSettings?.follow_notifications ?? true,
         email_notifications: notificationSettings?.email_notifications ?? true,
@@ -37,7 +37,7 @@ export default function Notifications({ notificationSettings }: NotificationsPro
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         patch('/settings/notifications', {
             preserveScroll: true,
             onSuccess: () => {

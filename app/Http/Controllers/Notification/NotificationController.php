@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Inertia\Response;
+use RuntimeException;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Post;
@@ -49,7 +50,7 @@ final readonly class NotificationController
             'notifications' => \Inertia\Inertia::scroll(
                 fn () => $notifications->through(function (mixed $notification): array {
                     if (! $notification instanceof DatabaseNotification) {
-                        throw new \RuntimeException('Expected DatabaseNotification instance');
+                        throw new RuntimeException('Expected DatabaseNotification instance');
                     }
 
                     /** @var array<string, mixed> $data */

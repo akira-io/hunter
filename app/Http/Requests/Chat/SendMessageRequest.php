@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests\Chat;
 
 use Illuminate\Foundation\Http\FormRequest;
-use InvalidArgumentException;
 
 final class SendMessageRequest extends FormRequest
 {
@@ -54,13 +53,7 @@ final class SendMessageRequest extends FormRequest
      */
     public function getConversationId(): int
     {
-        /** @var mixed $conversationId */
-        $conversationId = $this->validated('conversation_id');
-        if (! is_int($conversationId) && ! is_string($conversationId) && ! is_numeric($conversationId)) {
-            throw new InvalidArgumentException('Conversation ID must be numeric');
-        }
-
-        return (int) $conversationId;
+        return (int) $this->validated('conversation_id');
     }
 
     /**

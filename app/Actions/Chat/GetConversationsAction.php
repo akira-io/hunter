@@ -10,7 +10,6 @@ use App\Models\Message;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravel\Scout\Builder;
 
 final readonly class GetConversationsAction
 {

@@ -5,7 +5,6 @@ import Layout from '@/layouts/app-layout';
 import { type BreadcrumbItem, User } from '@/types';
 import { Head, InfiniteScroll } from '@inertiajs/react';
 import { ListFilterPlusIcon } from 'lucide-react';
-import React from 'react';
 
 interface FinderProps {
     users: {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects\Search;
 
-final readonly class SearchResultDto
+final readonly class SearchResult
 {
     /**
      * @param  array<string, mixed>  $metadata
