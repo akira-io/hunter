@@ -10,7 +10,7 @@ import hunts from '@/routes/hunts';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import { BarChart, Edit, EllipsisVerticalIcon, MessageCircle, Repeat2, SaveIcon, Share2Icon, ShieldAlert, StopCircle } from 'lucide-react';
+import { BarChart, Edit, EllipsisVerticalIcon, Eye, MessageCircle, Repeat2, SaveIcon, Share2Icon, ShieldAlert, StopCircle } from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
@@ -44,7 +44,7 @@ export function HuntCard({ hunt }: HuntCardProps) {
 
     return (
         <>
-            <Card className="relative mx-auto mb-4 w-full max-w-xl">
+            <Card className="relative mx-auto mb-4 w-full max-w-2xl">
                 <CardHeader className="flex flex-row items-start gap-4">
                     <UserAvatar avatarUrl={hunt.owner.avatar_url} userName={hunt.owner.name} className="cursor-pointer" onClick={gotoProfile} />
                     <div className="flex flex-col">
@@ -68,6 +68,10 @@ export function HuntCard({ hunt }: HuntCardProps) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="gradient">
+                            <DropdownMenuItem onClick={gotoHuntDetail}>
+                                <Eye size={16} className="opacity-60" aria-hidden="true" />
+                                Ver Hunt
+                            </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <Share2Icon size={16} className="opacity-60" aria-hidden="true" />
                                 Partilhar

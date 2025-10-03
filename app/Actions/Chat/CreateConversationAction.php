@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 use Throwable;
 
 final readonly class CreateConversationAction
@@ -111,12 +110,8 @@ final readonly class CreateConversationAction
 
         /** @var array<int, array{joined_at: Carbon, is_admin: bool}> $attachData */
         $attachData = [];
-        /** @var mixed $creatorIdAttribute */
-        $creatorIdAttribute = $creator->getAttribute('id');
-        if (! is_int($creatorIdAttribute) && ! is_string($creatorIdAttribute)) {
-            throw new InvalidArgumentException('Creator ID must be int or string');
-        }
-        $creatorId = (int) $creatorIdAttribute;
+        /** @var int $creatorId */
+        $creatorId = (int) $creator->getAttribute('id');
 
         /** @var mixed $id */
         foreach ($allParticipants as $id) {

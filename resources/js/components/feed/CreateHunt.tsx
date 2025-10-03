@@ -87,7 +87,7 @@ export function CreateHunt() {
     };
 
     return (
-        <Card className="gradient mx-auto w-full max-w-xl">
+        <Card className="gradient mx-auto w-full max-w-2xl">
             <CardContent className="flex items-start gap-4">
                 <form className="relative flex w-full flex-col" onSubmit={shareHunt} encType="multipart/form-data">
                     <MarkdownEditor
