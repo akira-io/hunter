@@ -1,20 +1,35 @@
-import { HuntComments } from '@/components/commentable/HuntComments';
 import DeleteHunt from '@/components/feed/DeleteHunt';
 import { HuntMetrics } from '@/components/hunt/HuntMetrics';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserAvatar } from '@/components/UserAvatar';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import AppLayout from '@/layouts/app-layout';
 import hunts from '@/routes/hunts';
 import publicRoutes from '@/routes/public';
 import { type BreadcrumbItem, Hunt, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, BarChart, Edit, EllipsisVerticalIcon, MessageCircle, Repeat2, SaveIcon, Share2Icon, ShieldAlert, StopCircle } from 'lucide-react';
+import {
+    ArrowLeft,
+    BarChart,
+    Edit,
+    EllipsisVerticalIcon,
+    MessageCircle,
+    Repeat2,
+    SaveIcon,
+    Share2Icon,
+    ShieldAlert,
+    StopCircle
+} from 'lucide-react';
 import { useState } from 'react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from '../../components/ui/dropdown-menu';
+import { HuntComments } from '@/components/commentable/HuntComments';
 
 interface HuntShowProps {
     hunt: Hunt;
@@ -29,11 +44,11 @@ export default function HuntShow({ hunt }: HuntShowProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Hunt Line',
-            href: hunts.index().url,
+            href: hunts.index.url(),
         },
         {
             title: `Hunt #${hunt.id}`,
-            href: hunts.show(hunt.id).url,
+            href: '#',
         },
     ];
 
@@ -42,7 +57,7 @@ export default function HuntShow({ hunt }: HuntShowProps) {
     }
 
     function goBack() {
-        router.get(hunts.index().url);
+        router.get(hunts.index.url());
     }
 
     function handleShare() {
@@ -69,15 +84,20 @@ export default function HuntShow({ hunt }: HuntShowProps) {
                     Voltar
                 </Button>
 
+                {/*<pre>{JSON.stringify(hunt, null, 2)}</pre>*/}
+
                 {/* Hunt Card */}
                 <Card className="relative w-full">
                     <CardHeader className="flex flex-row items-start gap-4">
-                        <UserAvatar avatarUrl={hunt.owner.avatar_url} userName={hunt.owner.name} className="cursor-pointer" onClick={gotoProfile} />
+                        {/*<UserAvatar avatarUrl={hunt.owner.avatar_url} userName={hunt.owner.name} className="cursor-pointer" onClick={gotoProfile} />*/}
                         <div className="flex flex-col">
                             <CardTitle className="cursor-pointer text-base font-semibold" onClick={gotoProfile}>
-                                {hunt.owner.name}
+                                {hunt.owner.user_name}
                             </CardTitle>
-                            <div className="text-muted-foreground cursor-pointer text-sm" onClick={() => router.get(publicRoutes.profile.show.url(hunt.owner.id))}>
+                            <div
+                                className="text-muted-foreground cursor-pointer text-sm"
+                                onClick={() => router.get(publicRoutes.profile.show.url(hunt.owner.id))}
+                            >
                                 @{hunt.owner.user_name || hunt.owner.name} · {hunt.created_at}
                             </div>
                         </div>
@@ -142,10 +162,6 @@ export default function HuntShow({ hunt }: HuntShowProps) {
                     </CardFooter>
                 </Card>
 
-                {/* Hunt Metrics */}
-                <HuntMetrics hunt={hunt} />
-
-                {/* Comments Section */}
                 {isOpenComments && (
                     <Card className="w-full">
                         <CardHeader>
@@ -156,6 +172,9 @@ export default function HuntShow({ hunt }: HuntShowProps) {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* Hunt Metrics */}
+                <HuntMetrics hunt={hunt} />
             </div>
         </AppLayout>
     );

@@ -105,7 +105,11 @@ final class Hunt extends Model implements HasMedia
      */
     public function incrementViews(): void
     {
-        $this->increment('views_count');
+        // Remove has_liked from attributes to prevent saving it
+        unset($this->attributes['has_liked']);
+
+        $this->views_count = ($this->views_count ?? 0) + 1;
+        $this->saveQuietly();
     }
 
     /**
