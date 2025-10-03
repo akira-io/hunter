@@ -32,7 +32,7 @@ final readonly class MetricsCalculatorService
     {
         $calculator = $this->getCalculatorForModel($model);
 
-        if ($calculator === null) {
+        if (! $calculator instanceof MetricsCalculable) {
             throw new InvalidArgumentException(
                 sprintf('No metrics calculator found for model: %s', $model::class)
             );
@@ -60,6 +60,6 @@ final readonly class MetricsCalculatorService
     private function getCalculatorForModel(Model $model): ?MetricsCalculable
     {
 
-        return array_find($this->getCalculators(), fn ($calculator) => $calculator->supports($model));
+        return array_find($this->getCalculators(), fn ($calculator): bool => $calculator->supports($model));
     }
 }
