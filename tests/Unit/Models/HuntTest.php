@@ -6,7 +6,7 @@ use App\Models\Hunt;
 use App\Models\User;
 
 test('to array', function () {
-    $hunt = Hunt::factory()->create()->refresh();
+    $hunt = Hunt::factory()->create()->refresh()->load('owner');
 
     expect(array_keys($hunt->toArray()))
         ->toEqualCanonicalizing([
