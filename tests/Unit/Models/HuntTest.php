@@ -18,7 +18,6 @@ test('to array', function () {
             'is_ignored',
             'created_at',
             'updated_at',
-            'owner',
         ]);
 });
 
