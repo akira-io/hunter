@@ -19,7 +19,8 @@
             "broadcastable",
             "onboarding",
             "dto",
-            "laravel's"
+            "laravel's",
+            "gamification"
         ],
         "paths": [
             "resources",
