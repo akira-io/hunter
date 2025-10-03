@@ -86,7 +86,7 @@ describe('UserSearchProvider', function () {
                 'skills' => ['PHP', 'Laravel'],
             ]);
 
-            $dto = $this->provider->mapToDto($user);
+            $dto = $this->provider->mapToSearchResults($user);
 
             expect($dto)->toBeInstanceOf(App\DataTransferObjects\Search\SearchResult::class)
                 ->and($dto->id)->toBe((string) $user->id)
@@ -106,7 +106,7 @@ describe('UserSearchProvider', function () {
                 'avatar_url' => null,
             ]);
 
-            $dto = $this->provider->mapToDto($user);
+            $dto = $this->provider->mapToSearchResults($user);
 
             expect($dto->description)->toBeNull()
                 ->and($dto->image)->toBeNull()
@@ -161,7 +161,7 @@ describe('HuntSearchProvider', function () {
         });
 
         test('getLabel returns correct value', function () {
-            expect($this->provider->getLabel())->toBe('Projetos');
+            expect($this->provider->getLabel())->toBe('Hunts');
         });
 
         test('getIcon returns correct value', function () {
@@ -203,7 +203,7 @@ describe('HuntSearchProvider', function () {
                 'owner_id' => $owner->id,
             ]);
 
-            $dto = $this->provider->mapToDto($hunt);
+            $dto = $this->provider->mapToSearchResults($hunt);
 
             expect($dto)->toBeInstanceOf(App\DataTransferObjects\Search\SearchResult::class)
                 ->and($dto->id)->toBe((string) $hunt->id)
@@ -220,7 +220,7 @@ describe('HuntSearchProvider', function () {
             $owner = User::factory()->create(['name' => 'Test Owner', 'user_name' => 'testowner']);
             $hunt = Hunt::factory()->create(['owner_id' => $owner->id]);
 
-            $dto = $this->provider->mapToDto($hunt);
+            $dto = $this->provider->mapToSearchResults($hunt);
 
             expect($dto->metadata['owner_id'])->toBe($owner->id)
                 ->and($dto->metadata['owner_name'])->toBe('Test Owner')

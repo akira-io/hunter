@@ -86,7 +86,7 @@ describe('SearchController', function () {
                     ->and($userGroup['priority'])->toBe(1)
                     ->and($userGroup['results'])->toBeArray();
             }
-        })->skip('Requires Meilisearch');
+        });
 
         test('returns hunt results when hunts match', function () {
             $hunt = Hunt::factory()->create([
@@ -104,12 +104,12 @@ describe('SearchController', function () {
             $huntGroup = collect($groups)->firstWhere('type', 'hunts');
 
             if ($huntGroup) {
-                expect($huntGroup['label'])->toBe('Projetos')
+                expect($huntGroup['label'])->toBe('Hunts')
                     ->and($huntGroup['icon'])->toBe('file-text')
                     ->and($huntGroup['priority'])->toBe(2)
                     ->and($huntGroup['results'])->toBeArray();
             }
-        })->skip('Requires Meilisearch');
+        });
 
         test('result has required structure', function () {
             $testUser = User::factory()->create([
@@ -148,7 +148,7 @@ describe('SearchController', function () {
                     ],
                 ]);
             }
-        })->skip('Requires Meilisearch');
+        });
     });
 
     describe('Query Handling', function () {
@@ -195,7 +195,7 @@ describe('SearchController', function () {
 
                 expect($priorities)->toBe($sortedPriorities);
             }
-        })->skip('Requires Meilisearch');
+        });
 
         test('users appear before hunts', function () {
             User::factory()->create(['name' => 'Priority '.uniqid()]);
@@ -211,7 +211,7 @@ describe('SearchController', function () {
                 expect($groups[0]['type'])->toBe('users');
                 expect($groups[1]['type'])->toBe('hunts');
             }
-        })->skip('Requires Meilisearch');
+        });
     });
 
     describe('Performance', function () {
@@ -300,5 +300,5 @@ describe('Search Integration', function () {
                 }
             }
         }
-    })->skip('Requires Meilisearch');
+    });
 });

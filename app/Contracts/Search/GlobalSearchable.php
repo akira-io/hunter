@@ -38,7 +38,7 @@ interface GlobalSearchable
      * Generates the URL where users should be redirected when clicking
      * on a search result. The implementation should validate the model type.
      */
-    public function getRedirectUrl(mixed $model): string;
+    public function getRedirectUrl(Model $model): string;
 
     /**
      * Search for items matching the query.
@@ -72,7 +72,7 @@ interface GlobalSearchable
      * Maps the model's attributes to a standardized search result format.
      * This method is called for each search result to prepare it for the UI.
      */
-    public function mapToDto(Model $model): SearchResult;
+    public function mapToSearchResults(Model $model): SearchResult;
 
     /**
      * Generate the redirect URL for a specific model instance.

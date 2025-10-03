@@ -47,9 +47,11 @@ final readonly class GlobalSearchService
             ))
             ->filter(fn (SearchGroupDto $group) => $group->results->isNotEmpty())
             ->sortBy(fn (SearchGroupDto $group): int => $group->priority)
-            ->values()
-            ->toArray();
+            ->values();
 
-        return new GlobalSearchResponseDto(groups: $groups);
+        /** @var array<SearchGroupDto> $groupsArray */
+        $groupsArray = $groups->toArray();
+
+        return new GlobalSearchResponseDto(groups: $groupsArray);
     }
 }

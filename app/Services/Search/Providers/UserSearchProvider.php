@@ -68,11 +68,10 @@ final class UserSearchProvider implements GlobalSearchable
 
     /**
      * Transform a User model into a search result DTO.
-     *
-     * @param  User  $model
      */
-    public function mapToDto(Model $model): SearchResult
+    public function mapToSearchResults(Model $model): SearchResult
     {
+        /** @var User $model */
         return new SearchResult(
             id: (string) $model->id,
             title: $model->name,
@@ -90,11 +89,10 @@ final class UserSearchProvider implements GlobalSearchable
 
     /**
      * Generate the public profile URL for a user.
-     *
-     * @param  User  $model
      */
     public function buildRedirectUrl(Model $model): string
     {
+        /** @var User $model */
         return route('public.profile.show', ['user' => $model->id]);
     }
 }

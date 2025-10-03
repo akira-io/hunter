@@ -7,6 +7,7 @@ namespace App\Services\Search\Providers;
 use App\Contracts\Search\GlobalSearchable;
 use App\DataTransferObjects\Search\SearchResult;
 use App\Models\Hunt;
+use App\Models\User;
 use App\Services\Search\Concerns\HasScoutSearch;
 use Illuminate\Container\Attributes\Singleton;
 use Illuminate\Database\Eloquent\Model;
@@ -58,11 +59,10 @@ final class HuntSearchProvider implements GlobalSearchable
 
     /**
      * Transform a Hunt model into a search result DTO.
-     *
-     * @param  Hunt  $model
      */
-    public function mapToDto(Model $model): SearchResult
+    public function mapToSearchResults(Model $model): SearchResult
     {
+        /** @var Hunt $model */
         return new SearchResult(
             id: (string) $model->id,
             title: $model->content,
@@ -81,11 +81,10 @@ final class HuntSearchProvider implements GlobalSearchable
 
     /**
      * Generate the hunt detail URL with anchor to a specific hunt.
-     *
-     * @param  Hunt  $model
      */
     public function buildRedirectUrl(Model $model): string
     {
+        /** @var User $model */
         return route('hunts.index')."#hunt-{$model->id}";
     }
 
