@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import hunts from '@/routes/hunts';
 import { useHuntStore } from '@/stores/huntStore';
 import { useForm } from '@inertiajs/react';
-import { ImageIcon, Loader2, PlusCircleIcon } from 'lucide-react';
+import { ImageIcon, Loader2, PlusCircleIcon, X } from 'lucide-react';
 import { ChangeEvent, FormEvent, useState } from 'react';
 
 interface HuntForm {
@@ -48,6 +48,18 @@ export function CreateHunt() {
         }
     };
 
+    const handleRemoveImage = () => {
+        imagePreview.forEach((url) => URL.revokeObjectURL(url));
+
+        setImagePreview([]);
+        setData('image', '');
+
+        const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    };
+
     const shareHunt = (e: FormEvent) => {
         e.preventDefault();
         post(hunts.store.url(), {
@@ -57,9 +69,18 @@ export function CreateHunt() {
                 toast({
                     description: 'Hunt partilhada com sucesso.',
                 });
+
+                imagePreview.forEach((url) => URL.revokeObjectURL(url));
+
                 setData('content', '');
+                setData('image', '');
                 setImagePreview([]);
                 setIsFloatCreateHuntOpen(false);
+
+                const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+                if (fileInput) {
+                    fileInput.value = '';
+                }
             },
         });
     };
@@ -82,12 +103,21 @@ export function CreateHunt() {
                     {sanitizedImageUrls.length > 0 && (
                         <div className="mt-2 grid grid-cols-1 gap-2">
                             {sanitizedImageUrls.map((src, index) => (
-                                <img
-                                    key={index}
-                                    src={src}
-                                    alt={`Preview ${index}`}
-                                    className="max-h-50 w-full rounded-xl border-2 object-cover shadow-lg transition-all duration-300 hover:scale-105"
-                                />
+                                <div key={index} className="relative">
+                                    <img
+                                        src={src}
+                                        alt={`Preview ${index}`}
+                                        className="max-h-50 w-full rounded-xl border-2 object-cover shadow-lg transition-all duration-300"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveImage}
+                                        className="absolute top-2 right-2 rounded-full bg-red-500 p-1.5 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-red-600"
+                                        title="Remover imagem"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
                             ))}
                         </div>
                     )}
