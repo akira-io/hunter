@@ -20,10 +20,6 @@ final readonly class FollowUserAction
     {
         $follower->follow($userToFollow);
 
-        /** @var array<string, mixed> $settings */
-        $settings = $userToFollow->notification_settings ?? [];
-        if (($settings['follow_notifications'] ?? true) === true) {
-            $userToFollow->notify(new UserFollowedNotification($follower));
-        }
+        $userToFollow->notify(new UserFollowedNotification($follower));
     }
 }

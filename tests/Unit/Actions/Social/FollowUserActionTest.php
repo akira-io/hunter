@@ -10,10 +10,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 test('it can follow a user', function () {
+    Notification::fake();
+
     $follower = User::factory()->create();
-    $userToFollow = User::factory()->create([
-        'notification_settings' => ['follow_notifications' => false], // Disable notifications for testing
-    ]);
+    $userToFollow = User::factory()->create();
     $action = new FollowUserAction();
 
     $action->handle($follower, $userToFollow);
@@ -44,11 +44,14 @@ test('it sends notification when follow notifications are enabled', function () 
 
     Notification::assertSentTo(
         $userToFollow,
-        App\Notifications\UserFollowedNotification::class
+        App\Notifications\UserFollowedNotification::class,
+        function ($notification, $channels) {
+            return in_array('database', $channels);
+        }
     );
 });
 
-test('it does not send notification when follow notifications are disabled', function () {
+test('it does not send in-app notification when follow notifications are disabled', function () {
     Notification::fake();
 
     $follower = User::factory()->create();
@@ -59,7 +62,38 @@ test('it does not send notification when follow notifications are disabled', fun
 
     $action->handle($follower, $userToFollow);
 
-    Notification::assertNothingSent();
+    // Notification is sent, but not to database channel
+    Notification::assertSentTo(
+        $userToFollow,
+        App\Notifications\UserFollowedNotification::class,
+        function ($notification, $channels) {
+            return ! in_array('database', $channels);
+        }
+    );
+});
+
+test('it sends email when email notifications are enabled even if in-app is disabled', function () {
+    Notification::fake();
+
+    $follower = User::factory()->create();
+    $userToFollow = User::factory()->create([
+        'notification_settings' => [
+            'follow_notifications' => false, // In-app disabled
+            'email_notifications' => true,   // Email enabled
+        ],
+    ]);
+    $action = new FollowUserAction();
+
+    $action->handle($follower, $userToFollow);
+
+    // Notification is sent with email channel but not database
+    Notification::assertSentTo(
+        $userToFollow,
+        App\Notifications\UserFollowedNotification::class,
+        function ($notification, $channels) {
+            return in_array('mail', $channels) && ! in_array('database', $channels);
+        }
+    );
 });
 
 test('it sends notification by default when notification_settings is null', function () {

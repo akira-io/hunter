@@ -68,6 +68,28 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Follow Notifications (In-App) */}
+                        <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
+                            <div className="flex gap-3">
+                                <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
+                                    <User className="text-primary h-5 w-5" />
+                                </div>
+                                <div className="flex-1 space-y-1">
+                                    <Label htmlFor="follow_notifications" className="cursor-pointer text-base font-medium">
+                                        Notificações de Seguidores (No App)
+                                    </Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        Receba notificações no aplicativo quando alguém começar a te seguir
+                                    </p>
+                                </div>
+                            </div>
+                            <Switch
+                                id="follow_notifications"
+                                checked={data.follow_notifications}
+                                onCheckedChange={(checked) => setData('follow_notifications', checked)}
+                            />
+                        </div>
+
                         {/* Browser Notifications */}
                         <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
                             <div className="flex gap-3">
@@ -78,7 +100,9 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                                     <Label htmlFor="browser_notifications" className="cursor-pointer text-base font-medium">
                                         Notificações do Navegador
                                     </Label>
-                                    <p className="text-muted-foreground text-sm">Receba notificações em tempo real no navegador</p>
+                                    <p className="text-muted-foreground text-sm">
+                                        Receba notificações em tempo real no navegador para todas as atividades
+                                    </p>
                                 </div>
                             </div>
                             <Switch
@@ -98,7 +122,9 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                                     <Label htmlFor="email_notifications" className="cursor-pointer text-base font-medium">
                                         Notificações por Email
                                     </Label>
-                                    <p className="text-muted-foreground text-sm">Receba resumos e atualizações importantes por email</p>
+                                    <p className="text-muted-foreground text-sm">
+                                        Receba resumos e atualizações importantes por email para todas as atividades
+                                    </p>
                                 </div>
                             </div>
                             <Switch
@@ -108,34 +134,15 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                             />
                         </div>
 
-                        {/* Follow Notifications */}
-                        <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
-                            <div className="flex gap-3">
-                                <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
-                                    <User className="text-primary h-5 w-5" />
-                                </div>
-                                <div className="flex-1 space-y-1">
-                                    <Label htmlFor="follow_notifications" className="cursor-pointer text-base font-medium">
-                                        Notificações de Seguidores
-                                    </Label>
-                                    <p className="text-muted-foreground text-sm">Seja notificado quando alguém começar a te seguir</p>
-                                </div>
-                            </div>
-                            <Switch
-                                id="follow_notifications"
-                                checked={data.follow_notifications}
-                                onCheckedChange={(checked) => setData('follow_notifications', checked)}
-                            />
-                        </div>
-
                         {/* Info Box */}
                         <div className="bg-muted/50 flex gap-3 rounded-lg border p-4">
                             <BellOff className="text-muted-foreground h-5 w-5 flex-shrink-0" />
                             <div className="text-muted-foreground space-y-1 text-sm">
-                                <p className="font-medium">Sobre as notificações</p>
+                                <p className="font-medium">Como funcionam as notificações</p>
                                 <p>
-                                    Você pode desativar tipos específicos de notificações a qualquer momento. As alterações são aplicadas
-                                    imediatamente após salvar.
+                                    Cada tipo de notificação funciona de forma independente. Por exemplo, você pode desativar notificações
+                                    no app mas continuar a receber emails, ou vice-versa. As alterações são aplicadas imediatamente após
+                                    salvar.
                                 </p>
                             </div>
                         </div>
