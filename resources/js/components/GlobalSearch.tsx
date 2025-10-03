@@ -92,7 +92,7 @@ export function GlobalSearch() {
 
     // Icon mapping
     const getIconComponent = (iconName: string) => {
-        const icons: Record<string, unknown> = {
+        const icons: Record<string, React.ComponentType<{ className?: string }>> = {
             user: UserIcon,
             'file-text': FileText,
         };
