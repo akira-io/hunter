@@ -28,18 +28,19 @@ final class UserFollowedNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        $channels = ['database'];
+        $channels = [];
 
-        // Check user's notification preferences
         /** @var array<string, mixed> $settings */
         $settings = $notifiable->notification_settings ?? [];
 
-        // Add broadcast channel if browser notifications are enabled
+        if (($settings['follow_notifications'] ?? true) === true) {
+            $channels[] = 'database';
+        }
+
         if (($settings['browser_notifications'] ?? true) === true) {
             $channels[] = 'broadcast';
         }
 
-        // Add mail channel if email notifications are enabled
         if (($settings['email_notifications'] ?? true) === true) {
             $channels[] = 'mail';
         }

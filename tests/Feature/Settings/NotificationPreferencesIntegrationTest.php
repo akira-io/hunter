@@ -13,6 +13,144 @@ beforeEach(function () {
     Notification::fake();
 });
 
+describe('Independent Notification Channels', function () {
+    test('in-app false, email true → send email only', function () {
+        $follower = User::factory()->create();
+        $userToFollow = User::factory()->create([
+            'notification_settings' => [
+                'follow_notifications' => false, // In-app disabled
+                'email_notifications' => true,   // Email enabled
+                'browser_notifications' => false,
+            ],
+        ]);
+
+        $action = new FollowUserAction;
+        $action->handle($follower, $userToFollow);
+
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('mail', $channels)
+                    && ! in_array('database', $channels)
+                    && ! in_array('broadcast', $channels);
+            }
+        );
+    });
+
+    test('in-app true, email false → in-app only', function () {
+        $follower = User::factory()->create();
+        $userToFollow = User::factory()->create([
+            'notification_settings' => [
+                'follow_notifications' => true,  // In-app enabled
+                'email_notifications' => false,  // Email disabled
+                'browser_notifications' => false,
+            ],
+        ]);
+
+        $action = new FollowUserAction;
+        $action->handle($follower, $userToFollow);
+
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels)
+                    && ! in_array('mail', $channels)
+                    && ! in_array('broadcast', $channels);
+            }
+        );
+    });
+
+    test('both true → both channels', function () {
+        $follower = User::factory()->create();
+        $userToFollow = User::factory()->create([
+            'notification_settings' => [
+                'follow_notifications' => true,
+                'email_notifications' => true,
+                'browser_notifications' => false,
+            ],
+        ]);
+
+        $action = new FollowUserAction;
+        $action->handle($follower, $userToFollow);
+
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels)
+                    && in_array('mail', $channels);
+            }
+        );
+    });
+
+    test('both false → no notification sent', function () {
+        $follower = User::factory()->create();
+        $userToFollow = User::factory()->create([
+            'notification_settings' => [
+                'follow_notifications' => false,
+                'email_notifications' => false,
+                'browser_notifications' => false,
+            ],
+        ]);
+
+        $action = new FollowUserAction;
+        $action->handle($follower, $userToFollow);
+
+        // When all channels are disabled, Laravel doesn't send the notification at all
+        Notification::assertNothingSentTo($userToFollow);
+    });
+
+    test('browser true, in-app false, email false → browser only', function () {
+        $follower = User::factory()->create();
+        $userToFollow = User::factory()->create([
+            'notification_settings' => [
+                'follow_notifications' => false,
+                'email_notifications' => false,
+                'browser_notifications' => true,
+            ],
+        ]);
+
+        $action = new FollowUserAction;
+        $action->handle($follower, $userToFollow);
+
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('broadcast', $channels)
+                    && ! in_array('database', $channels)
+                    && ! in_array('mail', $channels);
+            }
+        );
+    });
+
+    test('all three enabled → all three channels', function () {
+        $follower = User::factory()->create();
+        $userToFollow = User::factory()->create([
+            'notification_settings' => [
+                'follow_notifications' => true,
+                'email_notifications' => true,
+                'browser_notifications' => true,
+            ],
+        ]);
+
+        $action = new FollowUserAction;
+        $action->handle($follower, $userToFollow);
+
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels)
+                    && in_array('mail', $channels)
+                    && in_array('broadcast', $channels);
+            }
+        );
+    });
+});
+
 describe('Follow Notifications Settings', function () {
     test('user receives notification when follow_notifications is true', function () {
         $follower = User::factory()->create();
@@ -30,7 +168,7 @@ describe('Follow Notifications Settings', function () {
         Notification::assertSentTo($userToFollow, UserFollowedNotification::class);
     });
 
-    test('user does NOT receive notification when follow_notifications is false', function () {
+    test('user still receives email when follow_notifications is false but email is true', function () {
         $follower = User::factory()->create();
         $userToFollow = User::factory()->create([
             'notification_settings' => [
@@ -43,7 +181,13 @@ describe('Follow Notifications Settings', function () {
         $action = new FollowUserAction;
         $action->handle($follower, $userToFollow);
 
-        Notification::assertNotSentTo($userToFollow, UserFollowedNotification::class);
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('mail', $channels);
+            }
+        );
     });
 
     test('user receives notification when notification_settings is null (default true)', function () {
@@ -92,7 +236,7 @@ describe('All Notifications Settings Combinations', function () {
         Notification::assertSentTo($userToFollow, UserFollowedNotification::class);
     });
 
-    test('all notifications disabled - user does NOT receive follow notification', function () {
+    test('all notifications disabled - no notification sent', function () {
         $follower = User::factory()->create();
         $userToFollow = User::factory()->create([
             'notification_settings' => [
@@ -105,10 +249,11 @@ describe('All Notifications Settings Combinations', function () {
         $action = new FollowUserAction;
         $action->handle($follower, $userToFollow);
 
-        Notification::assertNotSentTo($userToFollow, UserFollowedNotification::class);
+        // When all channels are disabled, Laravel doesn't send the notification at all
+        Notification::assertNothingSentTo($userToFollow);
     });
 
-    test('only email enabled - user does NOT receive follow notification', function () {
+    test('only email enabled - user receives email notification', function () {
         $follower = User::factory()->create();
         $userToFollow = User::factory()->create([
             'notification_settings' => [
@@ -121,10 +266,16 @@ describe('All Notifications Settings Combinations', function () {
         $action = new FollowUserAction;
         $action->handle($follower, $userToFollow);
 
-        Notification::assertNotSentTo($userToFollow, UserFollowedNotification::class);
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('mail', $channels) && count($channels) === 1;
+            }
+        );
     });
 
-    test('only browser enabled - user does NOT receive follow notification', function () {
+    test('only browser enabled - user receives browser notification', function () {
         $follower = User::factory()->create();
         $userToFollow = User::factory()->create([
             'notification_settings' => [
@@ -137,10 +288,16 @@ describe('All Notifications Settings Combinations', function () {
         $action = new FollowUserAction;
         $action->handle($follower, $userToFollow);
 
-        Notification::assertNotSentTo($userToFollow, UserFollowedNotification::class);
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('broadcast', $channels) && count($channels) === 1;
+            }
+        );
     });
 
-    test('only follow notifications enabled - user receives notification', function () {
+    test('only follow notifications enabled - user receives in-app notification', function () {
         $follower = User::factory()->create();
         $userToFollow = User::factory()->create([
             'notification_settings' => [
@@ -153,7 +310,13 @@ describe('All Notifications Settings Combinations', function () {
         $action = new FollowUserAction;
         $action->handle($follower, $userToFollow);
 
-        Notification::assertSentTo($userToFollow, UserFollowedNotification::class);
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels) && count($channels) === 1;
+            }
+        );
     });
 });
 
@@ -177,7 +340,7 @@ describe('Settings Persistence', function () {
         ]);
     });
 
-    test('disabled settings prevent notifications from being sent', function () {
+    test('disabled in-app settings do not prevent email notifications', function () {
         $follower = User::factory()->create();
         $userToFollow = User::factory()->create([
             'notification_settings' => [
@@ -187,7 +350,7 @@ describe('Settings Persistence', function () {
             ],
         ]);
 
-        // Update settings to disable follow notifications
+        // Update settings to disable in-app follow notifications but keep email
         actingAs($userToFollow)
             ->patch('/settings/notifications', [
                 'follow_notifications' => false,
@@ -201,8 +364,14 @@ describe('Settings Persistence', function () {
         $action = new FollowUserAction;
         $action->handle($follower, $userToFollow);
 
-        // Should NOT receive notification
-        Notification::assertNotSentTo($userToFollow, UserFollowedNotification::class);
+        // Should still receive email notification
+        Notification::assertSentTo(
+            $userToFollow,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('mail', $channels);
+            }
+        );
     });
 
     test('enabled settings allow notifications to be sent', function () {
@@ -255,7 +424,11 @@ describe('Edge Cases', function () {
         ]);
 
         $userWithNotificationsDisabled = User::factory()->create([
-            'notification_settings' => ['follow_notifications' => false],
+            'notification_settings' => [
+                'follow_notifications' => false,
+                'email_notifications' => false,
+                'browser_notifications' => false,
+            ],
         ]);
 
         $action = new FollowUserAction;
@@ -263,8 +436,16 @@ describe('Edge Cases', function () {
         $action->handle($follower, $userWithNotificationsEnabled);
         $action->handle($follower, $userWithNotificationsDisabled);
 
-        Notification::assertSentTo($userWithNotificationsEnabled, UserFollowedNotification::class);
-        Notification::assertNotSentTo($userWithNotificationsDisabled, UserFollowedNotification::class);
+        Notification::assertSentTo(
+            $userWithNotificationsEnabled,
+            UserFollowedNotification::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels);
+            }
+        );
+
+        // When all channels are disabled, no notification is sent
+        Notification::assertNothingSentTo($userWithNotificationsDisabled);
     });
 
     test('toggling settings on and off works correctly', function () {
@@ -281,17 +462,21 @@ describe('Edge Cases', function () {
 
         // Disable notifications
         $userToFollow->update([
-            'notification_settings' => ['follow_notifications' => false],
+            'notification_settings' => [
+                'follow_notifications' => false,
+                'email_notifications' => false,
+                'browser_notifications' => false,
+            ],
         ]);
         $userToFollow->refresh();
 
         // Clear notification history
         Notification::fake();
 
-        // Unfollow and follow again - should NOT receive
+        // Unfollow and follow again - should NOT send any notification
         $follower->unfollow($userToFollow);
         $action->handle($follower, $userToFollow);
-        Notification::assertNotSentTo($userToFollow, UserFollowedNotification::class);
+        Notification::assertNothingSentTo($userToFollow);
 
         // Enable notifications again
         $userToFollow->update([

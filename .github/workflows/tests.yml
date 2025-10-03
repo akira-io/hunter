@@ -44,8 +44,6 @@ jobs:
       - name: Build Assets
         run: npm run build
 
-
-
       - name: Copy Environment File
         run: cp .env.example .env
 
@@ -70,6 +68,9 @@ jobs:
         run: |
           echo "MEILISEARCH_HOST=http://localhost:7700" >> .env
           echo "MEILISEARCH_API_KEY=your_meilisearch_api_key" >> .env
+
+      - name: Sync Meilisearch Indexes
+        run: php artisan scout:sync-index-setting
 
       - name: Tests
         run: composer test
