@@ -9,7 +9,7 @@ interface FinderProps {
     isSearchLoading?: boolean;
 }
 
-export function Finder({ users }: FinderProps) {
+export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
     // Remove duplicatas baseado no ID
     const uniqueUsers = users.filter((user, index, self) => index === self.findIndex((u) => u.id === user.id));
 

@@ -58,6 +58,8 @@ final class Hunt extends Model implements HasMedia
             'is_reported',
             'is_pinned',
             'is_ignored',
+            'views_count',
+            'shares_count',
         ];
 
     /**
@@ -99,6 +101,22 @@ final class Hunt extends Model implements HasMedia
     }
 
     /**
+     * Increment the views count for the hunt.
+     */
+    public function incrementViews(): void
+    {
+        $this->increment('views_count');
+    }
+
+    /**
+     * Increment the shares count for the hunt.
+     */
+    public function incrementShares(): void
+    {
+        $this->increment('shares_count');
+    }
+
+    /**
      * The attributes that should be cast to native types.
      *
      * @return array<string, string>
@@ -111,6 +129,8 @@ final class Hunt extends Model implements HasMedia
             'is_pinned' => 'boolean',
             'is_ignored' => 'boolean',
             'created_at' => 'datetime',
+            'views_count' => 'integer',
+            'shares_count' => 'integer',
         ];
     }
 }

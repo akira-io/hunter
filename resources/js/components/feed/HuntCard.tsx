@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
+import hunts from '@/routes/hunts';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
@@ -35,6 +36,10 @@ export function HuntCard({ hunt }: HuntCardProps) {
 
     function gotoProfile() {
         router.get(publicRoutes.profile.show.url(hunt.owner.id));
+    }
+
+    function gotoHuntDetail() {
+        router.get(hunts.show(hunt.id).url);
     }
 
     return (
@@ -96,7 +101,7 @@ export function HuntCard({ hunt }: HuntCardProps) {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="cursor-pointer space-y-4" onClick={gotoHuntDetail}>
                     <MarkdownRenderer content={hunt.content} />
                     {sanitizedImageUrl && <img src={sanitizedImageUrl} alt="Hunt image" className="max-h-50 w-full rounded-md object-cover" />}
                 </CardContent>

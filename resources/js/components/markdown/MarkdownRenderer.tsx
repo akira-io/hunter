@@ -35,7 +35,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
                         />
                     ),
 
-                    code: ({ node, inline, className, children, ...props }) => {
+                    code: ({ node, inline, className, children, ...props }: any) => {
                         if (inline) {
                             return (
                                 <code className="bg-muted text-foreground rounded px-1.5 py-0.5 font-mono text-sm" {...props}>

@@ -35,8 +35,8 @@ final class HuntResource extends JsonResource
             'owner' => HuntOwnerResource::make($this->owner),
             'comments' => CommentResource::collection($this->commentsWithHasLiked()),
             'likes_count' => $this->likesCount(),
-            'views' => 0,
-            'shares' => 0,
+            'views' => $this->views_count ?? 0,
+            'shares' => $this->shares_count ?? 0,
             'has_liked' => $this->has_liked,
             'image_url' => $this->getFirstMediaUrl('hunts'),
         ];
