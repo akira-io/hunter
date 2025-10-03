@@ -140,9 +140,8 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                             <div className="text-muted-foreground space-y-1 text-sm">
                                 <p className="font-medium">Como funcionam as notificações</p>
                                 <p>
-                                    Cada tipo de notificação funciona de forma independente. Por exemplo, você pode desativar notificações
-                                    no app mas continuar a receber emails, ou vice-versa. As alterações são aplicadas imediatamente após
-                                    salvar.
+                                    Cada tipo de notificação funciona de forma independente. Por exemplo, você pode desativar notificações no app mas
+                                    continuar a receber emails, ou vice-versa. As alterações são aplicadas imediatamente após salvar.
                                 </p>
                             </div>
                         </div>
