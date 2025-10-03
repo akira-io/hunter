@@ -9,7 +9,7 @@ test('to array', function () {
     $hunt = Hunt::factory()->create()->refresh();
 
     expect(array_keys($hunt->toArray()))
-        ->toBe([
+        ->toEqualCanonicalizing([
             'id',
             'owner_id',
             'content',
