@@ -211,11 +211,11 @@ test('toArray embeds comments with has_liked flags for guest requests', function
     $array = $resource->toArray($request);
 
     // Assert
-    expect($array)->toBeArray()->toHaveKey('comments');
-    expect($array['comments'])->toBeInstanceOf(Illuminate\Http\Resources\Json\AnonymousResourceCollection::class);
+    expect($array)->toBeArray()->toHaveKey('comments')
+        ->and($array['comments'])->toBeArray();
 
-    // Convert the resource collection to array for testing
-    $commentsArray = $array['comments']->toArray(request());
+    // Comments is already an array
+    $commentsArray = $array['comments'];
     expect($commentsArray)->toBeArray()->toHaveCount(2);
 
     $index1 = array_search($comment1->id, array_column($commentsArray, 'id'), true);

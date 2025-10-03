@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests\Settings;
 
 use Illuminate\Foundation\Http\FormRequest;
-use RuntimeException;
 
 final class NotificationUpdateRequest extends FormRequest
 {
@@ -39,11 +38,8 @@ final class NotificationUpdateRequest extends FormRequest
      */
     public function validated(mixed $key = null, mixed $default = null): array
     {
+        /** @var array<string, bool|string|int> $validated */
         $validated = parent::validated($key, $default);
-
-        if (! is_array($validated)) {
-            throw new RuntimeException('Expected array from validated data');
-        }
 
         return [
             'follow_notifications' => (bool) ($validated['follow_notifications'] ?? false),

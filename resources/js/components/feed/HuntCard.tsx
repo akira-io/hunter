@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
+import hunts from '@/routes/hunts';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import { BarChart, Edit, EllipsisVerticalIcon, MessageCircle, Repeat2, SaveIcon, Share2Icon, ShieldAlert, StopCircle } from 'lucide-react';
+import { BarChart, Edit, EllipsisVerticalIcon, Eye, MessageCircle, Repeat2, SaveIcon, Share2Icon, ShieldAlert, StopCircle } from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
@@ -37,9 +38,13 @@ export function HuntCard({ hunt }: HuntCardProps) {
         router.get(publicRoutes.profile.show.url(hunt.owner.id));
     }
 
+    function gotoHuntDetail() {
+        router.get(hunts.show.url({ hunt: hunt.id }));
+    }
+
     return (
         <>
-            <Card className="relative mx-auto mb-4 w-full max-w-xl">
+            <Card className="relative mx-auto mb-4 w-full max-w-2xl">
                 <CardHeader className="flex flex-row items-start gap-4">
                     <UserAvatar avatarUrl={hunt.owner.avatar_url} userName={hunt.owner.name} className="cursor-pointer" onClick={gotoProfile} />
                     <div className="flex flex-col">
@@ -63,6 +68,10 @@ export function HuntCard({ hunt }: HuntCardProps) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="gradient">
+                            <DropdownMenuItem onClick={gotoHuntDetail}>
+                                <Eye size={16} className="opacity-60" aria-hidden="true" />
+                                Ver Hunt
+                            </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <Share2Icon size={16} className="opacity-60" aria-hidden="true" />
                                 Partilhar
@@ -96,7 +105,7 @@ export function HuntCard({ hunt }: HuntCardProps) {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="cursor-pointer space-y-4" onClick={gotoHuntDetail}>
                     <MarkdownRenderer content={hunt.content} />
                     {sanitizedImageUrl && <img src={sanitizedImageUrl} alt="Hunt image" className="max-h-50 w-full rounded-md object-cover" />}
                 </CardContent>

@@ -47,7 +47,7 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
     };
 
     return (
-        <div className="mx-auto max-h-100 w-full max-w-xl space-y-2 overflow-x-auto px-6">
+        <div className="mx-auto max-h-100 w-full max-w-2xl space-y-2 overflow-x-auto px-6">
             {isOpen && (
                 <>
                     <form className="relative flex gap-2" onSubmit={handleAddComment}>

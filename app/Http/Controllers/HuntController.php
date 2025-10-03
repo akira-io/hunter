@@ -62,6 +62,24 @@ final readonly class HuntController
     }
 
     /**
+     * Show a single hunt.
+     */
+    #[Get(uri: '/{hunt}', name: 'hunts.show')]
+    public function show(Request $request, Hunt $hunt): Response
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $hunt->query()->increment('views_count');
+
+        $user->attachLikeStatus($hunt);
+
+        return Inertia::render('hunts/show', [
+            'hunt' => HuntResource::make($hunt)->resolve(),
+        ]);
+    }
+
+    /**
      * Delete a hunt.
      */
     #[Delete(uri: '/{hunt}', name: 'hunts.destroy')]

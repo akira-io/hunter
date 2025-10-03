@@ -8,6 +8,7 @@ use App\Http\Resources\Commentable\CommentResource;
 use App\Models\Comment;
 use App\Models\Hunt;
 use App\Models\User;
+use App\Services\Metrics\MetricsCalculatorService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
@@ -24,6 +25,14 @@ final class HuntResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        /** @var MetricsCalculatorService $metricsService */
+        $metricsService = app(MetricsCalculatorService::class);
+
+        /** @var Hunt $hunt */
+        $hunt = $this->resource;
+
+        $metrics = $metricsService->calculate($hunt);
+
         return [
             'id' => $this->id,
             'content' => $this->content,
@@ -32,13 +41,14 @@ final class HuntResource extends JsonResource
             'is_ignored' => $this->is_ignored,
             'created_at' => $this->created_at->diffForHumans(),
             'updated_at' => $this->updated_at->diffForHumans(),
-            'owner' => HuntOwnerResource::make($this->owner),
-            'comments' => CommentResource::collection($this->commentsWithHasLiked()),
-            'likes_count' => $this->likesCount(),
-            'views' => 0,
-            'shares' => 0,
-            'has_liked' => $this->has_liked,
+            'owner' => HuntOwnerResource::make($this->owner)->resolve(),
+            'comments' => CommentResource::collection($this->commentsWithHasLiked())->resolve(),
+            'likes_count' => (int) $metrics->get('likes'),
+            'views' => (int) $metrics->get('views'),
+            'shares' => (int) $metrics->get('shares'),
+            'has_liked' => $this->has_liked ?? false,
             'image_url' => $this->getFirstMediaUrl('hunts'),
+            'metrics' => $metrics->toArray(),
         ];
 
     }
