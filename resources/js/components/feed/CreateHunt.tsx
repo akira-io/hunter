@@ -1,4 +1,5 @@
 import InputError from '@/components/input-error';
+import { MarkdownEditor } from '@/components/markdown/MarkdownEditor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useSanitizeImageUrls } from '@/hooks/use-sanitize-image-url';
@@ -68,16 +69,13 @@ export function CreateHunt() {
         <Card className="gradient mx-auto w-full max-w-xl">
             <CardContent className="flex items-start gap-4">
                 <form className="relative flex w-full flex-col" onSubmit={shareHunt} encType="multipart/form-data">
-                    <textarea
-                        name="content"
+                    <MarkdownEditor
                         value={data.content}
                         onChange={(e) => setData('content', e.target.value)}
-                        rows={3}
                         maxLength={500}
-                        placeholder="Escreva algo interessante…"
-                        className="w-full border-none p-3 ring-0 outline-none focus:border-none focus:ring-0 focus:outline-none focus-visible:outline-none"
+                        name="content"
+                        rows={3}
                     />
-                    <span className="text-right text-sm text-gray-500">{data.content.length}/500</span>
                     <InputError message={errors.content} />
                     {sanitizedImageUrls.length > 0 && (
                         <div className="mt-2 grid grid-cols-1 gap-2">

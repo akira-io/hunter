@@ -1,6 +1,7 @@
 import { HuntComments } from '@/components/commentable/HuntComments';
 import DeleteHunt from '@/components/feed/DeleteHunt';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
+import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserAvatar } from '@/components/UserAvatar';
@@ -96,7 +97,7 @@ export function HuntCard({ hunt }: HuntCardProps) {
                     </DropdownMenu>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <p>{hunt.content}</p>
+                    <MarkdownRenderer content={hunt.content} />
                     {sanitizedImageUrl && <img src={sanitizedImageUrl} alt="Hunt image" className="max-h-50 w-full rounded-md object-cover" />}
                 </CardContent>
                 <CardFooter className="text-muted-foreground flex justify-between text-sm">
