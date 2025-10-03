@@ -14,6 +14,12 @@ Hunter's frontend is built with:
 ```
 resources/js/
 ├── Components/          # Reusable React components
+│   ├── markdown/       # Markdown editor components
+│   │   ├── MarkdownEditor.tsx
+│   │   ├── MarkdownRenderer.tsx
+│   │   ├── EmojiPicker.tsx
+│   │   └── MarkdownHelp.tsx
+│   └── ...
 ├── Layouts/            # Page layouts
 ├── Pages/              # Inertia page components
 │   ├── auth/          # Authentication pages
@@ -25,6 +31,8 @@ resources/js/
 ├── Types/             # TypeScript type definitions
 └── app.tsx            # Application entry point
 ```
+
+> **Note**: For detailed information about the Markdown editing system, see the [Markdown Editor documentation](./16-markdown-editor.md).
 
 ## Setup
 

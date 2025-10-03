@@ -4,6 +4,8 @@
 
 **Hunts** are the core content type in Hunter - posts where developers share their thoughts, projects, code snippets, devlogs, and ideas. Think of them as tweets/posts specifically designed for the developer community.
 
+All hunt content supports **Markdown formatting** for rich text, code snippets, and structured content. See the [Markdown Editor documentation](./16-markdown-editor.md) for details on formatting options.
+
 ## Hunt Model
 
 ```php

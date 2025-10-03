@@ -140,6 +140,19 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
     - Backup strategies
     - Security checklist
 
+## 🎨 UI Components
+
+16. **[Markdown Editor](./16-markdown-editor.md)**
+    - Complete markdown editing system
+    - Emoji picker with categories
+    - Syntax highlighting
+    - Real-time preview
+    - Markdown help guide
+    - Auto-detection of code
+    - Responsive design
+    - Dark mode support
+    - Accessibility features
+
 ## 📖 Quick Reference
 
 | Document | Description |
@@ -223,6 +236,7 @@ If you need help:
 
 ## What's New in the Documentation
 
+- ✨ **Markdown Editor** - Comprehensive guide to the markdown editing system with emojis, preview, and help
 - ✨ **Notifications System** - Complete guide to real-time and email notifications
 - 🎮 **Gamification** - XP, Levels, Badges, Rewards, and Leaderboards
 - 💬 **Advanced Chat** - Reply, Forward, Edit, Delete, Reactions, and more
@@ -235,11 +249,9 @@ Hunter is open-source software licensed under the [GNU Affero General Public Lic
 
 ## Acknowledgments
 
-Built with ❤️ by the Akira team and the Cape Verdean developer community.
+**Built with ❤️ by the Akira team and the Cape Verdean developer community.**
 
 ---
 
-**Last Updated**: January 2025  
-**Documentation Version**: 2.0.0  
-**Platform Version**: See [CHANGELOG.md](../CHANGELOG.md)
+> **Version Information**: See [package.json](../package.json) for current version (v0.5.0) and [CHANGELOG.md](../CHANGELOG.md) for version history.
 

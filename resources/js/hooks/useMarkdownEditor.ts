@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 
 interface UseMarkdownEditorOptions {
     value: string;
@@ -14,7 +15,7 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
     useEffect(() => {
         return () => {
             if (editorRef.current) {
-                editorRef.current.removeEventListener('paste', handlePaste as any);
+                editorRef.current.removeEventListener('paste', handlePaste as never);
             }
         };
     }, []);

@@ -16,40 +16,49 @@ interface MarkdownEditorProps {
     name?: string;
 }
 
-export function MarkdownEditor({ value, onChange, maxLength = 500, placeholder = 'Escreva algo interessante…', rows = 3, name }: MarkdownEditorProps) {
+export function MarkdownEditor({
+    value,
+    onChange,
+    maxLength = 500,
+    placeholder = 'Escreva algo interessante…',
+    rows = 3,
+    name,
+}: MarkdownEditorProps) {
     const { editorRef, activeTab, setActiveTab, handlePaste, insertText, insertEmoji } = useMarkdownEditor({ value, onChange, name });
+
+    const isNearLimit = value.length > maxLength * 0.9;
+    const isOverLimit = value.length > maxLength;
 
     return (
         <div className="w-full">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <div className="mb-2 flex items-center justify-between gap-2">
-                    <TabsList>
-                        <TabsTrigger value="edit">
-                            <Pencil size={16} />
-                            <span className="ml-1">Editar</span>
+                <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <TabsList className="w-full sm:w-auto">
+                        <TabsTrigger value="edit" className="flex-1 sm:flex-initial">
+                            <Pencil className="h-4 w-4" />
+                            <span className="ml-1.5">Editar</span>
                         </TabsTrigger>
-                        <TabsTrigger value="preview">
-                            <Eye size={16} />
-                            <span className="ml-1">Preview</span>
+                        <TabsTrigger value="preview" className="flex-1 sm:flex-initial">
+                            <Eye className="h-4 w-4" />
+                            <span className="ml-1.5">Preview</span>
                         </TabsTrigger>
                     </TabsList>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-end gap-1 sm:gap-2">
                         <EmojiPicker onInsert={insertEmoji} />
                         <MarkdownHelp onInsert={insertText} />
                     </div>
                 </div>
 
-                <TabsContent value="edit">
+                <TabsContent value="edit" className="mt-0">
                     <div
-                        className="border-border overflow-x-auto overflow-y-auto rounded-md border"
+                        className="border-border bg-muted focus-within:border-primary focus-within:ring-primary/20 overflow-hidden rounded-lg border transition-colors focus-within:ring-2"
                         onPaste={handlePaste}
                         ref={(node) => {
                             if (node) {
                                 const textarea = node.querySelector('textarea');
                                 if (textarea) {
                                     editorRef.current = textarea;
-                                    // Add paste event listener directly to textarea
-                                    textarea.addEventListener('paste', handlePaste as any);
+                                    textarea.addEventListener('paste', handlePaste as never);
                                 }
                             }
                         }}
@@ -68,17 +77,27 @@ export function MarkdownEditor({ value, onChange, maxLength = 500, placeholder =
                                 maxHeight: '400px',
                                 backgroundColor: 'var(--color-muted)',
                                 color: 'var(--color-foreground)',
+                                resize: 'vertical',
                             }}
                         />
                     </div>
                 </TabsContent>
-                <TabsContent value="preview">
-                    <div className="border-border bg-muted min-h-[200px] rounded-md border p-4">
+                <TabsContent value="preview" className="mt-0">
+                    <div className="border-border bg-muted min-h-[200px] rounded-lg border p-4 transition-colors">
                         <MarkdownRenderer content={value || '*Nada para visualizar ainda...*'} />
                     </div>
                 </TabsContent>
-                <div className="text-right text-sm text-gray-500">
-                    {value.length}/{maxLength}
+                <div className="mt-2 flex items-center justify-between text-xs sm:text-sm">
+                    <span className="text-muted-foreground">
+                        Suporte para <span className="font-medium">Markdown</span>
+                    </span>
+                    <span
+                        className={`font-medium transition-colors ${
+                            isOverLimit ? 'text-destructive' : isNearLimit ? 'text-primary' : 'text-muted-foreground'
+                        }`}
+                    >
+                        {value.length}/{maxLength}
+                    </span>
                 </div>
             </Tabs>
         </div>
