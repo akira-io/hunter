@@ -121,7 +121,7 @@ export function GlobalSearch() {
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
 
                 {/* Command Palette */}
-                <div className="bg-popover text-popover-foreground fixed top-[20%] left-1/2 w-full max-w-2xl -translate-x-1/2 rounded-lg border shadow-2xl">
+                <div className="bg-popover text-popover-foreground fixed top-[20%] left-1/2 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 rounded-lg border shadow-2xl sm:w-full">
                     <Command.Input
                         value={search}
                         onValueChange={setSearch}
