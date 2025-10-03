@@ -11,15 +11,6 @@ use App\Services\Search\Concerns\HasScoutSearch;
 use Illuminate\Container\Attributes\Singleton;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Search provider for users/hunters in the global search.
- *
- * Enables searching for users by name, username, location, bio, and skills
- * using Laravel Scout. Results include user profile information and link
- * to their public profile page.
- *
- * @implements GlobalSearchable<User>
- */
 #[Singleton]
 final class UserSearchProvider implements GlobalSearchable
 {

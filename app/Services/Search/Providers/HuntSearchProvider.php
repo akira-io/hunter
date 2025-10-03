@@ -11,11 +11,6 @@ use App\Services\Search\Concerns\HasScoutSearch;
 use Illuminate\Container\Attributes\Singleton;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Search provider for hunts/projects in the global search.
- *
- * @implements GlobalSearchable<Hunt>
- */
 #[Singleton]
 final class HuntSearchProvider implements GlobalSearchable
 {
@@ -34,7 +29,7 @@ final class HuntSearchProvider implements GlobalSearchable
      */
     public function getLabel(): string
     {
-        return 'Projetos';
+        return 'Hunts';
     }
 
     /**
