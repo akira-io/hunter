@@ -20,6 +20,8 @@ trait HasScoutSearch
      */
     public function search(string $query, int $limit = 5): Collection
     {
+        $limit = max(0, $limit);
+
         $results = $this->buildQuery($query, $limit)->get();
 
         $relations = $this->getRelations();
