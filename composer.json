@@ -91,8 +91,8 @@
     "test:lint": "pint --test",
     "test:refactor": "rector --dry-run",
     "test:types": "phpstan",
-    "test:arch": "pest --filter=arch",
-    "test:type-coverage": "pest --type-coverage --min=100 --compact",
+    "test:arch": "pest --filter=arch --parallel",
+    "test:type-coverage": "pest --type-coverage --min=100 --compact --parallel",
     "test:coverage": "pest --parallel --coverage --compact --exactly=99.1",
     "test:typos": "peck",
     "test": [

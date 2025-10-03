@@ -37,7 +37,7 @@ final class NotificationUpdateRequest extends FormRequest
      * @param  array<array-key, mixed>|int|string|null  $key
      * @return array<string, bool>
      */
-    public function validated($key = null, $default = null): array
+    public function validated(mixed $key = null, mixed $default = null): array
     {
         $validated = parent::validated($key, $default);
 
