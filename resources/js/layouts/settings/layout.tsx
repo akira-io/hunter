@@ -12,17 +12,17 @@ const sidebarNavItems: NavItem[] = [
     {
         title: 'Dados de Acesso',
         href: password.edit().url,
-        icon: <KeyRound className="mr-2 size-4" />,
+        icon: KeyRound,
     },
     {
         title: 'Notificações',
         href: '/settings/notifications',
-        icon: <Bell className="mr-2 size-4" />,
+        icon: Bell,
     },
     {
         title: 'Aparência',
         href: '/settings/appearance',
-        icon: <Palette className="mr-2 size-4" />,
+        icon: Palette,
     },
 ];
 
@@ -59,22 +59,25 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                     <Card className="gradient sticky top-24 p-2">
                         <CardContent className="p-0">
                             <nav className="space-y-1">
-                                {sidebarNavItems.map((item, index) => (
-                                    <Button
-                                        key={`${item.href}-${index}`}
-                                        size="sm"
-                                        variant="ghost"
-                                        asChild
-                                        className={cn('w-full justify-start', {
-                                            'bg-white/10 font-medium': currentPath === item.href,
-                                        })}
-                                    >
-                                        <Link href={item.href} prefetch>
-                                            {item.icon}
-                                            {item.title}
-                                        </Link>
-                                    </Button>
-                                ))}
+                                {sidebarNavItems.map((item, index) => {
+                                    const Icon = item.icon;
+                                    return (
+                                        <Button
+                                            key={`${item.href}-${index}`}
+                                            size="sm"
+                                            variant="ghost"
+                                            asChild
+                                            className={cn('w-full justify-start', {
+                                                'bg-white/10 font-medium': currentPath === item.href,
+                                            })}
+                                        >
+                                            <Link href={item.href} prefetch>
+                                                {Icon && <Icon className="mr-2 size-4" />}
+                                                {item.title}
+                                            </Link>
+                                        </Button>
+                                    );
+                                })}
                             </nav>
                         </CardContent>
                     </Card>

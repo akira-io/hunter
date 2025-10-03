@@ -1,9 +1,12 @@
 import Onboarding from '@/components/Onboarding';
 import { ScrollDown } from '@/components/scroll-down';
 import { User } from '@/types';
+import { ChangeEvent } from 'react';
 
 interface FinderProps {
     users: User[];
+    onSearch?: (e: ChangeEvent<HTMLInputElement>) => void;
+    isSearchLoading?: boolean;
 }
 
 export function Finder({ users }: FinderProps) {

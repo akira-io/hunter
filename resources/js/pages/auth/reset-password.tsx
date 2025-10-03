@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { Key, LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
@@ -89,7 +89,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                     </div>
 
                     <Button type="submit" className="mt-4 w-full" disabled={processing} variant="gradient">
-                        {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <KeyIcon />}
+                        {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
                         Resetar password
                     </Button>
                 </div>

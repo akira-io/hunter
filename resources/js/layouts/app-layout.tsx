@@ -7,7 +7,7 @@ import { useNotificationManager } from '@/hooks/useNotificationManager';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { usePresenceManager } from '@/hooks/usePresenceManager';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type Notification } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { type ReactNode, useMemo } from 'react';
 
@@ -19,7 +19,7 @@ interface AppLayoutProps {
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     const page = usePage<{
         auth: { user?: { id: number } };
-        notifications?: { data: unknown[] };
+        notifications?: { data: Notification[] };
         unread_count?: number;
     }>();
 
