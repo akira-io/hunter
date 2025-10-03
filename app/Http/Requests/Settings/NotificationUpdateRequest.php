@@ -68,4 +68,28 @@ final class NotificationUpdateRequest extends FormRequest
             'browser_notifications.boolean' => 'A preferência de notificações do navegador deve ser verdadeiro ou falso.',
         ];
     }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $data = [];
+
+        foreach (['follow_notifications', 'email_notifications', 'browser_notifications'] as $field) {
+            if ($this->has($field)) {
+                $input = $this->input($field);
+
+                // Only convert values that are actually boolean-like (true/false/1/0/"1"/"0")
+                // Leave invalid values as-is so validation can catch them
+                if (is_bool($input) || $input === 1 || $input === 0 || $input === '1' || $input === '0' || $input === 'true' || $input === 'false') {
+                    $data[$field] = filter_var($input, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                }
+            }
+        }
+
+        if ($data !== []) {
+            $this->merge($data);
+        }
+    }
 }

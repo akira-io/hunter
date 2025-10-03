@@ -11,7 +11,9 @@ use function Pest\Laravel\actingAs;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
+    $this->user = User::factory()->create([
+        'email_verified_at' => now(),
+    ]);
 });
 
 it('authorizes all requests', function () {
@@ -113,7 +115,7 @@ it('converts string true to boolean', function () {
         'browser_notifications' => 1,
     ]);
 
-    $response->assertSuccessful();
+    $response->assertRedirect();
 
     // Verify the data was saved correctly as booleans
     $this->user->refresh();
@@ -131,7 +133,7 @@ it('converts string false to boolean', function () {
         'browser_notifications' => 0,
     ]);
 
-    $response->assertSuccessful();
+    $response->assertRedirect();
 
     // Verify the data was saved correctly as booleans
     $this->user->refresh();

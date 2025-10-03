@@ -81,10 +81,10 @@ describe('SearchController', function () {
             $userGroup = collect($groups)->firstWhere('type', 'users');
 
             if ($userGroup) {
-                expect($userGroup['label'])->toBe('Hunters');
-                expect($userGroup['icon'])->toBe('user');
-                expect($userGroup['priority'])->toBe(1);
-                expect($userGroup['results'])->toBeArray();
+                expect($userGroup['label'])->toBe('Hunters')
+                    ->and($userGroup['icon'])->toBe('user')
+                    ->and($userGroup['priority'])->toBe(1)
+                    ->and($userGroup['results'])->toBeArray();
             }
         })->skip('Requires Meilisearch');
 
@@ -104,10 +104,10 @@ describe('SearchController', function () {
             $huntGroup = collect($groups)->firstWhere('type', 'hunts');
 
             if ($huntGroup) {
-                expect($huntGroup['label'])->toBe('Projetos');
-                expect($huntGroup['icon'])->toBe('file-text');
-                expect($huntGroup['priority'])->toBe(2);
-                expect($huntGroup['results'])->toBeArray();
+                expect($huntGroup['label'])->toBe('Projetos')
+                    ->and($huntGroup['icon'])->toBe('file-text')
+                    ->and($huntGroup['priority'])->toBe(2)
+                    ->and($huntGroup['results'])->toBeArray();
             }
         })->skip('Requires Meilisearch');
 
