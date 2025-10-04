@@ -112,7 +112,7 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
             <DialogPortal>
                 <DialogOverlay className="bg-black/90" />
                 <DialogContent
-                    className="h-[90vh] max-h-[90vh] w-[95vw] border-zinc-700 bg-transparent p-0 shadow-2xl md:h-[95vh] md:max-w-[90vw]"
+                    className="h-[90vh] max-h-[90vh] w-[95vw] overflow-y-auto border-zinc-700 bg-transparent p-0 shadow-2xl md:h-[95vh] md:max-w-[90vw] md:overflow-hidden"
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
@@ -139,21 +139,16 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                     )}
 
                     {/* Two-Column Layout */}
-                    <div className="grid h-full grid-cols-1 overflow-hidden rounded-2xl bg-white md:grid-cols-2 dark:bg-zinc-900">
+                    <div className="grid h-full grid-cols-1 rounded-2xl bg-white md:grid-cols-2 dark:bg-zinc-900">
                         {/* Left Column - Image */}
                         {hunt.image_url && (
                             <div className="relative flex items-center justify-center overflow-hidden bg-black md:h-full">
-                                <img
-                                    src={hunt.image_url}
-                                    alt="Hunt image"
-                                    className="h-auto max-h-full w-full object-contain md:h-full"
-                                    loading="lazy"
-                                />
+                                <img src={hunt.image_url} alt="Hunt image" className="h-auto w-full object-contain md:h-full" loading="lazy" />
                             </div>
                         )}
 
                         {/* Right Column - Details, Comments, Interactions */}
-                        <div className="flex h-full flex-col overflow-hidden">
+                        <div className="flex flex-col md:h-full md:overflow-hidden">
                             {/* Hunt Header */}
                             <div className="flex items-start gap-3 border-b border-zinc-200 p-4 dark:border-zinc-700">
                                 <OnboardingAvatar avatarUrl={hunt.owner.avatar_url} size={10} />
@@ -194,8 +189,8 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                                 </div>
                             </div>
 
-                            {/* Comments Section - Scrollable */}
-                            <div className="mt-10 min-h-0 flex-1 overflow-y-auto">
+                            {/* Comments Section - Scrollable on Desktop only */}
+                            <div className="mt-10 md:min-h-0 md:flex-1 md:overflow-y-auto">
                                 <HuntComments isOpen={true} hunt={hunt} />
                             </div>
                         </div>
