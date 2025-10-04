@@ -5,7 +5,7 @@ import { appearance } from '@/routes';
 import password from '@/routes/password';
 import { notifications } from '@/routes/settings';
 import { Link } from '@inertiajs/react';
-import { Bell, ChevronRight, KeyRound, Palette } from 'lucide-react';
+import { Bell, ChevronRight, KeyRound, Palette, Settings2 } from 'lucide-react';
 
 interface SettingItem {
     title: string;
@@ -15,6 +15,12 @@ interface SettingItem {
 }
 
 const settingsItems: SettingItem[] = [
+    {
+        title: 'Geral',
+        description: 'Gerencie configurações gerais da conta',
+        href: '/settings/general',
+        icon: <Settings2 className="size-5" />,
+    },
     {
         title: 'Senha',
         description: 'Altere sua senha de acesso',

@@ -6,8 +6,10 @@ import hunts from '@/routes/hunts';
 import profile from '@/routes/profile';
 import settings from '@/routes/settings';
 import { type User } from '@/types';
-import { Link } from '@inertiajs/react';
-import { LogOut, RssIcon, Settings, UserIcon } from 'lucide-react';
+import { Link, useForm } from '@inertiajs/react';
+import { BookOpen, LogOut, RssIcon, Settings, UserIcon } from 'lucide-react';
+
+import OnboardingController from '@/actions/App/Http/Controllers/OnboardingController';
 
 interface UserMenuContentProps {
     user: User;
@@ -15,6 +17,14 @@ interface UserMenuContentProps {
 
 export function UserMenuContent({ user }: UserMenuContentProps) {
     const cleanup = useMobileNavigation();
+    const { post, processing } = useForm({});
+
+    const handleReplayTutorial = () => {
+        post(OnboardingController.destroy().url, {
+            preserveScroll: true,
+            onSuccess: () => cleanup(),
+        });
+    };
 
     return (
         <div className="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -47,6 +57,12 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                         <Settings className="mr-2 size-4 text-zinc-500 dark:text-zinc-400" />
                         <span className="text-zinc-900 dark:text-zinc-100">Definições</span>
                     </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <button className="block w-full px-3 py-2 text-left sm:px-4 sm:py-2" onClick={handleReplayTutorial} disabled={processing}>
+                        <BookOpen className="mr-2 size-4 text-zinc-500 dark:text-zinc-400" />
+                        <span className="text-zinc-900 dark:text-zinc-100">Repetir Tutorial</span>
+                    </button>
                 </DropdownMenuItem>
             </div>
             {/* Logout Section */}
