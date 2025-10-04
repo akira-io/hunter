@@ -1,5 +1,6 @@
 import { useChatContext } from '@/contexts/ChatContext';
 import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
+import chat from '@/routes/chat';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';
 import { router } from '@inertiajs/react';
@@ -68,7 +69,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
 
             if (!conversation?.id) return;
             // Check if should use mobile chat
-            if (shouldUseMobileChat()) return router.visit(`/chat/mobile/${conversation.id}`);
+            if (shouldUseMobileChat()) return router.visit(chat.show.url(conversation.id));
 
             openChatWindow(conversation.id);
         } catch (error) {

@@ -2,12 +2,14 @@ import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { useChatContext } from '@/contexts/ChatContext';
 import finder from '@/routes/finder';
 import followable from '@/routes/followable';
 import hunts from '@/routes/hunts';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, EyeIcon, FileSearch, MessageCircleMore, NetworkIcon, RssIcon } from 'lucide-react';
+import { BookOpen, EyeIcon, FileSearch, MessageCircle, MessageCircleMore, NetworkIcon, RssIcon } from 'lucide-react';
+import { useMemo } from 'react';
 import { AiFillGithub } from 'react-icons/ai';
 
 const mainNavItems: NavItem[] = [
@@ -26,11 +28,15 @@ const mainNavItems: NavItem[] = [
         href: followable.followers.url(),
         icon: EyeIcon,
     },
-
     {
         title: 'Huntings',
         href: followable.followings.url(),
         icon: NetworkIcon,
+    },
+    {
+        title: 'Chat',
+        href: '/chat',
+        icon: MessageCircle,
     },
 ];
 
@@ -53,6 +59,28 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { conversations } = useChatContext();
+
+    // Calculate total unread messages
+    const totalUnreadCount = useMemo(() => {
+        return conversations.reduce((total, conv) => {
+            return total + (conv.unread_count || 0);
+        }, 0);
+    }, [conversations]);
+
+    // Add badge count to chat item
+    const itemsWithBadge = useMemo(() => {
+        return mainNavItems.map((item) => {
+            if (item.title === 'Chat' && totalUnreadCount > 0) {
+                return {
+                    ...item,
+                    badge: totalUnreadCount,
+                };
+            }
+            return item;
+        });
+    }, [totalUnreadCount]);
+
     return (
         <Sidebar collapsible="icon" variant="sidebar" className="border-border/50 border-r">
             <SidebarHeader className="border-border/50 border-b">
@@ -67,7 +95,7 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent className="gap-0 py-4">
-                <NavMain items={mainNavItems} />
+                <NavMain items={itemsWithBadge} />
             </SidebarContent>
             <SidebarFooter className="mt-auto border-t-0 pb-4">
                 <NavFooter items={footerNavItems} />

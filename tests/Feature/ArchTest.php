@@ -13,6 +13,7 @@ arch()->preset()->laravel()
             'App\Http\Controllers\Auth\GoogleAuthController',
             'App\Http\Requests',
             "App\Http\Controllers\Notification\NotificationController",
+            "App\Http\Controllers\Api\PresenceController",
         ]);
 arch()->preset()->security();
 

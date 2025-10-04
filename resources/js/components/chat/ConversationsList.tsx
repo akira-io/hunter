@@ -1,6 +1,7 @@
 import { useChatContext } from '@/contexts/ChatContext';
 import { useChat } from '@/hooks/useChat';
 import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
+import chat from '@/routes/chat';
 import { router } from '@inertiajs/react';
 import { MessageCircle, User as UserIcon } from 'lucide-react';
 import React from 'react';
@@ -37,7 +38,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
 
     const handleConversationClick = (conversationId: number) => {
         if (shouldUseMobileChat()) {
-            router.visit(`/chat/mobile/${conversationId}`);
+            router.visit(chat.show.url(conversationId));
         } else {
             openChatWindow(conversationId);
         }
@@ -133,7 +134,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
     return (
         <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
             <div className="border-b border-gray-200 p-4">
-                <h2 className="text-lg font-semibold text-gray-900">Messages</h2>
+                <h2 className="text-lg font-semibold text-gray-900">Mensagens</h2>
             </div>
             <div className="max-h-96 overflow-y-auto">
                 {conversations.length === 0 ? (

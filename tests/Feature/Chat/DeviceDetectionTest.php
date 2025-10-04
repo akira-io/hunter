@@ -21,56 +21,6 @@ describe('Device Detection and Chat Routing', function () {
         actingAs($this->user1);
     });
 
-    it('serves mobile chat page correctly', function () {
-        $response = $this->get("/chat/mobile/{$this->conversation->id}");
-
-        $response->assertSuccessful()
-            ->assertInertia(fn ($page) => $page
-                ->component('Chat/Mobile')
-                ->has('conversationId')
-                ->has('currentUser')
-                ->where('conversationId', $this->conversation->id)
-                ->where('currentUser.id', $this->user1->id)
-                ->where('currentUser.name', $this->user1->name)
-            );
-    });
-
-    it('includes user avatar in mobile chat props', function () {
-        $response = $this->get("/chat/mobile/{$this->conversation->id}");
-
-        $response->assertSuccessful()
-            ->assertInertia(fn ($page) => $page
-                ->has('currentUser.avatar_url') // Should have avatar_url even if null
-            );
-    });
-
-    it('requires authentication for mobile chat', function () {
-        auth()->logout();
-
-        $response = $this->get("/chat/mobile/{$this->conversation->id}");
-
-        $response->assertRedirect(); // Should redirect to login
-    });
-
-    it('prevents access to conversations user is not part of', function () {
-        $otherUser = User::factory()->create();
-        $otherConversation = Conversation::factory()->create();
-        $otherConversation->participants()->attach([
-            $otherUser->id => ['joined_at' => now(), 'is_admin' => true],
-        ]);
-
-        $response = $this->get("/chat/mobile/{$otherConversation->id}");
-
-        // Should either return 404 or redirect, depending on implementation
-        // Since we're not a participant, we shouldn't have access
-        $response->assertSuccessful(); // Route exists but conversation won't load properly
-    });
-
-    it('handles non-existent conversation gracefully', function () {
-        $response = $this->get('/chat/mobile/99999');
-
-        $response->assertSuccessful(); // Route works, but conversation won't load
-    });
 });
 
 describe('Device Detection JavaScript Logic', function () {
@@ -121,25 +71,4 @@ describe('Chat Route Integration', function () {
         actingAs($this->user);
     });
 
-    it('has mobile chat route properly configured', function () {
-        $conversation = Conversation::factory()->create();
-        $conversation->participants()->attach([
-            $this->user->id => ['joined_at' => now(), 'is_admin' => true],
-        ]);
-
-        $response = $this->get("/chat/mobile/{$conversation->id}");
-
-        $response->assertSuccessful();
-    });
-
-    it('mobile chat route uses correct controller/action', function () {
-        // This test verifies the route is configured correctly
-        $routes = collect(Route::getRoutes())->first(function ($route) {
-            return $route->uri() === 'chat/mobile/{conversation}';
-        });
-
-        expect($routes)->not->toBeNull();
-        expect($routes->methods())->toContain('GET');
-        expect($routes->getName())->toBe('chat.mobile');
-    });
 });

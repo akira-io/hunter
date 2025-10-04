@@ -42,15 +42,27 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 )}
                             >
                                 <Link href={item.href} prefetch className="flex items-center gap-3 py-2.5" onClick={handleLinkClick}>
-                                    {item.icon && (
-                                        <item.icon
-                                            className={cn(
-                                                'h-5 w-5 transition-transform duration-200 group-hover:scale-110',
-                                                isActive && 'text-primary',
-                                            )}
-                                        />
-                                    )}
+                                    <div className="relative">
+                                        {item.icon && (
+                                            <item.icon
+                                                className={cn(
+                                                    'h-5 w-5 transition-transform duration-200 group-hover:scale-110',
+                                                    isActive && 'text-primary',
+                                                )}
+                                            />
+                                        )}
+                                        {item.badge && item.badge > 0 && (
+                                            <div className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-purple-500 px-1 text-[10px] font-bold text-white">
+                                                {item.badge > 99 ? '99+' : item.badge}
+                                            </div>
+                                        )}
+                                    </div>
                                     <span className="truncate text-[15px]">{item.title}</span>
+                                    {item.badge && item.badge > 0 && (
+                                        <div className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-purple-500 px-1.5 text-xs font-bold text-white">
+                                            {item.badge > 99 ? '99+' : item.badge}
+                                        </div>
+                                    )}
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>

@@ -1,6 +1,7 @@
 import { UserAvatar } from '@/components/UserAvatar';
 import { useChatContext } from '@/contexts/ChatContext';
-import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
+import { useDeviceDetection, shouldUseMobileChat } from '@/hooks/useDeviceDetection';
+import chat from '@/routes/chat';
 import { router } from '@inertiajs/react';
 import { X } from 'lucide-react';
 import React from 'react';
@@ -50,7 +51,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) =
                                 <button
                                     onClick={() => {
                                         if (shouldUseMobileChat()) {
-                                            router.visit(`/chat/mobile/${conversationId}`);
+                                            router.visit(chat.show.url(conversationId));
                                         } else {
                                             switchToWindow(conversationId);
                                         }
