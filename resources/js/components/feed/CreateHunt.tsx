@@ -88,7 +88,7 @@ export function CreateHunt() {
 
     return (
         <Card className="gradient mx-auto w-full max-w-2xl">
-            <CardContent className="flex items-start gap-4">
+            <CardContent className="flex items-start gap-2 p-4 sm:gap-4 sm:p-6">
                 <form className="relative flex w-full flex-col" onSubmit={shareHunt} encType="multipart/form-data">
                     <MarkdownEditor
                         value={data.content}
@@ -96,10 +96,37 @@ export function CreateHunt() {
                         maxLength={500}
                         name="content"
                         rows={3}
+                        renderMobileControls={(controls) => (
+                            <div className="mb-3 flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-1">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        id="image-upload-mobile"
+                                        className="hidden"
+                                        onChange={handleImageChange}
+                                        name="image"
+                                    />
+                                    <label
+                                        htmlFor="image-upload-mobile"
+                                        className="hover:bg-muted active:bg-muted/80 cursor-pointer rounded-lg p-2 transition-colors"
+                                        aria-label="Carregar imagem"
+                                    >
+                                        <ImageIcon className="h-5 w-5" />
+                                    </label>
+                                    {controls.emojiPicker}
+                                    {controls.markdownHelp}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    {controls.editButton}
+                                    {controls.previewButton}
+                                </div>
+                            </div>
+                        )}
                     />
-                    <InputError message={errors.content} />
+                    <InputError message={errors.content} className="mt-1 text-sm" />
                     {sanitizedImageUrls.length > 0 && (
-                        <div className="mt-2 grid grid-cols-1 gap-2">
+                        <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-2">
                             {sanitizedImageUrls.map((src, index) => (
                                 <div key={index} className="relative">
                                     <img
@@ -110,27 +137,31 @@ export function CreateHunt() {
                                     <button
                                         type="button"
                                         onClick={handleRemoveImage}
-                                        className="absolute top-2 right-2 rounded-full bg-red-500 p-1.5 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-red-600"
+                                        className="absolute top-2 right-2 rounded-full bg-red-500 p-2 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-red-600 active:scale-95 sm:p-1.5"
                                         title="Remover imagem"
+                                        aria-label="Remover imagem"
                                     >
-                                        <X size={16} />
+                                        <X size={20} className="sm:h-4 sm:w-4" />
                                     </button>
                                 </div>
                             ))}
                         </div>
                     )}
-                    <div className="mt-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3 text-gray-500">
+                    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
+                        <div className="hidden items-center gap-3 text-gray-500 sm:flex dark:text-gray-400">
                             <input type="file" accept="image/*" id="image-upload" className="hidden" onChange={handleImageChange} name="image" />
-                            <label htmlFor="image-upload" className="cursor-pointer text-xl">
-                                <ImageIcon className="h-5 w-5" />
+                            <label
+                                htmlFor="image-upload"
+                                className="hover:bg-muted active:bg-muted/80 cursor-pointer rounded-lg p-2 transition-colors"
+                                aria-label="Carregar imagem"
+                            >
+                                <ImageIcon className="h-6 w-6 sm:h-5 sm:w-5" />
                             </label>
                         </div>
-                        <div className="flex-1" />
                         <Button
                             type="submit"
                             disabled={processing || data.content.trim().length === 0}
-                            className="disabled:bg-foreground-muted transition-all duration-300"
+                            className="disabled:bg-foreground-muted w-full gap-2 transition-all duration-300 active:scale-95 sm:w-auto"
                         >
                             {processing ? <Loader2 className="animate-spin" size={16} /> : <PlusCircleIcon size={16} />}
                             Partilhar Hunt
