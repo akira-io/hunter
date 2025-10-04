@@ -20,7 +20,7 @@ export function ProfileCard({ title, className, icon, onClick, children }: Profi
                     {icon}
                 </Button>
             </CardTitle>
-            <CardContent className="mt-4 flex flex-col items-center space-y-6 px-1 px-4 text-center text-gray-500">{children}</CardContent>
+            <CardContent className="mt-4 flex flex-col items-center space-y-6 px-4 text-center text-gray-500">{children}</CardContent>
         </Card>
     );
 }
