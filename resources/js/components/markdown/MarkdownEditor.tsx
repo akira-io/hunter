@@ -14,6 +14,12 @@ interface MarkdownEditorProps {
     placeholder?: string;
     rows?: number;
     name?: string;
+    renderMobileControls?: (controls: {
+        emojiPicker: React.ReactNode;
+        markdownHelp: React.ReactNode;
+        editButton: React.ReactNode;
+        previewButton: React.ReactNode;
+    }) => React.ReactNode;
 }
 
 export function MarkdownEditor({
@@ -23,16 +29,42 @@ export function MarkdownEditor({
     placeholder = 'Escreva algo interessante…',
     rows = 3,
     name,
+    renderMobileControls,
 }: MarkdownEditorProps) {
     const { editorRef, activeTab, setActiveTab, handlePaste, insertText, insertEmoji } = useMarkdownEditor({ value, onChange, name });
 
     const isNearLimit = value.length > maxLength * 0.9;
     const isOverLimit = value.length > maxLength;
 
+    const mobileControls = {
+        emojiPicker: <EmojiPicker onInsert={insertEmoji} />,
+        markdownHelp: <MarkdownHelp onInsert={insertText} />,
+        editButton: (
+            <button
+                type="button"
+                onClick={() => setActiveTab('edit')}
+                className={`hover:bg-muted active:bg-muted/80 rounded-lg p-2 transition-colors ${activeTab === 'edit' ? 'bg-muted text-primary' : 'text-muted-foreground'}`}
+                aria-label="Editar"
+            >
+                <Pencil className="h-5 w-5" />
+            </button>
+        ),
+        previewButton: (
+            <button
+                type="button"
+                onClick={() => setActiveTab('preview')}
+                className={`hover:bg-muted active:bg-muted/80 rounded-lg p-2 transition-colors ${activeTab === 'preview' ? 'bg-muted text-primary' : 'text-muted-foreground'}`}
+                aria-label="Preview"
+            >
+                <Eye className="h-5 w-5" />
+            </button>
+        ),
+    };
+
     return (
         <div className="w-full">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mb-2 hidden sm:flex sm:flex-row sm:items-center sm:justify-between">
                     <TabsList className="w-full sm:w-auto">
                         <TabsTrigger value="edit" className="flex-1 sm:flex-initial">
                             <Pencil className="h-4 w-4" />
@@ -48,6 +80,7 @@ export function MarkdownEditor({
                         <MarkdownHelp onInsert={insertText} />
                     </div>
                 </div>
+                {renderMobileControls && <div className="sm:hidden">{renderMobileControls(mobileControls)}</div>}
 
                 <TabsContent value="edit" className="mt-0">
                     <div
@@ -71,7 +104,7 @@ export function MarkdownEditor({
                             padding={15}
                             data-color-mode="dark"
                             style={{
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
                                 minHeight: `${rows * 1.5}rem`,
                                 maxHeight: '400px',
