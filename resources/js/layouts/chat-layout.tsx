@@ -1,7 +1,9 @@
 import { Toaster } from '@/components/ui/toaster';
 import { ChatProvider, useChatContext } from '@/contexts/ChatContext';
+import { useChatSearch } from '@/hooks/useChatSearch';
 import { useNotificationManager } from '@/hooks/useNotificationManager';
 import { usePresenceManager } from '@/hooks/usePresenceManager';
+import { useTimeFormatting } from '@/hooks/useTimeFormatting';
 import chat from '@/routes/chat';
 import finder from '@/routes/finder';
 import hunts from '@/routes/hunts';
@@ -11,7 +13,7 @@ import { type BreadcrumbItem, type Notification } from '@/types';
 import { type Conversation, type User } from '@/types/chat';
 import { Head, router, usePage } from '@inertiajs/react';
 import { ArrowLeft, MessageCircle, MessageSquarePlus, Search, User as UserIcon, X } from 'lucide-react';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 interface ChatLayoutProps {
     children: ReactNode;
@@ -29,33 +31,22 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
     const onlineUsers = useOnlineUsers();
     const followedHunters = useFollowedHunters();
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+    const { searchQuery, setSearchQuery, isSearchFocused, setIsSearchFocused, filteredConversations, clearSearch, hasResults, isSearching } =
+        useChatSearch({
+            conversations,
+            onlineUsers,
+            followedHunters,
+            currentUserId,
+        });
+
+    const { formatRelativeTime } = useTimeFormatting();
 
     // On mobile, hide sidebar when a conversation is selected
     const showSidebarOnMobile = !conversationId;
 
     const handleConversationClick = (conversationId: number) => {
         router.visit(chat.show.url(conversationId));
-    };
-
-    const formatTime = (dateString?: string) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffTime = Math.abs(now.getTime() - date.getTime());
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 0) {
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-        if (diffDays === 1) {
-            return 'Yesterday';
-        }
-        if (diffDays < 7) {
-            return date.toLocaleDateString([], { weekday: 'short' });
-        }
-        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     };
 
     const getConversationTitle = (conversation: Conversation) => {
@@ -69,40 +60,8 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
         return onlineUsers.some((user) => user.id === userId) || followedHunters.some((hunter) => hunter.id === userId && hunter.is_online);
     };
 
-    const filteredAndSortedConversations = useMemo(() => {
-        let filtered = [...conversations];
-
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            filtered = filtered.filter((conversation) => {
-                const title = getConversationTitle(conversation).toLowerCase();
-                const lastMessage = conversation.last_message?.content.toLowerCase() || '';
-                return title.includes(query) || lastMessage.includes(query);
-            });
-        }
-
-        return filtered.sort((a, b) => {
-            const aParticipant = a.other_participant;
-            const bParticipant = b.other_participant;
-
-            const aIsOnline = aParticipant ? isUserOnline(aParticipant.id) : false;
-            const bIsOnline = bParticipant ? isUserOnline(bParticipant.id) : false;
-
-            if (aIsOnline && !bIsOnline) return -1;
-            if (!aIsOnline && bIsOnline) return 1;
-
-            const aTime = a.last_message_at ? new Date(a.last_message_at).getTime() : 0;
-            const bTime = b.last_message_at ? new Date(b.last_message_at).getTime() : 0;
-            return bTime - aTime;
-        });
-    }, [conversations, onlineUsers, followedHunters, searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
-
     const handleNewConversation = () => {
         router.visit(finder.index.url());
-    };
-
-    const clearSearch = () => {
-        setSearchQuery('');
     };
 
     return (
@@ -203,7 +162,7 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                                         Nova conversa
                                     </button>
                                 </div>
-                            ) : filteredAndSortedConversations.length === 0 ? (
+                            ) : !hasResults && isSearching ? (
                                 <div className="flex flex-col items-center justify-center p-8 text-center">
                                     <div className="mb-4 grid size-16 place-items-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                                         <Search size={32} className="text-zinc-400" />
@@ -219,7 +178,7 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                                 </div>
                             ) : (
                                 <div className="divide-y divide-zinc-100 dark:divide-zinc-700">
-                                    {filteredAndSortedConversations.map((conversation) => {
+                                    {filteredConversations.map((conversation) => {
                                         const otherParticipant = conversation.other_participant;
                                         const isOnline = otherParticipant ? isUserOnline(otherParticipant.id) : false;
 
@@ -274,7 +233,7 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                                                             {getConversationTitle(conversation)}
                                                         </h3>
                                                         <span className="flex-shrink-0 text-xs text-zinc-500 dark:text-zinc-400">
-                                                            {formatTime(conversation.last_message_at)}
+                                                            {formatRelativeTime(conversation.last_message_at)}
                                                         </span>
                                                     </div>
                                                     {conversation.last_message && (

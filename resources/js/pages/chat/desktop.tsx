@@ -1,5 +1,6 @@
 import { UserAvatar } from '@/components/UserAvatar';
 import { usePresence } from '@/hooks/usePresence';
+import { useTimeFormatting } from '@/hooks/useTimeFormatting';
 import ChatLayout from '@/layouts/chat-layout';
 import api from '@/lib/api';
 import { useFollowedHunters } from '@/stores/followedHuntersStore';
@@ -24,6 +25,7 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     usePresence({ userId: currentUser.id });
+    const { formatTime } = useTimeFormatting();
 
     const conversationEcho = useEcho<{ message: Message }>(
         conversationId ? `conversation.${conversationId}` : '',
@@ -162,11 +164,6 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
         if (!conversation) return 'Chat';
         if (conversation.title) return conversation.title;
         return otherParticipant?.name || 'Unknown User';
-    };
-
-    const formatTime = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     if (loading) {

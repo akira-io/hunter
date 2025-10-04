@@ -1,4 +1,5 @@
 import { useChatContext } from '@/contexts/ChatContext';
+import { useTimeFormatting } from '@/hooks/useTimeFormatting';
 import { useFollowedHunters } from '@/stores/followedHuntersStore';
 import { useOnlineUsers } from '@/stores/onlineUsersStore';
 import { useEcho } from '@laravel/echo-react';
@@ -47,6 +48,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
     const prevMessageCountRef = useRef<number>(0);
 
     const { closeChatWindow, minimizedWindows, toggleMinimize, sendMessage, sending, markMessagesAsRead, conversations } = useChatContext();
+    const { formatTime } = useTimeFormatting();
 
     // Get conversation from centralized state for real-time updates (especially unread_count)
     const centralConversation = conversations.find((c) => c.id === conversationId);
@@ -219,11 +221,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         // For direct conversations, show the other person's name
         const otherParticipant = conversation.participants.find((p) => p.id !== currentUserId);
         return otherParticipant?.name || 'Unknown User';
-    };
-
-    const formatTime = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     if (localLoading) {
