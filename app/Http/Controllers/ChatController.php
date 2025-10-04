@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\User\GetAvatarAction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -29,6 +30,7 @@ final readonly class ChatController
     #[Get('/', name: 'chat.index')]
     public function index(Request $request): Response
     {
+        /** @var User $user */
         $user = $request->user();
 
         return Inertia::render('chat/index', [
@@ -46,6 +48,7 @@ final readonly class ChatController
     #[Get('/{conversation}', name: 'chat.show')]
     public function show(Request $request, int $conversation): Response
     {
+        /** @var User $user */
         $user = $request->user();
 
         return Inertia::render('chat/desktop', [

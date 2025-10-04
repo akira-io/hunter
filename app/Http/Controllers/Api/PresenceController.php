@@ -18,10 +18,13 @@ final readonly class PresenceController
 {
     /**
      * Mark user as online.
+     *
+     * @return array{status: string, user_id: int}
      */
     #[Post('/presence/online', withoutMiddleware: VerifyCsrfToken::class)]
     public function online(Request $request): array
     {
+        /** @var User $user */
         $user = $request->user();
         cache()->put("user_online_{$user->id}", now(), now()->addMinutes(10));
 
@@ -30,10 +33,13 @@ final readonly class PresenceController
 
     /**
      * Mark user as offline.
+     *
+     * @return array{status: string, user_id: int}
      */
     #[Post('/presence/offline', withoutMiddleware: VerifyCsrfToken::class)]
     public function offline(Request $request): array
     {
+        /** @var User $user */
         $user = $request->user();
         cache()->forget("user_online_{$user->id}");
 
@@ -48,6 +54,9 @@ final readonly class PresenceController
     {
         $onlineUserIds = [];
 
+        /** @var User $requestUser */
+        $requestUser = $request->user();
+
         $users = User::all();
         foreach ($users as $user) {
             if (cache()->has("user_online_{$user->id}")) {
@@ -55,8 +64,8 @@ final readonly class PresenceController
             }
         }
 
-        $onlineUsers = User::whereIn('id', $onlineUserIds)
-            ->where('id', '!=', $request->user()->id)
+        $onlineUsers = User::query()->whereIn('id', $onlineUserIds)
+            ->where('id', '!=', $requestUser->id)
             ->get();
 
         return UserResource::collection($onlineUsers);

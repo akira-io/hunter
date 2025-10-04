@@ -61,11 +61,7 @@ final readonly class GetConversationsAction
                     'name' => $participant->name,
                     'avatar_url' => $this->getAvatarAction->handle($participant),
                 ]),
-                'other_participant' => $otherParticipant ? [
-                    'id' => $otherParticipant->id,
-                    'name' => $otherParticipant->name,
-                    'avatar_url' => $this->getAvatarAction->handle($otherParticipant),
-                ] : null,
+                'other_participant' => $otherParticipant,
                 'last_message' => ($lastMessage instanceof Message) ? $this->formatMessage($lastMessage) : null,
                 'last_message_at' => $conversation->last_message_at,
                 'unread_count' => $conversation->messages()

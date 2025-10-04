@@ -44,15 +44,20 @@ export function HuntCard({ hunt }: HuntCardProps) {
 
     return (
         <>
-            <Card className="relative mx-auto mb-4 w-full max-w-2xl">
+            <Card className="relative mx-auto mb-4 w-full max-w-2xl overflow-hidden">
                 <CardHeader className="flex flex-row items-start gap-4">
-                    <UserAvatar avatarUrl={hunt.owner.avatar_url} userName={hunt.owner.name} className="cursor-pointer" onClick={gotoProfile} />
-                    <div className="flex flex-col">
-                        <CardTitle className="cursor-pointer text-base font-semibold" onClick={gotoProfile}>
+                    <UserAvatar
+                        avatarUrl={hunt.owner.avatar_url}
+                        userName={hunt.owner.name}
+                        className="shrink-0 cursor-pointer"
+                        onClick={gotoProfile}
+                    />
+                    <div className="flex min-w-0 flex-1 flex-col">
+                        <CardTitle className="cursor-pointer truncate text-base font-semibold" onClick={gotoProfile}>
                             {hunt.owner.name}
                         </CardTitle>
                         <div
-                            className="text-muted-foreground cursor-pointer text-sm"
+                            className="text-muted-foreground cursor-pointer truncate text-sm"
                             onClick={() => router.get(publicRoutes.profile.show.url(hunt.owner.id))}
                         >
                             @{hunt.owner.user_name || hunt.owner.name} · {hunt.created_at}
@@ -60,10 +65,7 @@ export function HuntCard({ hunt }: HuntCardProps) {
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button
-                                className="text-muted-forground absolute top-4 right-4 flex h-8 w-8 cursor-pointer border-none shadow-none"
-                                variant="secondary"
-                            >
+                            <Button className="text-muted-forground flex h-8 w-8 shrink-0 cursor-pointer border-none shadow-none" variant="secondary">
                                 <EllipsisVerticalIcon />
                             </Button>
                         </DropdownMenuTrigger>
@@ -105,11 +107,13 @@ export function HuntCard({ hunt }: HuntCardProps) {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardHeader>
-                <CardContent className="cursor-pointer space-y-4" onClick={gotoHuntDetail}>
-                    <MarkdownRenderer content={hunt.content} />
-                    {sanitizedImageUrl && <img src={sanitizedImageUrl} alt="Hunt image" className="max-h-50 w-full rounded-md object-cover" />}
+                <CardContent className="cursor-pointer space-y-4 overflow-hidden break-words" onClick={gotoHuntDetail}>
+                    <div className="overflow-hidden">
+                        <MarkdownRenderer content={hunt.content} />
+                    </div>
+                    {sanitizedImageUrl && <img src={sanitizedImageUrl} alt="Hunt image" className="max-h-96 w-full rounded-lg object-cover" />}
                 </CardContent>
-                <CardFooter className="text-muted-foreground flex justify-between text-sm">
+                <CardFooter className="text-muted-foreground flex flex-wrap justify-between gap-2 text-sm">
                     <HuntLikes hunt={hunt} />
                     <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={() => setOpenComments((prev) => !prev)}>
                         <MessageCircle size={20} /> {hunt.comments?.length || 0}
@@ -122,7 +126,7 @@ export function HuntCard({ hunt }: HuntCardProps) {
                     </Button>
                 </CardFooter>
                 {isOpenComments && (
-                    <div className="mt-0">
+                    <div className="mt-0 overflow-hidden">
                         <HuntComments isOpen={isOpenComments} hunt={hunt} />
                     </div>
                 )}

@@ -121,9 +121,7 @@ export function MarkdownEditor({
                     </div>
                 </TabsContent>
                 <div className="mt-2 flex items-center justify-between text-xs sm:text-sm">
-                    <span className="text-muted-foreground">
-                        Suporte para <span className="font-medium">Markdown</span>
-                    </span>
+                    <span className="text-muted-foreground">{/*Suporte para <span className="font-medium">Markdown</span>*/}</span>
                     <span
                         className={`font-medium transition-colors ${
                             isOverLimit ? 'text-destructive' : isNearLimit ? 'text-primary' : 'text-muted-foreground'
