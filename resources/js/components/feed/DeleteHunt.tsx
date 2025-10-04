@@ -14,7 +14,7 @@ export default function DeleteHunt({ hunt }: DeleteHuntProps) {
     const { delete: destroy, processing } = useForm();
 
     function deleteHunt() {
-        destroy(hunts.destroy.url(hunt.id), {
+        destroy(hunts.destroy.url(hunt), {
             preserveScroll: true,
             onSuccess: () => {
                 toast({ description: 'Hunt eliminada com sucesso.' });

@@ -27,7 +27,7 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
 
     const handleAddComment = (e: FormEvent) => {
         e.preventDefault();
-        post(hunts.comment.url(hunt.id), {
+        post(hunts.comment.url(hunt), {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {

@@ -39,7 +39,7 @@ export function HuntCard({ hunt }: HuntCardProps) {
     }
 
     function gotoHuntDetail() {
-        router.get(hunts.show.url({ hunt: hunt.id }));
+        router.get(hunts.show.url(hunt));
     }
 
     return (

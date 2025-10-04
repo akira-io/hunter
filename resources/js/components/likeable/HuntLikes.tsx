@@ -11,7 +11,7 @@ export function HuntLikes({ hunt }: LikesProps) {
     const { post } = useForm();
 
     function handleLike() {
-        post(hunts.toggleLike.url(hunt.id), {
+        post(hunts.toggleLike.url(hunt), {
             preserveScroll: true,
             preserveState: true,
         });
