@@ -62,14 +62,12 @@ export default function Notifications({ notificationSettings }: NotificationsPro
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notificações - Definições" />
             <SettingsLayout>
-                <div className="space-y-6">
-                    <div>
-                        <HeadingSmall title="Notificações" description="Gerencie como você recebe notificações" />
-                    </div>
+                <div className="space-y-4 sm:space-y-6">
+                    <HeadingSmall title="Notificações" description="Gerencie como você recebe notificações" />
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                         {/* Follow Notifications (In-App) */}
-                        <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
+                        <div className="gradient flex items-start justify-between gap-4 rounded-lg border p-4">
                             <div className="flex gap-3">
                                 <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
                                     <User className="text-primary h-5 w-5" />
@@ -91,7 +89,7 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                         </div>
 
                         {/* Browser Notifications */}
-                        <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
+                        <div className="gradient flex items-start justify-between gap-4 rounded-lg border p-4">
                             <div className="flex gap-3">
                                 <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
                                     <Bell className="text-primary h-5 w-5" />
@@ -113,7 +111,7 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                         </div>
 
                         {/* Email Notifications */}
-                        <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
+                        <div className="gradient flex items-start justify-between gap-4 rounded-lg border p-4">
                             <div className="flex gap-3">
                                 <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
                                     <Mail className="text-primary h-5 w-5" />
@@ -135,7 +133,7 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                         </div>
 
                         {/* Info Box */}
-                        <div className="bg-muted/50 flex gap-3 rounded-lg border p-4">
+                        <div className="gradient bg-muted/50 flex gap-3 rounded-lg border p-4">
                             <BellOff className="text-muted-foreground h-5 w-5 flex-shrink-0" />
                             <div className="text-muted-foreground space-y-1 text-sm">
                                 <p className="font-medium">Como funcionam as notificações</p>

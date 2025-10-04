@@ -1,13 +1,9 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 
 import AppearanceTabs from '@/components/appearance-tabs';
 import HeadingSmall from '@/components/heading-small';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { type BreadcrumbItem } from '@/types';
-import { BookOpen } from 'lucide-react';
 
-import OnboardingController from '@/actions/App/Http/Controllers/OnboardingController';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
@@ -19,14 +15,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Appearance() {
-    const { post, processing } = useForm({});
-
-    const handleReplayTutorial = () => {
-        post(OnboardingController.destroy().url, {
-            preserveScroll: true,
-        });
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Definições de tema" />
@@ -34,25 +22,6 @@ export default function Appearance() {
                 <div className="space-y-4 sm:space-y-6">
                     <HeadingSmall title="Definições de tema" description="Atualize a aparéncia do seu painel" />
                     <AppearanceTabs className="w-full sm:w-auto" />
-
-                    {/* Replay Tutorial Section */}
-                    <Card className="gradient">
-                        <CardHeader className="space-y-1 p-4 sm:p-6">
-                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                                <BookOpen className="h-5 w-5 flex-shrink-0" />
-                                Tutorial de Boas-Vindas
-                            </CardTitle>
-                            <CardDescription className="text-sm">
-                                Reveja o tutorial para relembrar as principais funcionalidades do DevHunter
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-                            <Button onClick={handleReplayTutorial} className="w-full cursor-pointer sm:w-auto" disabled={processing}>
-                                <BookOpen className="mr-2 h-4 w-4" />
-                                {processing ? 'Carregando...' : 'Repetir Tutorial'}
-                            </Button>
-                        </CardContent>
-                    </Card>
                 </div>
             </SettingsLayout>
         </AppLayout>

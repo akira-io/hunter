@@ -5,10 +5,15 @@ import { cn } from '@/lib/utils';
 import password from '@/routes/password';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, Bell, KeyRound, Palette } from 'lucide-react';
+import { ArrowLeft, Bell, KeyRound, Palette, Settings2 } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
+    {
+        title: 'Geral',
+        href: '/settings/general',
+        icon: Settings2,
+    },
     {
         title: 'Dados de Acesso',
         href: password.edit().url,
