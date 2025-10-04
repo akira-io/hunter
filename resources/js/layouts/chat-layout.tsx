@@ -142,9 +142,14 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                                             <button
                                                 key={conversation.id}
                                                 onClick={() => handleConversationClick(conversation.id)}
-                                                className={`flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-700/50 ${
+                                                onTouchEnd={(e) => {
+                                                    e.preventDefault();
+                                                    handleConversationClick(conversation.id);
+                                                }}
+                                                className={`flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-zinc-50 active:bg-zinc-100 dark:hover:bg-zinc-700/50 dark:active:bg-zinc-700 ${
                                                     conversationId === conversation.id ? 'bg-zinc-100 dark:bg-zinc-700' : ''
                                                 }`}
+                                                style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
                                             >
                                                 <div className="relative flex-shrink-0">
                                                     {otherParticipant?.avatar_url ? (
