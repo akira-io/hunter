@@ -31,7 +31,7 @@ final readonly class SearchController
      *
      * @return JsonResponse The search results grouped by type
      */
-    #[Get('/api/search', name: 'search.index')]
+    #[Get('/search', name: 'search.index')]
     public function __invoke(Request $request): JsonResponse
     {
         $query = (string) $request->input('q', '');

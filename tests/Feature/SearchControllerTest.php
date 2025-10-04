@@ -15,13 +15,13 @@ describe('SearchController', function () {
 
     describe('Authentication', function () {
         test('requires authentication', function () {
-            getJson('/api/search?q=test')
+            getJson('/search?q=test')
                 ->assertStatus(401);
         });
 
         test('authenticated user can access', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=test')
+                ->getJson('/search?q=test')
                 ->assertStatus(200);
         });
     });
@@ -29,35 +29,35 @@ describe('SearchController', function () {
     describe('Response Structure', function () {
         test('returns JSON response', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=test')
+                ->getJson('/search?q=test')
                 ->assertStatus(200)
                 ->assertHeader('content-type', 'application/json');
         });
 
         test('response has groups key', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=test')
+                ->getJson('/search?q=test')
                 ->assertStatus(200)
                 ->assertJsonStructure(['groups']);
         });
 
         test('empty query returns empty groups', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=')
+                ->getJson('/search?q=')
                 ->assertStatus(200)
                 ->assertJson(['groups' => []]);
         });
 
         test('single character query returns empty groups', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=a')
+                ->getJson('/search?q=a')
                 ->assertStatus(200)
                 ->assertJson(['groups' => []]);
         });
 
         test('missing query parameter returns empty groups', function () {
             actingAs($this->user)
-                ->getJson('/api/search')
+                ->getJson('/search')
                 ->assertStatus(200)
                 ->assertJson(['groups' => []]);
         });
@@ -74,7 +74,7 @@ describe('SearchController', function () {
             sleep(1);
 
             $response = actingAs($this->user)
-                ->getJson('/api/search?q=Unique')
+                ->getJson('/search?q=Unique')
                 ->assertStatus(200);
 
             $groups = $response->json('groups');
@@ -97,7 +97,7 @@ describe('SearchController', function () {
             sleep(1);
 
             $response = actingAs($this->user)
-                ->getJson('/api/search?q=Unique')
+                ->getJson('/search?q=Unique')
                 ->assertStatus(200);
 
             $groups = $response->json('groups');
@@ -120,7 +120,7 @@ describe('SearchController', function () {
             sleep(1);
 
             $response = actingAs($this->user)
-                ->getJson('/api/search?q=Structure')
+                ->getJson('/search?q=Structure')
                 ->assertStatus(200);
 
             $groups = $response->json('groups');
@@ -154,25 +154,25 @@ describe('SearchController', function () {
     describe('Query Handling', function () {
         test('handles unicode characters', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=João')
+                ->getJson('/search?q=João')
                 ->assertStatus(200);
         });
 
         test('handles special characters', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=test@#$%')
+                ->getJson('/search?q=test@#$%')
                 ->assertStatus(200);
         });
 
         test('handles numeric query', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=123')
+                ->getJson('/search?q=123')
                 ->assertStatus(200);
         });
 
         test('handles URL encoded query', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q='.urlencode('test user'))
+                ->getJson('/search?q='.urlencode('test user'))
                 ->assertStatus(200);
         });
     });
@@ -183,7 +183,7 @@ describe('SearchController', function () {
             Hunt::factory()->create(['content' => 'OrderTest '.uniqid()]);
 
             $response = actingAs($this->user)
-                ->getJson('/api/search?q=OrderTest')
+                ->getJson('/search?q=OrderTest')
                 ->assertStatus(200);
 
             $groups = $response->json('groups');
@@ -202,7 +202,7 @@ describe('SearchController', function () {
             Hunt::factory()->create(['content' => 'Priority '.uniqid()]);
 
             $response = actingAs($this->user)
-                ->getJson('/api/search?q=Priority')
+                ->getJson('/search?q=Priority')
                 ->assertStatus(200);
 
             $groups = $response->json('groups');
@@ -219,7 +219,7 @@ describe('SearchController', function () {
             $start = microtime(true);
 
             actingAs($this->user)
-                ->getJson('/api/search?q=performance')
+                ->getJson('/search?q=performance')
                 ->assertStatus(200);
 
             $duration = microtime(true) - $start;
@@ -230,7 +230,7 @@ describe('SearchController', function () {
         test('handles concurrent requests', function () {
             for ($i = 0; $i < 5; $i++) {
                 actingAs($this->user)
-                    ->getJson("/api/search?q=concurrent{$i}")
+                    ->getJson("/search?q=concurrent{$i}")
                     ->assertStatus(200);
             }
         });
@@ -240,7 +240,7 @@ describe('SearchController', function () {
 
         test('returns empty results when no matches', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=nonexistentquery12345678')
+                ->getJson('/search?q=nonexistentquery12345678')
                 ->assertStatus(200)
                 ->assertJson(['groups' => []]);
         });
@@ -249,13 +249,13 @@ describe('SearchController', function () {
     describe('CORS and Headers', function () {
         test('includes CSRF token in response', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=test')
+                ->getJson('/search?q=test')
                 ->assertStatus(200);
         });
 
         test('accepts JSON content type', function () {
             actingAs($this->user)
-                ->getJson('/api/search?q=test', ['Accept' => 'application/json'])
+                ->getJson('/search?q=test', ['Accept' => 'application/json'])
                 ->assertStatus(200);
         });
     });
@@ -282,7 +282,7 @@ describe('Search Integration', function () {
 
         // Search
         $response = actingAs($user)
-            ->getJson('/api/search?q=Integration')
+            ->getJson('/search?q=Integration')
             ->assertStatus(200);
 
         $groups = $response->json('groups');
