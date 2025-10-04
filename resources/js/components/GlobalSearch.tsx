@@ -1,6 +1,6 @@
 import { UserAvatar } from '@/components/UserAvatar';
 import { Button } from '@/components/ui/button';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from '@/hooks/use-debounce';
 import api from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { router } from '@inertiajs/react';

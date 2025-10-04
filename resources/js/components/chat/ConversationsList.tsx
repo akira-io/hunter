@@ -1,6 +1,7 @@
 import { useChatContext } from '@/contexts/ChatContext';
-import { useChat } from '@/hooks/useChat';
-import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
+import { useChat } from '@/hooks/use-chat';
+import { shouldUseMobileChat } from '@/hooks/use-device-detection';
+import { useTimeFormatting } from '@/hooks/use-time-formatting';
 import chat from '@/routes/chat';
 import { router } from '@inertiajs/react';
 import { MessageCircle, User as UserIcon } from 'lucide-react';
@@ -35,30 +36,13 @@ interface ConversationsListProps {
 export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUserId }) => {
     const { conversations, loading } = useChat(currentUserId);
     const { openChatWindow } = useChatContext();
+    const { formatRelativeTime } = useTimeFormatting();
 
     const handleConversationClick = (conversationId: number) => {
         if (shouldUseMobileChat()) {
             router.visit(chat.show.url(conversationId));
         } else {
             openChatWindow(conversationId);
-        }
-    };
-
-    const formatTime = (dateString?: string) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffTime = Math.abs(now.getTime() - date.getTime());
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 0) {
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        } else if (diffDays === 1) {
-            return 'Yesterday';
-        } else if (diffDays < 7) {
-            return date.toLocaleDateString([], { weekday: 'short' });
-        } else {
-            return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
         }
     };
 
@@ -162,7 +146,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center justify-between">
                                         <h3 className="truncate text-sm font-medium text-gray-900">{getConversationTitle(conversation)}</h3>
-                                        <span className="text-xs text-gray-500">{formatTime(conversation.last_message_at)}</span>
+                                        <span className="text-xs text-gray-500">{formatRelativeTime(conversation.last_message_at)}</span>
                                     </div>
                                     {conversation.last_message && (
                                         <p className="mt-1 truncate text-sm text-gray-600">

@@ -1,6 +1,6 @@
 import { UserAvatar } from '@/components/UserAvatar';
 import { useChatContext } from '@/contexts/ChatContext';
-import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
+import { shouldUseMobileChat } from '@/hooks/use-device-detection';
 import chat from '@/routes/chat';
 import { router } from '@inertiajs/react';
 import { X } from 'lucide-react';
