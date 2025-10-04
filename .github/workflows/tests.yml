@@ -53,11 +53,11 @@ jobs:
       - name: Lint Frontend
         run: npm run lint
 
-      - name: Ensure Typescript Types
-        run: npm run types
-
       - name: Build Assets
         run: npm run build
+
+      - name: Ensure Typescript Types
+        run: npm run types
 
       - name: Setup Meilisearch
         run: |
