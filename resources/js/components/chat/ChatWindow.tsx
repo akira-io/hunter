@@ -1,5 +1,5 @@
 import { useChatContext } from '@/contexts/ChatContext';
-import { useTimeFormatting } from '@/hooks/useTimeFormatting';
+import { useTimeFormatting } from '@/hooks/use-time-formatting';
 import { useFollowedHunters } from '@/stores/followedHuntersStore';
 import { useOnlineUsers } from '@/stores/onlineUsersStore';
 import { useEcho } from '@laravel/echo-react';

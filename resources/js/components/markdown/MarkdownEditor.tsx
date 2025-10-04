@@ -2,7 +2,7 @@ import { EmojiPicker } from '@/components/markdown/EmojiPicker';
 import { MarkdownHelp } from '@/components/markdown/MarkdownHelp';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useMarkdownEditor } from '@/hooks/useMarkdownEditor';
+import { useMarkdownEditor } from '@/hooks/use-markdown-editor';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import { Eye, Pencil } from 'lucide-react';
 import { ChangeEvent } from 'react';

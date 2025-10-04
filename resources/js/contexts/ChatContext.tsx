@@ -1,4 +1,4 @@
-import { useChat } from '@/hooks/useChat';
+import { useChat } from '@/hooks/use-chat';
 import { type Conversation } from '@/types/chat';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 

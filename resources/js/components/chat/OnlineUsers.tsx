@@ -1,5 +1,5 @@
 import { useChatContext } from '@/contexts/ChatContext';
-import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
+import { shouldUseMobileChat } from '@/hooks/use-device-detection';
 import chat from '@/routes/chat';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';

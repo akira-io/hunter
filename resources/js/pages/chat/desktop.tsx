@@ -1,6 +1,6 @@
 import { UserAvatar } from '@/components/UserAvatar';
-import { usePresence } from '@/hooks/usePresence';
-import { useTimeFormatting } from '@/hooks/useTimeFormatting';
+import { usePresence } from '@/hooks/use-presence';
+import { useTimeFormatting } from '@/hooks/use-time-formatting';
 import ChatLayout from '@/layouts/chat-layout';
 import api from '@/lib/api';
 import { useFollowedHunters } from '@/stores/followedHuntersStore';

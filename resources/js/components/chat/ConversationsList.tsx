@@ -1,7 +1,7 @@
 import { useChatContext } from '@/contexts/ChatContext';
-import { useChat } from '@/hooks/useChat';
-import { shouldUseMobileChat } from '@/hooks/useDeviceDetection';
-import { useTimeFormatting } from '@/hooks/useTimeFormatting';
+import { useChat } from '@/hooks/use-chat';
+import { shouldUseMobileChat } from '@/hooks/use-device-detection';
+import { useTimeFormatting } from '@/hooks/use-time-formatting';
 import chat from '@/routes/chat';
 import { router } from '@inertiajs/react';
 import { MessageCircle, User as UserIcon } from 'lucide-react';

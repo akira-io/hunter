@@ -1,9 +1,9 @@
 import { Toaster } from '@/components/ui/toaster';
 import { ChatProvider, useChatContext } from '@/contexts/ChatContext';
-import { useChatSearch } from '@/hooks/useChatSearch';
-import { useNotificationManager } from '@/hooks/useNotificationManager';
-import { usePresenceManager } from '@/hooks/usePresenceManager';
-import { useTimeFormatting } from '@/hooks/useTimeFormatting';
+import { useChatSearch } from '@/hooks/use-chat-search';
+import { useNotificationManager } from '@/hooks/use-notification-manager';
+import { usePresenceManager } from '@/hooks/use-presence-manager';
+import { useTimeFormatting } from '@/hooks/use-time-formatting';
 import chat from '@/routes/chat';
 import finder from '@/routes/finder';
 import hunts from '@/routes/hunts';
@@ -30,7 +30,6 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
 
     const onlineUsers = useOnlineUsers();
     const followedHunters = useFollowedHunters();
-
 
     const { searchQuery, setSearchQuery, isSearchFocused, setIsSearchFocused, filteredConversations, clearSearch, hasResults, isSearching } =
         useChatSearch({
