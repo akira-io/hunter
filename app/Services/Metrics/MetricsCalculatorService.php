@@ -60,6 +60,6 @@ final readonly class MetricsCalculatorService
     private function getCalculatorForModel(Model $model): ?MetricsCalculable
     {
 
-        return array_find($this->getCalculators(), fn ($calculator): bool => $calculator->supports($model));
+        return array_find($this->getCalculators(), fn (MetricsCalculable $calculator): bool => $calculator->supports($model));
     }
 }
