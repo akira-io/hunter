@@ -42,7 +42,9 @@ jobs:
         run: npm ci --force
 
       - name: Build Assets
-        run: npm run build
+        run: |
+          rm -rf public/build
+          npm run build
 
       - name: Copy Environment File
         run: cp .env.example .env
