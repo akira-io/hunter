@@ -41,16 +41,26 @@ jobs:
       - name: Install Node Dependencies
         run: npm ci --force
 
-      - name: Build Assets
-        run: |
-          rm -rf public/build
-          npm run build
-
       - name: Copy Environment File
         run: cp .env.example .env
 
       - name: Generate Application Key
         run: php artisan key:generate
+
+      - name: Generate Wayfinder Types
+        run: php artisan wayfinder:generate
+
+      - name: Ensure Frontend is Well Formatted
+        run: npm run format:check
+
+      - name: Lint Frontend
+        run: npm run lint
+
+      - name: Ensure Typescript Types
+        run: npm run types
+
+      - name: Build Assets
+        run: npm run build
 
       - name: Setup Meilisearch
         run: |
@@ -76,15 +86,6 @@ jobs:
 
       - name: Tests
         run: composer test
-
-      - name: Ensure Frontend is Well Formatted
-        run: npm run format:check
-
-      - name: Ensure Typescript Types
-        run: npm run types
-
-      - name: Lint Frontend
-        run: npm run lint
 
       - name: Commit Changes
         uses: stefanzweifel/git-auto-commit-action@v5
