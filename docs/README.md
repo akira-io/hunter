@@ -153,6 +153,30 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
     - Dark mode support
     - Accessibility features
 
+17. **[Chat System Architecture](./17-chat-system-architecture.md)**
+    - Dedicated chat layout
+    - Type-safe routes with Wayfinder
+    - ChatContext provider
+    - Presence system
+    - Conversation management
+    - Real-time events
+    - Unread messages badge
+    - Performance optimization
+    - Security & authorization
+    - Mobile responsiveness
+
+18. **[Hunt Creation UX](./18-hunt-creation-ux.md)**
+    - Modern UI redesign
+    - Character counter with progress bar
+    - Real-time validation feedback
+    - Success animations
+    - Image upload with preview
+    - Focus states and micro-interactions
+    - Toast notifications
+    - Accessibility features
+    - Responsive design
+    - Integration examples
+
 ## 📖 Quick Reference
 
 | Document | Description |

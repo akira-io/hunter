@@ -204,24 +204,27 @@ All documentation includes practical examples and is optimized for production us
 
 ### 📘 Documentation Index
 
-| Category               | Documents                                                 | Description                     |
-|------------------------|-----------------------------------------------------------|---------------------------------|
-| **🚀 Getting Started** | [Installation Guide](./docs/01-getting-started.md)        | Complete setup instructions     |
-|                        | [Quick Reference](./docs/QUICK-REFERENCE.md)              | Common commands & examples      |
-| **🔐 Core Features**   | [Authentication](./docs/02-authentication.md)             | Login, OAuth, security          |
-|                        | [User Profiles](./docs/03-user-profiles.md)               | Profile management              |
-|                        | [Hunts (Posts)](./docs/04-hunts.md)                       | Creating and managing posts     |
-|                        | [Social Features](./docs/05-social-features.md)           | Follow, like, comment           |
-| **💬 Real-time**       | [Real-time Chat](./docs/06-real-time-chat.md)             | WebSocket chat system           |
-|                        | [Advanced Chat](./docs/13-advanced-chat-features.md)      | Reply, edit, reactions, search  |
-| **🔍 Discovery**       | [Search & Discovery](./docs/07-search-discovery.md)       | Meilisearch integration         |
-| **🔔 Engagement**      | [Notifications](./docs/11-notifications-system.md)        | Real-time & email notifications |
-|                        | [Gamification](./docs/12-gamification-system.md)          | XP, Levels, Badges, Rewards     |
-| **🔒 Security**        | [Privacy & Security](./docs/14-privacy-security.md)       | Privacy controls & 2FA          |
-| **🛠️ Development**    | [API Reference](./docs/08-api-reference.md)               | Complete API documentation      |
-|                        | [Frontend Development](./docs/09-frontend-development.md) | React, TypeScript, Inertia      |
-|                        | [Testing](./docs/10-testing.md)                           | Pest PHP testing guide          |
-|                        | [Deployment](./docs/15-deployment-production.md)          | Production deployment guide     |
+| Category               | Documents                                                   | Description                       |
+|------------------------|-------------------------------------------------------------|-----------------------------------|
+| **🚀 Getting Started** | [Installation Guide](./docs/01-getting-started.md)          | Complete setup instructions       |
+|                        | [Quick Reference](./docs/QUICK-REFERENCE.md)                | Common commands & examples        |
+| **🔐 Core Features**   | [Authentication](./docs/02-authentication.md)               | Login, OAuth, security            |
+|                        | [User Profiles](./docs/03-user-profiles.md)                 | Profile management                |
+|                        | [Hunts (Posts)](./docs/04-hunts.md)                         | Creating and managing posts       |
+|                        | [Social Features](./docs/05-social-features.md)             | Follow, like, comment             |
+| **💬 Real-time**       | [Real-time Chat](./docs/06-real-time-chat.md)               | WebSocket chat system             |
+|                        | [Chat Architecture](./docs/17-chat-system-architecture.md)  | Advanced chat implementation      |
+|                        | [Advanced Chat](./docs/13-advanced-chat-features.md)        | Reply, edit, reactions, search    |
+| **🔍 Discovery**       | [Search & Discovery](./docs/07-search-discovery.md)         | Meilisearch integration           |
+| **🎨 UI/UX**           | [Hunt Creation UX](./docs/18-hunt-creation-ux.md)           | Modern hunt creation interface    |
+|                        | [Markdown Editor](./docs/16-markdown-editor.md)             | Rich markdown editing system      |
+| **🔔 Engagement**      | [Notifications](./docs/11-notifications-system.md)          | Real-time & email notifications   |
+|                        | [Gamification](./docs/12-gamification-system.md)            | XP, Levels, Badges, Rewards       |
+| **🔒 Security**        | [Privacy & Security](./docs/14-privacy-security.md)         | Privacy controls & 2FA            |
+| **🛠️ Development**    | [API Reference](./docs/08-api-reference.md)                 | Complete API documentation        |
+|                        | [Frontend Development](./docs/09-frontend-development.md)   | React, TypeScript, Inertia        |
+|                        | [Testing](./docs/10-testing.md)                             | Pest PHP testing guide            |
+|                        | [Deployment](./docs/15-deployment-production.md)            | Production deployment guide       |
 
 > 💡 **Start here**: New developers should begin with the [Getting Started Guide](./docs/01-getting-started.md)
 
