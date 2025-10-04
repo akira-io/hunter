@@ -47,9 +47,6 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
-      - name: Generate Wayfinder Types
-        run: php artisan wayfinder:generate
-
       - name: Ensure Frontend is Well Formatted
         run: npm run format:check
 
