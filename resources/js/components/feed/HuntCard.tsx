@@ -1,5 +1,6 @@
 import { HuntComments } from '@/components/commentable/HuntComments';
 import DeleteHunt from '@/components/feed/DeleteHunt';
+import { HuntModal } from '@/components/feed/HuntModal';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,7 @@ export function HuntCardConnector() {
 export function HuntCard({ hunt }: HuntCardProps) {
     const { auth } = usePage<SharedData>().props;
     const [isOpenComments, setOpenComments] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const sanitizedImageUrl = useSanitizeImageUrl(hunt.image_url);
 
@@ -39,11 +41,19 @@ export function HuntCard({ hunt }: HuntCardProps) {
     }
 
     function gotoHuntDetail() {
-        router.get(hunts.show.url(hunt));
+        // If hunt has image, open modal instead of navigating
+        if (sanitizedImageUrl) {
+            setIsModalOpen(true);
+        } else {
+            router.get(hunts.show.url(hunt));
+        }
     }
 
     return (
         <>
+            {/* Hunt Modal for Hunts with Images */}
+            {sanitizedImageUrl && <HuntModal hunt={hunt} open={isModalOpen} onOpenChange={setIsModalOpen} />}
+
             <Card className="relative mx-auto mb-4 w-full max-w-2xl overflow-hidden">
                 <CardHeader className="flex flex-row items-start gap-4">
                     <UserAvatar
@@ -107,11 +117,23 @@ export function HuntCard({ hunt }: HuntCardProps) {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardHeader>
-                <CardContent className="cursor-pointer space-y-4 overflow-hidden break-words" onClick={gotoHuntDetail}>
-                    <div className="overflow-hidden">
+                <CardContent className="space-y-4 overflow-hidden break-words">
+                    <div className="cursor-pointer overflow-hidden" onClick={gotoHuntDetail}>
                         <MarkdownRenderer content={hunt.content} />
                     </div>
-                    {sanitizedImageUrl && <img src={sanitizedImageUrl} alt="Hunt image" className="max-h-96 w-full rounded-lg object-cover" />}
+                    {sanitizedImageUrl && (
+                        <div className="relative w-full overflow-hidden rounded-lg" style={{ height: '200px' }}>
+                            <img
+                                src={sanitizedImageUrl}
+                                alt="Hunt image"
+                                className="h-full w-full cursor-pointer object-cover transition-transform hover:scale-105"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsModalOpen(true);
+                                }}
+                            />
+                        </div>
+                    )}
                 </CardContent>
                 <CardFooter className="text-muted-foreground flex flex-wrap justify-between gap-2 text-sm">
                     <HuntLikes hunt={hunt} />
