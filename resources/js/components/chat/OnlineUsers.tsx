@@ -1,5 +1,6 @@
 import { useChatContext } from '@/contexts/ChatContext';
 import { shouldUseMobileChat } from '@/hooks/use-device-detection';
+import { useScrollDirection } from '@/hooks/use-scroll-direction';
 import chat from '@/routes/chat';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';
@@ -19,6 +20,8 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
     const followedHuntersLoading = useFollowedHuntersLoading();
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+    const scrollDirection = useScrollDirection({ threshold: 10 });
 
     // Calculate total unread messages
     const totalUnreadCount = conversations.reduce((total, conv) => {
@@ -77,14 +80,25 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
         }
     };
 
+    // Determine if button should be visible
+    const isVisible = scrollDirection !== 'down' || isOpen || isFocused;
+
     return (
-        <div className="fixed right-6 bottom-6 z-40">
+        <div
+            className={`fixed right-6 bottom-6 z-40 transition-all duration-300 ease-in-out ${
+                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+            } ${!isVisible && !isFocused ? 'pointer-events-none' : ''}`}
+        >
             {/* Avatar Button with Badge */}
             <div className="relative">
                 <button
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                     className="relative size-14 rounded-full bg-gradient-to-br from-purple-500 to-purple-800 shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95"
+                    aria-label="Abrir chat e lista de usuários online"
+                    aria-expanded={isOpen}
                 >
                     {/*<div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-sm" />*/}
                     <div className="relative flex h-full items-center justify-center">
