@@ -22,7 +22,7 @@ const settingsItems: SettingItem[] = [
     },
     {
         title: 'Segurança',
-        description: 'Gerencie senha, sessões ativas e contas conectadas',
+        description: 'Gerencie suas configurações de segurança',
         href: '/settings/security',
         icon: <Shield className="size-5" />,
     },
@@ -50,7 +50,7 @@ export default function SettingsIndex() {
                     {settingsItems.map((item) => (
                         <Link key={item.href} href={item.href}>
                             <Card className="gradient group cursor-pointer transition-all hover:shadow-lg active:scale-[0.99]">
-                                <CardContent className="flex items-center gap-4 p-4">
+                                <CardContent className="flex h-16 items-center gap-4 p-4">
                                     <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white/10 transition-colors group-hover:bg-white/20">
                                         {item.icon}
                                     </div>

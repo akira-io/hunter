@@ -34,7 +34,6 @@ import { ptBR } from 'date-fns/locale';
 import {
     AlertCircle,
     Check,
-    GithubIcon,
     Globe,
     KeyRound,
     LogOut,
@@ -47,6 +46,7 @@ import {
 } from 'lucide-react';
 import { type FormEventHandler, useRef, useState } from 'react';
 import { RiGoogleFill } from 'react-icons/ri';
+import { RiGithubFill } from '@remixicon/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -359,7 +359,7 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                             <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
                                 <div className="flex items-center gap-4">
                                     <div className="shrink-0 rounded-full bg-black p-3 dark:bg-white">
-                                        <GithubIcon className="size-4 text-white dark:text-black" />
+                                        <RiGithubFill className="size-4 text-white dark:text-black" />
                                     </div>
                                     <div>
                                         <p className="font-medium">
@@ -387,7 +387,7 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                     ) : (
                                         <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
                                             <a href="/auth/github">
-                                                <Github className="mr-2 size-4" />
+                                                <RiGithubFill className="mr-2 size-4" />
                                                 Conectar
                                             </a>
                                         </Button>
