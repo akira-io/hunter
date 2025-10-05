@@ -15,10 +15,10 @@ export function HighlightedProjects() {
                         Adicionar Destaques
                     </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="bg-white dark:bg-zinc-950">
                     <DialogHeader>
-                        <DialogTitle>Apresentação</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="text-zinc-900 dark:text-zinc-100">Apresentação</DialogTitle>
+                        <DialogDescription className="text-zinc-600 dark:text-zinc-400">
                             Adicione uma breve descrição sobre você. Isso ajudará os recrutadores a conhecerem melhor o seu perfil.
                         </DialogDescription>
                     </DialogHeader>

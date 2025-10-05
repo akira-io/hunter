@@ -1,3 +1,4 @@
+import notificationController from '@/actions/App/Http/Controllers/Settings/NotificationController';
 import HeadingSmall from '@/components/heading-small';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -9,7 +10,6 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Bell, BellOff, CheckCircle, Mail, User, XCircle } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import notificationController from '@/actions/App/Http/Controllers/Settings/NotificationController';
 
 interface NotificationSettings {
     follow_notifications: boolean;
