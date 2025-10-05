@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Chat\GetOnlineUsersAction;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -16,6 +17,13 @@ use Spatie\RouteAttributes\Attributes\Post;
 #[Middleware(['auth:web'])]
 final readonly class PresenceController
 {
+    /**
+     * Create a new controller instance.
+     */
+    public function __construct(
+        private GetOnlineUsersAction $getOnlineUsersAction
+    ) {}
+
     /**
      * Mark user as online.
      *
@@ -47,26 +55,15 @@ final readonly class PresenceController
     }
 
     /**
-     * Get list of online users.
+     * Get list of online users (only those followed or with existing conversations).
      */
     #[Get('/users/online')]
     public function onlineUsers(Request $request): AnonymousResourceCollection
     {
-        $onlineUserIds = [];
+        /** @var User $user */
+        $user = $request->user();
 
-        /** @var User $requestUser */
-        $requestUser = $request->user();
-
-        $users = User::all();
-        foreach ($users as $user) {
-            if (cache()->has("user_online_{$user->id}")) {
-                $onlineUserIds[] = $user->id;
-            }
-        }
-
-        $onlineUsers = User::query()->whereIn('id', $onlineUserIds)
-            ->where('id', '!=', $requestUser->id)
-            ->get();
+        $onlineUsers = $this->getOnlineUsersAction->handle($user);
 
         return UserResource::collection($onlineUsers);
     }
