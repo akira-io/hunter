@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useSanitizeExternalUrl, useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
+import { useStartConversation } from '@/hooks/use-start-conversation';
 import { useTruncate } from '@/hooks/use-truncate-text';
 import { cn } from '@/lib/utils';
 import { SharedData, User } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { RiBlueskyFill, RiGithubFill, RiLinkedinBoxFill, RiTwitterXFill, RiYoutubeFill } from '@remixicon/react';
 import { format } from 'date-fns';
-import { ArrowLeftIcon, ArrowRightIcon, EllipsisVerticalIcon, Globe, GraduationCap } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, EllipsisVerticalIcon, Globe, GraduationCap, MessageCircle } from 'lucide-react';
 import * as React from 'react';
 import { useState } from 'react';
 import AvatarGenerator, { genConfig } from 'react-nice-avatar';
@@ -106,6 +107,7 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
     const [step, setStep] = useState(1);
     const [open, setOpen] = useState(false);
     const { get } = useForm();
+    const { startConversation, isStarting } = useStartConversation();
 
     const links = [
         { name: 'GitHub', url: user.github_url, icon: <RiGithubFill /> },
@@ -155,6 +157,11 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
         });
     }
 
+    const handleMessageClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        await startConversation(user.id);
+    };
+
     return (
         <div {...props}>
             <Card className="relative min-h-40 w-full cursor-pointer overflow-hidden">
@@ -180,7 +187,12 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
                     </div>
                 </CardContent>
                 {auth.user && auth.user.id !== user.id && (
-                    <CardFooter className="flex justify-end">
+                    <CardFooter className="flex justify-between gap-2">
+                        <Button variant="outline" size="sm" onClick={handleMessageClick} disabled={isStarting} className="flex items-center gap-2">
+                            <MessageCircle size={16} />
+                            {isStarting ? 'Abrindo...' : 'Mensagem'}
+                        </Button>
+                        <div className="flex-1" />
                         {!has_followed && <FollowButton user={user} />}
                         {has_followed && <UnfollowButton user={user} />}
                     </CardFooter>
