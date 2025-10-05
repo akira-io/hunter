@@ -1,3 +1,4 @@
+import { toast } from '@/hooks/use-toast';
 import { useAddNotification, useSetNotifications } from '@/stores/notificationStore';
 import { useEcho } from '@laravel/echo-react';
 import { useEffect } from 'react';
@@ -27,6 +28,17 @@ interface NotificationData {
         name: string;
         username: string;
         avatar_url?: string;
+    };
+    author?: {
+        id: number;
+        name: string;
+        username: string;
+        avatar_url?: string;
+    };
+    hunt?: {
+        id: number;
+        title: string;
+        content: string;
     };
     created_at: string;
     created_at_human: string;
@@ -75,11 +87,19 @@ export const useNotificationManager = ({ currentUserId, notifications }: UseNoti
                         created_at_human: notification.created_at_human,
                     });
 
+                    // Show toast notification for in-app feedback
+                    toast({
+                        title: notification.title,
+                        description: notification.message,
+                        duration: 5000,
+                    });
+
                     // Show browser notification if permission granted
                     if (Notification.permission === 'granted') {
+                        const avatarUrl = notification.follower?.avatar_url || notification.author?.avatar_url || '/favicon.ico';
                         new Notification(notification.title, {
                             body: notification.message,
-                            icon: notification.follower?.avatar_url || '/favicon.ico',
+                            icon: avatarUrl,
                             tag: `notification-${notification.id}`,
                         });
                     }

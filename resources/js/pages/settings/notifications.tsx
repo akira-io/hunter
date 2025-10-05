@@ -8,13 +8,16 @@ import SettingsLayout from '@/layouts/settings/layout';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import { Bell, BellOff, CheckCircle, Mail, User, XCircle } from 'lucide-react';
+import { Bell, BellOff, CheckCircle, Mail, Megaphone, User, XCircle } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 interface NotificationSettings {
     follow_notifications: boolean;
     email_notifications: boolean;
     browser_notifications: boolean;
+    hunt_notifications_in_app: boolean;
+    hunt_notifications_browser: boolean;
+    hunt_notifications_email: boolean;
 }
 
 interface NotificationsProps {
@@ -36,6 +39,9 @@ export default function Notifications({ notificationSettings }: NotificationsPro
         follow_notifications: notificationSettings?.follow_notifications ?? true,
         email_notifications: notificationSettings?.email_notifications ?? true,
         browser_notifications: notificationSettings?.browser_notifications ?? true,
+        hunt_notifications_in_app: notificationSettings?.hunt_notifications_in_app ?? true,
+        hunt_notifications_browser: notificationSettings?.hunt_notifications_browser ?? true,
+        hunt_notifications_email: notificationSettings?.hunt_notifications_email ?? false,
     });
 
     const { data, setData } = form;
@@ -92,6 +98,17 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                 <div className="space-y-4 sm:space-y-6">
                     <HeadingSmall title="Notificações" description="Gerencie como você recebe notificações" />
 
+                    {/* Info Box */}
+                    <div className="gradient bg-muted/50 flex gap-3 rounded-lg border p-4">
+                        <BellOff className="text-muted-foreground h-5 w-5 flex-shrink-0" />
+                        <div className="text-muted-foreground space-y-1 text-sm">
+                            <p className="font-medium">Como funcionam as notificações</p>
+                            <p>
+                                Cada tipo de notificação funciona de forma independente. Por exemplo, você pode desativar notificações no app mas
+                                continuar a receber emails, ou vice-versa. As alterações são salvas automaticamente.
+                            </p>
+                        </div>
+                    </div>
                     <div className="space-y-4 sm:space-y-6">
                         {/* Follow Notifications (In-App) */}
                         <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
@@ -143,11 +160,9 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                                 </div>
                                 <div className="flex-1 space-y-1">
                                     <Label htmlFor="browser_notifications" className="cursor-pointer text-base font-medium">
-                                        Notificações do Navegador
+                                        Notificações em tempo real
                                     </Label>
-                                    <p className="text-muted-foreground text-sm">
-                                        Receba notificações em tempo real no navegador para todas as atividades
-                                    </p>
+                                    <p className="text-muted-foreground text-sm">Receba notificações em tempo real para todas as atividades</p>
                                 </div>
                             </div>
                             <Switch
@@ -189,16 +204,105 @@ export default function Notifications({ notificationSettings }: NotificationsPro
                             />
                         </div>
 
-                        {/* Info Box */}
-                        <div className="gradient bg-muted/50 flex gap-3 rounded-lg border p-4">
-                            <BellOff className="text-muted-foreground h-5 w-5 flex-shrink-0" />
-                            <div className="text-muted-foreground space-y-1 text-sm">
-                                <p className="font-medium">Como funcionam as notificações</p>
-                                <p>
-                                    Cada tipo de notificação funciona de forma independente. Por exemplo, você pode desativar notificações no app mas
-                                    continuar a receber emails, ou vice-versa. As alterações são salvas automaticamente.
-                                </p>
+                        {/* Divider */}
+                        <div className="border-t pt-4">
+                            <h3 className="mb-4 text-lg font-semibold">Notificações de Hunts</h3>
+                        </div>
+
+                        {/* Hunt Notifications - In App */}
+                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                            <div className="flex gap-3">
+                                <div
+                                    className={cn(
+                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
+                                        data.hunt_notifications_in_app ? 'bg-purple-500/20' : 'bg-muted',
+                                    )}
+                                >
+                                    <Megaphone
+                                        className={cn(
+                                            'h-5 w-5 transition-all duration-300',
+                                            data.hunt_notifications_in_app ? 'text-purple-500' : 'text-muted-foreground',
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex-1 space-y-1">
+                                    <Label htmlFor="hunt_notifications_in_app" className="cursor-pointer text-base font-medium">
+                                        Novos Hunts (No App)
+                                    </Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        Receba notificações no app quando hunters que você segue publicarem novos hunts
+                                    </p>
+                                </div>
                             </div>
+                            <Switch
+                                id="hunt_notifications_in_app"
+                                checked={data.hunt_notifications_in_app}
+                                onCheckedChange={(checked) => handleToggleChange('hunt_notifications_in_app', checked)}
+                            />
+                        </div>
+
+                        {/* Hunt Notifications - Browser */}
+                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                            <div className="flex gap-3">
+                                <div
+                                    className={cn(
+                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
+                                        data.hunt_notifications_browser ? 'bg-purple-500/20' : 'bg-muted',
+                                    )}
+                                >
+                                    <Bell
+                                        className={cn(
+                                            'h-5 w-5 transition-all duration-300',
+                                            data.hunt_notifications_browser ? 'text-purple-500' : 'text-muted-foreground',
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex-1 space-y-1">
+                                    <Label htmlFor="hunt_notifications_browser" className="cursor-pointer text-base font-medium">
+                                        Novos Hunts (Tempo Real)
+                                    </Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        Receba notificações em tempo real quando novos hunts forem publicados
+                                    </p>
+                                </div>
+                            </div>
+                            <Switch
+                                id="hunt_notifications_browser"
+                                checked={data.hunt_notifications_browser}
+                                onCheckedChange={(checked) => handleToggleChange('hunt_notifications_browser', checked)}
+                            />
+                        </div>
+
+                        {/* Hunt Notifications - Email */}
+                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                            <div className="flex gap-3">
+                                <div
+                                    className={cn(
+                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
+                                        data.hunt_notifications_email ? 'bg-purple-500/20' : 'bg-muted',
+                                    )}
+                                >
+                                    <Mail
+                                        className={cn(
+                                            'h-5 w-5 transition-all duration-300',
+                                            data.hunt_notifications_email ? 'text-purple-500' : 'text-muted-foreground',
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex-1 space-y-1">
+                                    <Label htmlFor="hunt_notifications_email" className="cursor-pointer text-base font-medium">
+                                        Novos Hunts (Email)
+                                    </Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        Receba emails quando hunters que você segue publicarem novos hunts (recomendado: desativado)
+                                    </p>
+                                </div>
+                            </div>
+                            <Switch
+                                id="hunt_notifications_email"
+                                checked={data.hunt_notifications_email}
+                                onCheckedChange={(checked) => handleToggleChange('hunt_notifications_email', checked)}
+                            />
                         </div>
                     </div>
                 </div>

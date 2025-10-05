@@ -205,9 +205,10 @@ describe('MessageController', function () {
             Event::assertNotDispatched(MessageSent::class);
         });
 
-        // Note: Database exception tests for Actions are complex to implement since Actions are final classes
-        // The SendMessageAction handles database transactions properly and any real database
-        // errors would result in a 500 response as intended by the controller error handling
+        // Note: Testing the exact line 69-70 (500 error for generic exceptions) is challenging
+        // because SendMessageAction is a final class and cannot be mocked.
+        // The defensive 500 error handling exists for edge cases like memory exhaustion,
+        // database connection failures, etc. that are difficult to simulate in tests.
     });
 
     describe('markAsRead', function () {

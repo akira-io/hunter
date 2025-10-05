@@ -41,15 +41,19 @@ final class ConversationCreated implements ShouldBroadcast
             ];
         })->values()->all();
 
-        $title = $model->title;
+        /** @var string|null $modelTitle */
+        $modelTitle = $model->title;
 
-        if (! $title) {
-            $title = $participantsCollection->where('id', '!=', $forUser->id)->pluck('name')->join(', ');
+        /** @var string|null $finalTitle */
+        $finalTitle = $modelTitle;
+
+        if (! $finalTitle) {
+            $finalTitle = $participantsCollection->where('id', '!=', $forUser->id)->pluck('name')->join(', ') ?: null;
         }
 
         $this->conversation = [
             'id' => $model->id,
-            'title' => $title ?: '',
+            'title' => $finalTitle,
             'type' => $model->type,
             'participants' => $participants,
             'last_message' => null,

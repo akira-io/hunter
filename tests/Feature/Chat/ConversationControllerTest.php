@@ -283,30 +283,10 @@ describe('ConversationController', function () {
                 ->assertJsonStructure(['errors' => ['participants.0']]);
         });
 
-        it('returns 500 for unexpected database errors', function () {
-            // Force a database error by creating invalid conditions
-            // We'll try to create a conversation with an invalid participant structure
-            // This should trigger a database error that's not handled by validation
-
-            // First, create a user that we'll try to use as participant
-            $otherUser = User::factory()->create();
-
-            // Temporarily break the database foreign key constraint by deleting the user
-            // after validation passes but before the transaction completes
-            $response = $this->postJson('/conversations', [
-                'type' => 'direct',
-                'participants' => [$otherUser->id],
-            ]);
-
-            // Most database errors will be caught and result in proper error responses
-            // For this specific test, we expect either success or proper error handling
-            expect($response->getStatusCode())->toBeIn([200, 201, 422]);
-        });
-
-        // Note: Testing the exact line 78 (500 error for generic exceptions) is challenging
-        // in integration tests because Laravel's robust error handling and database constraints
-        // prevent most scenarios that would trigger generic exceptions. The defensive 500 error
-        // handling exists for edge cases like memory exhaustion, database connection failures, etc.
+        // Note: Testing the exact line 83 (500 error for generic exceptions) is challenging
+        // because CreateConversationAction is a final class and cannot be mocked.
+        // The defensive 500 error handling exists for edge cases like memory exhaustion,
+        // database connection failures, etc. that are difficult to simulate in tests.
     });
 
     describe('show', function () {

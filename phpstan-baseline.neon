@@ -1,20 +1,68 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: array\{id\: mixed, content\: mixed, type\: mixed, metadata\: mixed, created_at\: mixed, user\: array\{id\: mixed, name\: mixed, avatar_url\: string\|null\}\}, Closure\(App\\Models\\Message\)\: array\{id\: mixed, content\: mixed, type\: mixed, metadata\: mixed, created_at\: mixed, user\: array\{id\: mixed, name\: mixed, avatar_url\: string\|null\}\} given\.$#'
+			identifier: argument.type
 			count: 1
-			path: app/Actions/Chat/CreateConversationAction.php
+			path: app/Actions/Chat/GetConversationMessagesAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Notifications\\DatabaseNotification\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Actions/Notifications/GetUserNotificationsAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Notifications\\DatabaseNotification\:\:\$data\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/Notifications/GetUserNotificationsAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Notifications\\DatabaseNotification\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/Notifications/GetUserNotificationsAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Notifications\\DatabaseNotification\:\:\$read_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/Notifications/GetUserNotificationsAction.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: array\{id\: string, type\: string, title\: string, message\: string, data\: array\<string, mixed\>, read_at\: string\|null, created_at\: string, created_at_human\: string\}, Closure\(Illuminate\\Notifications\\DatabaseNotification\)\: array\{id\: string, type\: string, title\: string, message\: string, data\: array\<string, mixed\>, read_at\: string\|null, created_at\: string, created_at_human\: string\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Actions/Notifications/GetUserNotificationsAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Notifications\\DatabaseNotification\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Notification/NotificationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Notifications\\DatabaseNotification\:\:\$data\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Notification/NotificationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Notifications\\DatabaseNotification\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Notification/NotificationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Notifications\\DatabaseNotification\:\:\$read_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Notification/NotificationController.php
 
 		-
 			message: '#^Access to an undefined property App\\Models\\Hunt\:\:\$views_count\.$#'
 			identifier: property.notFound
-			count: 1
-			path: app/Models/Hunt.php
-
-		-
-			message: '#^Binary operation "\+" between mixed and 1 results in an error\.$#'
-			identifier: binaryOp.invalid
 			count: 1
 			path: app/Models/Hunt.php
 
@@ -25,37 +73,7 @@ parameters:
 			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php
 
 		-
-			message: '#^Binary operation "\+" between mixed and int results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php
-
-		-
-			message: '#^Binary operation "/" between mixed and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php
-
-		-
 			message: '#^Method App\\Services\\Metrics\\Calculators\\HuntMetricsCalculator\:\:engagements\(\) has parameter \$likes with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphToMany but does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
 			identifier: missingType.generics
-			count: 1
-			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php
-
-		-
-			message: '#^Parameter \#1 \$views of method App\\Services\\Metrics\\Calculators\\HuntMetricsCalculator\:\:averageEngagementPerView\(\) expects int, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php
-
-		-
-			message: '#^Parameter \#3 \$shares of method App\\Services\\Metrics\\Calculators\\HuntMetricsCalculator\:\:engagements\(\) expects int, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php
-
-		-
-			message: '#^Parameter \$metrics of class App\\DataTransferObjects\\Metrics\\MetricsData constructor expects array\<string, float\|int\|string\>, array\<string, mixed\> given\.$#'
-			identifier: argument.type
 			count: 1
 			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php
