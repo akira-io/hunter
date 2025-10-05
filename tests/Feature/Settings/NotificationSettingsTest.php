@@ -26,6 +26,9 @@ test('user can update notification settings', function () {
             'follow_notifications' => true,
             'email_notifications' => true,
             'browser_notifications' => true,
+            'hunt_notifications_in_app' => true,
+            'hunt_notifications_browser' => true,
+            'hunt_notifications_email' => false,
         ],
     ]);
 
@@ -34,6 +37,9 @@ test('user can update notification settings', function () {
             'follow_notifications' => false,
             'email_notifications' => true,
             'browser_notifications' => false,
+            'hunt_notifications_in_app' => true,
+            'hunt_notifications_browser' => false,
+            'hunt_notifications_email' => true,
         ]);
 
     $response->assertRedirect();
@@ -45,6 +51,9 @@ test('user can update notification settings', function () {
             'follow_notifications' => false,
             'email_notifications' => true,
             'browser_notifications' => false,
+            'hunt_notifications_in_app' => true,
+            'hunt_notifications_browser' => false,
+            'hunt_notifications_email' => true,
         ]),
     ]);
 });
@@ -58,7 +67,13 @@ test('notification settings validation requires all fields', function () {
             // Missing other fields
         ]);
 
-    $response->assertSessionHasErrors(['email_notifications', 'browser_notifications']);
+    $response->assertSessionHasErrors([
+        'email_notifications',
+        'browser_notifications',
+        'hunt_notifications_in_app',
+        'hunt_notifications_browser',
+        'hunt_notifications_email',
+    ]);
 });
 
 test('notification settings must be boolean values', function () {
@@ -69,12 +84,18 @@ test('notification settings must be boolean values', function () {
             'follow_notifications' => 'invalid',
             'email_notifications' => 'invalid',
             'browser_notifications' => 'invalid',
+            'hunt_notifications_in_app' => 'invalid',
+            'hunt_notifications_browser' => 'invalid',
+            'hunt_notifications_email' => 'invalid',
         ]);
 
     $response->assertSessionHasErrors([
         'follow_notifications',
         'email_notifications',
         'browser_notifications',
+        'hunt_notifications_in_app',
+        'hunt_notifications_browser',
+        'hunt_notifications_email',
     ]);
 });
 

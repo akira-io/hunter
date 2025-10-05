@@ -329,6 +329,9 @@ describe('Settings Persistence', function () {
                 'follow_notifications' => false,
                 'email_notifications' => false,
                 'browser_notifications' => false,
+                'hunt_notifications_in_app' => false,
+                'hunt_notifications_browser' => false,
+                'hunt_notifications_email' => false,
             ]);
 
         $user->refresh();
@@ -337,6 +340,9 @@ describe('Settings Persistence', function () {
             'follow_notifications' => false,
             'email_notifications' => false,
             'browser_notifications' => false,
+            'hunt_notifications_in_app' => false,
+            'hunt_notifications_browser' => false,
+            'hunt_notifications_email' => false,
         ]);
     });
 
