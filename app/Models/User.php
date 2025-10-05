@@ -104,6 +104,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'website_url',
         'youtube_url',
         'notification_settings',
+        'privacy_settings',
         'onboarding_completed_at',
         'onboarding_completed',
     ];
@@ -219,6 +220,153 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     /**
+     * Users blocked by this user
+     *
+     * @return HasMany<BlockedUser, $this>
+     */
+    public function blockedUsers(): HasMany
+    {
+        return $this->hasMany(BlockedUser::class, 'blocker_id');
+    }
+
+    /**
+     * Users who have blocked this user
+     *
+     * @return HasMany<BlockedUser, $this>
+     */
+    public function blockedBy(): HasMany
+    {
+        return $this->hasMany(BlockedUser::class, 'blocked_id');
+    }
+
+    /**
+     * Check if this user has blocked another user
+     */
+    public function hasBlocked(self $user): bool
+    {
+        return $this->blockedUsers()->where('blocked_id', $user->id)->exists();
+    }
+
+    /**
+     * Check if this user is blocked by another user
+     */
+    public function isBlockedBy(self $user): bool
+    {
+        return $this->blockedBy()->where('blocker_id', $user->id)->exists();
+    }
+
+    /**
+     * Block a user
+     */
+    public function block(self $user): void
+    {
+        if (! $this->hasBlocked($user)) {
+            $this->blockedUsers()->create(['blocked_id' => $user->id]);
+        }
+    }
+
+    /**
+     * Unblock a user
+     */
+    public function unblock(self $user): void
+    {
+        $this->blockedUsers()->where('blocked_id', $user->id)->delete();
+    }
+
+    /**
+     * Check if viewer can see this user's profile
+     */
+    public function canBeViewedBy(?self $viewer): bool
+    {
+        if (! $viewer instanceof self) {
+            return ($this->privacy_settings['profile_visibility'] ?? 'public') === 'public';
+        }
+
+        if ($viewer->id === $this->id) {
+            return true;
+        }
+
+        if ($this->hasBlocked($viewer) || $this->isBlockedBy($viewer)) {
+            return false;
+        }
+
+        $visibility = $this->privacy_settings['profile_visibility'] ?? 'public';
+
+        return match ($visibility) {
+            'public' => true,
+            'followers' => $this->isFollowedBy($viewer),
+            'private' => false,
+            default => true,
+        };
+    }
+
+    /**
+     * Check if viewer can send messages to this user
+     */
+    public function canReceiveMessagesFrom(?self $sender): bool
+    {
+        if (! $sender instanceof self || $sender->id === $this->id) {
+            return false;
+        }
+
+        if ($this->hasBlocked($sender) || $this->isBlockedBy($sender)) {
+            return false;
+        }
+
+        $setting = $this->privacy_settings['who_can_message'] ?? 'everyone';
+
+        return match ($setting) {
+            'everyone' => true,
+            'followers' => $this->isFollowedBy($sender),
+            'none' => false,
+            default => true,
+        };
+    }
+
+    /**
+     * Check if viewer can comment on this user's hunts
+     */
+    public function canReceiveCommentsFrom(?self $commenter): bool
+    {
+        if (! $commenter instanceof self) {
+            return ($this->privacy_settings['who_can_comment'] ?? 'everyone') === 'everyone';
+        }
+
+        if ($commenter->id === $this->id) {
+            return true;
+        }
+
+        if ($this->hasBlocked($commenter) || $this->isBlockedBy($commenter)) {
+            return false;
+        }
+
+        $setting = $this->privacy_settings['who_can_comment'] ?? 'everyone';
+
+        return match ($setting) {
+            'everyone' => true,
+            'followers' => $this->isFollowedBy($commenter),
+            'disabled' => false,
+            default => true,
+        };
+    }
+
+    /**
+     * Check if this user should appear in search results
+     */
+    public function isSearchable(): bool
+    {
+        return $this->privacy_settings['searchable'] ?? true;
+    }
+
+    /**
+     * Check if this user's activity status should be shown
+     */
+    public function showsActivityStatus(): bool
+    {
+        return $this->privacy_settings['show_activity_status'] ?? true;
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -231,6 +379,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'created_at' => 'datetime:d-m-Y',
             'skills' => 'array',
             'notification_settings' => 'array',
+            'privacy_settings' => 'array',
             'onboarding_completed_at' => 'datetime',
         ];
     }

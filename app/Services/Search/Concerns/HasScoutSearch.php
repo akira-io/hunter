@@ -22,12 +22,17 @@ trait HasScoutSearch
     {
         $limit = max(0, $limit);
 
-        $results = $this->buildQuery($query, $limit)->get();
+        // Get more results to account for privacy filtering
+        $results = $this->buildQuery($query, $limit * 2)->get();
 
         $relations = $this->getRelations();
         if (! empty($relations)) {
             $results->load($relations);
         }
+
+        // Apply privacy filtering if implemented
+        $results = $results->filter(fn ($model) => $this->shouldIncludeInResults($model))
+            ->take($limit);
 
         return $results->map(fn ($model) => $this->mapToSearchResults($model));
     }
@@ -48,6 +53,15 @@ trait HasScoutSearch
         }
 
         return $this->buildRedirectUrl($model);
+    }
+
+    /**
+     * Determine if a model should be included in search results.
+     * Override this method to implement privacy filtering.
+     */
+    protected function shouldIncludeInResults(Model $model): bool
+    {
+        return true;
     }
 
     /**

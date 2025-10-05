@@ -76,7 +76,8 @@ final readonly class ConversationController
             ], $statusCode);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'Direct conversations must have exactly one other participant') ||
-                str_contains($e->getMessage(), 'Invalid participant')) {
+                str_contains($e->getMessage(), 'Invalid participant') ||
+                str_contains($e->getMessage(), 'não aceita mensagens')) {
                 return response()->json(['error' => $e->getMessage()], 422);
             }
 

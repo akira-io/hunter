@@ -50,28 +50,37 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
         <div className="mx-auto max-h-100 w-full max-w-2xl space-y-2 overflow-x-auto px-6">
             {isOpen && (
                 <>
-                    <form className="relative flex gap-2" onSubmit={handleAddComment}>
-                        <Textarea
-                            name="content"
-                            placeholder="Deixe o seu comentário aqui..."
-                            value={data.content}
-                            onChange={(e) => setData('content', e.target.value)}
-                            className="focus:ring-primary focus:border-primary transition-all duration-300 focus:ring-2"
-                        />
-                        <Button
-                            disabled={processing}
-                            variant="ghost"
-                            size="sm"
-                            type="submit"
-                            className="hover:bg-transparente group absolute right-0 bottom-0 flex items-center gap-1"
-                        >
-                            <SendHorizonal className="group-hover:text-purple-500" />
-                        </Button>
-                    </form>
-                    {errors.content ? (
-                        <InputError message={errors.content} />
-                    ) : (
-                        <span className="float-right text-right text-xs text-gray-500">{data.content.length}/200</span>
+                    {hunt.can_comment && (
+                        <>
+                            <form className="relative flex gap-2" onSubmit={handleAddComment}>
+                                <Textarea
+                                    name="content"
+                                    placeholder="Deixe o seu comentário aqui..."
+                                    value={data.content}
+                                    onChange={(e) => setData('content', e.target.value)}
+                                    className="focus:ring-primary focus:border-primary transition-all duration-300 focus:ring-2"
+                                />
+                                <Button
+                                    disabled={processing}
+                                    variant="ghost"
+                                    size="sm"
+                                    type="submit"
+                                    className="hover:bg-transparente group absolute right-0 bottom-0 flex items-center gap-1"
+                                >
+                                    <SendHorizonal className="group-hover:text-purple-500" />
+                                </Button>
+                            </form>
+                            {errors.content ? (
+                                <InputError message={errors.content} />
+                            ) : (
+                                <span className="float-right text-right text-xs text-gray-500">{data.content.length}/200</span>
+                            )}
+                        </>
+                    )}
+                    {!hunt.can_comment && (
+                        <div className="rounded-lg bg-gray-100 p-4 text-center text-sm text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                            Não tem permissão para comentar nesta publicação.
+                        </div>
                     )}
                     <div className="mt-8 space-y-2.5">
                         {hunt.comments.map((comment) => (

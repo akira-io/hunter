@@ -21,7 +21,8 @@
             "dto",
             "laravel's",
             "gamification",
-            "ux"
+            "ux",
+            "commenter"
         ],
         "paths": [
             "resources",

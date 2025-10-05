@@ -1,11 +1,12 @@
 import { useChatContext } from '@/contexts/ChatContext';
 import { shouldUseMobileChat } from '@/hooks/use-device-detection';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
+import { useToast } from '@/hooks/use-toast';
 import chat from '@/routes/chat';
 import { useFollowedHunters, useFollowedHuntersLoading } from '@/stores/followedHuntersStore';
 import { useIsConnected, useOnlineUsers } from '@/stores/onlineUsersStore';
 import { router } from '@inertiajs/react';
-import { MessageCircleMoreIcon, Search, UserCheck, User as UserIcon, Users, Wifi, WifiOff, XIcon } from 'lucide-react';
+import { MessageCircleMoreIcon, Search, UserCheck, User as UserIcon, Users, Wifi, WifiOff, XCircle, XIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface ChatUsersProps {
@@ -22,6 +23,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const scrollDirection = useScrollDirection({ threshold: 10 });
+    const { toast } = useToast();
 
     // Calculate total unread messages
     const totalUnreadCount = conversations.reduce((total, conv) => {
@@ -77,6 +79,24 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
             openChatWindow(conversation.id);
         } catch (error) {
             console.error(error);
+
+            // Check if it's a privacy error (422 status)
+            const err = error as Error & { status?: number };
+            if (err.status === 422) {
+                toast({
+                    variant: 'destructive',
+                    icon: <XCircle className="text-red-400" />,
+                    title: 'Não é possível enviar mensagem',
+                    description: err.message,
+                });
+            } else {
+                toast({
+                    variant: 'destructive',
+                    icon: <XCircle className="text-red-400" />,
+                    title: 'Erro',
+                    description: 'Erro ao criar conversa. Tente novamente.',
+                });
+            }
         }
     };
 

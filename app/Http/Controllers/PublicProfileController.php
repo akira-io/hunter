@@ -30,6 +30,11 @@ final readonly class PublicProfileController
         /** @var User $authUser */
         $authUser = $request->user();
 
+        // Check if the authenticated user can view this profile
+        if (! $user->canBeViewedBy($authUser)) {
+            abort(403, 'You do not have permission to view this profile.');
+        }
+
         $hunts = $user->hunts()->latest()->paginate();
         $hunters = $user->followers()->latest()->paginate();
         $huntings = $huntingsAction->handle($user);

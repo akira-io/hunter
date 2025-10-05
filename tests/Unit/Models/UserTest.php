@@ -39,6 +39,7 @@ test('to array', function () {
             'google_id',
             'google_token',
             'google_refresh_token',
+            'privacy_settings',
         ]);
 });
 

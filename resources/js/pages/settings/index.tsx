@@ -4,7 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import { appearance } from '@/routes';
 import { notifications } from '@/routes/settings';
 import { Link } from '@inertiajs/react';
-import { Bell, ChevronRight, Palette, Settings2, Shield } from 'lucide-react';
+import { Bell, ChevronRight, Lock, Palette, Settings2, Shield } from 'lucide-react';
 
 interface SettingItem {
     title: string;
@@ -25,6 +25,12 @@ const settingsItems: SettingItem[] = [
         description: 'Gerencie suas configurações de segurança',
         href: '/settings/security',
         icon: <Shield className="size-5" />,
+    },
+    {
+        title: 'Privacidade',
+        description: 'Controle quem pode ver o seu perfil e interagir consigo',
+        href: '/settings/privacy',
+        icon: <Lock className="size-5" />,
     },
     {
         title: 'Notificações',
