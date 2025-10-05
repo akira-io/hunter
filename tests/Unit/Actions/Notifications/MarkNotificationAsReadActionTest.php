@@ -30,7 +30,10 @@ test('it marks a notification as read', function () {
 });
 
 test('it returns null when notification not found', function () {
-    $result = $this->action->handle($this->user, 'non-existent-id');
+    // Use a valid UUID format but one that doesn't exist
+    $nonExistentUuid = '00000000-0000-0000-0000-000000000000';
+
+    $result = $this->action->handle($this->user, $nonExistentUuid);
 
     expect($result)->toBeNull();
 });

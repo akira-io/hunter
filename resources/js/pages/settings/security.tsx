@@ -1,4 +1,5 @@
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
+import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -10,17 +11,12 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle
+    AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -29,24 +25,12 @@ import password from '@/routes/password';
 import { type BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, router, useForm } from '@inertiajs/react';
+import { RiGithubFill } from '@remixicon/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import {
-    AlertCircle,
-    Check,
-    Globe,
-    KeyRound,
-    LogOut,
-    Monitor,
-    MoreVertical,
-    ShieldAlert,
-    Smartphone,
-    Unlink,
-    X
-} from 'lucide-react';
+import { AlertCircle, Check, Globe, KeyRound, LogOut, Monitor, MoreVertical, ShieldAlert, Smartphone, Unlink, X } from 'lucide-react';
 import { type FormEventHandler, useRef, useState } from 'react';
 import { RiGoogleFill } from 'react-icons/ri';
-import { RiGithubFill } from '@remixicon/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -449,6 +433,20 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                     )}
                                 </div>
                             </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Delete Account Section */}
+                    <Card className="gradient border-red-200 dark:border-red-900/50">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-lg text-red-600 dark:text-red-400">
+                                <ShieldAlert className="size-5" />
+                                Zona de Perigo
+                            </CardTitle>
+                            <CardDescription>Ações irreversíveis da conta</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <DeleteUser />
                         </CardContent>
                     </Card>
                 </div>

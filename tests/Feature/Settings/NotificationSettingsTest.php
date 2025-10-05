@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
-use function Pest\Laravel\assertDatabaseHas;
 
 test('user can view notification settings page', function () {
     $user = User::factory()->create();
@@ -45,16 +44,15 @@ test('user can update notification settings', function () {
     $response->assertRedirect();
     $response->assertSessionHas('success');
 
-    assertDatabaseHas('users', [
-        'id' => $user->id,
-        'notification_settings' => json_encode([
-            'follow_notifications' => false,
-            'email_notifications' => true,
-            'browser_notifications' => false,
-            'hunt_notifications_in_app' => true,
-            'hunt_notifications_browser' => false,
-            'hunt_notifications_email' => true,
-        ]),
+    // Refresh the user and check the settings
+    $user->refresh();
+    expect($user->notification_settings)->toMatchArray([
+        'follow_notifications' => false,
+        'email_notifications' => true,
+        'browser_notifications' => false,
+        'hunt_notifications_in_app' => true,
+        'hunt_notifications_browser' => false,
+        'hunt_notifications_email' => true,
     ]);
 });
 

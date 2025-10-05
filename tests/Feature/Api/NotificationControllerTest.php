@@ -110,8 +110,11 @@ describe('PUT /api/notifications/{id} - update', function () {
     });
 
     it('returns 404 when notification does not exist', function () {
+        // Use a valid UUID format but one that doesn't exist
+        $nonExistentUuid = '00000000-0000-0000-0000-000000000000';
+
         $response = $this->actingAs($this->user, 'sanctum')
-            ->putJson('/api/notifications/non-existent-id');
+            ->putJson("/api/notifications/{$nonExistentUuid}");
 
         $response->assertStatus(404)
             ->assertJson(['error' => 'Notification not found']);
@@ -195,19 +198,22 @@ describe('POST /api/notifications/mark-all-read - store', function () {
             $this->user->notify(new UserFollowedNotification($follower));
         }
 
-        // Mark 2 as read first
-        $this->user->notifications()->take(2)->each(fn ($n) => $n->markAsRead());
+        // Mark 2 as read first and store their IDs
+        $readNotifications = $this->user->notifications()->take(2)->get();
+        $readNotifications->each(fn ($n) => $n->markAsRead());
 
-        $firstReadAt = $this->user->notifications()->first()->read_at;
+        $firstNotificationId = $readNotifications->first()->id;
+        $firstReadAt = $readNotifications->first()->read_at;
 
         $response = $this->actingAs($this->user, 'sanctum')
             ->postJson('/api/notifications/mark-all-read');
 
         $response->assertOk();
 
-        // Verify the first read timestamp didn't change
+        // Verify the first read notification timestamp didn't change
         $this->user->refresh();
-        expect($this->user->notifications()->first()->read_at->timestamp)
+        $firstNotification = $this->user->notifications()->find($firstNotificationId);
+        expect($firstNotification->read_at->timestamp)
             ->toBe($firstReadAt->timestamp);
     });
 

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Settings;
 
+use App\Actions\Profile\DeleteAccountAction;
 use App\Actions\Settings\ActiveSessionsAction;
 use App\Actions\Settings\ConnectedAccountsAction;
 use App\Actions\Settings\DisconnectOAuthAccountAction;
 use App\Actions\Settings\LogoutOtherDevicesAction;
 use App\Actions\Settings\RevokeSessionAction;
+use App\Http\Requests\Settings\DeleteAccountRequest;
 use App\Http\Requests\Settings\RevokeSessionRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -34,6 +36,7 @@ final readonly class SecurityController
         private DisconnectOAuthAccountAction $disconnectOAuthAccountAction,
         private ActiveSessionsAction $activeSessionsAction,
         private ConnectedAccountsAction $connectedAccountsAction,
+        private DeleteAccountAction $deleteAccountAction,
     ) {}
 
     /**
@@ -105,5 +108,21 @@ final readonly class SecurityController
         }
 
         return back()->with('success', 'Conta do '.ucfirst($provider).' desconectada com sucesso.');
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    #[Delete('/account', name: 'security.delete-account')]
+    public function destroy(DeleteAccountRequest $request): RedirectResponse
+    {
+        $user = type($request->user())->as(User::class);
+
+        $this->deleteAccountAction->handle(user: $user);
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

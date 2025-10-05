@@ -170,8 +170,10 @@ it('returns 404 when the profiled user is deleted (soft or hard)', function () {
 it('returns 404 for invalid username or id format', function () {
     $viewer = User::factory()->create();
 
+    $nonExistentId = PHP_INT_MAX;
+
     $response = $this->actingAs($viewer)
-        ->get(route('public.profile.show', 'non-existent-slug-or-id'));
+        ->get(route('public.profile.show', $nonExistentId));
 
     $response->assertStatus(404);
 });

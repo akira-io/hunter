@@ -70,6 +70,7 @@ jobs:
           echo "DB_DATABASE=devhunter_test" >> .env
           echo "DB_USERNAME=postgres" >> .env
           echo "DB_PASSWORD=postgres" >> .env
+          echo "DB_TEST_DATABASE=devhunter_testing" >> .env
 
       - name: Run Database Migrations
         run: php artisan migrate --force

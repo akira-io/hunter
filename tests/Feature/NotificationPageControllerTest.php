@@ -195,7 +195,10 @@ it('can mark a notification as read', function () {
 });
 
 it('returns 404 when marking non-existent notification as read', function () {
-    $response = $this->post(route('notifications.read', ['id' => 'non-existent-id']));
+    // Use a valid UUID format but one that doesn't exist
+    $nonExistentUuid = '00000000-0000-0000-0000-000000000000';
+
+    $response = $this->post(route('notifications.read', ['id' => $nonExistentUuid]));
 
     $response->assertNotFound();
 });

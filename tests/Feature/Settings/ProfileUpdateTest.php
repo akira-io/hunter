@@ -143,7 +143,7 @@ test('user can delete their account', function () {
 
     $response = $this
         ->actingAs($user)
-        ->delete('/settings/profile', [
+        ->delete(route('security.delete-account'), [
             'password' => 'password',
         ]);
 
@@ -160,14 +160,14 @@ test('correct password must be provided to delete account', function () {
 
     $response = $this
         ->actingAs($user)
-        ->from('/settings/profile')
-        ->delete('/settings/profile', [
+        ->from(route('security.index'))
+        ->delete(route('security.delete-account'), [
             'password' => 'wrong-password',
         ]);
 
     $response
         ->assertSessionHasErrors('password')
-        ->assertRedirect('/settings/profile');
+        ->assertRedirect(route('security.index'));
 
     expect($user->fresh())->not->toBeNull();
 });

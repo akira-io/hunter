@@ -110,7 +110,7 @@ describe('CreateConversationAction', function () {
         $creatorParticipant = $conversation->participants->where('id', $this->creator->id)->first();
         $otherParticipant = $conversation->participants->where('id', $otherUser->id)->first();
 
-        expect($creatorParticipant->pivot->is_admin)->toBe(1)
-            ->and($otherParticipant->pivot->is_admin)->toBe(0);
+        expect((int) $creatorParticipant->pivot->is_admin)->toBe(1)
+            ->and((int) $otherParticipant->pivot->is_admin)->toBe(0);
     });
 });

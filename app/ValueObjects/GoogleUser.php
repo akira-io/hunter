@@ -38,6 +38,9 @@ final readonly class GoogleUser
             'avatar_url' => $this->user->getAvatar(),
             'email_verified_at' => now(),
             'password' => Hash::make(Str::random(32)),
+            'google_id' => $this->user->getId(),
+            'google_token' => $this->user->token,
+            'google_refresh_token' => $this->user->refreshToken,
         ];
     }
 }

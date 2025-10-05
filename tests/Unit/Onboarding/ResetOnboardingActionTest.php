@@ -16,7 +16,7 @@ test('reset onboarding action marks user as not completed', function () {
 
     $user->refresh();
 
-    expect($user->onboarding_completed)->toBe(0)
+    expect($user->onboarding_completed)->toBeFalse()
         ->and($user->onboarding_completed_at)->toBeNull();
 });
 
@@ -31,7 +31,7 @@ test('reset onboarding action works on already reset user', function () {
 
     $user->refresh();
 
-    expect($user->onboarding_completed)->toBe(0)
+    expect($user->onboarding_completed)->toBeFalse()
         ->and($user->onboarding_completed_at)->toBeNull();
 });
 
@@ -47,7 +47,7 @@ test('reset onboarding action works with multiple users', function () {
         $action->handle($user);
         $user->refresh();
 
-        expect($user->onboarding_completed)->toBe(0)
+        expect($user->onboarding_completed)->toBeFalse()
             ->and($user->onboarding_completed_at)->toBeNull();
     }
 });
@@ -63,7 +63,7 @@ test('reset onboarding action clears timestamp completely', function () {
 
     $user->refresh();
 
-    expect($user->onboarding_completed)->toBe(0)
+    expect($user->onboarding_completed)->toBeFalse()
         ->and($user->onboarding_completed_at)->toBeNull()
         ->and($user->getAttribute('onboarding_completed_at'))->toBeNull();
 });

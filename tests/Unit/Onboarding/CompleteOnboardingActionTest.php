@@ -17,7 +17,7 @@ test('complete onboarding action marks user as completed', function () {
 
     $user->refresh();
 
-    expect($user->onboarding_completed)->toBe(1)
+    expect($user->onboarding_completed)->toBeTrue()
         ->and($user->onboarding_completed_at)->not->toBeNull()
         ->and($user->onboarding_completed_at)->toBeInstanceOf(CarbonInterface::class);
 });
@@ -35,7 +35,7 @@ test('complete onboarding action updates already completed user', function () {
 
     $user->refresh();
 
-    expect($user->onboarding_completed)->toBe(1)
+    expect($user->onboarding_completed)->toBeTrue()
         ->and($user->onboarding_completed_at)->not->toBeNull()
         ->and($user->onboarding_completed_at->isAfter($oldDate))->toBeTrue();
 });
@@ -52,7 +52,7 @@ test('complete onboarding action works with multiple users', function () {
         $action->handle($user);
         $user->refresh();
 
-        expect($user->onboarding_completed)->toBe(1)
+        expect($user->onboarding_completed)->toBeTrue()
             ->and($user->onboarding_completed_at)->not->toBeNull();
     }
 });

@@ -57,7 +57,7 @@ test('completing onboarding sets the flag to true in database', function () {
 
     $user->refresh();
 
-    expect($user->onboarding_completed)->toBe(1)
+    expect($user->onboarding_completed)->toBeTrue()
         ->and($user->onboarding_completed_at)->not->toBeNull();
 });
 
@@ -75,7 +75,7 @@ test('resetting onboarding sets the flag to false in database', function () {
 
     $user->refresh();
 
-    expect($user->onboarding_completed)->toBe(0)
+    expect($user->onboarding_completed)->toBeFalse()
         ->and($user->onboarding_completed_at)->toBeNull();
 });
 
