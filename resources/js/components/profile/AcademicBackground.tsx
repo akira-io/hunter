@@ -146,10 +146,10 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                         Adicionar Formação Académica
                     </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="bg-white dark:bg-zinc-950">
                     <DialogHeader className="space-y-2">
-                        <DialogTitle>Formação Académica</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="text-zinc-900 dark:text-zinc-100">Formação Académica</DialogTitle>
+                        <DialogDescription className="text-zinc-600 dark:text-zinc-400">
                             Adicione sua formação acadêmica ou outra formação relevante que você gostaria de compartilhar com os outros.
                         </DialogDescription>
                     </DialogHeader>
@@ -165,7 +165,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                 value={data.institution}
                                 onChange={(e) => setData('institution', e.target.value)}
                                 placeholder="Ex. Universidade de Cabo Verde"
-                                className="placeholder:text-muted"
+                                className="placeholder:text-muted bg-white dark:bg-zinc-900"
                             />
                             <InputError message={errors.institution} />
                         </div>
@@ -180,17 +180,17 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                 value={data.field_of_study}
                                 onChange={(e) => setData('field_of_study', e.target.value)}
                                 placeholder="Ex. Engenharia Informática"
-                                className="placeholder:text-muted"
+                                className="placeholder:text-muted bg-white dark:bg-zinc-900"
                             />
                             <InputError message={errors.field_of_study} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="degree">Grau Académico *</Label>
                             <Select onValueChange={(value) => setData('degree', value)} defaultValue={data.degree}>
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="w-full bg-white dark:bg-zinc-900">
                                     <SelectValue placeholder="Selecione o grau acadêmico" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="bg-white dark:bg-zinc-900">
                                     {degrees.map((degree) => (
                                         <SelectItem key={degree.value} value={degree.value}>
                                             {degree.label}
@@ -222,7 +222,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto overflow-hidden p-0" align="start" forceMount>
+                                <PopoverContent className="w-auto overflow-hidden bg-white p-0 dark:bg-zinc-950" align="start" forceMount>
                                     <Calendar
                                         className="min-h-[360px] w-[300px]"
                                         mode="single"
@@ -259,7 +259,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto overflow-hidden p-0" align="start" forceMount>
+                                <PopoverContent className="w-auto overflow-hidden bg-white p-0 dark:bg-zinc-950" align="start" forceMount>
                                     <Calendar
                                         className="min-h-[360px] w-[300px]"
                                         captionLayout="dropdown"
