@@ -33,6 +33,9 @@ final class HuntResource extends JsonResource
 
         $metrics = $metricsService->calculate($hunt);
 
+        /** @var User|null $user */
+        $user = $request->user();
+
         return [
             'id' => $this->id,
             'content' => $this->content,
@@ -49,6 +52,7 @@ final class HuntResource extends JsonResource
             'has_liked' => $this->has_liked ?? false,
             'image_url' => $this->getFirstMediaUrl('hunts'),
             'metrics' => $metrics->toArray(),
+            'can_comment' => $user instanceof User && $this->owner->canReceiveCommentsFrom($user),
         ];
 
     }

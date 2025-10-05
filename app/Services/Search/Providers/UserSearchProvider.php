@@ -95,4 +95,14 @@ final class UserSearchProvider implements GlobalSearchable
         /** @var User $model */
         return route('public.profile.show', ['user' => $model->id]);
     }
+
+    /**
+     * Determine if a user should be included in search results.
+     * Only includes users who have enabled searchable in their privacy settings.
+     */
+    protected function shouldIncludeInResults(Model $model): bool
+    {
+        /** @var User $model */
+        return ($model->privacy_settings['searchable'] ?? true) === true;
+    }
 }

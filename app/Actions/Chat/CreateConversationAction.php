@@ -47,6 +47,11 @@ final readonly class CreateConversationAction
                 throw new Exception('Invalid participant');
             }
 
+            // Check if the other user accepts messages from the creator
+            if (! $otherUser->canReceiveMessagesFrom($creator)) {
+                throw new Exception('Este utilizador não aceita mensagens.');
+            }
+
             /** @var Conversation|null $existingConversation */
             $existingConversation = $this->findExistingDirectConversation($creator, $otherUser);
             if ($existingConversation instanceof Conversation) {

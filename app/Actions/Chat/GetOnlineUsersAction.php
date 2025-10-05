@@ -14,6 +14,8 @@ final readonly class GetOnlineUsersAction
 {
     /**
      * Get list of online users (only those followed or with existing conversations).
+     * Filters users based on privacy settings - only shows users who accept messages from the current user
+     * and who have enabled activity status visibility.
      *
      * @return Collection<int, User>
      */
@@ -47,8 +49,13 @@ final readonly class GetOnlineUsersAction
         }
 
         /** @var Collection<int, User> */
-        return User::query()
+        $onlineUsers = User::query()
             ->whereIn('id', $onlineUserIds)
             ->get();
+
+        // Filter based on privacy settings:
+        // 1. Only show users who accept messages from current user
+        // 2. Only show users who have enabled activity status visibility
+        return $onlineUsers->filter(fn (User $onlineUser): bool => $onlineUser->canReceiveMessagesFrom($user) && $onlineUser->showsActivityStatus());
     }
 }

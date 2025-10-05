@@ -97,4 +97,14 @@ final class HuntSearchProvider implements GlobalSearchable
     {
         return ['owner'];
     }
+
+    /**
+     * Determine if a hunt should be included in search results.
+     * Only includes hunts from users who have enabled searchable in their privacy settings.
+     */
+    protected function shouldIncludeInResults(Model $model): bool
+    {
+        /** @var Hunt $model */
+        return ($model->owner->privacy_settings['searchable'] ?? true) === true;
+    }
 }

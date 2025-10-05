@@ -279,8 +279,13 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
                 });
 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Failed to create conversation: ${response.status} ${errorText}`);
+                    const errorData = await response.json();
+                    const errorMessage = errorData.error || 'Failed to create conversation';
+
+                    // Create a custom error with status code
+                    const error = new Error(errorMessage) as Error & { status?: number };
+                    error.status = response.status;
+                    throw error;
                 }
 
                 const data = await response.json();

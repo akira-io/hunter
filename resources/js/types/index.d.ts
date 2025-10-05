@@ -89,6 +89,7 @@ export interface Hunt {
     views_count?: number;
     shares_count?: number;
     has_liked: boolean;
+    can_comment: boolean;
 }
 
 export interface Comment {
