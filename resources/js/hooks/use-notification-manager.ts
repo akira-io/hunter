@@ -1,5 +1,5 @@
-import { useAddNotification, useSetNotifications } from '@/stores/notificationStore';
 import { toast } from '@/hooks/use-toast';
+import { useAddNotification, useSetNotifications } from '@/stores/notificationStore';
 import { useEcho } from '@laravel/echo-react';
 import { useEffect } from 'react';
 

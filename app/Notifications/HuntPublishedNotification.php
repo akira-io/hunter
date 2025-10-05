@@ -35,15 +35,15 @@ final class HuntPublishedNotification extends Notification implements ShouldQueu
         /** @var array<string, mixed> $settings */
         $settings = $notifiable->notification_settings ?? [];
 
-        if (($settings['hunt_notifications'] ?? true) === true) {
+        if (($settings['hunt_notifications_in_app'] ?? true) === true) {
             $channels[] = 'database';
         }
 
-        if (($settings['browser_notifications'] ?? true) === true) {
+        if (($settings['hunt_notifications_browser'] ?? true) === true) {
             $channels[] = 'broadcast';
         }
 
-        if (($settings['email_notifications'] ?? false) === true) {
+        if (($settings['hunt_notifications_email'] ?? false) === true) {
             $channels[] = 'mail';
         }
 

@@ -93,9 +93,9 @@ it('respects user notification settings for hunt notifications', function () {
     $author = User::factory()->create();
     $follower = User::factory()->create([
         'notification_settings' => [
-            'hunt_notifications' => false,
-            'browser_notifications' => false,
-            'email_notifications' => false,
+            'hunt_notifications_in_app' => false,
+            'hunt_notifications_browser' => false,
+            'hunt_notifications_email' => false,
         ],
     ]);
 
@@ -114,9 +114,9 @@ it('includes email channel when user opts in', function () {
     $author = User::factory()->create();
     $follower = User::factory()->create([
         'notification_settings' => [
-            'hunt_notifications' => true,
-            'browser_notifications' => true,
-            'email_notifications' => true,
+            'hunt_notifications_in_app' => true,
+            'hunt_notifications_browser' => true,
+            'hunt_notifications_email' => true,
         ],
     ]);
 

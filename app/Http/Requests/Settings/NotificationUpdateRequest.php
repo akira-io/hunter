@@ -27,6 +27,9 @@ final class NotificationUpdateRequest extends FormRequest
             'follow_notifications' => ['required', 'boolean'],
             'email_notifications' => ['required', 'boolean'],
             'browser_notifications' => ['required', 'boolean'],
+            'hunt_notifications_in_app' => ['required', 'boolean'],
+            'hunt_notifications_browser' => ['required', 'boolean'],
+            'hunt_notifications_email' => ['required', 'boolean'],
         ];
     }
 
@@ -45,6 +48,9 @@ final class NotificationUpdateRequest extends FormRequest
             'follow_notifications' => (bool) ($validated['follow_notifications'] ?? false),
             'email_notifications' => (bool) ($validated['email_notifications'] ?? false),
             'browser_notifications' => (bool) ($validated['browser_notifications'] ?? false),
+            'hunt_notifications_in_app' => (bool) ($validated['hunt_notifications_in_app'] ?? false),
+            'hunt_notifications_browser' => (bool) ($validated['hunt_notifications_browser'] ?? false),
+            'hunt_notifications_email' => (bool) ($validated['hunt_notifications_email'] ?? false),
         ];
     }
 
@@ -62,6 +68,12 @@ final class NotificationUpdateRequest extends FormRequest
             'email_notifications.boolean' => 'A preferência de notificações por email deve ser verdadeiro ou falso.',
             'browser_notifications.required' => 'A preferência de notificações do navegador é obrigatória.',
             'browser_notifications.boolean' => 'A preferência de notificações do navegador deve ser verdadeiro ou falso.',
+            'hunt_notifications_in_app.required' => 'A preferência de notificações de hunts no app é obrigatória.',
+            'hunt_notifications_in_app.boolean' => 'A preferência de notificações de hunts no app deve ser verdadeiro ou falso.',
+            'hunt_notifications_browser.required' => 'A preferência de notificações de hunts no navegador é obrigatória.',
+            'hunt_notifications_browser.boolean' => 'A preferência de notificações de hunts no navegador deve ser verdadeiro ou falso.',
+            'hunt_notifications_email.required' => 'A preferência de notificações de hunts por email é obrigatória.',
+            'hunt_notifications_email.boolean' => 'A preferência de notificações de hunts por email deve ser verdadeiro ou falso.',
         ];
     }
 
@@ -72,7 +84,14 @@ final class NotificationUpdateRequest extends FormRequest
     {
         $data = [];
 
-        foreach (['follow_notifications', 'email_notifications', 'browser_notifications'] as $field) {
+        foreach ([
+            'follow_notifications',
+            'email_notifications',
+            'browser_notifications',
+            'hunt_notifications_in_app',
+            'hunt_notifications_browser',
+            'hunt_notifications_email',
+        ] as $field) {
             if ($this->has($field)) {
                 $input = $this->input($field);
 

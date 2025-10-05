@@ -41,6 +41,9 @@ final readonly class NotificationController
                 'follow_notifications' => true,
                 'email_notifications' => true,
                 'browser_notifications' => true,
+                'hunt_notifications_in_app' => true,
+                'hunt_notifications_browser' => true,
+                'hunt_notifications_email' => false,
             ],
         ]);
     }
