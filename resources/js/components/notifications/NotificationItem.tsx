@@ -15,7 +15,10 @@ interface NotificationItemProps {
 
 export const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onClick, className = '', hideUnreadDot = false }) => {
     const isUnread = !notification.read_at;
+    const isHuntNotification = notification.data.type === 'hunt_published';
     const follower = notification.data.follower as User;
+    const author = notification.data.author as User;
+    const displayUser = isHuntNotification ? author : follower;
 
     const handleMarkAsRead = async () => {
         if (onClick) {
@@ -38,17 +41,17 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
         }
     };
 
-    const handleProfileClick = async () => {
+    const handleActionClick = async () => {
         // Mark as read first
         await handleMarkAsRead();
 
-        // Navigate to follower's profile
+        // Navigate to action URL or profile
         let targetUrl = '';
 
         if (notification.data.action_url && typeof notification.data.action_url === 'string') {
             targetUrl = notification.data.action_url;
-        } else if (follower?.id) {
-            targetUrl = `/public-profile/${follower.id}`;
+        } else if (displayUser?.id) {
+            targetUrl = `/public-profile/${displayUser.id}`;
         }
 
         if (targetUrl) {
@@ -56,7 +59,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
         }
     };
 
-    const followerName = follower?.name || 'Usuário';
+    const userName = displayUser?.name || 'Usuário';
 
     return (
         <Card
@@ -72,12 +75,12 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
                         className="flex-shrink-0 cursor-pointer"
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleProfileClick();
+                            handleActionClick();
                         }}
                     >
-                        {follower?.avatar_url ? (
+                        {displayUser?.avatar_url ? (
                             <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
-                                <AvatarImage src={follower.avatar_url} alt={follower.name} className="object-cover" />
+                                <AvatarImage src={displayUser.avatar_url} alt={displayUser.name} className="object-cover" />
                                 <AvatarFallback>
                                     <UserIcon size={16} />
                                 </AvatarFallback>
@@ -100,12 +103,12 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
                                 className="cursor-pointer transition-all hover:underline"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleProfileClick();
+                                    handleActionClick();
                                 }}
                             >
-                                {followerName}
+                                {userName}
                             </span>
-                            {notification.message.replace(followerName, '')}
+                            {notification.message.replace(userName, '')}
                         </p>
                         <p className="mt-2 text-xs text-zinc-500">{notification.created_at_human}</p>
                     </div>
