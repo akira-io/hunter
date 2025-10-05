@@ -4,10 +4,11 @@ import { useDebounce } from '@/hooks/use-debounce';
 import api from '@/lib/api';
 import { highlightText } from '@/lib/highlight';
 import { cn } from '@/lib/utils';
+import { useAddSearch, useClearAllSearches, useRecentSearches, useRemoveSearch } from '@/stores/recentSearchesStore';
 import { router } from '@inertiajs/react';
 import { Command } from 'cmdk';
-import { FileText, Loader, Search, User as UserIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Clock, FileText, Loader, Search, Trash2, User as UserIcon, X } from 'lucide-react';
+import { ComponentType, useEffect, useState } from 'react';
 
 interface SearchResult {
     id: string;
@@ -37,9 +38,13 @@ export function GlobalSearch() {
     const [groups, setGroups] = useState<SearchGroup[]>([]);
     const [loading, setLoading] = useState(false);
 
+    const recentSearches = useRecentSearches();
+    const addSearch = useAddSearch();
+    const removeSearch = useRemoveSearch();
+    const clearAllSearches = useClearAllSearches();
+
     const debouncedSearch = useDebounce(search, 300);
 
-    // Keyboard shortcut (Cmd+K / Ctrl+K)
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
             if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
@@ -84,16 +89,27 @@ export function GlobalSearch() {
     }, [open]);
 
     const handleSelectResult = (url: string) => {
+        if (debouncedSearch && debouncedSearch.trim().length >= 2) {
+            addSearch(debouncedSearch);
+        }
         setOpen(false);
         router.visit(url);
+    };
+
+    const handleRecentSearchClick = (query: string) => {
+        setSearch(query);
+    };
+
+    const handleRemoveRecentSearch = (e: React.MouseEvent, query: string) => {
+        e.stopPropagation();
+        removeSearch(query);
     };
 
     const totalResults = groups.reduce((sum, group) => sum + group.results.length, 0);
     const showEmpty = debouncedSearch.length >= 2 && !loading && totalResults === 0;
 
-    // Icon mapping
     const getIconComponent = (iconName: string) => {
-        const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+        const icons: Record<string, ComponentType<{ className?: string }>> = {
             user: UserIcon,
             'file-text': FileText,
         };
@@ -131,6 +147,48 @@ export function GlobalSearch() {
                     />
 
                     <Command.List className="max-h-[400px] overflow-y-auto p-2">
+                        {/* Recent Searches - Show when no search query */}
+                        {!search && recentSearches.length > 0 && (
+                            <>
+                                <div className="flex items-center justify-between px-3 py-2">
+                                    <Command.Group
+                                        heading="Pesquisas Recentes"
+                                        className="[&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium"
+                                    />
+                                    <button
+                                        onClick={clearAllSearches}
+                                        className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs transition-colors"
+                                    >
+                                        <Trash2 className="h-3 w-3" />
+                                        Limpar tudo
+                                    </button>
+                                </div>
+                                <Command.Group>
+                                    {recentSearches.map((recentSearch) => (
+                                        <Command.Item
+                                            key={recentSearch.query}
+                                            value={recentSearch.query}
+                                            onSelect={() => handleRecentSearchClick(recentSearch.query)}
+                                            className="aria-selected:bg-accent group flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-sm"
+                                        >
+                                            <div className="bg-muted flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                                                <Clock className="text-muted-foreground h-4 w-4" />
+                                            </div>
+                                            <div className="flex-1 overflow-hidden">
+                                                <div className="line-clamp-1">{recentSearch.query}</div>
+                                            </div>
+                                            <button
+                                                onClick={(e) => handleRemoveRecentSearch(e, recentSearch.query)}
+                                                className="text-muted-foreground hover:text-foreground opacity-0 transition-opacity group-hover:opacity-100"
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </button>
+                                        </Command.Item>
+                                    ))}
+                                </Command.Group>
+                            </>
+                        )}
+
                         {/* Loading State */}
                         {loading && (
                             <div className="text-muted-foreground flex items-center justify-center py-6 text-sm">
