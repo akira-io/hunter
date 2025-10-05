@@ -7,7 +7,6 @@ import { Card, CardDescription } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import UserCard from '@/components/UserCard';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
@@ -119,30 +118,30 @@ function Hunters({ hunters }: { hunters: User[] }) {
     );
 }
 
-function MobileTabList() {
-    return (
-        <TabsList className="gradient relative z-20 mx-auto flex w-full sm:hidden">
-            {tabLists.map((tab, index) => (
-                <TooltipProvider delayDuration={0} key={tab.title}>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <span>
-                                <TabsTrigger value={`tab-${index + 1}`} className="py-1.5">
-                                    <Icon iconNode={tab.icon} aria-hidden="true" />
-                                </TabsTrigger>
-                            </span>
-                        </TooltipTrigger>
-                        <TooltipContent className="px-2 py-1 text-xs">{tab.title}</TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            ))}
-        </TabsList>
-    );
-}
+// function MobileTabList() {
+//     return (
+//         <TabsList className="gradient relative z-20 mx-auto flex w-full sm:hidden">
+//             {tabLists.map((tab, index) => (
+//                 <TooltipProvider delayDuration={0} key={tab.title}>
+//                     <Tooltip>
+//                         <TooltipTrigger asChild>
+//                             <span>
+//                                 <TabsTrigger value={`tab-${index + 1}`} className="py-1.5">
+//                                     <Icon iconNode={tab.icon} aria-hidden="true" />
+//                                 </TabsTrigger>
+//                             </span>
+//                         </TooltipTrigger>
+//                         <TooltipContent className="px-2 py-1 text-xs">{tab.title}</TooltipContent>
+//                     </Tooltip>
+//                 </TooltipProvider>
+//             ))}
+//         </TabsList>
+//     );
+// }
 
 function DesktopTabList() {
     return (
-        <TabsList className="gradient relative z-20 m-3 mx-auto hidden w-full sm:flex">
+        <TabsList className="gradient relative z-20 m-3 mx-auto flex w-full">
             {tabLists.map((tab, index) => (
                 <TabsTrigger value={`tab-${index + 1}`} className="cursor-pointer" key={tab.title}>
                     <Icon iconNode={tab.icon} aria-hidden="true" />
@@ -203,7 +202,6 @@ export default function PublicProfile({ user, hunts, hunters, huntings }: Public
                     <div className="w-full items-center justify-start px-2">
                         <Tabs defaultValue="tab-1">
                             <ScrollArea>
-                                <MobileTabList />
                                 <DesktopTabList />
                                 <ScrollBar orientation="horizontal" />
                             </ScrollArea>
