@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Settings;
 
+use Akira\LaravelAuthLogs\AuthenticationLog;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -20,7 +21,7 @@ final readonly class ActiveSessionsAction
             ->whereNotNull('login_at')
             ->whereNull('logout_at')
             ->get()
-            ->map(fn ($session): array => [
+            ->map(fn (AuthenticationLog $session): array => [
                 'id' => $session->id,
                 'ip_address' => $session->ip_address,
                 'user_agent' => $session->user_agent,
