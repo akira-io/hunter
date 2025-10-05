@@ -57,9 +57,11 @@ final readonly class HandleGoogleAuthAction
             $updateData['email_verified_at'] = $googleUserData['email_verified_at'];
         }
 
-        if ($updateData !== []) {
-            $user->update($updateData);
-        }
+        $updateData['google_id'] = $googleUserData['google_id'];
+        $updateData['google_token'] = $googleUserData['google_token'];
+        $updateData['google_refresh_token'] = $googleUserData['google_refresh_token'];
+
+        $user->update($updateData);
 
         return $user;
     }

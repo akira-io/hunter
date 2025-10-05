@@ -1,5 +1,3 @@
-import DeleteUser from '@/components/delete-user';
-import { ProfileCard } from '@/components/profile-card';
 import { About } from '@/components/profile/About';
 import { AcademicBackground } from '@/components/profile/AcademicBackground';
 import { HighlightedProjects } from '@/components/profile/HighlightedProjects';
@@ -118,11 +116,6 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                     {/*        </Dialog>*/}
                     {/*    </ProfileCard>*/}
                     {/*</section>*/}
-                    <section className="space-y-6">
-                        <ProfileCard title="Eliminar Conta">
-                            <DeleteUser />
-                        </ProfileCard>
-                    </section>
                 </main>
             </div>
             {mustVerifyEmail && auth.user.email_verified_at === null && (

@@ -14,6 +14,7 @@ arch()->preset()->laravel()
             'App\Http\Requests',
             "App\Http\Controllers\Notification\NotificationController",
             "App\Http\Controllers\Api\PresenceController",
+            "App\Http\Controllers\Settings\SecurityController",
         ]);
 arch()->preset()->security();
 

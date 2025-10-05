@@ -109,6 +109,10 @@ jobs:
         run: php artisan scout:sync-index-setting
 
       - name: Tests
+        env:
+          DB_DATABASE: devhunter_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
         run: composer test
 
       - name: Commit Changes

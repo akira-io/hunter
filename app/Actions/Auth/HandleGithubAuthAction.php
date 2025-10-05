@@ -54,7 +54,7 @@ final readonly class HandleGithubAuthAction
     /**
      * Find user by GitHub ID.
      */
-    private function findUserByGithubId(string $githubId): ?User
+    private function findUserByGithubId(string|int $githubId): ?User
     {
         /** @var User|null $user */
         $user = User::query()->firstWhere('github_id', $githubId);

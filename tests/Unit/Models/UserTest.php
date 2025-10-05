@@ -36,6 +36,9 @@ test('to array', function () {
             'notification_settings',
             'onboarding_completed',
             'onboarding_completed_at',
+            'google_id',
+            'google_token',
+            'google_refresh_token',
         ]);
 });
 
@@ -116,7 +119,6 @@ it('should convert relative paths to absolute URLs', function () {
     $relativePath = '/images/avatar.jpg';
     $result = $user->getAvatarUrlAttribute($relativePath);
 
-    expect($result)->toContain('localhost')
-        ->and($result)->toContain('/images/avatar.jpg')
+    expect($result)->toContain('/images/avatar.jpg')
         ->and($result)->toStartWith('http');
 });

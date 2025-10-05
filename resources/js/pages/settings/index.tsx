@@ -2,10 +2,9 @@ import Heading from '@/components/heading';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { appearance } from '@/routes';
-import password from '@/routes/password';
 import { notifications } from '@/routes/settings';
 import { Link } from '@inertiajs/react';
-import { Bell, ChevronRight, KeyRound, Palette, Settings2 } from 'lucide-react';
+import { Bell, ChevronRight, Palette, Settings2, Shield } from 'lucide-react';
 
 interface SettingItem {
     title: string;
@@ -22,10 +21,10 @@ const settingsItems: SettingItem[] = [
         icon: <Settings2 className="size-5" />,
     },
     {
-        title: 'Senha',
-        description: 'Altere sua senha de acesso',
-        href: password.edit().url,
-        icon: <KeyRound className="size-5" />,
+        title: 'Segurança',
+        description: 'Gerencie suas configurações de segurança',
+        href: '/settings/security',
+        icon: <Shield className="size-5" />,
     },
     {
         title: 'Notificações',
@@ -51,7 +50,7 @@ export default function SettingsIndex() {
                     {settingsItems.map((item) => (
                         <Link key={item.href} href={item.href}>
                             <Card className="gradient group cursor-pointer transition-all hover:shadow-lg active:scale-[0.99]">
-                                <CardContent className="flex items-center gap-4 p-4">
+                                <CardContent className="flex h-16 items-center gap-4 p-4">
                                     <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white/10 transition-colors group-hover:bg-white/20">
                                         {item.icon}
                                     </div>
