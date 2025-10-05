@@ -6,10 +6,4 @@ parameters:
     paths:
         - app
 
-    level: max
-
-    ignoreErrors:
-        - '#Cannot cast mixed to string\.#'
-        - '#Access to an undefined property Illuminate\\Notifications\\DatabaseNotification::\$(id|data|read_at|created_at)\.#'
-        - '#Cannot call method (toISOString|diffForHumans)\(\) on mixed\.#'
-        - '#Parameter .* of method Illuminate\\Support\\Collection.*map\(\) expects callable.*given\.#'
+    level: 7

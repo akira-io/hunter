@@ -53,7 +53,7 @@ final class ConversationsSnapshot implements ShouldBroadcast
      * The event's broadcast data.'
      *
      * @return array{conversations: array<int,
-     *     array{id:int,title:?string,type:string,participants:array<int,array{id:int,name:string,avatar_url:?string}>,last_message:array{id:int,content:string,type:string,created_at:mixed,user:array{id:int,name:string}}|null,last_message_at:mixed,unread_count:int}>}
+     *     array{id:int,title:string|null,type:string,avatar_url:string|null,participants:array<int,array{id:int,name:string,avatar_url:string|null}>,last_message:array{id:int,content:string,type:string,created_at:string,user:array{id:int,name:string}}|null,last_message_at:string|null,unread_count:int}>}
      */
     public function broadcastWith(): array
     {
@@ -83,16 +83,20 @@ final class ConversationsSnapshot implements ShouldBroadcast
             $firstOtherParticipant = $otherParticipants->first();
 
             $conversationId = $conversation->id;
+            /** @var string|null $conversationTitle */
             $conversationTitle = $conversation->title;
             $conversationType = $conversation->type;
             $conversationLastMessageAt = $conversation->last_message_at;
             $userId = $user->id;
 
+            /** @var string|null $finalTitle */
+            $finalTitle = $conversationTitle
+                ?: ($otherParticipants->pluck('name')->join(', ')
+                    ?: 'Conversation #'.$conversationId);
+
             return [
                 'id' => $conversation->id,
-                'title' => $conversationTitle
-                    ?: ($otherParticipants->pluck('name')->join(', ')
-                        ?: 'Conversation #'.$conversationId),
+                'title' => $finalTitle,
                 'type' => $conversationType,
                 'avatar_url' => ($firstOtherParticipant instanceof User)
                     ? new GetAvatarAction()->handle($firstOtherParticipant) : null,
@@ -100,6 +104,7 @@ final class ConversationsSnapshot implements ShouldBroadcast
 
                     $participantId = $participant->id;
                     $participantName = $participant->name;
+                    /** @var string|null $participantAvatarUrl */
                     $participantAvatarUrl = $participant->avatar_url;
 
                     return [
@@ -112,9 +117,8 @@ final class ConversationsSnapshot implements ShouldBroadcast
                     'id' => $lastMessage->id,
                     'content' => $lastMessage->content,
                     'type' => $lastMessage->type,
-                    'created_at' => $lastMessage->created_at,
+                    'created_at' => $lastMessage->created_at->toISOString(),
                     'user' => (function () use ($lastMessage): array {
-
                         $messageUser = $lastMessage->user;
 
                         return [
@@ -123,7 +127,7 @@ final class ConversationsSnapshot implements ShouldBroadcast
                         ];
                     })(),
                 ] : null,
-                'last_message_at' => $conversationLastMessageAt,
+                'last_message_at' => $conversationLastMessageAt?->toISOString(),
                 'unread_count' => $conversation->messages()
                     ->where('user_id', '!=', $userId)
                     ->whereNull('read_at')
