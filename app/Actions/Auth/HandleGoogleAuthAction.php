@@ -61,9 +61,7 @@ final readonly class HandleGoogleAuthAction
         $updateData['google_token'] = $googleUserData['google_token'];
         $updateData['google_refresh_token'] = $googleUserData['google_refresh_token'];
 
-        if ($updateData !== []) {
-            $user->update($updateData);
-        }
+        $user->update($updateData);
 
         return $user;
     }
