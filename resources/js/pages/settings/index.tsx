@@ -2,10 +2,9 @@ import Heading from '@/components/heading';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { appearance } from '@/routes';
-import password from '@/routes/password';
 import { notifications } from '@/routes/settings';
 import { Link } from '@inertiajs/react';
-import { Bell, ChevronRight, KeyRound, Palette, Settings2 } from 'lucide-react';
+import { Bell, ChevronRight, Palette, Settings2, Shield } from 'lucide-react';
 
 interface SettingItem {
     title: string;
@@ -22,10 +21,10 @@ const settingsItems: SettingItem[] = [
         icon: <Settings2 className="size-5" />,
     },
     {
-        title: 'Senha',
-        description: 'Altere sua senha de acesso',
-        href: password.edit().url,
-        icon: <KeyRound className="size-5" />,
+        title: 'Segurança',
+        description: 'Gerencie senha, sessões ativas e contas conectadas',
+        href: '/settings/security',
+        icon: <Shield className="size-5" />,
     },
     {
         title: 'Notificações',

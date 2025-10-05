@@ -2,10 +2,9 @@ import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import password from '@/routes/password';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, Bell, KeyRound, Palette, Settings2 } from 'lucide-react';
+import { ArrowLeft, Bell, Palette, Settings2, Shield } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
@@ -15,9 +14,9 @@ const sidebarNavItems: NavItem[] = [
         icon: Settings2,
     },
     {
-        title: 'Dados de Acesso',
-        href: password.edit().url,
-        icon: KeyRound,
+        title: 'Segurança',
+        href: '/settings/security',
+        icon: Shield,
     },
     {
         title: 'Notificações',

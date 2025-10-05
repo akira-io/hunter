@@ -29,6 +29,7 @@
     "meilisearch/meilisearch-php": "^1.14",
     "panphp/pan": "^0.1.8",
     "pinkary-project/type-guard": "^0.1.0",
+    "spatie/laravel-activitylog": "^4.10",
     "spatie/laravel-medialibrary": "^11.12",
     "spatie/laravel-query-builder": "^6.3",
     "spatie/laravel-route-attributes": "^1.25"
