@@ -2,6 +2,7 @@ import { UserAvatar } from '@/components/UserAvatar';
 import { Button } from '@/components/ui/button';
 import { useDebounce } from '@/hooks/use-debounce';
 import api from '@/lib/api';
+import { highlightText } from '@/lib/highlight';
 import { cn } from '@/lib/utils';
 import { router } from '@inertiajs/react';
 import { Command } from 'cmdk';
@@ -163,9 +164,17 @@ export function GlobalSearch() {
                                                 </div>
                                             )}
                                             <div className="flex-1 overflow-hidden">
-                                                <div className="line-clamp-1 font-medium">{result.title}</div>
-                                                {result.subtitle && <div className="text-muted-foreground text-xs">{result.subtitle}</div>}
-                                                {result.description && <div className="text-muted-foreground text-xs">{result.description}</div>}
+                                                <div className="line-clamp-1 font-medium">{highlightText(result.title, debouncedSearch)}</div>
+                                                {result.subtitle && (
+                                                    <div className="text-muted-foreground text-xs">
+                                                        {highlightText(result.subtitle, debouncedSearch)}
+                                                    </div>
+                                                )}
+                                                {result.description && (
+                                                    <div className="text-muted-foreground line-clamp-2 text-xs">
+                                                        {highlightText(result.description, debouncedSearch)}
+                                                    </div>
+                                                )}
                                             </div>
                                             <IconComponent className="text-muted-foreground h-4 w-4 flex-shrink-0" />
                                         </Command.Item>
