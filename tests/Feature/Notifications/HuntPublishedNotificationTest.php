@@ -177,3 +177,71 @@ it('notification includes author information', function () {
         ->and($broadcastData['author'])->toHaveKey('name', 'John Doe')
         ->and($broadcastData['author'])->toHaveKey('username', 'johndoe');
 });
+
+it('truncates content preview when content is longer than 100 characters', function () {
+    $author = User::factory()->create();
+    $follower = User::factory()->create();
+
+    $follower->follow($author);
+
+    $longContent = str_repeat('a', 150);
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $author->id,
+        'content' => $longContent,
+    ]);
+
+    $notification = new HuntPublishedNotification($hunt, $author);
+
+    $mailMessage = $notification->toMail($follower);
+    $broadcastData = $notification->toBroadcast($follower)->data;
+    $arrayData = $notification->toArray($follower);
+
+    expect($broadcastData['hunt']['content_preview'])->toBe(mb_substr($longContent, 0, 100).'...')
+        ->and($arrayData['hunt']['content_preview'])->toBe(mb_substr($longContent, 0, 100).'...')
+        ->and($broadcastData['hunt']['content_preview'])->toHaveLength(103); // 100 + '...'
+});
+
+it('does not truncate content preview when content is 100 characters or less', function () {
+    $author = User::factory()->create();
+    $follower = User::factory()->create();
+
+    $follower->follow($author);
+
+    $shortContent = str_repeat('a', 50);
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $author->id,
+        'content' => $shortContent,
+    ]);
+
+    $notification = new HuntPublishedNotification($hunt, $author);
+
+    $mailMessage = $notification->toMail($follower);
+    $broadcastData = $notification->toBroadcast($follower)->data;
+    $arrayData = $notification->toArray($follower);
+
+    expect($broadcastData['hunt']['content_preview'])->toBe($shortContent)
+        ->and($arrayData['hunt']['content_preview'])->toBe($shortContent)
+        ->and($broadcastData['hunt']['content_preview'])->toHaveLength(50);
+});
+
+it('handles exactly 100 character content without truncation', function () {
+    $author = User::factory()->create();
+    $follower = User::factory()->create();
+
+    $follower->follow($author);
+
+    $exactContent = str_repeat('a', 100);
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $author->id,
+        'content' => $exactContent,
+    ]);
+
+    $notification = new HuntPublishedNotification($hunt, $author);
+
+    $broadcastData = $notification->toBroadcast($follower)->data;
+    $arrayData = $notification->toArray($follower);
+
+    expect($broadcastData['hunt']['content_preview'])->toBe($exactContent)
+        ->and($arrayData['hunt']['content_preview'])->toBe($exactContent)
+        ->and($broadcastData['hunt']['content_preview'])->toHaveLength(100);
+});
