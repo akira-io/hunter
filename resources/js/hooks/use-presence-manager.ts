@@ -1,6 +1,7 @@
 import '@/config/echo';
+import api from '@/lib/api';
 import { useClearFollowedHunters, useRefreshFollowedHunters, useUpdateHunterOnlineStatus } from '@/stores/followedHuntersStore';
-import { useAddUser, useClearUsers, useRemoveUser, useSetConnected, useSetUsers } from '@/stores/onlineUsersStore';
+import { useClearUsers, useRemoveUser, useSetConnected, useSetUsers } from '@/stores/onlineUsersStore';
 import { useEchoPresence } from '@laravel/echo-react';
 import { useEffect } from 'react';
 
@@ -16,19 +17,15 @@ interface UsePresenceManagerProps {
 }
 
 export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) => {
-    // Get online users store actions
     const setUsers = useSetUsers();
-    const addUser = useAddUser();
     const removeUser = useRemoveUser();
     const setConnected = useSetConnected();
     const clearUsers = useClearUsers();
 
-    // Get followed hunters store actions
     const updateHunterOnlineStatus = useUpdateHunterOnlineStatus();
     const refreshFollowedHunters = useRefreshFollowedHunters();
     const clearFollowedHunters = useClearFollowedHunters();
 
-    // Load followed hunters when user logs in
     useEffect(() => {
         if (currentUserId) {
             refreshFollowedHunters();
@@ -37,20 +34,51 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
         }
     }, [currentUserId, refreshFollowedHunters, clearFollowedHunters]);
 
-    // Clear users when user logs out
     useEffect(() => {
         if (!currentUserId) {
             clearUsers();
         }
     }, [currentUserId, clearUsers]);
 
-    // Use useEcho hook for presence channel
     const presence = useEchoPresence<OnlineUser>(currentUserId ? 'presence' : '', undefined, undefined, []);
 
-    // Manage presence channel
     useEffect(() => {
         if (!currentUserId) {
             clearUsers();
+            return;
+        }
+
+        const fetchOnlineUsers = async () => {
+            try {
+                const response = await api.get<{ data: OnlineUser[] }>('/users/online');
+                const users = response.data.data;
+
+                setUsers(users);
+                setConnected(true);
+
+                // Update hunter online status
+                users.forEach((user) => {
+                    updateHunterOnlineStatus(user.id, true);
+                });
+            } catch (error) {
+                console.error('Erro ao buscar usuários online:', error);
+                setConnected(false);
+            }
+        };
+
+        // Initial fetch
+        fetchOnlineUsers();
+
+        // Poll every 30 seconds
+        const interval = setInterval(fetchOnlineUsers, 30000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [currentUserId, setUsers, setConnected, updateHunterOnlineStatus, clearUsers]);
+
+    useEffect(() => {
+        if (!currentUserId) {
             return;
         }
 
@@ -62,7 +90,6 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
 
             const channel = presence.channel();
             if (!channel) {
-                setConnected(false);
                 retryTimeout = setTimeout(setupPresenceChannel, 500);
                 return;
             }
@@ -71,38 +98,35 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
                 // Type assertion for presence channel methods
                 const presenceChannel = channel as any; // eslint-disable-line @typescript-eslint/no-explicit-any
                 presenceChannel
-                    .here((users: OnlineUser[]) => {
-                        if (!mounted) return;
-                        setUsers(users);
-                        setConnected(true);
-                        users.forEach((user) => {
-                            updateHunterOnlineStatus(user.id, true);
-                        });
-                    })
                     .joining((user: OnlineUser) => {
                         if (!mounted) return;
 
-                        addUser(user);
+                        // Re-fetch to ensure we only show relevant users
+                        api.get<{ data: OnlineUser[] }>('/users/online')
+                            .then((response) => {
+                                const users = response.data.data;
+                                setUsers(users);
 
-                        updateHunterOnlineStatus(user.id, true);
+                                // Update hunter status if this user is in the list
+                                if (users.some((u) => u.id === user.id)) {
+                                    updateHunterOnlineStatus(user.id, true);
+                                }
+                            })
+                            .catch(console.error);
                     })
                     .leaving((user: OnlineUser) => {
                         if (!mounted) return;
 
                         removeUser(user.id);
-
                         updateHunterOnlineStatus(user.id, false);
                     })
                     .error((error: Error) => {
                         console.log(error);
                         if (!mounted) return;
-                        setConnected(false);
-
                         retryTimeout = setTimeout(setupPresenceChannel, 1000);
                     });
             } catch (error) {
                 console.error('Erro ao configurar o canal de presença:', error);
-                setConnected(false);
                 if (mounted) {
                     retryTimeout = setTimeout(setupPresenceChannel, 1000);
                 }

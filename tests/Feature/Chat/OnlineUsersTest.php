@@ -14,9 +14,12 @@ it('lists online users regardless of user id position', function () {
     // Pick two users near the end to simulate the issue (ids > 20)
     $first = $users[28];
     $second = $users[29];
+    $authenticatedUser = $users[0];
 
-    // Authenticate as any user to hit the auth-protected route
-    actingAs($users[0]);
+    actingAs($authenticatedUser);
+
+    $authenticatedUser->follow($first);
+    $authenticatedUser->follow($second);
 
     // Mark the two users as online in cache (matching the app logic)
     Cache::put("user_online_{$first->id}", now(), now()->addMinutes(10));
@@ -31,6 +34,6 @@ it('lists online users regardless of user id position', function () {
 
     // Ensure the returned users include the two marked online
     $ids = collect($usersArray)->pluck('id');
-    expect($ids->contains($first->id))->toBeTrue();
-    expect($ids->contains($second->id))->toBeTrue();
+    expect($ids->contains($first->id))->toBeTrue()
+        ->and($ids->contains($second->id))->toBeTrue();
 });

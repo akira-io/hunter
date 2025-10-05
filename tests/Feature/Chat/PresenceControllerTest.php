@@ -48,6 +48,10 @@ describe('PresenceController', function () {
         $user3 = User::factory()->create(['name' => 'User 3']);
         $offlineUser = User::factory()->create(['name' => 'Offline User']);
 
+        // Create follow relationships (current user follows user2 and user3)
+        $this->user->follow($user2);
+        $this->user->follow($user3);
+
         // Mark users as online (NOT including current user)
         Cache::put("user_online_{$user2->id}", now(), now()->addMinutes(10));
         Cache::put("user_online_{$user3->id}", now(), now()->addMinutes(10));
@@ -126,6 +130,10 @@ describe('PresenceController', function () {
     it('can mark multiple users as online simultaneously', function () {
         $user2 = User::factory()->create();
         $user3 = User::factory()->create();
+
+        // Create follow relationships
+        $this->user->follow($user2);
+        $this->user->follow($user3);
 
         actingAs($this->user);
         post('/presence/online');
