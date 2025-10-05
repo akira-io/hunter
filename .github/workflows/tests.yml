@@ -70,7 +70,6 @@ jobs:
           echo "DB_DATABASE=devhunter_test" >> .env
           echo "DB_USERNAME=postgres" >> .env
           echo "DB_PASSWORD=postgres" >> .env
-          echo "DB_TEST_DATABASE=devhunter_testing" >> .env
 
       - name: Run Database Migrations
         run: php artisan migrate --force
@@ -110,6 +109,10 @@ jobs:
         run: php artisan scout:sync-index-setting
 
       - name: Tests
+        env:
+          DB_DATABASE: devhunter_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
         run: composer test
 
       - name: Commit Changes
