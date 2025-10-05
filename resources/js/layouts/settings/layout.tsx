@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, Bell, Palette, Settings2, Shield } from 'lucide-react';
+import { ArrowLeft, Bell, Lock, Palette, Settings2, Shield } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
@@ -17,6 +17,11 @@ const sidebarNavItems: NavItem[] = [
         title: 'Segurança',
         href: '/settings/security',
         icon: Shield,
+    },
+    {
+        title: 'Privacidade',
+        href: '/settings/privacy',
+        icon: Lock,
     },
     {
         title: 'Notificações',
