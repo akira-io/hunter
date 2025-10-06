@@ -13,14 +13,17 @@ use Illuminate\Support\Facades\Cache;
 final readonly class GetOnlineUsersAction
 {
     /**
-     * Get list of online users (only those followed or with existing conversations).
-     * Filters users based on privacy settings - only shows users who accept messages from the current user
-     * and who have enabled activity status visibility.
+     * Get list of online users
      *
      * @return Collection<int, User>
      */
     public function handle(User $user): Collection
     {
+        // Mutual privacy: if user has hidden their own status, they can't see others' status
+        if (! $user->showsActivityStatus()) {
+            return collect([]);
+        }
+
         $followedUserIds = User::query()
             ->whereHas('followers', fn (Builder $query) => $query
                 ->where('user_id', $user->id)
@@ -53,9 +56,6 @@ final readonly class GetOnlineUsersAction
             ->whereIn('id', $onlineUserIds)
             ->get();
 
-        // Filter based on privacy settings:
-        // 1. Only show users who accept messages from current user
-        // 2. Only show users who have enabled activity status visibility
         return $onlineUsers->filter(fn (User $onlineUser): bool => $onlineUser->canReceiveMessagesFrom($user) && $onlineUser->showsActivityStatus());
     }
 }

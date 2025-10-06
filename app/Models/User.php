@@ -367,6 +367,32 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     /**
+     * Check if viewer can see this user's online status.
+     */
+    public function canShowOnlineStatusTo(?self $viewer): bool
+    {
+
+        if (! $this->showsActivityStatus()) {
+            return false;
+        }
+
+        if ($viewer instanceof self && ! $viewer->showsActivityStatus()) {
+            return false;
+        }
+
+        return ! ($viewer instanceof self && ($this->hasBlocked($viewer) || $this->isBlockedBy($viewer)));
+    }
+
+    /**
+     * Check if this user is currently online.
+     * Only returns true if the cache indicates online status.
+     */
+    public function isOnline(): bool
+    {
+        return cache()->has("user_online_{$this->id}");
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

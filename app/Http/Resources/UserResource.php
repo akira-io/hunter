@@ -45,6 +45,7 @@ final class UserResource extends JsonResource
             'onboarding_completed' => $this->onboarding_completed,
             'onboarding_completed_at' => $this->onboarding_completed_at,
             'is_blocked' => $authUser?->hasBlocked($this->resource) ?? false,
+            'is_online' => $this->resource->canShowOnlineStatusTo($authUser) && $this->resource->isOnline(),
         ];
     }
 }

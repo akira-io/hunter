@@ -31,14 +31,14 @@ final readonly class FollowedHuntersController
             ->orderBy('name')
             ->get();
 
-        /** @var SupportCollection<int, array{id: mixed, name: mixed, username: mixed, avatar_url: string|null, level: null, is_online: false, is_blocked: bool}> $followedHunters */
+        /** @var SupportCollection<int, array{id: mixed, name: mixed, username: mixed, avatar_url: string|null, level: null, is_online: bool, is_blocked: bool}> $followedHunters */
         $followedHunters = $followedHuntersCollection->map(fn (User $hunter): array => [
             'id' => $hunter->id,
             'name' => $hunter->name,
             'username' => $hunter->user_name,
             'avatar_url' => new GetAvatarAction()->handle($hunter),
             'level' => null,
-            'is_online' => false,
+            'is_online' => $hunter->canShowOnlineStatusTo($user) && $hunter->isOnline(),
             'is_blocked' => $user->hasBlocked($hunter),
         ]);
 
