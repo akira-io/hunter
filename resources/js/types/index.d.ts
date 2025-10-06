@@ -52,6 +52,7 @@ export interface User {
     youtube_url?: string;
     professional_educations?: AcademicBackground[];
     has_followed: boolean;
+    is_blocked?: boolean;
     user_name?: string;
     background_image_url: string;
 

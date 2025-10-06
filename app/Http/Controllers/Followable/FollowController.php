@@ -10,6 +10,7 @@ use App\Actions\Social\FollowUserAction;
 use App\Http\Requests\Feed\FollowRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use InvalidArgumentException;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Post;
 
@@ -19,7 +20,7 @@ final readonly class FollowController
     /**
      * Follow a user.
      *
-     * @throws CannotFollowYourSelfException|FollowableTraitNotFoundException
+     * @throws CannotFollowYourSelfException|FollowableTraitNotFoundException|InvalidArgumentException
      */
     #[Post('followable/follow', name: 'followable.follow')]
     public function __invoke(FollowRequest $request, FollowUserAction $followUserAction): RedirectResponse

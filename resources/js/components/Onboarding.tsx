@@ -6,17 +6,37 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useSanitizeExternalUrl, useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { useStartConversation } from '@/hooks/use-start-conversation';
+import { useToast } from '@/hooks/use-toast';
 import { useTruncate } from '@/hooks/use-truncate-text';
 import { cn } from '@/lib/utils';
+import followable from '@/routes/followable';
+import privacy from '@/routes/privacy';
 import { SharedData, User } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { RiBlueskyFill, RiGithubFill, RiLinkedinBoxFill, RiTwitterXFill, RiYoutubeFill } from '@remixicon/react';
 import { format } from 'date-fns';
-import { ArrowLeftIcon, ArrowRightIcon, EllipsisVerticalIcon, Globe, GraduationCap, MessageCircle } from 'lucide-react';
+import {
+    ArrowLeftIcon,
+    ArrowRightIcon,
+    BanIcon,
+    CheckCircle,
+    EllipsisVerticalIcon,
+    Globe,
+    GraduationCap,
+    InfoIcon,
+    MessageCircle,
+    ShieldCheckIcon,
+    UserIcon,
+    UserMinusIcon,
+    UserPlusIcon,
+    XCircle,
+} from 'lucide-react';
 import * as React from 'react';
 import { useState } from 'react';
+import { AiOutlineClose } from 'react-icons/ai';
 import AvatarGenerator, { genConfig } from 'react-nice-avatar';
 
 interface OnboardingProps extends React.ComponentProps<'div'> {
@@ -106,8 +126,23 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
     const { auth } = usePage<SharedData>().props;
     const [step, setStep] = useState(1);
     const [open, setOpen] = useState(false);
+    const [unfollowDialogOpen, setUnfollowDialogOpen] = useState(false);
+    const [blockDialogOpen, setBlockDialogOpen] = useState(false);
+    const [unblockDialogOpen, setUnblockDialogOpen] = useState(false);
     const { get } = useForm();
     const { startConversation, isStarting } = useStartConversation();
+    const { toast } = useToast();
+
+    const { post: postFollow, processing: followProcessing } = useForm({
+        user_id: user.id,
+    });
+
+    const { post: postUnfollow, processing: unfollowProcessing } = useForm({
+        user_id: user.id,
+    });
+
+    const { post: postBlock, processing: blockProcessing } = useForm({});
+    const { delete: deleteUnblock, processing: unblockProcessing } = useForm({});
 
     const links = [
         { name: 'GitHub', url: user.github_url, icon: <RiGithubFill /> },
@@ -149,6 +184,7 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
     }
 
     const has_followed = user.has_followed ?? hasFollowed;
+    const isBlocked = user.is_blocked ?? false;
 
     function gotoProfile() {
         get(PublicProfileController.show({ user: user.id }).url, {
@@ -162,6 +198,85 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
         await startConversation(user.id);
     };
 
+    function handleFollow() {
+        postFollow(followable.follow().url, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast({
+                    description: `Você começou a seguir ${user.name}`,
+                });
+            },
+            onError: () => {
+                toast({
+                    variant: 'destructive',
+                    description: `Erro ao seguir ${user.name}`,
+                });
+            },
+        });
+    }
+
+    function handleUnfollow() {
+        postUnfollow(followable.unfollow().url, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast({
+                    description: `Você deixou de seguir ${user.name}`,
+                });
+                setUnfollowDialogOpen(false);
+            },
+            onError: () => {
+                toast({
+                    variant: 'destructive',
+                    description: `Erro ao deixar de seguir ${user.name}`,
+                });
+            },
+        });
+    }
+
+    function handleBlock() {
+        postBlock(privacy.blockUser(user.id).url, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast({
+                    icon: <CheckCircle className="text-green-400" />,
+                    title: 'Utilizador bloqueado',
+                    description: `${user.name} foi bloqueado com sucesso.`,
+                });
+                setBlockDialogOpen(false);
+            },
+            onError: () => {
+                toast({
+                    variant: 'destructive',
+                    icon: <XCircle className="text-red-400" />,
+                    title: 'Erro',
+                    description: `Erro ao bloquear ${user.name}. Tente novamente.`,
+                });
+            },
+        });
+    }
+
+    function handleUnblock() {
+        deleteUnblock(privacy.unblockUser(user.id).url, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast({
+                    icon: <CheckCircle className="text-green-400" />,
+                    title: 'Utilizador desbloqueado',
+                    description: `${user.name} foi desbloqueado com sucesso.`,
+                });
+                setUnblockDialogOpen(false);
+            },
+            onError: () => {
+                toast({
+                    variant: 'destructive',
+                    icon: <XCircle className="text-red-400" />,
+                    title: 'Erro',
+                    description: `Erro ao desbloquear ${user.name}. Tente novamente.`,
+                });
+            },
+        });
+    }
+
     return (
         <div {...props}>
             <Card className="relative min-h-40 w-full cursor-pointer overflow-hidden">
@@ -172,14 +287,59 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
                             <CardTitle className="text-xl" onClick={gotoProfile}>
                                 {user.name}
                             </CardTitle>
-                            <Button
-                                data-pan="onbording-profile"
-                                className="text-muted-forground absolute top-4 right-4 flex h-8 w-8 cursor-pointer border-none shadow-none"
-                                variant="secondary"
-                                onClick={handleCardClick}
-                            >
-                                <EllipsisVerticalIcon />
-                            </Button>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        data-pan="onbording-profile"
+                                        className="text-muted-forground absolute top-4 right-4 flex h-8 w-8 cursor-pointer border-none shadow-none"
+                                        variant="secondary"
+                                    >
+                                        <EllipsisVerticalIcon className="size-4" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuItem onClick={handleCardClick}>
+                                        <InfoIcon className="mr-2 size-4" />
+                                        Onboarding
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={gotoProfile}>
+                                        <UserIcon className="mr-2 size-4" />
+                                        Ver Perfil
+                                    </DropdownMenuItem>
+                                    {auth.user && auth.user.id !== user.id && (
+                                        <>
+                                            <DropdownMenuSeparator />
+                                            {!has_followed && (
+                                                <DropdownMenuItem onClick={handleFollow} disabled={followProcessing}>
+                                                    <UserPlusIcon className="mr-2 size-4" />
+                                                    Seguir
+                                                </DropdownMenuItem>
+                                            )}
+                                            {has_followed && (
+                                                <DropdownMenuItem onClick={() => setUnfollowDialogOpen(true)}>
+                                                    <UserMinusIcon className="mr-2 size-4" />
+                                                    Deixar de Seguir
+                                                </DropdownMenuItem>
+                                            )}
+                                            <DropdownMenuSeparator />
+                                            {isBlocked ? (
+                                                <DropdownMenuItem
+                                                    onClick={() => setUnblockDialogOpen(true)}
+                                                    className="text-green-600 dark:text-green-400"
+                                                >
+                                                    <ShieldCheckIcon className="mr-2 size-4" />
+                                                    Desbloquear
+                                                </DropdownMenuItem>
+                                            ) : (
+                                                <DropdownMenuItem onClick={() => setBlockDialogOpen(true)} className="text-red-600 dark:text-red-400">
+                                                    <BanIcon className="mr-2 size-4" />
+                                                    Bloquear
+                                                </DropdownMenuItem>
+                                            )}
+                                        </>
+                                    )}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         <CardDescription className="text-sm">
                             {user.bio ? truncate(user.bio, 45) : <span className="text-muted">Bio indisponível...</span>}
@@ -293,6 +453,92 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
                             </div>
                         </DialogFooter>
                     </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Unfollow Confirmation Dialog */}
+            <Dialog open={unfollowDialogOpen} onOpenChange={setUnfollowDialogOpen}>
+                <DialogContent className="p-6">
+                    <DialogTitle>
+                        Deixar de Seguir <b>{user.name}</b>?
+                    </DialogTitle>
+                    <DialogDescription className="pt-4">
+                        <span className="text-muted-foreground text-sm">Você pode voltar a segui-lo a qualquer momento.</span>
+                    </DialogDescription>
+                    <DialogFooter className="pt-4">
+                        <DialogClose asChild>
+                            <Button variant="secondary">
+                                <AiOutlineClose />
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <Button variant="destructive" disabled={unfollowProcessing} onClick={handleUnfollow}>
+                            <CheckCircle /> Confirmar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Block Confirmation Dialog */}
+            <Dialog open={blockDialogOpen} onOpenChange={setBlockDialogOpen}>
+                <DialogContent className="p-6">
+                    <DialogTitle>
+                        Bloquear <b>{user.name}</b>?
+                    </DialogTitle>
+                    <DialogDescription className="pt-4">
+                        <span className="text-muted-foreground text-sm">
+                            Ao bloquear este utilizador, ele não poderá:
+                            <ul className="mt-2 list-disc pl-5">
+                                <li>Ver o seu perfil</li>
+                                <li>Enviar-lhe mensagens</li>
+                                <li>Comentar nos seus hunts</li>
+                                <li>Segui-lo</li>
+                            </ul>
+                            <span className="mt-2 block">Você pode desbloqueá-lo a qualquer momento nas configurações de privacidade.</span>
+                        </span>
+                    </DialogDescription>
+                    <DialogFooter className="pt-4">
+                        <DialogClose asChild>
+                            <Button variant="secondary">
+                                <AiOutlineClose />
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <Button variant="destructive" disabled={blockProcessing} onClick={handleBlock}>
+                            <BanIcon /> Bloquear
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Unblock Confirmation Dialog */}
+            <Dialog open={unblockDialogOpen} onOpenChange={setUnblockDialogOpen}>
+                <DialogContent className="p-6">
+                    <DialogTitle>
+                        Desbloquear <b>{user.name}</b>?
+                    </DialogTitle>
+                    <DialogDescription className="pt-4">
+                        <span className="text-muted-foreground text-sm">
+                            Ao desbloquear este utilizador, ele poderá novamente:
+                            <ul className="mt-2 list-disc pl-5">
+                                <li>Ver o seu perfil</li>
+                                <li>Enviar-lhe mensagens</li>
+                                <li>Comentar nos seus hunts</li>
+                                <li>Segui-lo</li>
+                            </ul>
+                        </span>
+                    </DialogDescription>
+                    <DialogFooter className="pt-4">
+                        <DialogClose asChild>
+                            <Button variant="secondary">
+                                <AiOutlineClose />
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <Button variant="default" disabled={unblockProcessing} onClick={handleUnblock}>
+                            <ShieldCheckIcon /> Desbloquear
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>

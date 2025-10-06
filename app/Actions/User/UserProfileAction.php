@@ -25,7 +25,10 @@ final readonly class UserProfileAction
 
         $user->setAttribute('background_image_url', new GetBackgroundImageAction()->handle($user));
 
-        return type($authUser->attachFollowStatus(followables: $user))->as(Collection::class)->sole();
+        $userWithFollowStatus = type($authUser->attachFollowStatus(followables: $user))->as(Collection::class)->sole();
+        $userWithFollowStatus['is_blocked'] = $authUser->hasBlocked($user);
+
+        return $userWithFollowStatus;
 
     }
 }

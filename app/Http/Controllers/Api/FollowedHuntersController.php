@@ -31,7 +31,7 @@ final readonly class FollowedHuntersController
             ->orderBy('name')
             ->get();
 
-        /** @var SupportCollection<int, array{id: mixed, name: mixed, username: mixed, avatar_url: string|null, level: null, is_online: false}> $followedHunters */
+        /** @var SupportCollection<int, array{id: mixed, name: mixed, username: mixed, avatar_url: string|null, level: null, is_online: false, is_blocked: bool}> $followedHunters */
         $followedHunters = $followedHuntersCollection->map(fn (User $hunter): array => [
             'id' => $hunter->id,
             'name' => $hunter->name,
@@ -39,6 +39,7 @@ final readonly class FollowedHuntersController
             'avatar_url' => new GetAvatarAction()->handle($hunter),
             'level' => null,
             'is_online' => false,
+            'is_blocked' => $user->hasBlocked($hunter),
         ]);
 
         return response()->json($followedHunters);

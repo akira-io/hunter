@@ -7,9 +7,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { useToast } from '@/hooks/use-toast';
 import followable from '@/routes/followable';
+import privacy from '@/routes/privacy';
 import { SharedData, User } from '@/types';
 import { router, useForm, usePage } from '@inertiajs/react';
-import { BanIcon, CheckCircle, EllipsisVerticalIcon, UserIcon, UserMinusIcon, UserPlusIcon } from 'lucide-react';
+import { BanIcon, CheckCircle, EllipsisVerticalIcon, ShieldCheckIcon, UserIcon, UserMinusIcon, UserPlusIcon, XCircle } from 'lucide-react';
 import * as React from 'react';
 import { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -25,6 +26,8 @@ export default function UserCard({ user, ...props }: UserCardProps) {
     const config = genConfig({ sex: 'man', hairStyle: 'thick' });
     const { toast } = useToast();
     const [unfollowDialogOpen, setUnfollowDialogOpen] = useState(false);
+    const [blockDialogOpen, setBlockDialogOpen] = useState(false);
+    const [unblockDialogOpen, setUnblockDialogOpen] = useState(false);
 
     const { post: postFollow, processing: followProcessing } = useForm({
         user_id: user.id,
@@ -34,7 +37,11 @@ export default function UserCard({ user, ...props }: UserCardProps) {
         user_id: user.id,
     });
 
+    const { post: postBlock, processing: blockProcessing } = useForm({});
+    const { delete: deleteUnblock, processing: unblockProcessing } = useForm({});
+
     const isFollowing = user.has_followed ?? false;
+    const isBlocked = user.is_blocked ?? false;
     const isOwnProfile = auth.user?.id === user.id;
 
     function gotoProfile() {
@@ -80,7 +87,47 @@ export default function UserCard({ user, ...props }: UserCardProps) {
     }
 
     function handleBlock() {
-        console.log('Bloquear usuário:', user.id);
+        postBlock(privacy.blockUser(user.id).url, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast({
+                    icon: <CheckCircle className="text-green-400" />,
+                    title: 'Utilizador bloqueado',
+                    description: `${user.name} foi bloqueado com sucesso.`,
+                });
+                setBlockDialogOpen(false);
+            },
+            onError: () => {
+                toast({
+                    variant: 'destructive',
+                    icon: <XCircle className="text-red-400" />,
+                    title: 'Erro',
+                    description: `Erro ao bloquear ${user.name}. Tente novamente.`,
+                });
+            },
+        });
+    }
+
+    function handleUnblock() {
+        deleteUnblock(privacy.unblockUser(user.id).url, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast({
+                    icon: <CheckCircle className="text-green-400" />,
+                    title: 'Utilizador desbloqueado',
+                    description: `${user.name} foi desbloqueado com sucesso.`,
+                });
+                setUnblockDialogOpen(false);
+            },
+            onError: () => {
+                toast({
+                    variant: 'destructive',
+                    icon: <XCircle className="text-red-400" />,
+                    title: 'Erro',
+                    description: `Erro ao desbloquear ${user.name}. Tente novamente.`,
+                });
+            },
+        });
     }
 
     return (
@@ -132,10 +179,17 @@ export default function UserCard({ user, ...props }: UserCardProps) {
                                         </DropdownMenuItem>
                                     )}
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={handleBlock} className="text-red-600 dark:text-red-400">
-                                        <BanIcon className="mr-2 size-4" />
-                                        Bloquear
-                                    </DropdownMenuItem>
+                                    {isBlocked ? (
+                                        <DropdownMenuItem onClick={() => setUnblockDialogOpen(true)} className="text-green-600 dark:text-green-400">
+                                            <ShieldCheckIcon className="mr-2 size-4" />
+                                            Desbloquear
+                                        </DropdownMenuItem>
+                                    ) : (
+                                        <DropdownMenuItem onClick={() => setBlockDialogOpen(true)} className="text-red-600 dark:text-red-400">
+                                            <BanIcon className="mr-2 size-4" />
+                                            Bloquear
+                                        </DropdownMenuItem>
+                                    )}
                                 </>
                             )}
                         </DropdownMenuContent>
@@ -160,6 +214,67 @@ export default function UserCard({ user, ...props }: UserCardProps) {
                         </DialogClose>
                         <Button variant="destructive" disabled={unfollowProcessing} onClick={handleUnfollow}>
                             <CheckCircle /> Confirmar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={blockDialogOpen} onOpenChange={setBlockDialogOpen}>
+                <DialogContent className="p-6">
+                    <DialogTitle>
+                        Bloquear <b>{user.name}</b>?
+                    </DialogTitle>
+                    <DialogDescription className="pt-4">
+                        <span className="text-muted-foreground text-sm">
+                            Ao bloquear este utilizador, ele não poderá:
+                            <ul className="mt-2 list-disc pl-5">
+                                <li>Ver o seu perfil</li>
+                                <li>Enviar-lhe mensagens</li>
+                                <li>Comentar nos seus hunts</li>
+                                <li>Segui-lo</li>
+                            </ul>
+                            <span className="mt-2 block">Você pode desbloqueá-lo a qualquer momento nas configurações de privacidade.</span>
+                        </span>
+                    </DialogDescription>
+                    <DialogFooter className="pt-4">
+                        <DialogClose asChild>
+                            <Button variant="secondary">
+                                <AiOutlineClose />
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <Button variant="destructive" disabled={blockProcessing} onClick={handleBlock}>
+                            <BanIcon /> Bloquear
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={unblockDialogOpen} onOpenChange={setUnblockDialogOpen}>
+                <DialogContent className="p-6">
+                    <DialogTitle>
+                        Desbloquear <b>{user.name}</b>?
+                    </DialogTitle>
+                    <DialogDescription className="pt-4">
+                        <span className="text-muted-foreground text-sm">
+                            Ao desbloquear este utilizador, ele poderá novamente:
+                            <ul className="mt-2 list-disc pl-5">
+                                <li>Ver o seu perfil</li>
+                                <li>Enviar-lhe mensagens</li>
+                                <li>Comentar nos seus hunts</li>
+                                <li>Segui-lo</li>
+                            </ul>
+                        </span>
+                    </DialogDescription>
+                    <DialogFooter className="pt-4">
+                        <DialogClose asChild>
+                            <Button variant="secondary">
+                                <AiOutlineClose />
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <Button variant="default" disabled={unblockProcessing} onClick={handleUnblock}>
+                            <ShieldCheckIcon /> Desbloquear
                         </Button>
                     </DialogFooter>
                 </DialogContent>

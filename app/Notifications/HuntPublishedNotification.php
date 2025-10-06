@@ -30,6 +30,12 @@ final class HuntPublishedNotification extends Notification implements ShouldQueu
      */
     public function via(object $notifiable): array
     {
+        // Don't send notification if there's a blocking relationship
+        if ($notifiable instanceof User &&
+            ($notifiable->hasBlocked($this->author) || $notifiable->isBlockedBy($this->author))) {
+            return [];
+        }
+
         $channels = [];
 
         /** @var array<string, mixed> $settings */

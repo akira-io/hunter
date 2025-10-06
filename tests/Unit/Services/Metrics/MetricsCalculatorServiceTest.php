@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\Comment;
 use App\Models\Hunt;
 use App\Models\User;
 use App\Services\Metrics\MetricsCalculatorService;
@@ -41,19 +40,6 @@ it('throws exception for unsupported model', function () {
 
     $this->service->calculate($user);
 })->throws(InvalidArgumentException::class, 'No metrics calculator found for model');
-
-// it('throws exception for comment model')->skip(' Create Comment factory or update test', function () {
-//     $owner = User::factory()->create();
-//     $hunt = Hunt::factory()->create(['owner_id' => $owner->id]);
-//
-//     $comment = Comment::factory()->create([
-//         'owner_id' => $owner->id,
-//         'commentable_id' => $hunt->id,
-//         'commentable_type' => Hunt::class,
-//     ]);
-//
-//     $this->service->calculate($comment);
-// })->throws(InvalidArgumentException::class, 'No metrics calculator found for model');
 
 it('finds correct calculator for hunt model', function () {
     $hunt = Hunt::factory()->create([
