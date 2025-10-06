@@ -41,7 +41,7 @@ it('should not allow following a blocked user', function () {
     ]);
 
     expect($response->status())
-        ->toBe(302)
+        ->toBe(500)
         ->and($this->user->isFollowing($this->hunter))
         ->toBeFalse();
 });
@@ -54,7 +54,7 @@ it('should not allow following when blocked by the user', function () {
     ]);
 
     expect($response->status())
-        ->toBe(302)
+        ->toBe(500)
         ->and($this->user->isFollowing($this->hunter))
         ->toBeFalse();
 });

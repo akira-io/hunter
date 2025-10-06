@@ -41,39 +41,15 @@ final readonly class PublicProfileController
 
         $huntersWithStatus = $authUser->attachFollowStatus($hunters);
 
-        $huntersWithStatus->transform(function ($hunter) use ($authUser) {
+        $huntersWithStatus->transform(fn (User|array $hunter): User|array =>
             // Handle both User models and arrays
-            $hunterId = $hunter instanceof User ? $hunter->id : $hunter['id'];
-
-            /** @var User $user */
-            $user = User::query()->find($hunterId);
-
-            if ($hunter instanceof User) {
-                $hunter->setAttribute('is_blocked', $authUser->hasBlocked($user));
-            } else {
-                $hunter['is_blocked'] = $authUser->hasBlocked($user);
-            }
-
-            return $hunter;
-        });
+            $this->handleBothUserModelsAndArrays($hunter, $authUser));
 
         // Attach follow status and blocked status to huntings
         $huntingsWithStatus = $authUser->attachFollowStatus($huntings);
-        $huntingsWithStatus->transform(function ($hunting) use ($authUser) {
+        $huntingsWithStatus->transform(fn (array|User $hunting): User|array =>
             // Handle both User models and arrays
-            $huntingId = $hunting instanceof User ? $hunting->id : $hunting['id'];
-
-            /** @var User $user */
-            $user = User::query()->find($huntingId);
-
-            if ($hunting instanceof User) {
-                $hunting->setAttribute('is_blocked', $authUser->hasBlocked($user));
-            } else {
-                $hunting['is_blocked'] = $authUser->hasBlocked($user);
-            }
-
-            return $hunting;
-        });
+            $this->handleBothUserModelsAndArrays($hunting, $authUser));
 
         return inertia('public-profile', [
             'user' => $userProfileAction->handle($user),
@@ -81,5 +57,28 @@ final readonly class PublicProfileController
             'hunters' => $huntersWithStatus,
             'huntings' => $huntingsWithStatus,
         ]);
+    }
+
+    /**
+     * Handle both User models and arrays to attach the 'is_blocked' attribute.
+     *
+     * @param  User|array<string,mixed>  $hunting
+     * @return array<string,mixed>|User
+     */
+    private function handleBothUserModelsAndArrays(User|array $hunting, User $authUser): array|User
+    {
+
+        $huntingId = $hunting instanceof User ? $hunting->id : $hunting['id'];
+
+        /** @var User $user */
+        $user = User::query()->find($huntingId);
+
+        if ($hunting instanceof User) {
+            $hunting->setAttribute('is_blocked', $authUser->hasBlocked($user));
+        } else {
+            $hunting['is_blocked'] = $authUser->hasBlocked($user);
+        }
+
+        return $hunting;
     }
 }

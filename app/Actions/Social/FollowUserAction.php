@@ -15,7 +15,7 @@ final readonly class FollowUserAction
     /**
      * Follow a user.
      *
-     * @throws CannotFollowYourSelfException|FollowableTraitNotFoundException
+     * @throws CannotFollowYourSelfException|FollowableTraitNotFoundException|InvalidArgumentException
      */
     public function handle(User $follower, User $userToFollow): void
     {
