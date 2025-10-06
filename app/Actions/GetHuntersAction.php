@@ -68,6 +68,7 @@ final readonly class GetHuntersAction
                     $data['has_followed'] = $userModel->has_followed ?? false;
                     $data['followed_at'] = $userModel->followed_at ?? null;
                     $data['follow_accepted_at'] = $userModel->follow_accepted_at ?? null;
+                    $data['is_blocked'] = $user->hasBlocked($userModel);
                 }
 
                 return $data;

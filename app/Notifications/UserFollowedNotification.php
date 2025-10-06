@@ -28,6 +28,12 @@ final class UserFollowedNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
+        // Don't send notification if there's a blocking relationship
+        if ($notifiable instanceof User &&
+            ($notifiable->hasBlocked($this->follower) || $notifiable->isBlockedBy($this->follower))) {
+            return [];
+        }
+
         $channels = [];
 
         /** @var array<string, mixed> $settings */
