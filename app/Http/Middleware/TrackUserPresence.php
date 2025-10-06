@@ -39,6 +39,14 @@ final readonly class TrackUserPresence
                 return $response;
             }
 
+            // Only track presence if user has activity status enabled
+            if (! $user->showsActivityStatus()) {
+                /** @var Response $response */
+                $response = $next($request);
+
+                return $response;
+            }
+
             $cacheKey = "user_online_{$userId}";
             $lastSeen = Cache::get($cacheKey);
 

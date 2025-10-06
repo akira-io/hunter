@@ -217,7 +217,9 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                             <Lock className="size-4" />
                                             Mostrar status de atividade
                                         </Label>
-                                        <p className="text-xs text-zinc-500 dark:text-zinc-400">Permite que outros vejam quando está online</p>
+                                        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                                            Permite que outros vejam quando está online. Se desativar, também não poderá ver o status online de outros utilizadores.
+                                        </p>
                                     </div>
                                     <Switch
                                         id="show_activity_status"
