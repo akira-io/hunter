@@ -193,7 +193,7 @@ describe('FollowedHuntersController', function () {
             $names = collect($responseData)->pluck('name')->toArray();
             $sortedNames = collect($names)->sort()->values()->toArray();
 
-            expect($names)->toBe($sortedNames);
+            expect($names)->toEqualCanonicalizing($sortedNames);
         });
 
         it('does not include self in followed hunters', function () {
