@@ -36,6 +36,8 @@ final class HuntResource extends JsonResource
         /** @var User|null $user */
         $user = $request->user();
 
+        $isOwner = $user instanceof User && $user->id === $this->owner_id;
+
         return [
             'id' => $this->id,
             'content' => $this->content,
@@ -47,12 +49,13 @@ final class HuntResource extends JsonResource
             'owner' => HuntOwnerResource::make($this->owner)->resolve(),
             'comments' => CommentResource::collection($this->commentsWithHasLiked())->resolve(),
             'likes_count' => (int) $metrics->get('likes'),
-            'views' => (int) $metrics->get('views'),
-            'shares' => (int) $metrics->get('shares'),
+            'views' => $isOwner ? (int) $metrics->get('views') : null,
+            'shares' => $isOwner ? (int) $metrics->get('shares') : null,
             'has_liked' => $this->has_liked ?? false,
             'image_url' => $this->getFirstMediaUrl('hunts'),
-            'metrics' => $metrics->toArray(),
+            'metrics' => $isOwner ? $metrics->toArray() : null,
             'can_comment' => $user instanceof User && $this->owner->canReceiveCommentsFrom($user),
+            'is_owner' => $isOwner,
         ];
 
     }

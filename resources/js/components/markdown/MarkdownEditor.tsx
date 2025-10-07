@@ -84,7 +84,7 @@ export function MarkdownEditor({
 
                 <TabsContent value="edit" className="mt-0">
                     <div
-                        className="border-border bg-muted focus-within:border-primary focus-within:ring-primary/20 overflow-hidden rounded-lg border transition-colors focus-within:ring-2"
+                        className="border-border bg-muted overflow-hidden rounded-lg border transition-colors focus-within:border-zinc-400 focus-within:ring-1 focus-within:ring-zinc-300 dark:focus-within:border-zinc-600 dark:focus-within:ring-zinc-700"
                         onPaste={handlePaste}
                         ref={(node) => {
                             if (node) {

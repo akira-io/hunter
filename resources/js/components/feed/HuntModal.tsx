@@ -1,5 +1,6 @@
 import { HuntComments } from '@/components/commentable/HuntComments';
 import { LikeButton } from '@/components/likeable/LikeButton';
+import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { OnboardingAvatar } from '@/components/Onboarding';
 import { Dialog, DialogContent, DialogOverlay, DialogPortal } from '@/components/ui/dialog';
 import hunts from '@/routes/hunts';
@@ -141,11 +142,18 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                     {/* Two-Column Layout */}
                     <div className="grid h-full grid-cols-1 rounded-2xl bg-white md:grid-cols-2 dark:bg-zinc-900">
                         {/* Left Column - Image */}
-                        {hunt.image_url && (
-                            <div className="relative flex items-center justify-center overflow-hidden bg-black md:h-full">
+                        <div className="relative flex items-center justify-center overflow-hidden bg-black md:h-full">
+                            {hunt.image_url ? (
                                 <img src={hunt.image_url} alt="Hunt image" className="h-auto w-full object-contain md:h-full" loading="lazy" />
-                            </div>
-                        )}
+                            ) : (
+                                <div className="flex h-full min-h-[300px] w-full items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-900 md:min-h-0">
+                                    <div className="text-center text-zinc-500">
+                                        <Eye size={64} className="mx-auto mb-4 opacity-20" />
+                                        <p className="text-sm">Sem imagem</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Right Column - Details, Comments, Interactions */}
                         <div className="flex flex-col md:h-full md:overflow-hidden">
@@ -164,7 +172,7 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
 
                             {/* Hunt Content */}
                             <div className="border-b border-zinc-200 p-4 dark:border-zinc-700">
-                                <p className="whitespace-pre-wrap text-zinc-900 dark:text-zinc-100">{hunt.content}</p>
+                                <MarkdownRenderer content={hunt.content} />
                             </div>
 
                             {/* Stats and Actions Combined */}
@@ -175,18 +183,22 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                                         <MessageCircle size={18} />
                                         <span className="text-sm">{hunt.comments.length}</span>
                                     </button>
-                                    <button
-                                        onClick={handleShare}
-                                        className="flex items-center gap-1.5 text-zinc-600 transition-colors hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400"
-                                    >
-                                        <Share2 size={18} />
-                                        <span className="text-sm">{hunt.shares_count || hunt.shares || 0}</span>
-                                    </button>
+                                    {hunt.is_owner && hunt.shares !== null && (
+                                        <button
+                                            onClick={handleShare}
+                                            className="flex items-center gap-1.5 text-zinc-600 transition-colors hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400"
+                                        >
+                                            <Share2 size={18} />
+                                            <span className="text-sm">{hunt.shares}</span>
+                                        </button>
+                                    )}
                                 </div>
-                                <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-                                    <Eye size={16} />
-                                    <span>{hunt.views_count || hunt.views || 0}</span>
-                                </div>
+                                {hunt.is_owner && hunt.views !== null && (
+                                    <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
+                                        <Eye size={16} />
+                                        <span>{hunt.views}</span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Comments Section - Scrollable on Desktop only */}

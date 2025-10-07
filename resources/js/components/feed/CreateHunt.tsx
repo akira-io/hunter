@@ -120,7 +120,7 @@ export function CreateHunt() {
         <Card
             className={cn(
                 'gradient mx-auto w-full max-w-2xl transition-all duration-300',
-                isFocused && 'shadow-lg ring-2 shadow-purple-500/20 ring-purple-500/50',
+                isFocused && 'shadow-md ring-1 ring-zinc-300 dark:ring-zinc-700',
                 isSuccess && 'shadow-lg ring-2 shadow-emerald-500/20 ring-emerald-500/50',
             )}
         >
