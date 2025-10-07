@@ -125,8 +125,8 @@ export function GlobalSearch() {
                 onClick={() => setOpen(true)}
             >
                 <Search className="mr-2 h-4 w-4" />
-                <span className="hidden lg:inline-flex">Buscar...</span>
-                <span className="inline-flex lg:hidden">Buscar...</span>
+                <span className="hidden lg:inline-flex">Procurar...</span>
+                <span className="inline-flex lg:hidden">Procurar...</span>
                 <kbd className="bg-muted pointer-events-none absolute top-1.5 right-1.5 hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none sm:flex">
                     <span className="text-xs">⌘</span>K
                 </kbd>
@@ -142,7 +142,7 @@ export function GlobalSearch() {
                     <Command.Input
                         value={search}
                         onValueChange={setSearch}
-                        placeholder="Buscar hunters, projetos..."
+                        placeholder="Procurar hunters, projetos..."
                         className="placeholder:text-muted-foreground flex h-14 w-full rounded-t-lg border-b bg-transparent px-4 py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     />
 

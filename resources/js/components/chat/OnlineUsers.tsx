@@ -117,7 +117,7 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     className="relative size-14 rounded-full bg-gradient-to-br from-purple-500 to-purple-800 shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95"
-                    aria-label="Abrir chat e lista de usuários online"
+                    aria-label="Abrir chat e lista de Hunters online"
                     aria-expanded={isOpen}
                 >
                     {/*<div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-sm" />*/}
@@ -312,15 +312,13 @@ export const OnlineUsers: React.FC<ChatUsersProps> = ({ currentUserId }) => {
                                 <Users size={32} className="mx-auto mb-2 text-zinc-400 dark:text-zinc-600" />
                                 <p className="text-sm text-zinc-500 dark:text-zinc-400">
                                     {searchTerm
-                                        ? `Nenhuma pessoa encontrada para "${searchTerm}"`
+                                        ? `Nenhum Hunter encontrado para "${searchTerm}"`
                                         : followedHuntersLoading
                                           ? 'Carregando...'
-                                          : 'Nenhum usuário disponível'}
+                                          : 'Nenhum Hunter disponível'}
                                 </p>
                                 {!searchTerm && !followedHuntersLoading && (
-                                    <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500">
-                                        Usuários online e hunters seguidos aparecerão aqui
-                                    </p>
+                                    <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500">Hunters online e seguidos aparecerão aqui</p>
                                 )}
                             </div>
                         )}
