@@ -87,8 +87,8 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                 setUserToUnblock(null);
                 toast({
                     icon: <CheckCircle className="text-green-400" />,
-                    title: 'Utilizador desbloqueado',
-                    description: 'O utilizador foi desbloqueado com sucesso.',
+                    title: 'Hunter desbloqueado',
+                    description: 'O Hunter foi desbloqueado com sucesso.',
                 });
             },
             onError: () => {
@@ -96,7 +96,7 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                     variant: 'destructive',
                     icon: <XCircle className="text-red-400" />,
                     title: 'Erro',
-                    description: 'Erro ao desbloquear utilizador. Tente novamente.',
+                    description: 'Erro ao desbloquear Hunter. Tente novamente.',
                 });
             },
         });
@@ -204,7 +204,7 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                             Aparecer nas pesquisas
                                         </Label>
                                         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                                            Permite que outros utilizadores encontrem o seu perfil através de pesquisas
+                                            Permite que outros Hunters encontrem o seu perfil através de pesquisas
                                         </p>
                                     </div>
                                     <Switch id="searchable" checked={data.searchable} onCheckedChange={(checked) => setData('searchable', checked)} />
@@ -219,7 +219,7 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                         </Label>
                                         <p className="text-xs text-zinc-500 dark:text-zinc-400">
                                             Permite que outros vejam quando está online. Se desativar, também não poderá ver o status online de outros
-                                            utilizadores.
+                                            Hunters.
                                         </p>
                                     </div>
                                     <Switch
@@ -243,15 +243,15 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
                                 <UserX className="size-5" />
-                                Utilizadores bloqueados
+                                Hunters bloqueados
                             </CardTitle>
-                            <CardDescription>Gerencie os utilizadores que bloqueou</CardDescription>
+                            <CardDescription>Gerencie os Hunters que bloqueou</CardDescription>
                         </CardHeader>
                         <CardContent>
                             {blockedUsers.length === 0 ? (
                                 <div className="py-8 text-center">
                                     <UserX className="mx-auto mb-3 size-12 text-zinc-400 dark:text-zinc-600" />
-                                    <p className="text-sm text-zinc-600 dark:text-zinc-400">Não bloqueou nenhum utilizador</p>
+                                    <p className="text-sm text-zinc-600 dark:text-zinc-400">Não bloqueou nenhum Hunter</p>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
@@ -290,10 +290,9 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                     <AlertDialog open={userToUnblock !== null} onOpenChange={(open) => !open && setUserToUnblock(null)}>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>Desbloquear utilizador?</AlertDialogTitle>
+                                <AlertDialogTitle>Desbloquear Hunter?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Após desbloquear, este utilizador poderá voltar a interagir consigo de acordo com as suas definições de
-                                    privacidade.
+                                    Após desbloquear, este Hunter poderá voltar a interagir consigo de acordo com as suas definições de privacidade.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>

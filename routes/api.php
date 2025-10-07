@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/online', function (Request $request) {
         $onlineUserIds = [];
 
-        // Buscar usuários online no cache
+        // Procurar Hunters online no cache
         $users = App\Models\User::all();
         foreach ($users as $user) {
             if (cache()->has("user_online_{$user->id}")) {

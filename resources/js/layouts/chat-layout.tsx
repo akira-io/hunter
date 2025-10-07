@@ -112,7 +112,7 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                                     <Search size={18} className="flex-shrink-0 text-zinc-400 dark:text-zinc-500" />
                                     <input
                                         type="text"
-                                        placeholder="Buscar conversas..."
+                                        placeholder="Procurar conversas..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         onFocus={() => setIsSearchFocused(true)}

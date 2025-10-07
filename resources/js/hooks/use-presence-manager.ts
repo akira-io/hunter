@@ -61,7 +61,7 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
                     updateHunterOnlineStatus(user.id, true);
                 });
             } catch (error) {
-                console.error('Erro ao buscar usuários online:', error);
+                console.error('Erro ao procurar Hunters online:', error);
                 setConnected(false);
             }
         };
