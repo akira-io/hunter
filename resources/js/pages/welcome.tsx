@@ -9,7 +9,7 @@ import { type SharedData, User } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RiDiscordFill, RiGithubFill } from '@remixicon/react';
 import { LogInIcon, UserPlus } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export interface WelcomeProps {
     users: User[];
@@ -33,6 +33,9 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+    // Store the initial quote so it doesn't change during searches
+    const initialQuote = useRef(quote);
 
     const uniqueUsers = users.filter((user, index, self) => index === self.findIndex((u) => u.id === user.id));
 
@@ -136,7 +139,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                             e talento local encontra visibilidade global.
                         </p>
                         <p className="text-muted-foreground -mt-6 mb-8 text-center text-xs">
-                            "{quote.message} - <b>{quote.author}</b>"
+                            "{initialQuote.current.message} - <b>{initialQuote.current.author}</b>"
                         </p>
                         <DevCount users={uniqueUsers} total={paginator.total} />
                     </div>
