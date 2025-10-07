@@ -31,7 +31,7 @@ export default function Huntings({ followings }: FollowingsProps) {
             <InfiniteScroll data="followings">
                 <div className="mx-auto grid w-full max-w-7xl grid-cols-1 justify-center gap-4 p-5 transition-all duration-1 sm:grid-cols-2 md:px-10 xl:grid-cols-3">
                     {followings.data.map(
-                        (following) => following.followable && <Onboarding user={following.followable} key={following.followable.id} />,
+                        (following) => following.followable && <Onboarding user={following.followable} key={following.followable.id} hasFollowed />,
                     )}
                 </div>
             </InfiniteScroll>

@@ -19,9 +19,9 @@ final readonly class FollowUserAction
      */
     public function handle(User $follower, User $userToFollow): void
     {
-        // Prevent following if either user has blocked the other
+
         if ($follower->hasBlocked($userToFollow) || $follower->isBlockedBy($userToFollow)) {
-            throw new InvalidArgumentException('Não pode seguir este utilizador.');
+            throw new InvalidArgumentException('Hunter não está a aceitar seguidores neste momento. Tente mais tarde.');
         }
 
         $follower->follow($userToFollow);

@@ -5,8 +5,6 @@ interface UsePresenceProps {
     userId?: number;
 }
 
-// Joins the Reverb presence channel so the backend (and other clients) know this user is online.
-// No HTTP heartbeats; membership is maintained by the websocket connection.
 export const usePresence = ({ userId }: UsePresenceProps) => {
     useEffect(() => {
         if (!userId) return;
