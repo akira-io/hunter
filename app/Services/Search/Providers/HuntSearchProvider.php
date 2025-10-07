@@ -7,7 +7,6 @@ namespace App\Services\Search\Providers;
 use App\Contracts\Search\GlobalSearchable;
 use App\DataTransferObjects\Search\SearchResult;
 use App\Models\Hunt;
-use App\Models\User;
 use App\Services\Search\Concerns\HasScoutSearch;
 use Illuminate\Container\Attributes\Singleton;
 use Illuminate\Database\Eloquent\Model;
@@ -80,12 +79,12 @@ final class HuntSearchProvider implements GlobalSearchable
     }
 
     /**
-     * Generate the hunt detail URL with anchor to a specific hunt.
+     * Generate the hunt detail URL.
      */
     public function buildRedirectUrl(Model $model): string
     {
-        /** @var User $model */
-        return route('hunts.index')."#hunt-{$model->id}";
+        /** @var Hunt $model */
+        return route('hunts.show', ['hunt' => $model->id]);
     }
 
     /**

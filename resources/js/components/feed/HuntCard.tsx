@@ -11,13 +11,14 @@ import hunts from '@/routes/hunts';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import { BarChart, Edit, EllipsisVerticalIcon, Eye, MessageCircle, Repeat2, SaveIcon, Share2Icon, ShieldAlert, StopCircle } from 'lucide-react';
+import { BarChart, Edit, EllipsisVerticalIcon, Eye, MessageCircle, Repeat2, SaveIcon, ShieldAlert, StopCircle } from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface HuntCardProps {
     hunt: Hunt;
     ligatures?: boolean;
+    withOpenComments?: boolean;
 }
 
 export function HuntCardConnector() {
@@ -29,9 +30,9 @@ export function HuntCardConnector() {
     );
 }
 
-export function HuntCard({ hunt }: HuntCardProps) {
+export function HuntCard({ hunt, withOpenComments = false }: HuntCardProps) {
     const { auth } = usePage<SharedData>().props;
-    const [isOpenComments, setOpenComments] = useState(false);
+    const [isOpenComments, setOpenComments] = useState(withOpenComments);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const sanitizedImageUrl = useSanitizeImageUrl(hunt.image_url);
@@ -88,11 +89,11 @@ export function HuntCard({ hunt }: HuntCardProps) {
                             {hunt.is_owner && (
                                 <DropdownMenuItem onClick={gotoMetrics}>
                                     <BarChart size={16} className="opacity-60" aria-hidden="true" />
-                                    Ver Métricas
+                                    Métricas
                                 </DropdownMenuItem>
                             )}
                             <DropdownMenuItem>
-                                <Share2Icon size={16} className="opacity-60" aria-hidden="true" />
+                                <Repeat2 size={16} className="opacity-60" aria-hidden="true" />
                                 Partilhar
                             </DropdownMenuItem>
                             {auth.user.id === hunt.owner.id ? (
@@ -147,16 +148,14 @@ export function HuntCard({ hunt }: HuntCardProps) {
                     <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={() => setOpenComments((prev) => !prev)}>
                         <MessageCircle size={20} /> {hunt.comments?.length || 0}
                     </Button>
-                    {hunt.is_owner && hunt.shares !== null && (
-                        <Button variant="ghost" size="sm" className="flex items-center gap-1">
-                            <Repeat2 size={20} /> {hunt.shares}
-                        </Button>
-                    )}
-                    {hunt.is_owner && hunt.views !== null && (
-                        <Button variant="ghost" size="sm" className="flex items-center gap-1">
-                            <BarChart size={20} /> {hunt.views}
-                        </Button>
-                    )}
+
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                        <Repeat2 size={20} /> {hunt.shares ?? 0}
+                    </Button>
+
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                        <Eye size={20} /> {hunt.views ?? 0}
+                    </Button>
                 </CardFooter>
                 {isOpenComments && (
                     <div className="mt-0 overflow-hidden">

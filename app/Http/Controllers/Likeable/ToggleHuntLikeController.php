@@ -26,6 +26,6 @@ final readonly class ToggleHuntLikeController
 
         $toggleLikeAction->handle(user: $user, likeable: $hunt);
 
-        return to_route('hunts.index');
+        return back();
     }
 }

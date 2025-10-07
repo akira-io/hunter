@@ -111,6 +111,29 @@ describe('SearchController', function () {
             }
         });
 
+        test('hunt results have correct URL to hunt show page', function () {
+            $hunt = Hunt::factory()->create([
+                'content' => 'TestHuntURL '.uniqid(),
+            ]);
+
+            $hunt->searchable();
+            sleep(1);
+
+            $response = actingAs($this->user)
+                ->getJson('/search?q=TestHuntURL')
+                ->assertStatus(200);
+
+            $groups = $response->json('groups');
+            $huntGroup = collect($groups)->firstWhere('type', 'hunts');
+
+            if ($huntGroup && ! empty($huntGroup['results'])) {
+                $result = $huntGroup['results'][0];
+                expect($result['url'])->toBe(route('hunts.show', ['hunt' => $hunt->id]))
+                    ->and($result['url'])->toContain("/hunts/{$hunt->id}")
+                    ->and($result['url'])->not->toContain('#');
+            }
+        });
+
         test('result has required structure', function () {
             $testUser = User::factory()->create([
                 'name' => 'Structure Test '.uniqid(),

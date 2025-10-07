@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogOverlay, DialogPortal } from '@/components
 import hunts from '@/routes/hunts';
 import { Hunt } from '@/types';
 import { router } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Eye, MessageCircle, Share2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Eye, MessageCircle, Repeat2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 interface HuntModalProps {
@@ -183,22 +183,19 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                                         <MessageCircle size={18} />
                                         <span className="text-sm">{hunt.comments.length}</span>
                                     </button>
-                                    {hunt.is_owner && hunt.shares !== null && (
-                                        <button
-                                            onClick={handleShare}
-                                            className="flex items-center gap-1.5 text-zinc-600 transition-colors hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400"
-                                        >
-                                            <Share2 size={18} />
-                                            <span className="text-sm">{hunt.shares}</span>
-                                        </button>
-                                    )}
-                                </div>
-                                {hunt.is_owner && hunt.views !== null && (
+
                                     <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
                                         <Eye size={16} />
-                                        <span>{hunt.views}</span>
+                                        <span>{hunt.views ?? 0}</span>
                                     </div>
-                                )}
+                                    <button
+                                        onClick={handleShare}
+                                        className="flex items-center gap-1.5 text-zinc-600 transition-colors hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400"
+                                    >
+                                        <Repeat2 size={18} />
+                                        <span className="text-sm">{hunt.shares ?? 0}</span>
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Comments Section - Scrollable on Desktop only */}

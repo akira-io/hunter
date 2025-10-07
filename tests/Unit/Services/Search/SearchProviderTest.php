@@ -183,8 +183,7 @@ describe('HuntSearchProvider', function () {
             expect($url)
                 ->toBeString()
                 ->toContain('/hunts')
-                ->toContain('#hunt-')
-                ->toContain((string) $hunt->id);
+                ->toContain($hunt->id);
         });
 
         test('throws exception for non-hunt model', function () {
@@ -236,7 +235,7 @@ describe('HuntSearchProvider', function () {
             expect($url)
                 ->toBeString()
                 ->toContain('/hunts')
-                ->toContain("#hunt-{$hunt->id}");
+                ->toContain($hunt->id);
         });
     });
 
