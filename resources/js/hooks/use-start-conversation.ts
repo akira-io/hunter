@@ -1,3 +1,4 @@
+import { useToast } from '@/hooks/use-toast';
 import api from '@/lib/api';
 import chat from '@/routes/chat';
 import { router } from '@inertiajs/react';
@@ -12,11 +13,11 @@ interface StartConversationResult {
 export const useStartConversation = (): StartConversationResult => {
     const [isStarting, setIsStarting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { toast } = useToast();
 
     const startConversation = async (userId: number) => {
         setIsStarting(true);
         setError(null);
-
         try {
             const response = await api.post<{ id: number; message: string }>('/conversations', {
                 type: 'direct',
@@ -31,7 +32,11 @@ export const useStartConversation = (): StartConversationResult => {
             });
         } catch (err) {
             console.error('Error starting conversation:', err);
-            setError('Failed to start conversation. Please try again.');
+
+            toast({
+                variant: 'destructive',
+                description: ' Hunter não esta a  aceitar mensagens neste momento. Tente novamente mais tarde.',
+            });
         } finally {
             setIsStarting(false);
         }

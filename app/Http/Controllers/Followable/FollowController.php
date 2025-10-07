@@ -31,8 +31,14 @@ final readonly class FollowController
         /** @var User $userToFollow */
         $userToFollow = User::query()->findOrFail($request->validated('user_id'));
 
-        $followUserAction->handle(follower: $user, userToFollow: $userToFollow);
+        try {
+            $followUserAction->handle(follower: $user, userToFollow: $userToFollow);
 
-        return back();
+            return back();
+        } catch (InvalidArgumentException $e) {
+
+            return back()->withErrors(['message' => $e->getMessage()]);
+        }
+
     }
 }
