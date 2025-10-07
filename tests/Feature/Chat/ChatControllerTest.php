@@ -50,17 +50,12 @@ describe('ChatController', function () {
             );
     });
 
-    it('renders chat show page even if conversation does not exist yet', function () {
-        // Controller doesn't validate if conversation exists - API will handle that
+    it('denies access to non-existent conversation', function () {
         $nonExistentId = 99999;
 
         $response = get(route('chat.show', ['conversation' => $nonExistentId]));
 
-        $response->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('chat/desktop')
-                ->where('conversationId', $nonExistentId)
-            );
+        $response->assertForbidden();
     });
 
     it('requires authentication for chat index', function () {
@@ -88,10 +83,17 @@ describe('ChatController', function () {
     });
 
     it('passes correct conversation id as integer', function () {
-        $response = get(route('chat.show', ['conversation' => '123']));
+        $otherUser = User::factory()->create();
+        $conversation = Conversation::factory()->create();
+        $conversation->participants()->attach([
+            $this->user->id => ['joined_at' => now(), 'is_admin' => true],
+            $otherUser->id => ['joined_at' => now(), 'is_admin' => false],
+        ]);
+
+        $response = get(route('chat.show', ['conversation' => (string) $conversation->id]));
 
         $response->assertInertia(fn ($page) => $page
-            ->where('conversationId', 123) // Should be integer
+            ->where('conversationId', $conversation->id) // Should be integer
         );
     });
 });

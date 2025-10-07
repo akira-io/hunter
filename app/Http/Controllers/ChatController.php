@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\User\GetAvatarAction;
+use App\Actions\Chat\ValidateUserIsParticipantAction;
+use App\Http\Resources\CurrentUserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -21,7 +22,7 @@ final readonly class ChatController
      * Create a new controller instance.
      */
     public function __construct(
-        private GetAvatarAction $getAvatarAction
+        private ValidateUserIsParticipantAction $validateUserIsParticipantAction
     ) {}
 
     /**
@@ -34,11 +35,7 @@ final readonly class ChatController
         $user = $request->user();
 
         return Inertia::render('chat/index', [
-            'currentUser' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'avatar_url' => $this->getAvatarAction->handle($user),
-            ],
+            'currentUser' => CurrentUserResource::make($user)->resolve(),
         ]);
     }
 
@@ -51,13 +48,11 @@ final readonly class ChatController
         /** @var User $user */
         $user = $request->user();
 
+        $this->validateUserIsParticipantAction->handle($user, $conversation);
+
         return Inertia::render('chat/desktop', [
             'conversationId' => $conversation,
-            'currentUser' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'avatar_url' => $this->getAvatarAction->handle($user),
-            ],
+            'currentUser' => CurrentUserResource::make($user)->resolve(),
         ]);
     }
 }
