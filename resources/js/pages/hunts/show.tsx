@@ -39,13 +39,15 @@ export default function HuntShow({ hunt }: HuntShowProps) {
 
                 {/* Two Column Layout on Desktop */}
                 <div className="grid grid-cols-1 gap-0 md:gap-4 lg:grid-cols-3">
-                    <div className="flex flex-col gap-0 lg:col-span-2">
+                    <div className={`flex flex-col gap-0 ${hunt.is_owner ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
                         <HuntCard hunt={hunt} />
                     </div>
 
-                    <div className="lg:col-span-1">
-                        <HuntMetrics hunt={hunt} />
-                    </div>
+                    {hunt.is_owner && (
+                        <div className="lg:col-span-1">
+                            <HuntMetrics hunt={hunt} />
+                        </div>
+                    )}
                 </div>
             </div>
         </AppLayout>

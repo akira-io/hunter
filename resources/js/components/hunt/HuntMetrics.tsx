@@ -28,6 +28,11 @@ function MetricItem({ icon, label, value, color = 'text-primary' }: MetricItemPr
 }
 
 export function HuntMetrics({ hunt }: HuntMetricsProps) {
+    // Only display if user is the owner
+    if (!hunt.is_owner || hunt.views === null) {
+        return null;
+    }
+
     const totalEngagements = (hunt.likes_count || 0) + (hunt.comments?.length || 0);
     const engagementRate = hunt.views > 0 ? ((totalEngagements / hunt.views) * 100).toFixed(1) : '0.0';
 
@@ -41,13 +46,13 @@ export function HuntMetrics({ hunt }: HuntMetricsProps) {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                    <MetricItem icon={<Eye size={18} />} label="Visualizações" value={hunt.views || 0} color="text-blue-500" />
+                    <MetricItem icon={<Eye size={18} />} label="Visualizações" value={hunt.views} color="text-blue-500" />
                     <Separator />
                     <MetricItem icon={<Heart size={18} />} label="Likes" value={hunt.likes_count || 0} color="text-purple-500" />
                     <Separator />
                     <MetricItem icon={<MessageCircle size={18} />} label="Comentários" value={hunt.comments?.length || 0} color="text-green-500" />
                     <Separator />
-                    <MetricItem icon={<Repeat2 size={18} />} label="Partilhas" value={hunt.shares || 0} color="text-orange-500" />
+                    <MetricItem icon={<Repeat2 size={18} />} label="Partilhas" value={hunt.shares ?? 0} color="text-orange-500" />
                     <Separator />
                     <MetricItem icon={<TrendingUp size={18} />} label="Engajamento" value={`${engagementRate}%`} color="text-purple-500" />
                 </CardContent>

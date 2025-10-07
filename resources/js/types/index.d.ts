@@ -84,13 +84,15 @@ export interface Hunt {
     owner: User;
     image_url?: string;
     comments: Comment[];
-    shares: number;
+    shares: number | null;
     likes_count: number;
-    views: number;
+    views: number | null;
     views_count?: number;
     shares_count?: number;
     has_liked: boolean;
     can_comment: boolean;
+    is_owner: boolean;
+    metrics?: Record<string, unknown> | null;
 }
 
 export interface Comment {

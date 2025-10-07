@@ -41,18 +41,19 @@ export function HuntCard({ hunt }: HuntCardProps) {
     }
 
     function gotoHuntDetail() {
-        // If hunt has image, open modal instead of navigating
-        if (sanitizedImageUrl) {
-            setIsModalOpen(true);
-        } else {
-            router.get(hunts.show.url(hunt));
-        }
+        // Always open in modal
+        setIsModalOpen(true);
+    }
+
+    function gotoMetrics() {
+        // Navigate to full page with metrics (owner only)
+        router.get(hunts.show.url(hunt));
     }
 
     return (
         <>
-            {/* Hunt Modal for Hunts with Images */}
-            {sanitizedImageUrl && <HuntModal hunt={hunt} open={isModalOpen} onOpenChange={setIsModalOpen} />}
+            {/* Hunt Modal - opens for all hunts */}
+            <HuntModal hunt={hunt} open={isModalOpen} onOpenChange={setIsModalOpen} />
 
             <Card className="relative mx-auto mb-4 w-full max-w-2xl overflow-hidden">
                 <CardHeader className="flex flex-row items-start gap-4">
@@ -84,6 +85,12 @@ export function HuntCard({ hunt }: HuntCardProps) {
                                 <Eye size={16} className="opacity-60" aria-hidden="true" />
                                 Ver Hunt
                             </DropdownMenuItem>
+                            {hunt.is_owner && (
+                                <DropdownMenuItem onClick={gotoMetrics}>
+                                    <BarChart size={16} className="opacity-60" aria-hidden="true" />
+                                    Ver Métricas
+                                </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem>
                                 <Share2Icon size={16} className="opacity-60" aria-hidden="true" />
                                 Partilhar
@@ -140,12 +147,16 @@ export function HuntCard({ hunt }: HuntCardProps) {
                     <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={() => setOpenComments((prev) => !prev)}>
                         <MessageCircle size={20} /> {hunt.comments?.length || 0}
                     </Button>
-                    <Button variant="ghost" size="sm" className="flex items-center gap-1">
-                        <Repeat2 size={20} /> {hunt.shares}
-                    </Button>
-                    <Button variant="ghost" size="sm" className="flex items-center gap-1">
-                        <BarChart size={20} /> {hunt.views}
-                    </Button>
+                    {hunt.is_owner && hunt.shares !== null && (
+                        <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                            <Repeat2 size={20} /> {hunt.shares}
+                        </Button>
+                    )}
+                    {hunt.is_owner && hunt.views !== null && (
+                        <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                            <BarChart size={20} /> {hunt.views}
+                        </Button>
+                    )}
                 </CardFooter>
                 {isOpenComments && (
                     <div className="mt-0 overflow-hidden">
