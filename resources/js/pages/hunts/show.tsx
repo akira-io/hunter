@@ -40,7 +40,7 @@ export default function HuntShow({ hunt }: HuntShowProps) {
                 {/* Two Column Layout on Desktop */}
                 <div className="grid grid-cols-1 gap-0 md:gap-4 lg:grid-cols-3">
                     <div className={`flex flex-col gap-0 ${hunt.is_owner ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
-                        <HuntCard hunt={hunt} />
+                        <HuntCard hunt={hunt} withOpenComments={true} />
                     </div>
 
                     {hunt.is_owner && (
