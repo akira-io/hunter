@@ -22,7 +22,9 @@
             "laravel's",
             "gamification",
             "ux",
-            "commenter"
+            "commenter",
+            "orchestrator",
+            "virality"
         ],
         "paths": [
             "resources",

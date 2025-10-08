@@ -5,14 +5,22 @@ declare(strict_types=1);
 namespace App\Services\Metrics\Calculators;
 
 use App\Contracts\Metrics\MetricsCalculable;
+use App\DataTransferObjects\Metrics\HuntMetrics;
 use App\DataTransferObjects\Metrics\MetricsData;
 use App\Models\Hunt;
+use App\Services\Metrics\MetricsPipeline;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use InvalidArgumentException;
 
 final readonly class HuntMetricsCalculator implements MetricsCalculable
 {
+    /**
+     * Create a new hunt metrics calculator instance.
+     */
+    public function __construct(
+        private MetricsPipeline $pipeline,
+    ) {}
+
     /**
      * Get the metrics type identifier.
      */
@@ -38,9 +46,7 @@ final readonly class HuntMetricsCalculator implements MetricsCalculable
     }
 
     /**
-     * Calculate metrics for a given model instance.
-     *
-     * @throws InvalidArgumentException When the model is not supported.
+     * Calculate comprehensive metrics for a hunt using pipeline.
      */
     public function calculate(Model $model): MetricsData
     {
@@ -48,61 +54,20 @@ final readonly class HuntMetricsCalculator implements MetricsCalculable
             throw new InvalidArgumentException('Model must be an instance of Hunt');
         }
 
-        /** @var Hunt $hunt */
-        $hunt = $model;
-
-        $views = $hunt->views_count ?? 0;
-        $likes = $hunt->likesCount();
-        $comments = $hunt->comments()->count();
-        $shares = $hunt->shares_count ?? 0;
-
-        $totalEngagements = $this->engagements($likes, $comments, $shares);
-
-        $interactions = $likes + $comments;
+        $huntMetrics = $this->pipeline->process($model);
 
         return new MetricsData(
             type: $this->getType(),
-            metrics: [
-                'views' => $views,
-                'likes' => $likes,
-                'comments' => $comments,
-                'shares' => $shares,
-                'total_engagements' => $totalEngagements,
-                'engagement_rate' => $this->engagementRate($views, $totalEngagements),
-                'interaction_rate' => $this->engagementRate($views, $interactions),
-                'avg_engagement_per_view' => $this->averageEngagementPerView($views, $totalEngagements),
-            ],
+            metrics: $huntMetrics->toArray(),
         );
     }
 
     /**
-     * Calculate total engagements.
+     * Calculate metrics and return HuntMetrics DTO directly.
+     * Recommended method for type-safe access.
      */
-    private function engagements(MorphToMany|int $likes, int $comments, int $shares): int|float
+    public function calculateDetailed(Hunt $hunt): HuntMetrics
     {
-
-        return $likes + $comments + $shares;
-    }
-
-    /**
-     * Calculate engagement rate as a percentage.
-     */
-    private function engagementRate(mixed $views, mixed $totalEngagements): float
-    {
-
-        return $views > 0
-            ? round(($totalEngagements / $views) * 100, 2)
-            : 0.0;
-    }
-
-    /**
-     * Calculate average engagements per view.
-     */
-    private function averageEngagementPerView(int $views, float|int $totalEngagements): float
-    {
-
-        return $views > 0
-            ? round($totalEngagements / $views, 2)
-            : 0.0;
+        return $this->pipeline->process($hunt);
     }
 }

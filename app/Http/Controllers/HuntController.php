@@ -70,12 +70,9 @@ final readonly class HuntController
         /** @var User $user */
         $user = $request->user();
 
-        // Check if the authenticated user can view the hunt owner's profile
         if (! $hunt->owner->canBeViewedBy($user)) {
             abort(403, 'You do not have permission to view this hunt.');
         }
-
-        $hunt->query()->increment('views_count');
 
         $user->attachLikeStatus($hunt);
 
