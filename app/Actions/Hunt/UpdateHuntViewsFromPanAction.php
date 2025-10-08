@@ -23,7 +23,7 @@ final readonly class UpdateHuntViewsFromPanAction
         $query = $this->buildQuery();
 
         if ($this->containsHuntIds($huntIds)) {
-            $huntNames = $huntIds->map(fn ($id): string => "hunt-{$id}");
+            $huntNames = $huntIds->map(fn (int|string $id): string => "hunt-{$id}");
             $query->whereIn('name', $huntNames->toArray());
         }
 

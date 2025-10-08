@@ -15,11 +15,11 @@ use Illuminate\Support\ServiceProvider;
 final class MetricsServiceProvider extends ServiceProvider
 {
     /**
-     * All of the container bindings that should be registered.
+     * All the container bindings that should be registered.
      *
      * @var array<string, string>
      */
-    public $bindings = [
+    public array $bindings = [
         EngagementMetricsCalculatorInterface::class => EngagementMetricsCalculator::class,
         QualityMetricsCalculatorInterface::class => QualityMetricsCalculator::class,
         ReachMetricsCalculatorInterface::class => ReachMetricsCalculator::class,
