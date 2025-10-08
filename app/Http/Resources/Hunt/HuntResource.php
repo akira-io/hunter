@@ -8,12 +8,13 @@ use App\Http\Resources\Commentable\CommentResource;
 use App\Models\Comment;
 use App\Models\Hunt;
 use App\Models\User;
-use App\Services\Metrics\MetricsCalculatorService;
+use App\Services\Metrics\Calculators\HuntMetricsCalculator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Number;
 
 /** @mixin Hunt */
 final class HuntResource extends JsonResource
@@ -25,18 +26,45 @@ final class HuntResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var MetricsCalculatorService $metricsService */
-        $metricsService = app(MetricsCalculatorService::class);
+        /** @var HuntMetricsCalculator $calculator */
+        $calculator = app(HuntMetricsCalculator::class);
 
         /** @var Hunt $hunt */
         $hunt = $this->resource;
 
-        $metrics = $metricsService->calculate($hunt);
+        $huntMetrics = $calculator->calculateDetailed($hunt);
 
         /** @var User|null $user */
         $user = $request->user();
 
         $isOwner = $user instanceof User && $user->id === $this->owner_id;
+
+        $publicMetrics = [
+            'views' => Number::abbreviate($huntMetrics->views),
+            'likes' => Number::abbreviate($huntMetrics->likes),
+            'comments' => Number::abbreviate($huntMetrics->comments),
+            'shares' => Number::abbreviate($huntMetrics->shares),
+        ];
+
+        $advancedMetrics = $isOwner ? [
+            'views' => $huntMetrics->views,
+            'likes' => $huntMetrics->likes,
+            'comments' => $huntMetrics->comments,
+            'shares' => $huntMetrics->shares,
+            'total_engagements' => $huntMetrics->getTotalEngagements(),
+
+            'engagement_rate' => $huntMetrics->engagementRate,
+            'interaction_rate' => $huntMetrics->interactionRate,
+            'comment_rate' => $huntMetrics->commentRate,
+            'share_rate' => $huntMetrics->shareRate,
+            'quality_score' => $huntMetrics->qualityScore,
+            'virality_coefficient' => $huntMetrics->viralityCoefficient,
+            'avg_engagement_per_view' => $huntMetrics->avgEngagementPerView,
+            'performance_level' => $huntMetrics->performanceLevel,
+            'rank' => $huntMetrics->rank,
+            'is_viral' => $huntMetrics->isViral(),
+            'is_performing_well' => $huntMetrics->isPerformingWell(),
+        ] : null;
 
         return [
             'id' => $this->id,
@@ -48,12 +76,12 @@ final class HuntResource extends JsonResource
             'updated_at' => $this->updated_at->diffForHumans(),
             'owner' => HuntOwnerResource::make($this->owner)->resolve(),
             'comments' => CommentResource::collection($this->commentsWithHasLiked())->resolve(),
-            'likes_count' => (int) $metrics->get('likes'),
-            'views' => $isOwner ? (int) $metrics->get('views') : null,
-            'shares' => $isOwner ? (int) $metrics->get('shares') : null,
+            'likes_count' => (int) $publicMetrics['likes'],
+            'views' => (int) $publicMetrics['views'],
+            'shares' => (int) $publicMetrics['shares'],
             'has_liked' => $this->has_liked ?? false,
             'image_url' => $this->getFirstMediaUrl('hunts'),
-            'metrics' => $isOwner ? $metrics->toArray() : null,
+            'metrics' => $advancedMetrics,
             'can_comment' => $user instanceof User && $this->owner->canReceiveCommentsFrom($user),
             'is_owner' => $isOwner,
         ];

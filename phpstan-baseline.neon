@@ -65,15 +65,3 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: app/Models/Hunt.php
-
-		-
-			message: '#^Binary operation "\+" between Illuminate\\Database\\Eloquent\\Relations\\MorphToMany\|int and int results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php
-
-		-
-			message: '#^Method App\\Services\\Metrics\\Calculators\\HuntMetricsCalculator\:\:engagements\(\) has parameter \$likes with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphToMany but does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Services/Metrics/Calculators/HuntMetricsCalculator.php

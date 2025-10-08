@@ -84,15 +84,35 @@ export interface Hunt {
     owner: User;
     image_url?: string;
     comments: Comment[];
-    shares: number | null;
+    shares: number;
     likes_count: number;
-    views: number | null;
-    views_count?: number;
-    shares_count?: number;
+    views: number;
     has_liked: boolean;
     can_comment: boolean;
     is_owner: boolean;
-    metrics?: Record<string, unknown> | null;
+    metrics?: HuntMetrics | null;
+}
+
+export interface HuntMetrics {
+    // Raw counts
+    views: number;
+    likes: number;
+    comments: number;
+    shares: number;
+    total_engagements: number;
+
+    // Advanced metrics (only visible to owner)
+    engagement_rate: number;
+    interaction_rate: number;
+    comment_rate: number;
+    share_rate: number;
+    quality_score: number;
+    virality_coefficient: number;
+    avg_engagement_per_view: number;
+    performance_level: 'poor' | 'below_average' | 'average' | 'good' | 'excellent';
+    rank: number; // 1-5 stars
+    is_viral: boolean;
+    is_performing_well: boolean;
 }
 
 export interface Comment {

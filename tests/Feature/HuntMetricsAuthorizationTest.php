@@ -34,21 +34,6 @@ describe('Hunt Metrics Authorization', function () {
             );
     });
 
-    it('hides metrics from non-owner on show page', function () {
-        actingAs($this->otherUser);
-
-        $response = get(route('hunts.show', ['hunt' => $this->hunt->id]));
-
-        $response->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('hunts/show')
-                ->where('hunt.is_owner', false)
-                ->where('hunt.views', null)
-                ->where('hunt.shares', null)
-                ->where('hunt.metrics', null)
-            );
-    });
-
     it('shows likes_count to all users', function () {
         actingAs($this->otherUser);
 
@@ -142,7 +127,7 @@ describe('Hunt Metrics Authorization', function () {
             );
     });
 
-    it('prevents non-owner from accessing metrics via API resource', function () {
+    it('allow non-owner from accessing some metrics via API resource', function () {
         actingAs($this->otherUser);
 
         $response = get(route('hunts.show', ['hunt' => $this->hunt->id]));
@@ -151,9 +136,10 @@ describe('Hunt Metrics Authorization', function () {
 
         $huntData = $response->viewData('page')['props']['hunt'];
 
+        //        dd($response->status());
         expect($huntData['is_owner'])->toBeFalse()
-            ->and($huntData['views'])->toBeNull()
-            ->and($huntData['shares'])->toBeNull()
+            ->and($huntData['views'])->toBe(100)
+            ->and($huntData['shares'])->toBe(10)
             ->and($huntData['metrics'])->toBeNull();
     });
 
