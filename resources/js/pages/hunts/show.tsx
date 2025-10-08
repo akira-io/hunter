@@ -39,10 +39,13 @@ export default function HuntShow({ hunt }: HuntShowProps) {
 
                 {/* Owner Layout - Metrics First */}
                 {hunt.is_owner ? (
-                    <div className="flex flex-col gap-3 sm:gap-4">
-                        {/* Metrics Dashboard - Full Width at Top */}
-                        <HuntMetricsDashboard hunt={hunt} />
-                    </div>
+                    <>
+                        <div className="flex flex-col gap-3 sm:gap-4">
+                            {/* Metrics Dashboard - Full Width at Top */}
+
+                            <HuntMetricsDashboard hunt={hunt} />
+                        </div>
+                    </>
                 ) : (
                     /* Non-Owner Layout - Just the Hunt */
                     <div className="mx-auto w-full max-w-2xl">

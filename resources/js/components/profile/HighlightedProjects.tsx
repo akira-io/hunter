@@ -15,7 +15,7 @@ export function HighlightedProjects() {
                         Adicionar Destaques
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-white dark:bg-zinc-950">
+                <DialogContent>
                     <DialogHeader>
                         <DialogTitle className="text-zinc-900 dark:text-zinc-100">Apresentação</DialogTitle>
                         <DialogDescription className="text-zinc-600 dark:text-zinc-400">

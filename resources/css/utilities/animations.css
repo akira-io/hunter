@@ -94,4 +94,84 @@
             left: 100%;
         }
     }
+
+    /* Welcome loader animations */
+    .animate-scale-in {
+        animation: scale-in 0.8s ease-out forwards;
+    }
+
+    .animate-slide-up {
+        animation: slide-up 0.6s ease-out forwards;
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes scale-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes slide-up {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0) translateX(0);
+        }
+        25% {
+            transform: translateY(-10px) translateX(5px);
+        }
+        50% {
+            transform: translateY(-5px) translateX(-5px);
+        }
+        75% {
+            transform: translateY(-15px) translateX(3px);
+        }
+    }
+
+    /* Progress bar shimmer effect */
+    @keyframes shimmer {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    /* Fade in animation for content after loader */
+    .animate-fade-in {
+        animation: fade-in 1s ease-out forwards;
+    }
+
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }

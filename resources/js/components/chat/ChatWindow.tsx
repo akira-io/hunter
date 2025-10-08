@@ -225,7 +225,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
 
     if (localLoading) {
         return (
-            <div className="w-80 rounded-2xl border border-zinc-200 bg-white/95 shadow-2xl backdrop-blur-lg dark:border-zinc-700 dark:bg-zinc-900/95">
+            <div className="gradient bg-card w-80 rounded-2xl border border-zinc-200 shadow-2xl backdrop-blur-lg dark:border-zinc-700">
                 <div className="flex items-center justify-between rounded-t-2xl border-b border-zinc-200 bg-zinc-100 px-4 py-3 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
                     <span className="text-sm font-medium">Loading...</span>
                 </div>
@@ -238,7 +238,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
 
     return (
         <div
-            className={`flex w-80 flex-col rounded-2xl border bg-white/95 shadow-2xl backdrop-blur-lg ${isMinimized ? 'h-auto' : 'h-[26rem]'} relative dark:bg-zinc-900/95 ${
+            className={`gradient bg-card flex w-80 flex-col rounded-2xl border shadow-2xl backdrop-blur-lg ${isMinimized ? 'h-auto' : 'h-[26rem]'} relative ${
                 isMinimized && centralConversation?.unread_count && centralConversation.unread_count > 0
                     ? 'border-red-300 shadow-red-100 dark:border-red-700 dark:shadow-red-900/20'
                     : 'border-zinc-200 dark:border-zinc-700'

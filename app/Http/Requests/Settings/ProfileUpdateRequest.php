@@ -74,7 +74,7 @@ final class ProfileUpdateRequest extends FormRequest
     private function avatarRules(): array
     {
         if ($this->hasFile('avatar_url')) {
-            return ['nullable', 'image', 'max:400', 'mimes:jpg,jpeg,png'];
+            return ['nullable', 'image', 'max:2048', 'mimes:jpg,jpeg,png'];
         }
 
         if (is_string($this->input('avatar_url'))) {
@@ -92,7 +92,7 @@ final class ProfileUpdateRequest extends FormRequest
     private function backgroundRules(): array
     {
         if ($this->hasFile('background_image_url')) {
-            return ['nullable', 'image', 'max:400', 'mimes:jpg,jpeg,png'];
+            return ['nullable', 'image', 'max:2048', 'mimes:jpg,jpeg,png'];
         }
 
         if (is_string($this->input('background_image_url'))) {

@@ -41,7 +41,7 @@ export function useProfileUpdate() {
         const file = e.target.files?.[0];
         if (file) {
             // Validate file size
-            if (file.size > 400 * 1024) {
+            if (file.size > 2048 * 1024) {
                 setFileTooLarge(true);
                 setFileTooLargeDialogOpen(true);
                 return;

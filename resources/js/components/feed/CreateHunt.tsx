@@ -42,11 +42,11 @@ export function CreateHunt() {
         const files = e.target.files;
         const file = e.target.files?.[0];
 
-        if (file && file.size > 400 * 1024) {
+        if (file && file.size > 2048 * 1024) {
             toast({
                 variant: 'destructive',
                 title: 'Imagem muito grande',
-                description: 'O ficheiro é demasiado grande. O tamanho máximo é de 400 KB.',
+                description: 'O ficheiro é demasiado grande. O tamanho máximo é de 2 MB.',
             });
             return;
         }
