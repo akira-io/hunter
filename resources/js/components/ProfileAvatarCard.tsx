@@ -148,7 +148,7 @@ export default function ProfileAvatarCard() {
             </Dialog>
             <HunterAlertDialog
                 title="Ficheiro muito grande"
-                description="O ficheiro selecionado excede o limite de 400KB. Por favor escolha outro."
+                description="O ficheiro selecionado excede o limite de 2 MB. Por favor escolha outro."
                 open={fileTooLargeDialogOpen}
                 onOpenChange={setFileTooLargeDialogOpen}
                 onClick={() => setFileTooLargeDialogOpen(false)}

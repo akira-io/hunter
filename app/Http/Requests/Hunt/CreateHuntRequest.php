@@ -22,7 +22,7 @@ final class CreateHuntRequest extends FormRequest
             'is_reported' => ['boolean'],
             'is_pinned' => ['boolean'],
             'is_ignored' => ['boolean'],
-            'image' => ['nullable', 'image', 'max:400', 'mimes:jpg,jpeg,png'],
+            'image' => ['nullable', 'image', 'max:2048', 'mimes:jpg,jpeg,png'],
         ];
     }
 
