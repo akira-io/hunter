@@ -119,14 +119,14 @@ export function HuntMetricsDashboard({ hunt }: HuntMetricsDashboardProps) {
                         <MetricCard
                             icon={<Eye size={20} className="sm:h-6 sm:w-6" />}
                             label="Visualizações"
-                            value={hunt.views.toLocaleString()}
+                            value={metrics.views}
                             color="text-blue-500"
                             bgColor="bg-blue-500/5"
                         />
                         <MetricCard
                             icon={<Heart size={20} className="sm:h-6 sm:w-6" />}
                             label="Likes"
-                            value={hunt.likes_count.toLocaleString()}
+                            value={hunt.likes_count}
                             color="text-purple-500"
                             bgColor="bg-purple-500/5"
                         />
@@ -140,7 +140,7 @@ export function HuntMetricsDashboard({ hunt }: HuntMetricsDashboardProps) {
                         <MetricCard
                             icon={<Repeat2 size={20} className="sm:h-6 sm:w-6" />}
                             label="Partilhas"
-                            value={hunt.shares.toLocaleString()}
+                            value={metrics.shares}
                             color="text-orange-500"
                             bgColor="bg-orange-500/5"
                         />

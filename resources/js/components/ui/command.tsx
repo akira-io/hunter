@@ -13,7 +13,7 @@ function Command({
         <CommandPrimitive
             data-slot='command'
             className={cn(
-                'bg-white/95 dark:bg-zinc-900/95 text-popover-foreground backdrop-blur-lg border border-zinc-200 dark:border-zinc-700 flex h-full w-full flex-col overflow-hidden rounded-2xl shadow-2xl',
+                'gradient bg-card text-popover-foreground backdrop-blur-lg border border-zinc-200 dark:border-zinc-700 flex h-full w-full flex-col overflow-hidden rounded-2xl shadow-2xl',
                 className
             )}
             {...props}

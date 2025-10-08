@@ -41,10 +41,10 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
 
     useEffect(() => {
         const visited = sessionStorage.getItem('hasVisitedWelcome');
-        // if (visited) {
-        //     setShowLoader(false);
-        //     // setHasVisited(true);
-        // }
+        if (visited) {
+            setShowLoader(false);
+            setHasVisited(true);
+        }
     }, []);
 
     const handleLoaderComplete = () => {

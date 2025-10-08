@@ -140,7 +140,7 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                     )}
 
                     {/* Two-Column Layout */}
-                    <div className="grid h-full grid-cols-1 rounded-2xl bg-white md:grid-cols-2 dark:bg-zinc-900">
+                    <div className="gradient bg-card grid h-full grid-cols-1 rounded-2xl md:grid-cols-2">
                         {/* Left Column - Image */}
                         <div className="relative flex items-center justify-center overflow-hidden bg-black md:h-full">
                             {hunt.image_url ? (

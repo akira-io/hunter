@@ -47,10 +47,10 @@ final class HuntResource extends JsonResource
         ];
 
         $advancedMetrics = $isOwner ? [
-            'views' => $huntMetrics->views,
-            'likes' => $huntMetrics->likes,
-            'comments' => $huntMetrics->comments,
-            'shares' => $huntMetrics->shares,
+            'views' => Number::abbreviate($huntMetrics->views),
+            'likes' => Number::abbreviate($huntMetrics->likes),
+            'comments' => Number::abbreviate($huntMetrics->comments),
+            'shares' => Number::abbreviate($huntMetrics->shares),
             'total_engagements' => $huntMetrics->getTotalEngagements(),
 
             'engagement_rate' => $huntMetrics->engagementRate,

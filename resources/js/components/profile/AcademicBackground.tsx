@@ -146,7 +146,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                         Adicionar Formação Académica
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-white dark:bg-zinc-950">
+                <DialogContent>
                     <DialogHeader className="space-y-2">
                         <DialogTitle className="text-zinc-900 dark:text-zinc-100">Formação Académica</DialogTitle>
                         <DialogDescription className="text-zinc-600 dark:text-zinc-400">
@@ -187,10 +187,10 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                         <div className="grid gap-2">
                             <Label htmlFor="degree">Grau Académico *</Label>
                             <Select onValueChange={(value) => setData('degree', value)} defaultValue={data.degree}>
-                                <SelectTrigger className="w-full bg-white dark:bg-zinc-900">
+                                <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Selecione o grau acadêmico" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-zinc-900">
+                                <SelectContent>
                                     {degrees.map((degree) => (
                                         <SelectItem key={degree.value} value={degree.value}>
                                             {degree.label}
@@ -222,7 +222,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto overflow-hidden bg-white p-0 dark:bg-zinc-950" align="start" forceMount>
+                                <PopoverContent className="w-auto overflow-hidden p-0" align="start" forceMount>
                                     <Calendar
                                         className="min-h-[360px] w-[300px]"
                                         mode="single"
@@ -259,7 +259,7 @@ export function AcademicBackground({ academicBackgrounds }: { academicBackground
                                         />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto overflow-hidden bg-white p-0 dark:bg-zinc-950" align="start" forceMount>
+                                <PopoverContent className="w-auto overflow-hidden p-0" align="start" forceMount>
                                     <Calendar
                                         className="min-h-[360px] w-[300px]"
                                         captionLayout="dropdown"

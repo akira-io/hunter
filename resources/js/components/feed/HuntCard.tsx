@@ -137,12 +137,12 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                                 className="bg-background/50 hover:bg-background/80 rounded-lg p-2.5 text-left transition-colors sm:p-3"
                                 onClick={gotoHuntDetail}
                             >
-                                <div className="text-muted-foreground flex items-center gap-1.5">
-                                    <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <div className="flex items-center gap-1.5">
+                                    <Eye className="h-3.5 w-3.5 text-blue-500 sm:h-4 sm:w-4" />
                                     <span className="text-xs">Views</span>
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics.views?.toLocaleString() || hunt.views}</p>
-                                {metrics.engagement_rate !== undefined && (
+                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.views ?? hunt.views}</p>
+                                {metrics?.engagement_rate !== undefined && (
                                     <p className="text-muted-foreground mt-0.5 text-xs">{metrics.engagement_rate.toFixed(1)}% engaj.</p>
                                 )}
                             </button>
@@ -152,14 +152,12 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                                 className="bg-background/50 hover:bg-background/80 rounded-lg p-2.5 text-left transition-colors sm:p-3"
                                 onClick={gotoHuntDetail}
                             >
-                                <div className="text-muted-foreground flex items-center gap-1.5">
-                                    <span className="text-xs">
-                                        <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                        Likes
-                                    </span>
+                                <div className="flex items-center gap-1.5">
+                                    <Heart className="h-3.5 w-3.5 text-purple-500 sm:h-4 sm:w-4" />
+                                    <span className="text-xs">Likes</span>
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics.likes?.toLocaleString() || hunt.likes_count}</p>
-                                {metrics.interaction_rate !== undefined && (
+                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.likes ?? hunt.likes_count}</p>
+                                {metrics?.interaction_rate !== undefined && (
                                     <p className="text-muted-foreground mt-0.5 text-xs">{metrics.interaction_rate.toFixed(1)}% taxa</p>
                                 )}
                             </button>
@@ -169,12 +167,12 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                                 className="bg-background/50 hover:bg-background/80 rounded-lg p-2.5 text-left transition-colors sm:p-3"
                                 onClick={gotoHuntDetail}
                             >
-                                <div className="text-muted-foreground flex items-center gap-1.5">
-                                    <Repeat2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <div className="flex items-center gap-1.5">
+                                    <Repeat2 className="h-3.5 w-3.5 text-orange-500 sm:h-4 sm:w-4" />
                                     <span className="text-xs">Shares</span>
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics.shares?.toLocaleString() || hunt.shares}</p>
-                                {metrics.share_rate !== undefined && (
+                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.shares ?? hunt.shares}</p>
+                                {metrics?.share_rate !== undefined && (
                                     <p className="text-muted-foreground mt-0.5 text-xs">{metrics.share_rate.toFixed(1)}% taxa</p>
                                 )}
                             </button>
@@ -184,14 +182,12 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                                 className="bg-background/50 hover:bg-background/80 cursor-pointer rounded-lg p-2.5 text-left transition-colors sm:p-3"
                                 onClick={() => setOpenComments((prev) => !prev)}
                             >
-                                <div className="text-muted-foreground flex items-center gap-1.5">
-                                    <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <div className="flex items-center gap-1.5">
+                                    <MessageCircle className="h-3.5 w-3.5 text-green-500 sm:h-4 sm:w-4" />
                                     <span className="text-xs">Coment.</span>
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">
-                                    {metrics.comments?.toLocaleString() || hunt.comments?.length || 0}
-                                </p>
-                                {metrics.comment_rate !== undefined && (
+                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.comments ?? hunt.comments?.length ?? 0}</p>
+                                {metrics?.comment_rate !== undefined && (
                                     <p className="text-muted-foreground mt-0.5 text-xs">{metrics.comment_rate.toFixed(1)}% taxa</p>
                                 )}
                             </button>

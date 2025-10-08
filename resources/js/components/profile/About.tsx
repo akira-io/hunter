@@ -53,7 +53,7 @@ export function About() {
                         {auth.user.bio ? 'Atualizar Apresentação' : 'Adicionar Apresentação'}
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-white dark:bg-zinc-950">
+                <DialogContent>
                     <DialogHeader>
                         <DialogTitle className="text-zinc-900 dark:text-zinc-100">Apresentação</DialogTitle>
                         <DialogDescription className="text-zinc-600 dark:text-zinc-400">
@@ -61,13 +61,7 @@ export function About() {
                         </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={submit}>
-                        <Textarea
-                            id="bio"
-                            value={data.bio}
-                            onChange={(e) => setData('bio', e.target.value)}
-                            maxLength={200}
-                            className="h-50 bg-white dark:bg-zinc-900"
-                        />
+                        <Textarea id="bio" value={data.bio} onChange={(e) => setData('bio', e.target.value)} maxLength={200} className="h-50" />
                         <InputError className="mt-2" message={errors.bio} />
                         <div className="mt-4 flex flex-col sm:flex-row sm:justify-end">
                             <span className="text-muted float-end mb-4 flex-1 text-right text-sm md:text-left">{data.bio.length} / 200</span>

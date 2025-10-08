@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 interface WelcomeLoaderProps {
     onComplete?: () => void;
@@ -47,7 +47,7 @@ export function WelcomeLoader({ onComplete }: WelcomeLoaderProps) {
                 {[...Array(20)].map((_, i) => (
                     <div
                         key={i}
-                        className="absolute h-2 w-2 animate-float rounded-full bg-purple-400/20"
+                        className="animate-float absolute h-2 w-2 rounded-full bg-purple-400/20"
                         style={{
                             left: `${Math.random() * 100}%`,
                             top: `${Math.random() * 100}%`,
@@ -77,7 +77,7 @@ export function WelcomeLoader({ onComplete }: WelcomeLoaderProps) {
                         className="animate-slide-up bg-gradient-to-r from-purple-400 via-purple-600 to-purple-400 bg-clip-text text-6xl font-extrabold text-transparent opacity-0"
                         style={{ animationDelay: '0.4s' }}
                     >
-                        Dev Hunter
+                        Hunter
                     </h2>
                     <p className="animate-slide-up text-lg text-purple-200 opacity-0" style={{ animationDelay: '0.6s' }}>
                         Conectando talentos, construindo o futuro 🇨🇻
@@ -123,7 +123,7 @@ export function WelcomeLoader({ onComplete }: WelcomeLoaderProps) {
             </div>
 
             {/* Bottom decorative element */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50" />
+            <div className="absolute right-0 bottom-0 left-0 h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50" />
         </div>
     );
 }
