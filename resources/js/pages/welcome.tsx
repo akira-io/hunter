@@ -4,12 +4,13 @@ import { Finder } from '@/components/Finder';
 import { NavUser } from '@/components/nav-user';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/toaster';
+import { WelcomeLoader } from '@/components/WelcomeLoader';
 import { home, login, register } from '@/routes';
 import { type SharedData, User } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RiDiscordFill, RiGithubFill } from '@remixicon/react';
 import { LogInIcon, UserPlus } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export interface WelcomeProps {
     users: User[];
@@ -33,9 +34,23 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [showLoader, setShowLoader] = useState(true);
+    const [, setHasVisited] = useState(false);
 
-    // Store the initial quote so it doesn't change during searches
     const initialQuote = useRef(quote);
+
+    useEffect(() => {
+        const visited = sessionStorage.getItem('hasVisitedWelcome');
+        // if (visited) {
+        //     setShowLoader(false);
+        //     // setHasVisited(true);
+        // }
+    }, []);
+
+    const handleLoaderComplete = () => {
+        setShowLoader(false);
+        sessionStorage.setItem('hasVisitedWelcome', 'true');
+    };
 
     const uniqueUsers = users.filter((user, index, self) => index === self.findIndex((u) => u.id === user.id));
 
@@ -80,6 +95,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
 
     return (
         <>
+            {showLoader && <WelcomeLoader onComplete={handleLoaderComplete} />}
             <Head title="Dev Hunter">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
@@ -131,7 +147,11 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                         )}
                     </nav>
                 </header>
-                <div className="mb-50 flex w-full flex-col items-center justify-start opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
+                <div
+                    className={`mb-50 flex w-full flex-col items-center justify-start transition-opacity duration-1000 lg:grow ${
+                        showLoader ? 'opacity-0' : 'animate-fade-in opacity-100'
+                    }`}
+                >
                     <div className="mt-20 flex w-full flex-col items-center justify-center py-2 md:max-w-4xl lg:max-w-6xl">
                         <h1 className="mb-4 text-4xl font-bold dark:text-white">Hunter 🇨🇻</h1>
                         <p className="text-md mb-8 max-w-2xl text-center font-normal text-[#1b1b18] sm:text-lg dark:text-[#EDEDEC]">
