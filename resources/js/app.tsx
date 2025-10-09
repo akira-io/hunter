@@ -4,6 +4,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
+import { ServiceWorkerProvider } from './contexts/ServiceWorkerContext';
 
 // Import Echo configuration
 import './config/echo';
@@ -16,7 +17,11 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        root.render(
+            <ServiceWorkerProvider>
+                <App {...props} />
+            </ServiceWorkerProvider>
+        );
     },
     progress: {
         color: '#4B5563',

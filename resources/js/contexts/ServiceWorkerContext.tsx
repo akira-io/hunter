@@ -1,25 +1,22 @@
-import { useEffect, useState } from 'react';
+import { UpdateAvailableDialog } from '@/components/UpdateAvailableDialog';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-export function useServiceWorkerUpdate() {
+interface ServiceWorkerContextType {
+    updateAvailable: boolean;
+}
+
+const ServiceWorkerContext = createContext<ServiceWorkerContextType>({ updateAvailable: false });
+
+export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
     const [updateAvailable, setUpdateAvailable] = useState(false);
     const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
 
     useEffect(() => {
-        if (!('serviceWorker' in navigator)) {
-            console.log('[SW Update] Service Worker not supported');
-            return;
-        }
-
-        if (!import.meta.env.PROD) {
-            console.log('[SW Update] Not in production mode, skipping SW registration');
-            return;
-        }
-
         const handleUpdate = () => {
             navigator.serviceWorker
                 .register('/sw.js')
                 .then((registration) => {
-                    console.log('[PWA] Service Worker registered:', registration.scope);
+                    console.log('[SW] Service Worker registered:', registration.scope);
 
                     // Check for updates periodically
                     const intervalId = setInterval(() => {
@@ -28,14 +25,13 @@ export function useServiceWorkerUpdate() {
 
                     // Handle service worker updates
                     registration.addEventListener('updatefound', () => {
-                        console.log('[SW Update] Update found!');
+                        console.log('[SW] Update found!');
                         const newWorker = registration.installing;
                         if (newWorker) {
                             newWorker.addEventListener('statechange', () => {
-                                console.log('[SW Update] New worker state:', newWorker.state);
+                                console.log('[SW] New worker state:', newWorker.state);
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    // New service worker available
-                                    console.log('[SW Update] New version available!');
+                                    console.log('[SW] New version available!');
                                     setWaitingWorker(newWorker);
                                     setUpdateAvailable(true);
                                 }
@@ -46,7 +42,7 @@ export function useServiceWorkerUpdate() {
                     return () => clearInterval(intervalId);
                 })
                 .catch((error) => {
-                    console.error('[PWA] Service Worker registration failed:', error);
+                    console.error('[SW] Service Worker registration failed:', error);
                 });
 
             // Handle service worker controller change
@@ -65,18 +61,25 @@ export function useServiceWorkerUpdate() {
 
     const applyUpdate = () => {
         if (waitingWorker) {
+            console.log('[SW] Applying update...');
             waitingWorker.postMessage({ type: 'SKIP_WAITING' });
             window.location.reload();
         }
     };
 
     const dismissUpdate = () => {
+        console.log('[SW] Update dismissed');
         setUpdateAvailable(false);
     };
 
-    return {
-        updateAvailable,
-        applyUpdate,
-        dismissUpdate,
-    };
+    return (
+        <ServiceWorkerContext.Provider value={{ updateAvailable }}>
+            {children}
+            <UpdateAvailableDialog open={updateAvailable} onUpdate={applyUpdate} onLater={dismissUpdate} />
+        </ServiceWorkerContext.Provider>
+    );
+}
+
+export function useServiceWorker() {
+    return useContext(ServiceWorkerContext);
 }

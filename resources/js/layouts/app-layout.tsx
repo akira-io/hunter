@@ -2,12 +2,10 @@ import { ChatContainer } from '@/components/chat/ChatContainer';
 import { OnlineUsers } from '@/components/chat/OnlineUsers';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 import { Toaster } from '@/components/ui/toaster';
-import { UpdateAvailableDialog } from '@/components/UpdateAvailableDialog';
 import { ChatProvider } from '@/contexts/ChatContext';
 import { useNotificationManager } from '@/hooks/use-notification-manager';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { usePresenceManager } from '@/hooks/use-presence-manager';
-import { useServiceWorkerUpdate } from '@/hooks/use-service-worker-update';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem, type Notification } from '@/types';
 import { usePage } from '@inertiajs/react';
@@ -43,9 +41,6 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     // Manage onboarding wizard
     const { showOnboarding, closeOnboarding } = useOnboarding();
 
-    // Manage service worker updates
-    const { updateAvailable, applyUpdate, dismissUpdate } = useServiceWorkerUpdate();
-
     return (
         <ChatProvider currentUserId={currentUserId}>
             <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
@@ -58,7 +53,6 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                         <OnboardingWizard isOpen={showOnboarding} onClose={closeOnboarding} />
                     </>
                 )}
-                <UpdateAvailableDialog open={updateAvailable} onUpdate={applyUpdate} onLater={dismissUpdate} />
             </AppLayoutTemplate>
         </ChatProvider>
     );
