@@ -1,13 +1,14 @@
 import { CreateHunt } from '@/components/feed/CreateHunt';
 import { HuntCard } from '@/components/feed/HuntCard';
 import AppLayout from '@/layouts/app-layout';
+import hunts from '@/routes/hunts';
 import { type BreadcrumbItem, Hunt } from '@/types';
 import { Head, InfiniteScroll } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Hunt Line',
-        href: '/feed',
+        title: 'Hunts',
+        href: hunts.index().url,
     },
 ];
 

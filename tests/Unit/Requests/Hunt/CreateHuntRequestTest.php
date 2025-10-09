@@ -63,14 +63,14 @@ it('can store a hunt with image using store method', function () {
         ->and($hunt->getMedia('hunts')->count())->toBe(1);
 });
 
-it('validates content is required for hunt creation', function () {
+it('validates content is required when no image is provided', function () {
     $this->actingAs($this->user);
 
     $response = $this->post(route('hunts.store'), [
         'content' => '',
     ]);
 
-    $response->assertSessionHasErrors(['content']);
+    $response->assertSessionHasErrors(['content', 'image']);
 });
 
 it('validates image must be an image file', function () {
@@ -142,4 +142,30 @@ it('store method directly creates hunt with image', function () {
     expect($hunt)->not->toBeNull()
         ->and($hunt->content)->toBe('Hunt with image direct test')
         ->and($hunt->getMedia('hunts'))->toHaveCount(1);
+});
+
+it('can store a hunt with only an image (no content)', function () {
+    $this->actingAs($this->user);
+
+    Storage::fake('hunts');
+    $image = UploadedFile::fake()->image('image-only-hunt.jpg');
+
+    $response = $this->post(route('hunts.store'), [
+        'image' => $image,
+    ]);
+
+    $response->assertRedirect();
+
+    $hunt = $this->user->hunts()->whereNull('content')->first();
+    expect($hunt)->not->toBeNull()
+        ->and($hunt->content)->toBeNull()
+        ->and($hunt->getMedia('hunts')->count())->toBe(1);
+});
+
+it('validates that either content or image must be provided', function () {
+    $this->actingAs($this->user);
+
+    $response = $this->post(route('hunts.store'), []);
+
+    $response->assertSessionHasErrors(['content', 'image']);
 });

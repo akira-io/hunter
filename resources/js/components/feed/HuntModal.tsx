@@ -171,9 +171,11 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                             </div>
 
                             {/* Hunt Content */}
-                            <div className="border-b border-zinc-200 p-4 dark:border-zinc-700">
-                                <MarkdownRenderer content={hunt.content} />
-                            </div>
+                            {hunt.content && (
+                                <div className="border-b border-zinc-200 p-4 dark:border-zinc-700">
+                                    <MarkdownRenderer content={hunt.content} />
+                                </div>
+                            )}
 
                             {/* Stats and Actions Combined */}
                             <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-700">
