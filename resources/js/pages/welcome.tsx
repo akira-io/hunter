@@ -2,9 +2,11 @@ import AppLogo from '@/components/app-logo';
 import DevCount from '@/components/dev-count';
 import { Finder } from '@/components/Finder';
 import { NavUser } from '@/components/nav-user';
+import { UpdateAvailableDialog } from '@/components/UpdateAvailableDialog';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/toaster';
 import { WelcomeLoader } from '@/components/WelcomeLoader';
+import { useServiceWorkerUpdate } from '@/hooks/use-service-worker-update';
 import { home, login, register } from '@/routes';
 import { type SharedData, User } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -38,6 +40,9 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
     const [, setHasVisited] = useState(false);
 
     const initialQuote = useRef(quote);
+
+    // Service Worker update management
+    const { updateAvailable, applyUpdate, dismissUpdate } = useServiceWorkerUpdate();
 
     useEffect(() => {
         const visited = sessionStorage.getItem('hasVisitedWelcome');
@@ -203,6 +208,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                 </div>
             </SidebarProvider>
             <Toaster />
+            <UpdateAvailableDialog open={updateAvailable} onUpdate={applyUpdate} onLater={dismissUpdate} />
         </>
     );
 }
