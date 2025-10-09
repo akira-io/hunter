@@ -91,7 +91,6 @@ export function MarkdownEditor({
                                 const textarea = node.querySelector('textarea');
                                 if (textarea) {
                                     editorRef.current = textarea;
-                                    textarea.addEventListener('paste', handlePaste as never);
                                 }
                             }
                         }}

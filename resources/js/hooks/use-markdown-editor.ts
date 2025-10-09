@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 
 interface UseMarkdownEditorOptions {
     value: string;
@@ -10,15 +10,6 @@ interface UseMarkdownEditorOptions {
 export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOptions) {
     const editorRef = useRef<HTMLTextAreaElement>(null);
     const [activeTab, setActiveTab] = useState('edit');
-
-    // Cleanup event listener on unmount
-    useEffect(() => {
-        return () => {
-            if (editorRef.current) {
-                editorRef.current.removeEventListener('paste', handlePaste as never);
-            }
-        };
-    }, []);
 
     const formatIndentation = (code: string): string => {
         const lines = code.split('\n');
@@ -119,8 +110,11 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
         return '';
     };
 
-    const handlePaste = (e: React.ClipboardEvent) => {
-        const pastedText = e.clipboardData.getData('text');
+    const handlePaste = (e: React.ClipboardEvent | ClipboardEvent) => {
+        const clipboardData = 'clipboardData' in e ? e.clipboardData : (e as ClipboardEvent).clipboardData;
+        if (!clipboardData) return;
+
+        const pastedText = clipboardData.getData('text');
 
         // Detect if pasted text looks like code (contains < > and multiple lines or special characters)
         const looksLikeCode =
