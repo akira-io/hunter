@@ -22,7 +22,9 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
                     <div className="relative">
                         <Search className="text-muted-foreground absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
                         <input
-                            type="text"
+                            type="search"
+                            name="hunter_search"
+                            id="hunter-search-input"
                             placeholder="Procurar hunters por nome, username, skills..."
                             onChange={onSearch}
                             autoComplete="off"
@@ -31,6 +33,9 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
                             spellCheck="false"
                             data-lpignore="true"
                             data-form-type="other"
+                            data-1p-ignore="true"
+                            role="searchbox"
+                            aria-label="Procurar hunters"
                             className="placeholder:text-muted-foreground focus:border-primary focus:ring-primary w-full rounded-lg border border-zinc-200 bg-white py-3 pr-4 pl-12 text-sm transition-all outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                         />
                         {isSearchLoading && (
