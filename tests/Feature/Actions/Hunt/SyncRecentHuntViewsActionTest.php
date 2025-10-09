@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
-class SyncRecentHuntViewsActionTest extends TestCase
+final class SyncRecentHuntViewsActionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -23,7 +23,7 @@ class SyncRecentHuntViewsActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->action = new SyncRecentHuntViewsAction(
             new GetRecentHuntIdsAction(),
             new UpdateHuntViewsFromPanAction()
@@ -33,16 +33,16 @@ class SyncRecentHuntViewsActionTest extends TestCase
     public function test_syncs_recent_hunt_views_successfully(): void
     {
         Log::spy();
-        
+
         $user = User::factory()->create();
-        
+
         // Create recent hunts (within last 24 hours)
         $hunt1 = Hunt::factory()->create([
             'owner_id' => $user->id,
             'created_at' => now()->subHours(12),
             'views_count' => 0,
         ]);
-        
+
         $hunt2 = Hunt::factory()->create([
             'owner_id' => $user->id,
             'created_at' => now()->subHours(6),
@@ -152,7 +152,7 @@ class SyncRecentHuntViewsActionTest extends TestCase
         Log::spy();
 
         $user = User::factory()->create();
-        
+
         $hunt = Hunt::factory()->create([
             'owner_id' => $user->id,
             'created_at' => now()->subHours(12),

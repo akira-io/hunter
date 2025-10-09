@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class MetricsContextTest extends TestCase
+final class MetricsContextTest extends TestCase
 {
     use RefreshDatabase;
 

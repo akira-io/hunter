@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
 use Tests\TestCase;
 
-class BlockUserActionTest extends TestCase
+final class BlockUserActionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -90,7 +90,7 @@ class BlockUserActionTest extends TestCase
         $this->action->handle($blocker, $userToBlock->id);
 
         $this->assertTrue($blocker->hasBlocked($userToBlock));
-        
+
         // Should only have one record
         $this->assertCount(1, $blocker->blockedUsers);
     }

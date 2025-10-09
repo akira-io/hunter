@@ -7,7 +7,7 @@ namespace Tests\Unit\DataTransferObjects\Metrics;
 use App\DataTransferObjects\Metrics\HuntMetrics;
 use Tests\TestCase;
 
-class HuntMetricsTest extends TestCase
+final class HuntMetricsTest extends TestCase
 {
     public function test_creates_hunt_metrics_with_all_properties(): void
     {
