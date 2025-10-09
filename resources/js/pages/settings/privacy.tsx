@@ -8,7 +8,7 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle,
+    AlertDialogTitle
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,20 @@ import SettingsLayout from '@/layouts/settings/layout';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { CheckCircle, Eye, Globe, Lock, MessageSquare, Search, Shield, User, UserCheck, Users, UserX, XCircle } from 'lucide-react';
+import {
+    CheckCircle,
+    Eye,
+    Globe,
+    Lock,
+    MessageSquare,
+    Search,
+    Shield,
+    User,
+    UserCheck,
+    Users,
+    UserX,
+    XCircle
+} from 'lucide-react';
 import { type FormEventHandler, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -118,18 +131,18 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                     {/* Privacy Settings Form */}
                     <form onSubmit={updatePrivacySettings}>
                         <Card className="gradient overflow-hidden">
-                            <CardHeader className="border-b border-zinc-200/50 bg-gradient-to-br from-zinc-50/50 to-transparent dark:border-zinc-800/50 dark:from-zinc-900/50">
-                                <div className="flex items-start justify-between">
+                            <CardHeader className="">
+                                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                     <div className="space-y-1.5">
                                         <CardTitle className="flex items-center gap-2.5 text-xl">
-                                            <div className="flex size-10 items-center justify-center rounded-xl bg-violet-500/10 dark:bg-violet-500/20">
+                                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 dark:bg-violet-500/20">
                                                 <Eye className="size-5 text-violet-600 dark:text-violet-400" />
                                             </div>
-                                            Visibilidade e Permissões
+                                            <span className="leading-tight">Visibilidade e Permissões</span>
                                         </CardTitle>
                                         <CardDescription className="text-base">Gerencie quem pode interagir consigo</CardDescription>
                                     </div>
-                                    <Badge variant="secondary" className="flex items-center gap-1.5">
+                                    <Badge variant="secondary" className="flex hidden w-fit items-center gap-1.5 md:flex">
                                         <Shield className="size-3" />
                                         Privacidade
                                     </Badge>
@@ -155,29 +168,26 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="public">
-                                                    <div className="flex items-center gap-3">
-                                                        <Globe className="size-4 text-green-600 dark:text-green-400" />
-                                                        <div className="flex flex-col">
-                                                            <span className="font-medium">Público</span>
-                                                            <span className="text-xs text-zinc-500">Todos podem ver</span>
+                                                    <div className="flex items-start gap-3">
+                                                        <Globe className="size-4 shrink-0 text-green-600 dark:text-green-400" />
+                                                        <div className="flex flex-col gap-0.5">
+                                                            <span className="leading-tight font-medium">Público</span>
                                                         </div>
                                                     </div>
                                                 </SelectItem>
                                                 <SelectItem value="followers">
-                                                    <div className="flex items-center gap-3">
-                                                        <Users className="size-4 text-blue-600 dark:text-blue-400" />
-                                                        <div className="flex flex-col">
-                                                            <span className="font-medium">Seguidores</span>
-                                                            <span className="text-xs text-zinc-500">Apenas seguidores</span>
+                                                    <div className="flex items-start gap-3">
+                                                        <Users className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                                                        <div className="flex flex-col gap-0.5">
+                                                            <span className="leading-tight font-medium">Seguidores</span>
                                                         </div>
                                                     </div>
                                                 </SelectItem>
                                                 <SelectItem value="private">
-                                                    <div className="flex items-center gap-3">
-                                                        <Lock className="size-4 text-red-600 dark:text-red-400" />
-                                                        <div className="flex flex-col">
-                                                            <span className="font-medium">Privado</span>
-                                                            <span className="text-xs text-zinc-500">Apenas você</span>
+                                                    <div className="flex items-start gap-3">
+                                                        <Lock className="mt-0.5 size-4 shrink-0 text-red-600 dark:text-red-400" />
+                                                        <div className="flex flex-col gap-0.5">
+                                                            <span className="leading-tight font-medium">Privado</span>
                                                         </div>
                                                     </div>
                                                 </SelectItem>
@@ -218,20 +228,20 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="everyone">
-                                                        <div className="flex items-center gap-2">
-                                                            <UserCheck className="size-4 text-green-600 dark:text-green-400" />
+                                                        <div className="flex items-center gap-2.5">
+                                                            <UserCheck className="size-4 shrink-0 text-green-600 dark:text-green-400" />
                                                             <span>Todos</span>
                                                         </div>
                                                     </SelectItem>
                                                     <SelectItem value="followers">
-                                                        <div className="flex items-center gap-2">
-                                                            <Users className="size-4 text-blue-600 dark:text-blue-400" />
+                                                        <div className="flex items-center gap-2.5">
+                                                            <Users className="size-4 shrink-0 text-blue-600 dark:text-blue-400" />
                                                             <span>Apenas seguidores</span>
                                                         </div>
                                                     </SelectItem>
                                                     <SelectItem value="none">
-                                                        <div className="flex items-center gap-2">
-                                                            <UserX className="size-4 text-red-600 dark:text-red-400" />
+                                                        <div className="flex items-center gap-2.5">
+                                                            <UserX className="size-4 shrink-0 text-red-600 dark:text-red-400" />
                                                             <span>Ninguém</span>
                                                         </div>
                                                     </SelectItem>
@@ -263,20 +273,20 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="everyone">
-                                                        <div className="flex items-center gap-2">
-                                                            <UserCheck className="size-4 text-green-600 dark:text-green-400" />
+                                                        <div className="flex items-center gap-2.5">
+                                                            <UserCheck className="size-4 shrink-0 text-green-600 dark:text-green-400" />
                                                             <span>Todos</span>
                                                         </div>
                                                     </SelectItem>
                                                     <SelectItem value="followers">
-                                                        <div className="flex items-center gap-2">
-                                                            <Users className="size-4 text-blue-600 dark:text-blue-400" />
+                                                        <div className="flex items-center gap-2.5">
+                                                            <Users className="size-4 shrink-0 text-blue-600 dark:text-blue-400" />
                                                             <span>Apenas seguidores</span>
                                                         </div>
                                                     </SelectItem>
                                                     <SelectItem value="disabled">
-                                                        <div className="flex items-center gap-2">
-                                                            <Lock className="size-4 text-red-600 dark:text-red-400" />
+                                                        <div className="flex items-center gap-2.5">
+                                                            <Lock className="size-4 shrink-0 text-red-600 dark:text-red-400" />
                                                             <span>Desativado</span>
                                                         </div>
                                                     </SelectItem>
@@ -365,8 +375,8 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-                                    <Button type="submit" disabled={processing} size="lg" className="gap-2">
+                                <div className="flex items-center justify-end gap-3 pt-6 dark:border-zinc-800">
+                                    <Button type="submit" disabled={processing} size="lg" className="gap-2" variant="gradient">
                                         {processing ? (
                                             <>
                                                 <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />A
@@ -385,20 +395,20 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                     </form>
 
                     {/* Blocked Users */}
-                    <Card className="gradient overflow-hidden">
-                        <CardHeader className="border-b border-zinc-200/50 bg-gradient-to-br from-zinc-50/50 to-transparent dark:border-zinc-800/50 dark:from-zinc-900/50">
-                            <div className="flex items-start justify-between">
+                    <Card className="overflow-hidden">
+                        <CardHeader className="">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                 <div className="space-y-1.5">
                                     <CardTitle className="flex items-center gap-2.5 text-xl">
-                                        <div className="flex size-10 items-center justify-center rounded-xl bg-red-500/10 dark:bg-red-500/20">
+                                        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 dark:bg-red-500/20">
                                             <UserX className="size-5 text-red-600 dark:text-red-400" />
                                         </div>
-                                        Hunters bloqueados
+                                        <span className="leading-tight">Hunters bloqueados</span>
                                     </CardTitle>
                                     <CardDescription className="text-base">Gerencie os Hunters que bloqueou</CardDescription>
                                 </div>
                                 {blockedUsers.length > 0 && (
-                                    <Badge variant="secondary" className="flex items-center gap-1.5">
+                                    <Badge variant="secondary" className="flex w-fit items-center gap-1.5">
                                         {blockedUsers.length} {blockedUsers.length === 1 ? 'bloqueado' : 'bloqueados'}
                                     </Badge>
                                 )}
