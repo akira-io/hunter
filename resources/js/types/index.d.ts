@@ -83,6 +83,7 @@ export interface Hunt {
     updated_at: string;
     owner: User;
     image_url?: string;
+    image_processing_status?: 'pending' | 'processing' | 'completed' | 'failed';
     comments: Comment[];
     shares: number;
     likes_count: number;

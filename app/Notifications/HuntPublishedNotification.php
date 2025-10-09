@@ -61,9 +61,11 @@ final class HuntPublishedNotification extends Notification implements ShouldQueu
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $contentPreview = mb_strlen($this->hunt->content) > 100
-            ? mb_substr($this->hunt->content, 0, 100).'...'
-            : $this->hunt->content;
+        $contentPreview = $this->hunt->content
+            ? (mb_strlen((string) $this->hunt->content) > 100
+                ? mb_substr((string) $this->hunt->content, 0, 100).'...'
+                : $this->hunt->content)
+            : '[Imagem]';
 
         return (new MailMessage)
             ->subject("{$this->author->name} publicou um novo hunt!")
@@ -78,9 +80,11 @@ final class HuntPublishedNotification extends Notification implements ShouldQueu
      */
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
-        $contentPreview = mb_strlen($this->hunt->content) > 100
-            ? mb_substr($this->hunt->content, 0, 100).'...'
-            : $this->hunt->content;
+        $contentPreview = $this->hunt->content
+            ? (mb_strlen((string) $this->hunt->content) > 100
+                ? mb_substr((string) $this->hunt->content, 0, 100).'...'
+                : $this->hunt->content)
+            : '[Imagem]';
 
         return new BroadcastMessage([
             'id' => $this->id,
@@ -109,9 +113,11 @@ final class HuntPublishedNotification extends Notification implements ShouldQueu
      */
     public function toArray(object $notifiable): array
     {
-        $contentPreview = mb_strlen($this->hunt->content) > 100
-            ? mb_substr($this->hunt->content, 0, 100).'...'
-            : $this->hunt->content;
+        $contentPreview = $this->hunt->content
+            ? (mb_strlen((string) $this->hunt->content) > 100
+                ? mb_substr((string) $this->hunt->content, 0, 100).'...'
+                : $this->hunt->content)
+            : '[Imagem]';
 
         return [
             'type' => 'hunt_published',

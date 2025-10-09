@@ -21,6 +21,7 @@ test('to array', function () {
             'views_count',
             'shares_count',
             'owner',
+            'image_processing_status',
         ]);
 });
 

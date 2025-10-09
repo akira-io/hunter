@@ -16,6 +16,7 @@ arch()->preset()->laravel()
             "App\Http\Controllers\Api\PresenceController",
             "App\Http\Controllers\Settings\SecurityController",
             "App\Http\Controllers\Settings\PrivacyController",
+            "App\Http\Resources\Hunt\HuntResource",
         ]);
 arch()->preset()->security();
 
