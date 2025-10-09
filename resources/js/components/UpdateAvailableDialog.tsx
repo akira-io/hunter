@@ -22,9 +22,7 @@ export function UpdateAvailableDialog({ open, onUpdate, onLater }: UpdateAvailab
                         <Sparkles className="h-6 w-6 text-purple-500" />
                     </div>
                     <DialogTitle>Nova Versão Disponível!</DialogTitle>
-                    <DialogDescription>
-                        Uma nova versão do Hunter está disponível com melhorias e correções. Atualizar agora?
-                    </DialogDescription>
+                    <DialogDescription>Uma nova versão do Hunter está disponível com melhorias e correções. Atualizar agora?</DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="gap-2">
                     <Button variant="outline" onClick={onLater}>
