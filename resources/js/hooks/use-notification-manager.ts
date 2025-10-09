@@ -90,7 +90,7 @@ export const useNotificationManager = ({ currentUserId, notifications }: UseNoti
                     });
 
                     // Show toast notification only when NOT in PWA mode
-                    // In PWA mode, push notifications will be used instead
+                    // PWA will use browser notifications (or push when configured)
                     if (!isPWAMode()) {
                         toast({
                             title: notification.title,

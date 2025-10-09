@@ -1,11 +1,10 @@
-const CACHE_NAME = 'devhunter-v1';
-const STATIC_CACHE = 'devhunter-static-v1';
-const DYNAMIC_CACHE = 'devhunter-dynamic-v1';
-const IMAGE_CACHE = 'devhunter-images-v1';
+const CACHE_VERSION = 'v2';
+const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
+const IMAGE_CACHE = `devhunter-images-${CACHE_VERSION}`;
 
-// Assets to cache on install
+// Assets to cache on install (only truly static assets, no HTML pages)
 const STATIC_ASSETS = [
-    '/',
     '/manifest.json',
     '/logo.svg',
 ];
@@ -61,14 +60,79 @@ self.addEventListener('fetch', (event) => {
     if (request.destination === 'image') {
         event.respondWith(handleImageRequest(request));
     } else if (url.pathname.startsWith('/api/')) {
-        // Don't cache API requests
+        // Don't cache API requests - always fetch from network
         event.respondWith(fetch(request));
+    } else if (request.destination === 'document' || request.headers.get('accept')?.includes('text/html')) {
+        // HTML pages - always fetch from network first (Network First strategy)
+        event.respondWith(handleHTMLRequest(request));
+    } else if (request.destination === 'script' || request.destination === 'style' || url.pathname.match(/\.(js|css)$/)) {
+        // JS/CSS - cache with network update in background (Stale While Revalidate)
+        event.respondWith(handleAssetRequest(request));
     } else {
+        // Other resources - network first
         event.respondWith(handleRequest(request));
     }
 });
 
-// Handle image requests with caching
+// Handle HTML requests - Network First (always try network first, fallback to cache)
+async function handleHTMLRequest(request) {
+    try {
+        const response = await fetch(request);
+        if (response.ok) {
+            // Don't cache HTML pages to always get fresh content
+            return response;
+        }
+        throw new Error('Network response was not ok');
+    } catch (error) {
+        console.error('[SW] HTML fetch failed, trying cache:', error);
+        const cache = await caches.open(DYNAMIC_CACHE);
+        const cached = await cache.match(request);
+
+        if (cached) {
+            return cached;
+        }
+
+        // Return offline message
+        return new Response('Offline - Please check your connection', {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: new Headers({
+                'Content-Type': 'text/html',
+            }),
+        });
+    }
+}
+
+// Handle asset requests (JS/CSS) - Stale While Revalidate
+async function handleAssetRequest(request) {
+    const cache = await caches.open(DYNAMIC_CACHE);
+    const cached = await cache.match(request);
+
+    // Return cached version immediately and update in background
+    if (cached) {
+        // Update cache in background
+        fetch(request).then(response => {
+            if (response.ok) {
+                cache.put(request, response.clone());
+            }
+        }).catch(() => {});
+        return cached;
+    }
+
+    // No cache, fetch from network
+    try {
+        const response = await fetch(request);
+        if (response.ok) {
+            cache.put(request, response.clone());
+        }
+        return response;
+    } catch (error) {
+        console.error('[SW] Asset fetch failed:', error);
+        return new Response('', { status: 404, statusText: 'Not Found' });
+    }
+}
+
+// Handle image requests with caching - Cache First
 async function handleImageRequest(request) {
     const cache = await caches.open(IMAGE_CACHE);
     const cached = await cache.match(request);
@@ -90,31 +154,27 @@ async function handleImageRequest(request) {
     }
 }
 
-// Handle general requests
+// Handle general requests - Network First
 async function handleRequest(request) {
-    const cache = await caches.open(DYNAMIC_CACHE);
-    const cached = await cache.match(request);
-
-    if (cached) {
-        // Return cached version and update in background
-        fetch(request).then(response => {
-            if (response.ok) {
-                cache.put(request, response.clone());
-            }
-        }).catch(() => {});
-        return cached;
-    }
-
     try {
         const response = await fetch(request);
         if (response.ok) {
+            const cache = await caches.open(DYNAMIC_CACHE);
             cache.put(request, response.clone());
         }
         return response;
     } catch (error) {
         console.error('[SW] Fetch failed:', error);
 
-        // Try to return from static cache
+        // Try dynamic cache
+        const cache = await caches.open(DYNAMIC_CACHE);
+        const cached = await cache.match(request);
+
+        if (cached) {
+            return cached;
+        }
+
+        // Try static cache
         const staticCache = await caches.open(STATIC_CACHE);
         const staticCached = await staticCache.match(request);
 

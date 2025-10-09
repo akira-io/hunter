@@ -3,12 +3,20 @@ import { isPWAMode } from '@/hooks/use-pwa';
 
 /**
  * Check if browser/in-app notifications should be shown
- * In PWA mode, we rely on push notifications instead
+ * In PWA mode, we rely on push notifications instead (when configured)
  */
 export function shouldShowBrowserNotifications(): boolean {
-    // If running as PWA, don't show browser notifications
-    // Use push notifications instead
-    return !isPWAMode();
+    // Only disable browser notifications in PWA if VAPID keys are configured
+    // Otherwise, keep using browser notifications as fallback
+    const hasVapidKey = !!(import.meta.env.VITE_VAPID_PUBLIC_KEY);
+
+    if (isPWAMode() && hasVapidKey) {
+        // PWA mode with push notifications configured - use push only
+        return false;
+    }
+
+    // Use browser notifications in all other cases
+    return true;
 }
 
 /**
