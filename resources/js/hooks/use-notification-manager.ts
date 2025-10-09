@@ -1,7 +1,7 @@
-import { toast } from '@/hooks/use-toast';
 import { isPWAMode } from '@/hooks/use-pwa';
-import { useAddNotification, useSetNotifications } from '@/stores/notificationStore';
+import { toast } from '@/hooks/use-toast';
 import { notificationService, showBrowserNotification } from '@/services/notifications';
+import { useAddNotification, useSetNotifications } from '@/stores/notificationStore';
 import { useEcho } from '@laravel/echo-react';
 import { useEffect } from 'react';
 

@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
 
+// Type for BeforeInstallPromptEvent
+interface BeforeInstallPromptEvent extends Event {
+    prompt: () => Promise<void>;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 /**
  * Hook to detect if the app is running as a PWA (Progressive Web App)
  * Returns true if the app is installed and running in standalone mode
@@ -13,7 +19,13 @@ export function usePWA() {
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
             // Check if running as PWA on iOS Safari
-            const isIOSStandalone = (window.navigator as any).standalone === true;
+            const isIOSStandalone =
+                'standalone' in window.navigator &&
+                (
+                    window.navigator as {
+                        standalone?: boolean;
+                    }
+                ).standalone;
 
             // Check if running in browser tab mode
             const isInBrowser = window.matchMedia('(display-mode: browser)').matches;
@@ -94,7 +106,7 @@ export function isPWAMode(): boolean {
     if (typeof window === 'undefined') return false;
 
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const isIOSStandalone = (window.navigator as any).standalone === true;
+    const isIOSStandalone = 'standalone' in window.navigator && (window.navigator as { standalone?: boolean }).standalone === true;
 
     return isStandalone || isIOSStandalone;
 }
@@ -103,14 +115,14 @@ export function isPWAMode(): boolean {
  * Get install prompt event for PWA installation
  */
 export function useInstallPrompt() {
-    const [installPrompt, setInstallPrompt] = useState<any>(null);
+    const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
     const [isInstallable, setIsInstallable] = useState(false);
 
     useEffect(() => {
         const handleBeforeInstallPrompt = (e: Event) => {
             // Prevent the default browser install prompt
             e.preventDefault();
-            setInstallPrompt(e);
+            setInstallPrompt(e as BeforeInstallPromptEvent);
             setIsInstallable(true);
         };
 
