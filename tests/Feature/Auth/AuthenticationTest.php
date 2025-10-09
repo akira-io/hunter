@@ -55,7 +55,7 @@ test('users can logout', function () {
 test('users are rate limited after too many login attempts', function () {
     $user = User::factory()->create();
 
-    // Trigger rate limiting
+    // Trigger rate limiting by making 5 failed attempts
     for ($i = 0; $i < 5; $i++) {
         $this->post('/login', [
             'email' => $user->email,
@@ -69,15 +69,22 @@ test('users are rate limited after too many login attempts', function () {
         'password' => 'wrong-password',
     ]);
 
+    // Assert that session has errors for email field
     $response->assertSessionHasErrors('email');
 
+    // Get the error message
     $error = $response->getSession()->get('errors')->getBag('default')->first('email');
 
-    $template = __('auth.throttle', ['seconds' => '___']);
+    // Verify the error message matches the throttle pattern
+    // Message format: "Too many login attempts. Please try again in X seconds."
+    expect($error)->toBeString()
+        ->and($error)->toContain('Too many')
+        ->and($error)->toContain('seconds');
 
+    // Alternative: Verify using regex pattern
+    $template = __('auth.throttle', ['seconds' => '___']);
     $pattern = '/^'.preg_quote($template, '/').'$/';
     $pattern = str_replace('___', '\d+', $pattern);
 
-    $this->assertMatchesRegularExpression($pattern, $error);
-
+    expect($error)->toMatch($pattern);
 });

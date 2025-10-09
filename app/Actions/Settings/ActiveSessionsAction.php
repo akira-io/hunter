@@ -24,7 +24,7 @@ final readonly class ActiveSessionsAction
             ->get();
 
         $uniqueSessions = $sessions->groupBy('ip_address')->map(
-            fn (AuthenticationLog $group) => $group->query()
+            fn (Collection $group) => $group
                 ->first())
             ->values();
 
