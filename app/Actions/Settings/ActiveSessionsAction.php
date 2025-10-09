@@ -17,17 +17,23 @@ final readonly class ActiveSessionsAction
      */
     public function handle(User $user): Collection
     {
-        return $user->authenticationLogs()
+        $sessions = $user->authenticationLogs()
             ->whereNotNull('login_at')
             ->whereNull('logout_at')
-            ->get()
-            ->map(fn (AuthenticationLog $session): array => [
-                'id' => $session->id,
-                'ip_address' => $session->ip_address,
-                'user_agent' => $session->user_agent,
-                'login_at' => $session->login_at,
-                'location' => $session->location,
-                'is_current' => $session->ip_address === request()->ip(),
-            ]);
+            ->orderBy('login_at', 'desc')
+            ->get();
+
+        $uniqueSessions = $sessions->groupBy('ip_address')->map(function ($group) {
+            return $group->first();
+        })->values();
+
+        return $uniqueSessions->map(fn (AuthenticationLog $session): array => [
+            'id' => $session->id,
+            'ip_address' => $session->ip_address,
+            'user_agent' => $session->user_agent,
+            'login_at' => $session->login_at,
+            'location' => $session->location,
+            'is_current' => $session->ip_address === request()->ip(),
+        ]);
     }
 }

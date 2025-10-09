@@ -19,6 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useUniqueSessions } from '@/hooks/use-unique-sessions';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import password from '@/routes/password';
@@ -66,6 +67,9 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
     const [sessionToRevoke, setSessionToRevoke] = useState<number | null>(null);
     const [accountToDisconnect, setAccountToDisconnect] = useState<string | null>(null);
     const [showLogoutAllDialog, setShowLogoutAllDialog] = useState(false);
+
+    // Use custom hook to filter duplicate sessions (only one per IP)
+    const uniqueSessions = useUniqueSessions(activeSessions);
 
     // Password form
     const passwordInput = useRef<HTMLInputElement>(null);
@@ -153,7 +157,7 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
         return { browser, os };
     };
 
-    const otherSessionsCount = activeSessions.filter((s) => !s.is_current).length;
+    const otherSessionsCount = uniqueSessions.filter((s) => !s.is_current).length;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -249,13 +253,13 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            {activeSessions.length === 0 ? (
+                            {uniqueSessions.length === 0 ? (
                                 <Alert>
                                     <AlertCircle className="size-4" />
                                     <AlertDescription>Nenhuma sessão ativa encontrada.</AlertDescription>
                                 </Alert>
                             ) : (
-                                activeSessions.map((session) => {
+                                uniqueSessions.map((session) => {
                                     const { browser, os } = parseUserAgent(session.user_agent);
                                     return (
                                         <div
