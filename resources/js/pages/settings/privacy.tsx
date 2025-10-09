@@ -8,7 +8,7 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle
+    AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,20 +22,7 @@ import SettingsLayout from '@/layouts/settings/layout';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import {
-    CheckCircle,
-    Eye,
-    Globe,
-    Lock,
-    MessageSquare,
-    Search,
-    Shield,
-    User,
-    UserCheck,
-    Users,
-    UserX,
-    XCircle
-} from 'lucide-react';
+import { CheckCircle, Eye, Globe, Lock, MessageSquare, Search, Shield, User, UserCheck, Users, UserX, XCircle } from 'lucide-react';
 import { type FormEventHandler, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
