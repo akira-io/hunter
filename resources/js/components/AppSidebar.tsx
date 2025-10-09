@@ -1,14 +1,22 @@
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem
+} from '@/components/ui/sidebar';
 import { useChatContext } from '@/contexts/ChatContext';
 import finder from '@/routes/finder';
 import followable from '@/routes/followable';
 import hunts from '@/routes/hunts';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, EyeIcon, FileSearch, MessageCircle, MessageCircleMore, NetworkIcon, RssIcon } from 'lucide-react';
+import { BookOpen, EyeIcon, FileSearch, MessageCircle, MessageCircleMore, NetworkIcon, Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
 import { AiFillGithub } from 'react-icons/ai';
 
@@ -16,7 +24,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Hunts',
         href: hunts.index.url(),
-        icon: RssIcon,
+        icon: Sparkles,
     },
     {
         title: 'Explorar',

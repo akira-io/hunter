@@ -56,10 +56,8 @@ function DialogContent({
                 data-slot='dialog-content'
                 className={cn(
                     'gradient bg-card backdrop-blur-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed z-50 grid w-full gap-4 shadow-2xl duration-200',
-                    // Mobile: fullscreen
-                    'inset-0 border-none rounded-none p-0',
-                    // Desktop: centered modal
-                    'sm:top-[50%] sm:left-[50%] sm:max-w-[calc(100%-2rem)] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:border sm:border-zinc-200 sm:rounded-2xl sm:p-6 sm:dark:border-zinc-700',
+                    'top-[50%] left-[50%] max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-zinc-200 p-6 dark:border-zinc-700',
+                    'sm:max-w-[calc(100%-4rem)] md:max-w-lg',
                     className
                 )}
                 {...props}

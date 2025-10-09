@@ -118,7 +118,7 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className="max-h-[95vh] overflow-y-auto p-0 sm:max-w-[95vw] md:h-[80vh]"
+                className="max-h-[95vh] overflow-y-auto p-0 md:h-[80vh] md:max-w-[95vw]"
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
@@ -145,7 +145,7 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                 )}
 
                 {/* Two-Column Layout */}
-                <div className="grid h-full grid-cols-1 md:grid-cols-2">
+                <div className="grid h-full w-[95vw] grid-cols-1 md:grid-cols-2">
                     {/* Left Column - Image */}
                     <div className="relative flex items-center justify-center overflow-hidden bg-black md:h-full">
                         {hunt.image_url ? (
