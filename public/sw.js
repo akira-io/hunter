@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `devhunter-images-${CACHE_VERSION}`;
@@ -53,6 +53,14 @@ self.addEventListener('fetch', (event) => {
 
     // Skip chrome extension requests
     if (url.protocol === 'chrome-extension:') {
+        return;
+    }
+
+    // Skip auth routes (OAuth, login, register, etc) - let them pass through
+    if (url.pathname.startsWith('/auth/') ||
+        url.pathname.startsWith('/login') ||
+        url.pathname.startsWith('/register') ||
+        url.pathname.startsWith('/logout')) {
         return;
     }
 

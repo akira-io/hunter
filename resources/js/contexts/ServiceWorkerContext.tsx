@@ -13,25 +13,42 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const handleUpdate = () => {
+            console.log('[SW] Starting Service Worker registration...');
+
             navigator.serviceWorker
                 .register('/sw.js')
                 .then((registration) => {
                     console.log('[SW] Service Worker registered:', registration.scope);
+                    console.log('[SW] Current state - installing:', registration.installing);
+                    console.log('[SW] Current state - waiting:', registration.waiting);
+                    console.log('[SW] Current state - active:', registration.active);
+
+                    // If there's already a waiting worker, show update dialog immediately
+                    if (registration.waiting) {
+                        console.log('[SW] Update already waiting!');
+                        setWaitingWorker(registration.waiting);
+                        setUpdateAvailable(true);
+                    }
 
                     // Check for updates periodically
                     const intervalId = setInterval(() => {
+                        console.log('[SW] Checking for updates...');
                         registration.update();
                     }, 60000); // Check every minute
 
                     // Handle service worker updates
                     registration.addEventListener('updatefound', () => {
-                        console.log('[SW] Update found!');
+                        console.log('[SW] ⚡ Update found!');
                         const newWorker = registration.installing;
+                        console.log('[SW] New worker:', newWorker);
+
                         if (newWorker) {
                             newWorker.addEventListener('statechange', () => {
-                                console.log('[SW] New worker state:', newWorker.state);
+                                console.log('[SW] 🔄 New worker state changed to:', newWorker.state);
+                                console.log('[SW] Has controller?', !!navigator.serviceWorker.controller);
+
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    console.log('[SW] New version available!');
+                                    console.log('[SW] ✅ New version available! Showing dialog...');
                                     setWaitingWorker(newWorker);
                                     setUpdateAvailable(true);
                                 }
@@ -42,11 +59,12 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
                     return () => clearInterval(intervalId);
                 })
                 .catch((error) => {
-                    console.error('[SW] Service Worker registration failed:', error);
+                    console.error('[SW] ❌ Service Worker registration failed:', error);
                 });
 
-            // Handle service worker controller change
+            // Handle service worker controller change (this triggers auto-reload)
             navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('[SW] 🔄 Controller changed - reloading page...');
                 window.location.reload();
             });
         };
