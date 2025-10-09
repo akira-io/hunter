@@ -14,7 +14,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
     const sidebarOffset = !isMobile && state === 'expanded' ? 'calc(var(--sidebar-width) + 0.75rem)' : undefined;
 
     return (
-        <header className="gradient bg-card/80 border-sidebar-border/50 supports-[backdrop-filter]:bg-card/60 fixed z-50 flex h-16 w-full shrink-0 items-center border-b backdrop-blur-md transition-[width] ease-linear">
+        <header className="gradient bg-card/80 border-sidebar-border/50 supports-[backdrop-filter]:bg-card/60 sticky top-0 z-50 flex h-16 w-full shrink-0 items-center border-b backdrop-blur-md transition-[width] ease-linear">
             {/* Left side - Navigation */}
             <div className="flex items-center gap-2 px-3 md:px-6">
                 <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground -ml-1 transition-colors" />
