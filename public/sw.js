@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `devhunter-images-${CACHE_VERSION}`;
@@ -61,6 +61,13 @@ self.addEventListener('fetch', (event) => {
         url.pathname.startsWith('/login') ||
         url.pathname.startsWith('/register') ||
         url.pathname.startsWith('/logout')) {
+        return;
+    }
+
+    // Skip Inertia requests (infinite scroll, form submissions, etc) - always use network
+    if (request.headers.get('X-Inertia') ||
+        request.headers.get('X-Inertia-Partial-Component') ||
+        request.headers.get('X-Inertia-Partial-Data')) {
         return;
     }
 

@@ -16,7 +16,7 @@ export function UpdateAvailableDialog({ open, onUpdate, onLater }: UpdateAvailab
 
     return (
         <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onLater()}>
-            <DialogContent className="p-6">
+            <DialogContent className="top-[50%] left-[50%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border p-6">
                 <DialogHeader className="gap-4">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10">
                         <Sparkles className="h-6 w-6 text-purple-500" />

@@ -22,6 +22,7 @@ interface HuntModalProps {
 export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNext = false, hasPrevious = false }: HuntModalProps) {
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
+    const [scrollableElement, setScrollableElement] = useState<HTMLElement | null>(null);
 
     const minSwipeDistance = 150;
 
@@ -81,6 +82,10 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
     const handleTouchStart = (e: React.TouchEvent) => {
         setTouchEnd(null);
         setTouchStart(e.targetTouches[0].clientY);
+
+        // Find the scrollable element (DialogContent)
+        const target = e.currentTarget as HTMLElement;
+        setScrollableElement(target);
     };
 
     const handleTouchMove = (e: React.TouchEvent) => {
@@ -88,17 +93,19 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
     };
 
     const handleTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
+        if (!touchStart || !touchEnd || !scrollableElement) return;
 
         const distance = touchStart - touchEnd;
         const isSwipeDown = distance < -minSwipeDistance;
 
-        if (isSwipeDown) {
+        // Only close if swiping down AND at the top of scroll
+        if (isSwipeDown && scrollableElement.scrollTop === 0) {
             onOpenChange(false);
         }
 
         setTouchStart(null);
         setTouchEnd(null);
+        setScrollableElement(null);
     };
 
     useEffect(() => {
