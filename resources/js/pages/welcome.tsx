@@ -96,7 +96,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
     return (
         <>
             {showLoader && <WelcomeLoader onComplete={handleLoaderComplete} />}
-            <Head title="Dev Hunter">
+            <Head title="Hunter">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
