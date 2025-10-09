@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useRef, useState } from 'react';
 
 interface UseMarkdownEditorOptions {

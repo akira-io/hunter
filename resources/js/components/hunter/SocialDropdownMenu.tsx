@@ -5,22 +5,8 @@ import { OnboardingAvatar } from '@/components/Onboarding';
 import { HighlightedSkills } from '@/components/profile/HighlightedSkills';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle
-} from '@/components/ui/dialog';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useProfile } from '@/hooks/use-profile';
 import { useSanitizeExternalUrl } from '@/hooks/use-sanitize-image-url';
 import { useSocialActions } from '@/hooks/use-social-actions';
@@ -40,7 +26,7 @@ import {
     ShieldCheckIcon,
     UserIcon,
     UserMinusIcon,
-    UserPlusIcon
+    UserPlusIcon,
 } from 'lucide-react';
 import * as React from 'react';
 import { useState } from 'react';
@@ -114,6 +100,7 @@ export function SocialDropdownMenu({ user, hasFollowed }: SocialDropdownMenuProp
         { name: 'YouTube', url: user.youtube_url, icon: <RiYoutubeFill /> },
         { name: 'Bluesky', url: user.bluesky_url, icon: <RiBlueskyFill /> },
         { name: 'Website', url: user.website_url, icon: <Globe /> },
+        { name: 'LinkedIn', url: user.linkedin_url, icon: <RiLinkedinBoxFill /> },
     ];
 
     const handleContinue = () => {
