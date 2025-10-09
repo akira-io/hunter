@@ -32,10 +32,13 @@ export function CreateHunt() {
     const sanitizedImageUrls = useSanitizeImageUrls(imagePreview);
 
     const maxLength = 500;
-    const contentLength = data.content.trim().length;
+    const contentLength = data.content?.trim().length || 0;
     const progressPercentage = (contentLength / maxLength) * 100;
     const isNearLimit = contentLength > maxLength * 0.9;
     const isOverLimit = contentLength > maxLength;
+    const hasContent = contentLength > 0;
+    const hasImage = imagePreview.length > 0;
+    const canSubmit = (hasContent || hasImage) && !isOverLimit;
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         setImagePreview([]);
@@ -252,7 +255,7 @@ export function CreateHunt() {
 
                             <Button
                                 type="submit"
-                                disabled={processing || contentLength === 0 || isOverLimit}
+                                disabled={processing || !canSubmit}
                                 size="lg"
                                 className={cn(
                                     'w-full gap-2 bg-gradient-to-r from-purple-500 to-purple-700 transition-all duration-300 hover:from-purple-600 hover:to-purple-800 hover:shadow-lg hover:shadow-purple-500/30 active:scale-95 disabled:opacity-50 sm:w-auto',

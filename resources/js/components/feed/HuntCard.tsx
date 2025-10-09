@@ -296,9 +296,11 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                     </DropdownMenu>
                 </CardHeader>
                 <CardContent className="space-y-3 overflow-hidden px-3 break-words sm:space-y-4 sm:px-6">
-                    <div className="cursor-pointer overflow-hidden" onClick={gotoHuntDetail}>
-                        <MarkdownRenderer content={hunt.content} />
-                    </div>
+                    {hunt.content && (
+                        <div className="cursor-pointer overflow-hidden" onClick={gotoHuntDetail}>
+                            <MarkdownRenderer content={hunt.content} />
+                        </div>
+                    )}
                     {sanitizedImageUrl && (
                         <div className="relative w-full overflow-hidden rounded-lg" style={{ height: '200px' }}>
                             <img

@@ -13,7 +13,7 @@ final readonly class CreateHuntData
      * Create hunt data transfer object.
      */
     public function __construct(
-        public string $content,
+        public ?string $content,
         public bool $isReported = false,
         public bool $isPinned = false,
         public bool $isIgnored = false,
@@ -50,7 +50,7 @@ final readonly class CreateHuntData
         }
 
         return new self(
-            content: (string) $request->input('content'),
+            content: $request->input('content') ? (string) $request->input('content') : null,
             isReported: $request->boolean('is_reported'),
             isPinned: $request->boolean('is_pinned'),
             isIgnored: $request->boolean('is_ignored'),

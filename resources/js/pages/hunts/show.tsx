@@ -16,7 +16,7 @@ export default function HuntShow({ hunt }: HuntShowProps) {
     useSanitizeImageUrl(hunt.image_url);
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Hunt Line',
+            title: 'hunts',
             href: hunts.index.url(),
         },
         {
