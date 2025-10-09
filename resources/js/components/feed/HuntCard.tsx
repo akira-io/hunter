@@ -170,7 +170,7 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                             >
                                 <div className="flex items-center gap-1.5">
                                     <Repeat2 className="h-3.5 w-3.5 text-orange-500 sm:h-4 sm:w-4" />
-                                    <span className="text-xs">Shares</span>
+                                    <span className="text-xs">Partilhas</span>
                                 </div>
                                 <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.shares ?? hunt.shares}</p>
                                 {metrics?.share_rate !== undefined && (
@@ -185,7 +185,7 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                             >
                                 <div className="flex items-center gap-1.5">
                                     <MessageCircle className="h-3.5 w-3.5 text-green-500 sm:h-4 sm:w-4" />
-                                    <span className="text-xs">Coment.</span>
+                                    <span className="text-xs">Comentarios</span>
                                 </div>
                                 <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.comments ?? hunt.comments?.length ?? 0}</p>
                                 {metrics?.comment_rate !== undefined && (
