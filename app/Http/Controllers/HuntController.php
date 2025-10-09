@@ -53,12 +53,17 @@ final readonly class HuntController
         /** @var User $user */
         $user = $request->user();
 
-        $createHuntAction->handle(
+        $hunt = $createHuntAction->handle(
             user: $user,
             huntData: CreateHuntData::fromRequest(request: $request)
         );
 
-        return to_route('hunts.index');
+        // Attach like status for the current user
+        $user->attachLikeStatus($hunt);
+
+        return to_route('hunts.index')->with([
+            'newHunt' => HuntResource::make($hunt)->resolve(),
+        ]);
     }
 
     /**

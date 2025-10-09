@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Hunt;
 
 use App\DataTransferObjects\Hunt\CreateHuntData;
+use App\Enums\HuntImageProcessingStatus;
+use App\Jobs\ProcessHuntImage;
 use App\Models\Hunt;
 use App\Models\User;
 use App\Notifications\HuntPublishedNotification;
@@ -19,10 +21,23 @@ final readonly class CreateHuntAction
      */
     public function handle(User $user, CreateHuntData $huntData): Hunt
     {
-        $hunt = $user->hunts()->create($huntData->toArray());
+        $huntAttributes = $huntData->toArray();
 
         if ($huntData->image instanceof UploadedFile) {
-            $hunt->addMedia($huntData->image)->toMediaCollection('hunts');
+            $huntAttributes['image_processing_status'] = HuntImageProcessingStatus::Pending->value;
+        }
+
+        $hunt = $user->hunts()->create($huntAttributes);
+
+        if ($huntData->image instanceof UploadedFile) {
+            $tempPath = $huntData->image->store('temp', 'local');
+
+            ProcessHuntImage::dispatch(
+                $hunt,
+                $tempPath,
+                $huntData->image->getClientOriginalName(),
+                $huntData->image->getMimeType()
+            );
         }
 
         $this->notifyFollowers($user, $hunt);

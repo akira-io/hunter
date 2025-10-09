@@ -187,3 +187,21 @@ it('should create a hunt with image', function () {
     expect($this->user->hunts()->first()->getMedia('hunts'))->toHaveCount(1);
 
 });
+
+it('returns new hunt in session flash with pending status', function () {
+    Storage::fake('hunts');
+
+    $response = from(route('hunts.index'))
+        ->post(route('hunts.store'), [
+            'content' => 'Hunt with image',
+            'image' => UploadedFile::fake()->image('test.jpg'),
+        ]);
+
+    $response->assertRedirect(route('hunts.index'));
+    $response->assertSessionHas('newHunt');
+
+    $newHunt = session('newHunt');
+    expect($newHunt)->toHaveKey('id')
+        ->and($newHunt)->toHaveKey('content', 'Hunt with image')
+        ->and($newHunt)->toHaveKey('image_processing_status', 'pending');
+});

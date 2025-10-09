@@ -7,6 +7,7 @@ namespace App\Models;
 use Akira\Commentable\Concerns\Commentable;
 use Akira\Commentable\Models\Comment;
 use Akira\Likeable\Concerns\Likeable;
+use App\Enums\HuntImageProcessingStatus;
 use Database\Factories\HuntFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,7 +24,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  *
  * @property-read  string $id
  * @property-read  int $owner_id
- * @property-read  string $content
+ * @property-read  string|null $content
  * @property-read  bool $is_reported
  * @property-read  bool $is_pinned
  * @property-read  bool $is_ignored
@@ -34,6 +35,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property MorphMany<Comment, $this> $comments
  * @property-read int $likes_count
  * @property-read bool $has_liked
+ * @property HuntImageProcessingStatus|null $image_processing_status
  */
 final class Hunt extends Model implements HasMedia
 {
@@ -60,6 +62,7 @@ final class Hunt extends Model implements HasMedia
             'is_ignored',
             'views_count',
             'shares_count',
+            'image_processing_status',
         ];
 
     /**
@@ -135,6 +138,7 @@ final class Hunt extends Model implements HasMedia
             'created_at' => 'datetime',
             'views_count' => 'integer',
             'shares_count' => 'integer',
+            'image_processing_status' => HuntImageProcessingStatus::class,
         ];
     }
 }

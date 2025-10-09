@@ -81,6 +81,7 @@ final class HuntResource extends JsonResource
             'shares' => (int) $publicMetrics['shares'],
             'has_liked' => $this->has_liked ?? false,
             'image_url' => $this->getFirstMediaUrl('hunts'),
+            'image_processing_status' => $this->image_processing_status?->value,
             'metrics' => $advancedMetrics,
             'can_comment' => $user instanceof User && $this->owner->canReceiveCommentsFrom($user),
             'is_owner' => $isOwner,

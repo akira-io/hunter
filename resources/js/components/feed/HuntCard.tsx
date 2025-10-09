@@ -19,6 +19,7 @@ import {
     Eye,
     Flame,
     Heart,
+    Loader2,
     MessageCircle,
     Repeat2,
     SaveIcon,
@@ -301,7 +302,31 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                             <MarkdownRenderer content={hunt.content} />
                         </div>
                     )}
-                    {sanitizedImageUrl && (
+                    {/* Image or Processing State */}
+                    {hunt.image_processing_status === 'pending' || hunt.image_processing_status === 'processing' ? (
+                        <div className="relative w-full overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800" style={{ height: '200px' }}>
+                            <div className="flex h-full w-full items-center justify-center">
+                                <div className="text-center">
+                                    <Loader2 className="mx-auto mb-2 h-8 w-8 animate-spin text-purple-500" />
+                                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                                        {hunt.image_processing_status === 'pending' ? 'Preparando imagem...' : 'Processando imagem...'}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : hunt.image_processing_status === 'failed' ? (
+                        <div
+                            className="relative w-full overflow-hidden rounded-lg border-2 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/20"
+                            style={{ height: '200px' }}
+                        >
+                            <div className="flex h-full w-full items-center justify-center">
+                                <div className="text-center">
+                                    <ShieldAlert className="mx-auto mb-2 h-8 w-8 text-red-500" />
+                                    <p className="text-sm text-red-600 dark:text-red-400">Falha ao processar imagem</p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : sanitizedImageUrl ? (
                         <div className="relative w-full overflow-hidden rounded-lg" style={{ height: '200px' }}>
                             <img
                                 src={sanitizedImageUrl}
@@ -313,7 +338,7 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                                 }}
                             />
                         </div>
-                    )}
+                    ) : null}
                 </CardContent>
 
                 {/* Footer - Always show basic metrics for non-owners */}

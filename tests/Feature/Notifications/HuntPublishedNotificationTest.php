@@ -245,3 +245,24 @@ it('handles exactly 100 character content without truncation', function () {
         ->and($arrayData['hunt']['content_preview'])->toBe($exactContent)
         ->and($broadcastData['hunt']['content_preview'])->toHaveLength(100);
 });
+
+it('shows placeholder for image-only hunts without content', function () {
+    $author = User::factory()->create();
+    $follower = User::factory()->create();
+
+    $follower->follow($author);
+
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $author->id,
+        'content' => null,
+    ]);
+
+    $notification = new HuntPublishedNotification($hunt, $author);
+
+    $mailMessage = $notification->toMail($follower);
+    $broadcastData = $notification->toBroadcast($follower)->data;
+    $arrayData = $notification->toArray($follower);
+
+    expect($broadcastData['hunt']['content_preview'])->toBe('[Imagem]')
+        ->and($arrayData['hunt']['content_preview'])->toBe('[Imagem]');
+});
