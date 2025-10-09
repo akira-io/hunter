@@ -12,6 +12,18 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
     const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
 
     useEffect(() => {
+        if (!('serviceWorker' in navigator)) {
+            console.log('[SW] Service Worker not supported');
+            return;
+        }
+
+        let intervalId: NodeJS.Timeout | null = null;
+
+        const handleControllerChange = () => {
+            console.log('[SW] 🔄 Controller changed - reloading page...');
+            window.location.reload();
+        };
+
         const handleUpdate = () => {
             console.log('[SW] Starting Service Worker registration...');
 
@@ -31,7 +43,7 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
                     }
 
                     // Check for updates periodically
-                    const intervalId = setInterval(() => {
+                    intervalId = setInterval(() => {
                         console.log('[SW] Checking for updates...');
                         registration.update();
                     }, 60000); // Check every minute
@@ -55,26 +67,28 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
                             });
                         }
                     });
-
-                    return () => clearInterval(intervalId);
                 })
                 .catch((error) => {
                     console.error('[SW] ❌ Service Worker registration failed:', error);
                 });
 
             // Handle service worker controller change (this triggers auto-reload)
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.log('[SW] 🔄 Controller changed - reloading page...');
-                window.location.reload();
-            });
+            navigator.serviceWorker.addEventListener('controllerchange', handleControllerChange);
         };
 
         if (document.readyState === 'complete') {
             handleUpdate();
         } else {
             window.addEventListener('load', handleUpdate);
-            return () => window.removeEventListener('load', handleUpdate);
         }
+
+        return () => {
+            window.removeEventListener('load', handleUpdate);
+            navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange);
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
     }, []);
 
     const applyUpdate = () => {
