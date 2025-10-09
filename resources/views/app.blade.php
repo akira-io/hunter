@@ -29,6 +29,31 @@
       }
 	</style>
 	<title inertia>{{ config('app.name', 'Laravel') }}</title>
+
+	<!-- PWA Meta Tags -->
+	<meta name="application-name" content="{{ config('app.name', 'Hunter') }}">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="{{ config('app.name', 'Hunter') }}">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="theme-color" content="#a855f7" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#7c3aed" media="(prefers-color-scheme: dark)">
+
+	<!-- PWA Icons -->
+	<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-72x72.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/icons/icon-128x128.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png">
+
+	<!-- Manifest -->
+	<link rel="manifest" href="/manifest.json">
+
+	<!-- Splash Screens for iOS -->
+	<link rel="apple-touch-startup-image" href="/icons/icon-512x512.png">
+
 	<link rel="preconnect" href="https://fonts.bunny.net">
 	<link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 	@viteReactRefresh
