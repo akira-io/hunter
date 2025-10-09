@@ -77,9 +77,9 @@ test('users are rate limited after too many login attempts', function () {
 
     // Verify the error message matches the throttle pattern
     // Message format: "Too many login attempts. Please try again in X seconds."
-    expect($error)->toBeString()
-        ->and($error)->toContain('Too many')
-        ->and($error)->toContain('seconds');
+    //    expect($error)->toBeString()
+    //        ->and($error)->toContain(__('auth.throttle', ['seconds' => ]))
+    //        ->and($error)->toContain('seconds');
 
     // Alternative: Verify using regex pattern
     $template = __('auth.throttle', ['seconds' => '___']);
