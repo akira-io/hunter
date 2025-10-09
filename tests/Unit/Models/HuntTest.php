@@ -77,3 +77,50 @@ it('increments shares count correctly', function () {
 
     expect($hunt->fresh()->shares_count)->toBe(4);
 });
+
+it('returns searchable array with correct structure', function () {
+    $user = User::factory()->create([
+        'name' => 'John Doe',
+        'user_name' => 'johndoe',
+    ]);
+
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $user->id,
+        'content' => 'Test hunt content',
+    ]);
+
+    $searchableArray = $hunt->toSearchableArray();
+
+    expect($searchableArray)
+        ->toHaveKey('id')
+        ->toHaveKey('content')
+        ->toHaveKey('owner_id')
+        ->toHaveKey('owner_name')
+        ->toHaveKey('owner_username')
+        ->toHaveKey('created_at')
+        ->and($searchableArray['id'])->toBe($hunt->id)
+        ->and($searchableArray['content'])->toBe('Test hunt content')
+        ->and($searchableArray['owner_id'])->toBe($user->id)
+        ->and($searchableArray['owner_name'])->toBe('John Doe')
+        ->and($searchableArray['owner_username'])->toBe('johndoe')
+        ->and($searchableArray['created_at'])->toBeInt();
+});
+
+it('searchable array includes timestamp as integer', function () {
+    $hunt = Hunt::factory()->create();
+
+    $searchableArray = $hunt->toSearchableArray();
+
+    expect($searchableArray['created_at'])
+        ->toBeInt()
+        ->toBeGreaterThan(0);
+});
+
+it('can access owner relationship in searchable array', function () {
+    $user = User::factory()->create(['name' => 'Test Owner']);
+    $hunt = Hunt::factory()->create(['owner_id' => $user->id]);
+
+    $searchableArray = $hunt->toSearchableArray();
+
+    expect($searchableArray['owner_name'])->toBe('Test Owner');
+});

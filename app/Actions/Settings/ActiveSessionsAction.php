@@ -23,9 +23,7 @@ final readonly class ActiveSessionsAction
             ->orderBy('login_at', 'desc')
             ->get();
 
-        $uniqueSessions = $sessions->groupBy('ip_address')->map(function ($group) {
-            return $group->first();
-        })->values();
+        $uniqueSessions = $sessions->groupBy('ip_address')->map(fn($group) => $group->first())->values();
 
         return $uniqueSessions->map(fn (AuthenticationLog $session): array => [
             'id' => $session->id,

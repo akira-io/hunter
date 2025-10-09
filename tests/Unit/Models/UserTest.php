@@ -123,3 +123,68 @@ it('should convert relative paths to absolute URLs', function () {
     expect($result)->toContain('/images/avatar.jpg')
         ->and($result)->toStartWith('http');
 });
+
+it('returns searchable array with correct structure', function () {
+    $user = User::factory()->create([
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'location' => 'New York',
+        'user_name' => 'johndoe',
+        'skills' => [
+            ['value' => 'PHP', 'label' => 'PHP'],
+            ['value' => 'Laravel', 'label' => 'Laravel'],
+        ],
+    ]);
+
+    $searchableArray = $user->toSearchableArray();
+
+    expect($searchableArray)
+        ->toHaveKey('id')
+        ->toHaveKey('name')
+        ->toHaveKey('email')
+        ->toHaveKey('location')
+        ->toHaveKey('user_name')
+        ->toHaveKey('skills')
+        ->and($searchableArray['name'])->toBe('John Doe')
+        ->and($searchableArray['email'])->toBe('john@example.com')
+        ->and($searchableArray['location'])->toBe('New York')
+        ->and($searchableArray['user_name'])->toBe('johndoe')
+        ->and($searchableArray['skills'])->toBeArray();
+});
+
+it('can receive messages from another user', function () {
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    expect($user1->canReceiveMessagesFrom($user2))->toBeTrue();
+});
+
+it('cannot receive messages from null sender', function () {
+    $user = User::factory()->create();
+
+    expect($user->canReceiveMessagesFrom(null))->toBeFalse();
+});
+
+it('cannot receive messages from itself', function () {
+    $user = User::factory()->create();
+
+    expect($user->canReceiveMessagesFrom($user))->toBeFalse();
+});
+
+it('cannot receive messages from blocked user', function () {
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    $user1->block($user2);
+
+    expect($user1->canReceiveMessagesFrom($user2))->toBeFalse();
+});
+
+it('cannot receive messages when blocked by sender', function () {
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    $user2->block($user1); // user2 blocks user1
+
+    expect($user1->canReceiveMessagesFrom($user2))->toBeFalse();
+});

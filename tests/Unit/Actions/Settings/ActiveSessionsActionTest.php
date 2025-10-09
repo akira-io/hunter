@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Actions\Settings;
 
+use Akira\LaravelAuthLogs\AuthenticationLog;
 use App\Actions\Settings\ActiveSessionsAction;
 use App\Models\User;
-use Akira\LaravelAuthLogs\AuthenticationLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ActiveSessionsActionTest extends TestCase
+final class ActiveSessionsActionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -214,7 +214,7 @@ class ActiveSessionsActionTest extends TestCase
 
         // Should return only 2 sessions (one per IP)
         $this->assertCount(2, $sessions);
-        
+
         $sessionIds = $sessions->pluck('id')->toArray();
         $this->assertContains($mostRecentIp1->id, $sessionIds);
         $this->assertContains($mostRecentIp2->id, $sessionIds);
