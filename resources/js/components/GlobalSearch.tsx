@@ -143,6 +143,12 @@ export function GlobalSearch() {
                         value={search}
                         onValueChange={setSearch}
                         placeholder="Procurar hunters, projetos..."
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck={false}
+                        data-lpignore="true"
+                        data-form-type="other"
                         className="placeholder:text-muted-foreground flex h-14 w-full rounded-t-lg border-b bg-transparent px-4 py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     />
 

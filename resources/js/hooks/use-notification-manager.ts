@@ -1,5 +1,7 @@
 import { toast } from '@/hooks/use-toast';
+import { isPWAMode } from '@/hooks/use-pwa';
 import { useAddNotification, useSetNotifications } from '@/stores/notificationStore';
+import { notificationService, showBrowserNotification } from '@/services/notifications';
 import { useEcho } from '@laravel/echo-react';
 import { useEffect } from 'react';
 
@@ -87,22 +89,23 @@ export const useNotificationManager = ({ currentUserId, notifications }: UseNoti
                         created_at_human: notification.created_at_human,
                     });
 
-                    // Show toast notification for in-app feedback
-                    toast({
-                        title: notification.title,
-                        description: notification.message,
-                        duration: 5000,
-                    });
-
-                    // Show browser notification if permission granted
-                    if (Notification.permission === 'granted') {
-                        const avatarUrl = notification.follower?.avatar_url || notification.author?.avatar_url || '/favicon.ico';
-                        new Notification(notification.title, {
-                            body: notification.message,
-                            icon: avatarUrl,
-                            tag: `notification-${notification.id}`,
+                    // Show toast notification only when NOT in PWA mode
+                    // In PWA mode, push notifications will be used instead
+                    if (!isPWAMode()) {
+                        toast({
+                            title: notification.title,
+                            description: notification.message,
+                            duration: 5000,
                         });
                     }
+
+                    // Show browser notification (automatically handled based on PWA mode)
+                    const avatarUrl = notification.follower?.avatar_url || notification.author?.avatar_url || '/favicon.ico';
+                    showBrowserNotification(notification.title, {
+                        body: notification.message,
+                        icon: avatarUrl,
+                        tag: `notification-${notification.id}`,
+                    });
                 });
             } catch (error) {
                 console.error('Error setting up notification channel:', error);
@@ -116,10 +119,10 @@ export const useNotificationManager = ({ currentUserId, notifications }: UseNoti
         };
     }, [notificationEcho, currentUserId, addNotification]);
 
-    // Request notification permission
+    // Request notification permission and subscribe to push if in PWA
     useEffect(() => {
-        if (currentUserId && 'Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
+        if (currentUserId) {
+            notificationService.requestNotificationPermission();
         }
     }, [currentUserId]);
 };

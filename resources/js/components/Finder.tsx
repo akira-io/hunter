@@ -25,6 +25,12 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
                             type="text"
                             placeholder="Procurar hunters por nome, username, skills..."
                             onChange={onSearch}
+                            autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="off"
+                            spellCheck="false"
+                            data-lpignore="true"
+                            data-form-type="other"
                             className="placeholder:text-muted-foreground focus:border-primary focus:ring-primary w-full rounded-lg border border-zinc-200 bg-white py-3 pr-4 pl-12 text-sm transition-all outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                         />
                         {isSearchLoading && (
