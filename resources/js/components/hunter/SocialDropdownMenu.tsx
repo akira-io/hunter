@@ -5,8 +5,22 @@ import { OnboardingAvatar } from '@/components/Onboarding';
 import { HighlightedSkills } from '@/components/profile/HighlightedSkills';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import { useProfile } from '@/hooks/use-profile';
 import { useSanitizeExternalUrl } from '@/hooks/use-sanitize-image-url';
 import { useSocialActions } from '@/hooks/use-social-actions';
@@ -26,7 +40,7 @@ import {
     ShieldCheckIcon,
     UserIcon,
     UserMinusIcon,
-    UserPlusIcon,
+    UserPlusIcon
 } from 'lucide-react';
 import * as React from 'react';
 import { useState } from 'react';
@@ -83,9 +97,10 @@ function OnboardingAbout({ about }: { about: string | undefined }) {
 
 interface SocialDropdownMenuProps {
     user: User;
+    hasFollowed?: boolean;
 }
 
-export function SocialDropdownMenu({ user }: SocialDropdownMenuProps) {
+export function SocialDropdownMenu({ user, hasFollowed }: SocialDropdownMenuProps) {
     const { auth } = usePage<SharedData>().props;
     const { showProfile } = useProfile(user);
     const { processing, handleBlock, handleFollow, handleUnfollow, handleUnblock, state, setState } = useSocialActions(user);
@@ -97,7 +112,6 @@ export function SocialDropdownMenu({ user }: SocialDropdownMenuProps) {
         { name: 'GitHub', url: user.github_url, icon: <RiGithubFill /> },
         { name: 'Twitter', url: user.twitter_url, icon: <RiTwitterXFill /> },
         { name: 'YouTube', url: user.youtube_url, icon: <RiYoutubeFill /> },
-        { name: 'LinkedIn', url: user.linkedin_url, icon: <RiLinkedinBoxFill /> },
         { name: 'Bluesky', url: user.bluesky_url, icon: <RiBlueskyFill /> },
         { name: 'Website', url: user.website_url, icon: <Globe /> },
     ];
@@ -128,7 +142,8 @@ export function SocialDropdownMenu({ user }: SocialDropdownMenuProps) {
         setOpen(true);
     };
 
-    const has_followed = user.has_followed;
+    // Use hasFollowed prop if provided, otherwise fallback to user.has_followed
+    const has_followed = hasFollowed !== undefined ? hasFollowed : user.has_followed;
     const isBlocked = user.is_blocked ?? false;
 
     return (

@@ -46,13 +46,14 @@ export function OnboardingAvatar({ avatarUrl, onClick, size = 16 }: OnboardingAv
     );
 }
 
-export default function Onboarding({ user, hasFollowed = false, ...props }: OnboardingProps) {
+export default function Onboarding({ user, hasFollowed, ...props }: OnboardingProps) {
     const { auth } = usePage<SharedData>().props;
     const { startConversation, isStarting } = useStartConversation();
     const { truncate } = useTruncate();
     const { showProfile } = useProfile(user);
 
-    const has_followed = user.has_followed ?? hasFollowed;
+    // Use hasFollowed prop if provided, otherwise fallback to user.has_followed
+    const has_followed = hasFollowed !== undefined ? hasFollowed : user.has_followed;
 
     const handleMessageClick = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -69,7 +70,7 @@ export default function Onboarding({ user, hasFollowed = false, ...props }: Onbo
                             <CardTitle className="text-xl" onClick={showProfile}>
                                 {user.name}
                             </CardTitle>
-                            <SocialDropdownMenu user={user} />
+                            <SocialDropdownMenu user={user} hasFollowed={has_followed} />
                         </div>
                         <CardDescription className="text-sm">
                             {user.bio ? truncate(user.bio, 45) : <span className="text-muted">Bio indisponível...</span>}
