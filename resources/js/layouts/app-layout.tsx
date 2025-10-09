@@ -1,5 +1,6 @@
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { OnlineUsers } from '@/components/chat/OnlineUsers';
+import { MobileWarningDialog } from '@/components/MobileWarningDialog';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 import { Toaster } from '@/components/ui/toaster';
 import { ChatProvider } from '@/contexts/ChatContext';
@@ -51,6 +52,7 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                         <ChatContainer currentUserId={currentUserId} />
                         <OnlineUsers currentUserId={currentUserId} />
                         <OnboardingWizard isOpen={showOnboarding} onClose={closeOnboarding} />
+                        <MobileWarningDialog />
                     </>
                 )}
             </AppLayoutTemplate>
