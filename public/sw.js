@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v0.6.0';
 const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `devhunter-images-${CACHE_VERSION}`;
