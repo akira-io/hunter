@@ -14,7 +14,7 @@ interface ProfileCard {
 export function ProfileCard({ title, className, icon, onClick, children }: ProfileCard) {
     return (
         <Card className={cn('gradient mt-4 max-h-100 w-full max-w-4xl overflow-y-auto', className)}>
-            <CardTitle className="sticky -top-6 z-50 flex items-center justify-between px-4 py-2 text-sm shadow-sm backdrop-blur sm:px-6">
+            <CardTitle className="-top-6 z-50 flex items-center justify-between px-4 py-2 text-sm shadow-sm backdrop-blur sm:px-6">
                 <h3 className="text-foreground text-lg font-semibold">{title}</h3>
                 <Button variant="ghost" onClick={onClick}>
                     {icon}

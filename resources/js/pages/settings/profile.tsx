@@ -1,6 +1,5 @@
 import { About } from '@/components/profile/About';
 import { AcademicBackground } from '@/components/profile/AcademicBackground';
-import { HighlightedProjects } from '@/components/profile/HighlightedProjects';
 import { HighlightSkills } from '@/components/profile/HighlightSkills';
 import { ProfileLinks } from '@/components/profile/Links';
 import { ProfileCompletion } from '@/components/profile/ProfileCompletion';
@@ -11,7 +10,7 @@ import AppLayout from '@/layouts/app-layout';
 import followable from '@/routes/followable';
 import publicRoutes from '@/routes/public';
 import verification from '@/routes/verification';
-import { type BreadcrumbItem, type AcademicBackground as ProfessionalEducationType, type SharedData } from '@/types';
+import { type AcademicBackground as ProfessionalEducationType, type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { formatDate } from 'date-fns/format';
 import { GoLocation } from 'react-icons/go';
@@ -83,7 +82,7 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                     </div>
                     <About />
                     <AcademicBackground academicBackgrounds={academicBackgrounds} />
-                    <HighlightedProjects />
+                    {/*<HighlightedProjects />*/}
                     {/*<section className="space-y-6">*/}
                     {/*    <ProfileCard title="Habilidades" icon={<PlusIcon />}>*/}
                     {/*        <Award />*/}

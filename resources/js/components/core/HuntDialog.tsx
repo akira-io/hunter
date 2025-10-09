@@ -14,7 +14,7 @@ interface HunterConfirmDialogProps {
 export function HunterConfirmDialog({ title, className, onConfirm, processing }: HunterConfirmDialogProps) {
     return (
         <Dialog>
-            <DialogTrigger className={cn('flex items-center gap-2', className)}>
+            <DialogTrigger className={cn('flex cursor-pointer items-center gap-2', className)}>
                 <Trash size={16} className="opacity-60" aria-hidden="true" />
                 Eliminar
             </DialogTrigger>
