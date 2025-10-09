@@ -23,7 +23,7 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-    const minSwipeDistance = 50;
+    const minSwipeDistance = 150;
 
     const handleLike = useCallback(() => {
         router.post(
