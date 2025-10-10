@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1760139714510'; // Auto-updated by Vite build
+const CACHE_VERSION = 'v1760139993399'; // Auto-updated by Vite build
 const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `devhunter-images-${CACHE_VERSION}`;

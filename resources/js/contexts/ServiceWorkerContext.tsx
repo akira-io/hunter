@@ -20,6 +20,7 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
     const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(
         null,
     );
+    const [updateShown, setUpdateShown] = useState(false);
 
     useEffect(() => {
         if (!('serviceWorker' in navigator)) {
@@ -66,10 +67,11 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
                     );
 
                     // If there's already a waiting worker, show update dialog immediately
-                    if (registration.waiting) {
+                    if (registration.waiting && !updateShown) {
                         console.log('[SW] Update already waiting!');
                         setWaitingWorker(registration.waiting);
                         setUpdateAvailable(true);
+                        setUpdateShown(true);
                     }
 
                     // Check for updates periodically
@@ -101,13 +103,15 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
 
                                 if (
                                     newWorker.state === 'installed' &&
-                                    navigator.serviceWorker.controller
+                                    navigator.serviceWorker.controller &&
+                                    !updateShown
                                 ) {
                                     console.log(
                                         '[SW] ✅ New version available! Showing update dialog...',
                                     );
                                     setWaitingWorker(newWorker);
                                     setUpdateAvailable(true);
+                                    setUpdateShown(true);
                                 } else if (newWorker.state === 'installed') {
                                     console.log(
                                         '[SW] First install - no controller yet, not showing dialog',
@@ -158,7 +162,7 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
                 clearInterval(intervalId);
             }
         };
-    }, []);
+    }, [updateShown]);
 
     const applyUpdate = () => {
         if (waitingWorker) {
