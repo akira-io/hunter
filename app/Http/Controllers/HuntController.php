@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\Hunt\CreateHuntAction;
 use App\Actions\Hunt\DeleteHuntAction;
 use App\Actions\Hunt\GetHuntsAction;
+use App\Actions\Hunt\GetUserHuntsAction;
 use App\DataTransferObjects\Hunt\CreateHuntData;
 use App\Http\Requests\Hunt\CreateHuntRequest;
 use App\Http\Requests\Hunt\DeleteHuntRequest;
@@ -40,6 +41,22 @@ final readonly class HuntController
         $hunts = $getHuntsAction->handle(user: $user);
 
         return Inertia::render('hunts/hunts', [
+            'hunts' => Inertia::scroll(fn () => HuntResource::collection($hunts)),
+        ]);
+    }
+
+    /**
+     * Display all hunts created by the authenticated user.
+     */
+    #[Get(uri: '/my', name: 'hunts.my')]
+    public function my(Request $request, GetUserHuntsAction $getUserHuntsAction): Response
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $hunts = $getUserHuntsAction->handle(user: $user);
+
+        return Inertia::render('hunts/my-hunts', [
             'hunts' => Inertia::scroll(fn () => HuntResource::collection($hunts)),
         ]);
     }

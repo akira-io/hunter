@@ -12,21 +12,7 @@ import hunts from '@/routes/hunts';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import {
-    BarChart,
-    Edit,
-    EllipsisVerticalIcon,
-    Eye,
-    Flame,
-    Heart,
-    Loader2,
-    MessageCircle,
-    Repeat2,
-    SaveIcon,
-    ShieldAlert,
-    StopCircle,
-    TrendingUp,
-} from 'lucide-react';
+import { BarChart, EllipsisVerticalIcon, Eye, Flame, Heart, Loader2, MessageCircle, Repeat2, ShieldAlert, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
@@ -263,34 +249,34 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                                 <MessageCircle size={16} className="opacity-60" aria-hidden="true" />
                                 {isOpenComments ? 'Fechar' : 'Ver'} Comentários
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Repeat2 size={16} className="opacity-60" aria-hidden="true" />
-                                Partilhar
-                            </DropdownMenuItem>
+                            {/*<DropdownMenuItem>*/}
+                            {/*    <Repeat2 size={16} className="opacity-60" aria-hidden="true" />*/}
+                            {/*    Partilhar*/}
+                            {/*</DropdownMenuItem>*/}
                             {auth.user.id === hunt.owner.id ? (
                                 <>
-                                    <DropdownMenuItem>
-                                        <Edit size={16} className="opacity-60" aria-hidden="true" />
-                                        Editar
-                                    </DropdownMenuItem>
+                                    {/*<DropdownMenuItem>*/}
+                                    {/*    <Edit size={16} className="opacity-60" aria-hidden="true" />*/}
+                                    {/*    Editar*/}
+                                    {/*</DropdownMenuItem>*/}
                                     <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                         <DeleteHunt hunt={hunt} />
                                     </DropdownMenuItem>
                                 </>
                             ) : (
                                 <>
-                                    <DropdownMenuItem>
-                                        <SaveIcon size={16} className="opacity-60" aria-hidden="true" />
-                                        Guardar
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <StopCircle size={16} className="opacity-60" aria-hidden="true" />
-                                        Ignorar
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <ShieldAlert size={16} className="opacity-60" aria-hidden="true" />
-                                        Reportar
-                                    </DropdownMenuItem>
+                                    {/*<DropdownMenuItem>*/}
+                                    {/*    <SaveIcon size={16} className="opacity-60" aria-hidden="true" />*/}
+                                    {/*    Guardar*/}
+                                    {/*</DropdownMenuItem>*/}
+                                    {/*<DropdownMenuItem>*/}
+                                    {/*    <StopCircle size={16} className="opacity-60" aria-hidden="true" />*/}
+                                    {/*    Ignorar*/}
+                                    {/*/!*</DropdownMenuItem>*!/*/}
+                                    {/*<DropdownMenuItem>*/}
+                                    {/*    <ShieldAlert size={16} className="opacity-60" aria-hidden="true" />*/}
+                                    {/*    Reportar*/}
+                                    {/*</DropdownMenuItem>*/}
                                 </>
                             )}
                         </DropdownMenuContent>

@@ -28,7 +28,7 @@ export function WelcomeLoader({ onComplete }: WelcomeLoaderProps) {
                 const increment = prev < 70 ? Math.random() * 15 + 10 : Math.random() * 8 + 15;
                 return Math.min(prev + increment, 100);
             });
-        }, 500);
+        }, 300);
 
         return () => clearInterval(interval);
     }, [onComplete]);
