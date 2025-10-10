@@ -26,7 +26,7 @@ export function UpdateAvailableDialog({ open, onUpdate, onLater }: UpdateAvailab
                         Uma nova versão do Hunter está disponível com melhorias e correções. Atualizar agora?
                     </DialogDescription>
                 </DialogHeader>
-                <DialogFooter className="flex-col gap-2">
+                <DialogFooter className="flex-col gap-2 px-4">
                     <Button onClick={onUpdate} className="w-full gap-2" variant="gradient">
                         <RefreshCw className="h-4 w-4" />
                         Atualizar agora
