@@ -111,8 +111,8 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                     className="fixed top-0 right-0 left-0 z-50 w-full bg-card p-8 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90"
                     style={{
                         paddingTop:
-                            'calc(env(safe-area-inset-top, 0px) + 32px)',
-                        paddingBottom: '32px',
+                            'calc(env(safe-area-inset-top, 0px) + 20px)',
+                        paddingBottom: '20px',
                     }}
                 >
                     <nav className="flex items-center justify-end gap-4">
