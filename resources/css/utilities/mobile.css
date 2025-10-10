@@ -115,6 +115,7 @@
         padding-bottom: 12px;
         padding-left: max(env(safe-area-inset-left, 0px), 12px);
         padding-right: max(env(safe-area-inset-right, 0px), 12px);
+        width: 100%;
     }
 
     /* PWA body adjustments */
