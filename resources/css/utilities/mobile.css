@@ -46,7 +46,6 @@
         /* Prevent bounce effect */
         overscroll-behavior-y: contain;
         /* Ensure proper mobile viewport height */
-        height: 100vh;
         height: 100dvh; /* Dynamic viewport height for mobile browsers */
         /* Prevent any accidental zooming */
         touch-action: manipulation;
@@ -103,15 +102,17 @@
         transform: translateZ(0);
         backface-visibility: hidden;
     }
+    
 
-    /* PWA-specific header positioning */
     .pwa-header {
-        /* Ensure header is flush with top in PWA mode */
         position: sticky;
         top: 0;
-        padding-top: env(safe-area-inset-top);
-        /* Compensate for safe area to maintain flush appearance */
-        margin-top: calc(-1 * env(safe-area-inset-top));
+        z-index: 50;
+        background: inherit;
+        padding-top: calc(env(safe-area-inset-top, 0px) + 8px);
+        padding-bottom: 8px;
+        /* Compensate for safe area only in standalone PWA mode */
+        margin-top: 0;
     }
 
     /* PWA body adjustments */
