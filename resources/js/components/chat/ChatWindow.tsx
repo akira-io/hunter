@@ -66,6 +66,16 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
 
     const isMinimized = minimizedWindows.has(conversationId);
 
+    // Auto-focus input when chat window is opened or unminimized
+    useEffect(() => {
+        if (!isMinimized && !localLoading && textareaRef.current) {
+            // Small delay to ensure DOM is ready
+            requestAnimationFrame(() => {
+                textareaRef.current?.focus();
+            });
+        }
+    }, [isMinimized, localLoading]);
+
     // Get the other participant (for direct conversations)
     const otherParticipant = conversation?.participants.find((p) => p.id !== currentUserId);
 
@@ -178,13 +188,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    const resetTextareaHeight = () => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = '40px'; // Reset to minimum height
-        }
-    };
-
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newMessage.trim() || sending) return;
@@ -193,8 +196,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             await sendMessage(conversationId, newMessage.trim());
             setNewMessage('');
 
-            // Reset textarea height to normal
-            resetTextareaHeight();
+            // Reset textarea height and refocus after DOM updates
+            requestAnimationFrame(() => {
+                if (textareaRef.current) {
+                    textareaRef.current.style.height = 'auto';
+                    textareaRef.current.style.height = '40px';
+                    textareaRef.current.focus();
+                }
+            });
 
             // Don't add message locally - let WebSocket handle it to avoid duplicates
             // Always scroll when user sends a message (intentional action)
@@ -393,7 +402,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder="Digite uma mensagem..."
-                                className="flex-1 resize-none rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 transition-all focus:border-transparent focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:ring-purple-400"
+                                className="flex-1 resize-none rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-purple-400 dark:focus:ring-purple-400"
                                 disabled={sending}
                                 rows={1}
                                 style={{
