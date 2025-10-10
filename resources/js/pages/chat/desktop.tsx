@@ -371,10 +371,7 @@ export default function DesktopChat({
 
                 {/* Message Input */}
                 <div className="border-t border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                    <form
-                        onSubmit={handleSendMessage}
-                        className="flex items-end gap-3"
-                    >
+                    <div className="flex items-end gap-3">
                         <textarea
                             ref={textareaRef}
                             value={newMessage}
@@ -405,13 +402,14 @@ export default function DesktopChat({
                             }}
                         />
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={handleSendMessage}
                             disabled={!newMessage.trim() || sending}
                             className="rounded-2xl bg-gradient-to-r from-purple-500 to-purple-700 px-4 py-3 text-white shadow-lg transition-all duration-200 hover:from-purple-600 hover:to-purple-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <Send size={18} />
                         </button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </ChatLayout>
