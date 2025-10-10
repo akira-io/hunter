@@ -8,7 +8,7 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem
+    SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useChatContext } from '@/contexts/ChatContext';
 import finder from '@/routes/finder';
@@ -16,7 +16,15 @@ import followable from '@/routes/followable';
 import hunts from '@/routes/hunts';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, EyeIcon, FileSearch, MessageCircle, MessageCircleMore, NetworkIcon, Sparkles } from 'lucide-react';
+import {
+    BookOpen,
+    EyeIcon,
+    FileSearch,
+    MessageCircle,
+    MessageCircleMore,
+    NetworkIcon,
+    Sparkles,
+} from 'lucide-react';
 import { useMemo } from 'react';
 import { AiFillGithub } from 'react-icons/ai';
 

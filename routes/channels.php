@@ -17,8 +17,10 @@ Broadcast::channel('user.{id}', function (App\Models\User $user, int $id) {
 });
 
 Broadcast::channel('conversation.{conversationId}', function (App\Models\User $user, $conversationId) {
-    return Conversation::forUser($user)
-        ->where('id', $conversationId)->exists();
+    return Conversation::query()
+        ->forUser($user)
+        ->where('id', $conversationId)
+        ->exists();
 });
 
 Broadcast::channel('presence', function (App\Models\User $user) {
