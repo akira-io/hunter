@@ -24,7 +24,7 @@ export function LikeButton({
     };
 
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-purple-500">
             <Heart
                 onClick={handleClick}
                 size={iconSize}

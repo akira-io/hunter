@@ -149,9 +149,9 @@ export function HuntCard({
                     </div>
                 )}
 
-                {/* Owner's Metrics Dashboard - Mobile First Design */}
+                {/* Owner's Metrics Dashboard - Compact Inline Design */}
                 {showViralBanner && isOwner && (
-                    <div className="border-b bg-muted/30 px-3 py-3 sm:px-4 sm:py-4">
+                    <div className="border-b bg-muted/30 px-3 py-2 sm:px-4 sm:py-3">
                         <div className="mb-2 flex items-center justify-between">
                             <h3 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase sm:text-sm">
                                 Performance
@@ -159,7 +159,7 @@ export function HuntCard({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-7 gap-1.5 text-xs sm:h-8 sm:text-sm"
+                                className="h-6 gap-1 px-2 text-xs sm:h-8 sm:px-3 sm:text-sm"
                                 onClick={gotoMetrics}
                             >
                                 <BarChart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -170,92 +170,91 @@ export function HuntCard({
                             </Button>
                         </div>
 
-                        {/* Metrics Grid - Responsive */}
-                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+                        {/* Metrics - Horizontal Inline Layout */}
+                        <div className="flex items-center justify-between gap-2 rounded-lg bg-background/50 p-2 sm:gap-4 sm:p-3">
                             {/* Views */}
                             <button
-                                className="rounded-lg bg-background/50 p-2.5 text-left transition-colors hover:bg-background/80 sm:p-3"
+                                className="flex flex-col items-center gap-0.5 transition-opacity hover:opacity-80 sm:flex-row sm:gap-2"
                                 onClick={gotoHuntDetail}
                             >
-                                <div className="flex items-center gap-1.5">
-                                    <Eye className="h-3.5 w-3.5 text-blue-500 sm:h-4 sm:w-4" />
-                                    <span className="text-xs">Views</span>
+                                <Eye className="h-4 w-4 shrink-0 text-blue-500" />
+                                <div className="flex flex-col items-center sm:flex-row sm:gap-1">
+                                    <span className="text-base font-bold sm:text-lg">
+                                        {metrics?.views ?? hunt.views}
+                                    </span>
+                                    {metrics?.engagement_rate !== undefined && (
+                                        <span className="text-xs text-muted-foreground">
+                                            {metrics.engagement_rate.toFixed(1)}
+                                            %
+                                        </span>
+                                    )}
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">
-                                    {metrics?.views ?? hunt.views}
-                                </p>
-                                {metrics?.engagement_rate !== undefined && (
-                                    <p className="mt-0.5 text-xs text-muted-foreground">
-                                        {metrics.engagement_rate.toFixed(1)}%
-                                        engaj.
-                                    </p>
-                                )}
                             </button>
 
                             {/* Likes */}
                             <button
-                                className="rounded-lg bg-background/50 p-2.5 text-left transition-colors hover:bg-background/80 sm:p-3"
+                                className="flex flex-col items-center gap-0.5 transition-opacity hover:opacity-80 sm:flex-row sm:gap-2"
                                 onClick={gotoHuntDetail}
                             >
-                                <div className="flex items-center gap-1.5">
-                                    <Heart className="h-3.5 w-3.5 text-purple-500 sm:h-4 sm:w-4" />
-                                    <span className="text-xs">Likes</span>
+                                <Heart className="h-4 w-4 shrink-0 text-purple-500" />
+                                <div className="flex flex-col items-center sm:flex-row sm:gap-1">
+                                    <span className="text-base font-bold sm:text-lg">
+                                        {metrics?.likes ?? hunt.likes_count}
+                                    </span>
+                                    {metrics?.interaction_rate !==
+                                        undefined && (
+                                        <span className="text-xs text-muted-foreground">
+                                            {metrics.interaction_rate.toFixed(
+                                                1,
+                                            )}
+                                            %
+                                        </span>
+                                    )}
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">
-                                    {metrics?.likes ?? hunt.likes_count}
-                                </p>
-                                {metrics?.interaction_rate !== undefined && (
-                                    <p className="mt-0.5 text-xs text-muted-foreground">
-                                        {metrics.interaction_rate.toFixed(1)}%
-                                        taxa
-                                    </p>
-                                )}
                             </button>
 
                             {/* Shares */}
                             <button
-                                className="rounded-lg bg-background/50 p-2.5 text-left transition-colors hover:bg-background/80 sm:p-3"
+                                className="flex flex-col items-center gap-0.5 transition-opacity hover:opacity-80 sm:flex-row sm:gap-2"
                                 onClick={gotoHuntDetail}
                             >
-                                <div className="flex items-center gap-1.5">
-                                    <Repeat2 className="h-3.5 w-3.5 text-orange-500 sm:h-4 sm:w-4" />
-                                    <span className="text-xs">Partilhas</span>
+                                <Repeat2 className="h-4 w-4 shrink-0 text-orange-500" />
+                                <div className="flex flex-col items-center sm:flex-row sm:gap-1">
+                                    <span className="text-base font-bold sm:text-lg">
+                                        {metrics?.shares ?? hunt.shares}
+                                    </span>
+                                    {metrics?.share_rate !== undefined && (
+                                        <span className="text-xs text-muted-foreground">
+                                            {metrics.share_rate.toFixed(1)}%
+                                        </span>
+                                    )}
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">
-                                    {metrics?.shares ?? hunt.shares}
-                                </p>
-                                {metrics?.share_rate !== undefined && (
-                                    <p className="mt-0.5 text-xs text-muted-foreground">
-                                        {metrics.share_rate.toFixed(1)}% taxa
-                                    </p>
-                                )}
                             </button>
 
-                            {/* Comments - Opens Comments Section */}
+                            {/* Comments */}
                             <button
-                                className="cursor-pointer rounded-lg bg-background/50 p-2.5 text-left transition-colors hover:bg-background/80 sm:p-3"
+                                className="flex flex-col items-center gap-0.5 transition-opacity hover:opacity-80 sm:flex-row sm:gap-2"
                                 onClick={() => setOpenComments((prev) => !prev)}
                             >
-                                <div className="flex items-center gap-1.5">
-                                    <MessageCircle className="h-3.5 w-3.5 text-green-500 sm:h-4 sm:w-4" />
-                                    <span className="text-xs">Comentarios</span>
+                                <MessageCircle className="h-4 w-4 shrink-0 text-green-500" />
+                                <div className="flex flex-col items-center sm:flex-row sm:gap-1">
+                                    <span className="text-base font-bold sm:text-lg">
+                                        {metrics?.comments ??
+                                            hunt.comments?.length ??
+                                            0}
+                                    </span>
+                                    {metrics?.comment_rate !== undefined && (
+                                        <span className="text-xs text-muted-foreground">
+                                            {metrics.comment_rate.toFixed(1)}%
+                                        </span>
+                                    )}
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">
-                                    {metrics?.comments ??
-                                        hunt.comments?.length ??
-                                        0}
-                                </p>
-                                {metrics?.comment_rate !== undefined && (
-                                    <p className="mt-0.5 text-xs text-muted-foreground">
-                                        {metrics.comment_rate.toFixed(1)}% taxa
-                                    </p>
-                                )}
                             </button>
                         </div>
 
-                        {/* Quality Score Bar - Mobile Optimized */}
+                        {/* Quality Score Bar - Compact */}
                         {metrics.quality_score !== undefined && (
-                            <div className="mt-3">
+                            <div className="mt-2">
                                 <div className="mb-1 flex items-center justify-between text-xs">
                                     <span className="text-muted-foreground">
                                         Score de Qualidade
@@ -264,7 +263,7 @@ export function HuntCard({
                                         {metrics.quality_score.toFixed(0)}/100
                                     </span>
                                 </div>
-                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted sm:h-2">
+                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                                     <div
                                         className={cn(
                                             'h-full transition-all',
@@ -454,7 +453,7 @@ export function HuntCard({
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="flex cursor-pointer items-center gap-1 px-2 sm:px-3"
+                            className="flex cursor-pointer items-center gap-1 px-2 text-green-500 sm:px-3"
                             onClick={() => setOpenComments((prev) => !prev)}
                         >
                             <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -469,7 +468,7 @@ export function HuntCard({
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="flex items-center gap-1 px-2 sm:px-3"
+                            className="flex items-center gap-1 px-2 text-orange-500 sm:px-3"
                         >
                             <Repeat2 className="h-4 w-4 sm:h-5 sm:w-5" />
                             <span className="hidden sm:inline">
@@ -481,7 +480,7 @@ export function HuntCard({
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="flex items-center gap-1 px-2 sm:px-3"
+                            className="flex items-center gap-1 px-2 text-blue-500 sm:px-3"
                         >
                             <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
                             <span className="hidden sm:inline">
