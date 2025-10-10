@@ -55,6 +55,7 @@ final readonly class GetHuntsAction
 
                 $query->orWhere('owner_id', '!=', $user->id);
             })
+            ->orderByRaw('CASE WHEN id = ? THEN 0 ELSE 1 END', [$userLatestHuntId ?? 0])
             ->latest()
             ->paginate();
     }
