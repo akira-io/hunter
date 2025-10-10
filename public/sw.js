@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v0.6.0';
+const CACHE_VERSION = 'v1760097040036'; // Auto-updated by Vite build
 const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `devhunter-images-${CACHE_VERSION}`;
@@ -118,33 +118,54 @@ async function handleHTMLRequest(request) {
     }
 }
 
-// Handle asset requests (JS/CSS) - Stale While Revalidate
+// Handle asset requests (JS/CSS) - Network First with cache fallback
 async function handleAssetRequest(request) {
     const cache = await caches.open(DYNAMIC_CACHE);
-    const cached = await cache.match(request);
 
-    // Return cached version immediately and update in background
-    if (cached) {
-        // Update cache in background
-        fetch(request).then(response => {
-            if (response.ok) {
-                cache.put(request, response.clone());
-            }
-        }).catch(() => {});
-        return cached;
-    }
-
-    // No cache, fetch from network
+    // Try network first for assets to detect manifest changes
     try {
         const response = await fetch(request);
+
+        // If we get a 404 or error, the manifest has changed - clear cache
+        if (!response.ok) {
+            console.warn('[SW] Asset not found (manifest changed?), clearing caches...');
+            await clearAllCaches();
+            // Notify clients to reload
+            const clients = await self.clients.matchAll();
+            clients.forEach(client => {
+                client.postMessage({ type: 'CACHE_CLEARED', reason: 'asset_not_found' });
+            });
+            return response;
+        }
+
+        // Cache the new version
         if (response.ok) {
             cache.put(request, response.clone());
         }
         return response;
     } catch (error) {
-        console.error('[SW] Asset fetch failed:', error);
+        console.warn('[SW] Network failed for asset, trying cache:', error);
+
+        // Fallback to cache
+        const cached = await cache.match(request);
+        if (cached) {
+            return cached;
+        }
+
+        console.error('[SW] Asset not in cache either:', request.url);
         return new Response('', { status: 404, statusText: 'Not Found' });
     }
+}
+
+// Helper function to clear all caches
+async function clearAllCaches() {
+    const cacheNames = await caches.keys();
+    await Promise.all(
+        cacheNames.map((cacheName) => {
+            console.log('[SW] Deleting cache:', cacheName);
+            return caches.delete(cacheName);
+        })
+    );
 }
 
 // Handle image requests with caching - Cache First

@@ -24,6 +24,14 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
             window.location.reload();
         };
 
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data && event.data.type === 'CACHE_CLEARED') {
+                console.log('[SW] 🗑️ Cache cleared due to:', event.data.reason);
+                console.log('[SW] Reloading to get fresh assets...');
+                window.location.reload();
+            }
+        };
+
         const handleUpdate = () => {
             console.log('[SW] Starting Service Worker registration...');
 
@@ -74,6 +82,9 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
 
             // Handle service worker controller change (this triggers auto-reload)
             navigator.serviceWorker.addEventListener('controllerchange', handleControllerChange);
+
+            // Listen for messages from service worker
+            navigator.serviceWorker.addEventListener('message', handleMessage);
         };
 
         if (document.readyState === 'complete') {
@@ -85,6 +96,7 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
         return () => {
             window.removeEventListener('load', handleUpdate);
             navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange);
+            navigator.serviceWorker.removeEventListener('message', handleMessage);
             if (intervalId) {
                 clearInterval(intervalId);
             }
