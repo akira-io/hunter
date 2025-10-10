@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Search\Providers;
 
+use App\Actions\User\GetAvatarAction;
 use App\Contracts\Search\GlobalSearchable;
 use App\DataTransferObjects\Search\SearchResult;
 use App\Models\User;
@@ -77,7 +78,7 @@ final class UserSearchProvider implements GlobalSearchable
             title: $model->name,
             subtitle: "@{$model->user_name}",
             description: $model->location,
-            image: $model->avatar_url,
+            image: new GetAvatarAction()->handle($model),
             url: $this->getRedirectUrl($model),
             metadata: [
                 'bio' => $model->bio,
