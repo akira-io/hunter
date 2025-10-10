@@ -49,7 +49,7 @@ final readonly class GetHuntsAction
         return Hunt::query()
             ->with('owner')
             ->where(function (Builder $query) use ($user, $userLatestHuntId): void {
-                if ($userLatestHuntId) {
+                if ($userLatestHuntId !== null && $userLatestHuntId !== 0) {
                     $query->where('id', $userLatestHuntId);
                 }
 
