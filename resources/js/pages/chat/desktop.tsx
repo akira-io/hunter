@@ -168,25 +168,40 @@ export default function DesktopChat({
         e.preventDefault();
         if (!newMessage.trim() || sending) return;
 
+        const messageContent = newMessage.trim();
+
+        // Clear immediately for instant UX feedback
+        setNewMessage('');
+
+        // Store reference and focus synchronously (critical for mobile)
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = '44px';
+            // First focus - synchronous with user interaction (mobile requirement)
+            textarea.focus();
+        }
+
         try {
             setSending(true);
-            await sendMessageToServer(conversationId, newMessage.trim());
-            setNewMessage('');
-
-            // Reset textarea height and refocus after DOM updates
-            requestAnimationFrame(() => {
-                if (textareaRef.current) {
-                    textareaRef.current.style.height = 'auto';
-                    textareaRef.current.style.height = '44px';
-                    textareaRef.current.focus();
-                }
-            });
+            await sendMessageToServer(conversationId, messageContent);
 
             setTimeout(() => scrollToBottom(), 100);
         } catch (error) {
             console.error('Failed to send message:', error);
+            setNewMessage(messageContent);
         } finally {
             setSending(false);
+
+            // Second focus - after state updates complete (PC requirement)
+            // Use double requestAnimationFrame to ensure it runs after setSending(false) render
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    if (textareaRef.current) {
+                        textareaRef.current.focus();
+                    }
+                });
+            });
         }
     };
 

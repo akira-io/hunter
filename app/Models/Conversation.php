@@ -31,8 +31,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read  Carbon $created_at
  * @property-read  Carbon $updated_at
  * @property-read  int $created_by
- *
- * @method static Builder|Conversation forUser(User $user)
  */
 final class Conversation extends Model
 {
