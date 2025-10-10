@@ -2,7 +2,9 @@ import InputError from '@/components/input-error';
 import { MarkdownEditor } from '@/components/markdown/MarkdownEditor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { CharacterCounter } from '@/components/ui/character-counter';
+import { CONTENT_LIMITS } from '@/constants/validation';
+import { useCharacterCount } from '@/hooks/use-character-count';
 import { useSanitizeImageUrls } from '@/hooks/use-sanitize-image-url';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -33,14 +35,16 @@ export function CreateHunt() {
     const [isFocused, setIsFocused] = useState(false);
     const sanitizedImageUrls = useSanitizeImageUrls(imagePreview);
 
-    const maxLength = 500;
-    const contentLength = data.content?.trim().length || 0;
-    const progressPercentage = (contentLength / maxLength) * 100;
-    const isNearLimit = contentLength > maxLength * 0.9;
-    const isOverLimit = contentLength > maxLength;
-    const hasContent = contentLength > 0;
+    // Use shared character count logic
+    const characterCount = useCharacterCount({
+        content: data.content || '',
+        maxLength: CONTENT_LIMITS.HUNT,
+        trim: true,
+    });
+
     const hasImage = imagePreview.length > 0;
-    const canSubmit = (hasContent || hasImage) && !isOverLimit;
+    const canSubmit =
+        (characterCount.hasContent || hasImage) && !characterCount.isOverLimit;
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         setImagePreview([]);
@@ -86,11 +90,11 @@ export function CreateHunt() {
     const shareHunt = (e: FormEvent) => {
         e.preventDefault();
 
-        if (isOverLimit) {
+        if (characterCount.isOverLimit) {
             toast({
                 variant: 'destructive',
                 title: 'Texto muito longo',
-                description: `O conteúdo excede o limite de ${maxLength} caracteres.`,
+                description: `O conteúdo excede o limite de ${CONTENT_LIMITS.HUNT} caracteres.`,
             });
             return;
         }
@@ -169,9 +173,10 @@ export function CreateHunt() {
                         <MarkdownEditor
                             value={data.content}
                             onChange={(e) => setData('content', e.target.value)}
-                            maxLength={maxLength}
+                            maxLength={CONTENT_LIMITS.HUNT}
                             name="content"
                             rows={4}
+                            hideCounter={true}
                             placeholder="O que descobriu hoje? Partilhe insights, conquistas ou desafios interessantes..."
                             renderMobileControls={(controls) => (
                                 <div className="mb-3 flex items-center justify-between gap-2">
@@ -203,25 +208,15 @@ export function CreateHunt() {
                         />
 
                         {/* Character count and progress */}
-                        <div className="mt-2 flex items-center gap-3">
-                            <Progress
-                                value={progressPercentage}
-                                className={cn(
-                                    'h-1 flex-1 transition-all duration-300',
-                                    isOverLimit && 'bg-red-200 dark:bg-red-950',
-                                    isNearLimit &&
-                                        !isOverLimit &&
-                                        'bg-amber-200 dark:bg-amber-950',
-                                )}
-                                indicatorClassName={cn(
-                                    isOverLimit && 'bg-red-500',
-                                    isNearLimit &&
-                                        !isOverLimit &&
-                                        'bg-amber-500',
-                                    !isNearLimit && 'bg-purple-500',
-                                )}
-                            />
-                        </div>
+                        <CharacterCounter
+                            count={characterCount.count}
+                            max={characterCount.max}
+                            progressPercentage={characterCount.progressPercentage}
+                            isNearLimit={characterCount.isNearLimit}
+                            isOverLimit={characterCount.isOverLimit}
+                            variant="with-progress"
+                            className="mt-2"
+                        />
 
                         <InputError
                             message={errors.content}

@@ -1,7 +1,9 @@
 import { EmojiPicker } from '@/components/markdown/EmojiPicker';
 import { MarkdownHelp } from '@/components/markdown/MarkdownHelp';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
+import { CharacterCounter } from '@/components/ui/character-counter';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useCharacterCount } from '@/hooks/use-character-count';
 import { useMarkdownEditor } from '@/hooks/use-markdown-editor';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import { Eye, Pencil } from 'lucide-react';
@@ -14,6 +16,8 @@ interface MarkdownEditorProps {
     placeholder?: string;
     rows?: number;
     name?: string;
+    /** Hide the built-in character counter (useful when using external counter) */
+    hideCounter?: boolean;
     renderMobileControls?: (controls: {
         emojiPicker: React.ReactNode;
         markdownHelp: React.ReactNode;
@@ -29,6 +33,7 @@ export function MarkdownEditor({
     placeholder = 'Escreva algo interessante…',
     rows = 3,
     name,
+    hideCounter = false,
     renderMobileControls,
 }: MarkdownEditorProps) {
     const {
@@ -40,8 +45,12 @@ export function MarkdownEditor({
         insertEmoji,
     } = useMarkdownEditor({ value, onChange, name });
 
-    const isNearLimit = value.length > maxLength * 0.9;
-    const isOverLimit = value.length > maxLength;
+    // Use shared character count logic (trim: false for markdown to preserve formatting)
+    const characterCount = useCharacterCount({
+        content: value,
+        maxLength,
+        trim: false,
+    });
 
     const mobileControls = {
         emojiPicker: <EmojiPicker onInsert={insertEmoji} />,
@@ -143,22 +152,19 @@ export function MarkdownEditor({
                         />
                     </div>
                 </TabsContent>
-                <div className="mt-2 flex items-center justify-between text-xs sm:text-sm">
-                    <span className="text-muted-foreground">
-                        {/*Suporte para <span className="font-medium">Markdown</span>*/}
-                    </span>
-                    <span
-                        className={`font-medium transition-colors ${
-                            isOverLimit
-                                ? 'text-destructive'
-                                : isNearLimit
-                                  ? 'text-primary'
-                                  : 'text-muted-foreground'
-                        }`}
-                    >
-                        {value.length}/{maxLength}
-                    </span>
-                </div>
+                {!hideCounter && (
+                    <div className="mt-2 flex items-center justify-between text-xs sm:text-sm">
+                        <span className="text-muted-foreground">
+                            {/*Suporte para <span className="font-medium">Markdown</span>*/}
+                        </span>
+                        <CharacterCounter
+                            count={characterCount.count}
+                            max={characterCount.max}
+                            isNearLimit={characterCount.isNearLimit}
+                            isOverLimit={characterCount.isOverLimit}
+                        />
+                    </div>
+                )}
             </Tabs>
         </div>
     );

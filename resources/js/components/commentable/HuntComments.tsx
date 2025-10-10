@@ -3,6 +3,7 @@ import InputError from '@/components/input-error';
 import { LikeButton } from '@/components/likeable/LikeButton';
 import { OnboardingAvatar } from '@/components/Onboarding';
 import { Button } from '@/components/ui/button';
+import { CharacterCounter } from '@/components/ui/character-counter';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,6 +11,8 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Textarea } from '@/components/ui/textarea';
+import { CONTENT_LIMITS } from '@/constants/validation';
+import { useCharacterCount } from '@/hooks/use-character-count';
 import { useToast } from '@/hooks/use-toast';
 import comments from '@/routes/comments';
 import hunts from '@/routes/hunts';
@@ -28,6 +31,13 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
     const { toast } = useToast();
     const { data, post, setData, errors, processing } = useForm({
         content: '',
+    });
+
+    // Use shared character count logic
+    const characterCount = useCharacterCount({
+        content: data.content,
+        maxLength: CONTENT_LIMITS.COMMENT,
+        trim: false,
     });
 
     const handleAddComment = (e: FormEvent) => {
@@ -58,37 +68,48 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
                     {hunt.can_comment && (
                         <>
                             <form
-                                className="relative flex gap-2"
+                                className="relative flex flex-col gap-2"
                                 onSubmit={handleAddComment}
                             >
-                                <Textarea
-                                    name="content"
-                                    placeholder="Deixe o seu comentário aqui..."
-                                    value={data.content}
-                                    onChange={(e) =>
-                                        setData('content', e.target.value)
-                                    }
-                                    className="transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary"
-                                />
-                                <Button
-                                    disabled={processing}
-                                    variant="ghost"
-                                    size="sm"
-                                    type="submit"
-                                    className="hover:bg-transparente group absolute right-0 bottom-0 flex items-center gap-1"
-                                >
-                                    <SendHorizonal className="group-hover:text-purple-500" />
-                                </Button>
+                                <div className="relative">
+                                    <Textarea
+                                        name="content"
+                                        placeholder="Deixe o seu comentário aqui..."
+                                        value={data.content}
+                                        onChange={(e) =>
+                                            setData('content', e.target.value)
+                                        }
+                                        maxLength={CONTENT_LIMITS.COMMENT}
+                                        className="pr-12 transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary"
+                                    />
+                                    <Button
+                                        disabled={
+                                            processing ||
+                                            !characterCount.canSubmit
+                                        }
+                                        variant="ghost"
+                                        size="sm"
+                                        type="submit"
+                                        className="hover:bg-transparente group absolute right-0 bottom-0 flex items-center gap-1"
+                                    >
+                                        <SendHorizonal className="group-hover:text-purple-500" />
+                                    </Button>
+                                </div>
+                                {errors.content ? (
+                                    <InputError message={errors.content} />
+                                ) : (
+                                    <CharacterCounter
+                                        count={characterCount.count}
+                                        max={characterCount.max}
+                                        isNearLimit={characterCount.isNearLimit}
+                                        isOverLimit={characterCount.isOverLimit}
+                                        className="justify-end"
+                                    />
+                                )}
                             </form>
-                            {errors.content ? (
-                                <InputError message={errors.content} />
-                            ) : (
-                                <span className="float-right text-right text-xs text-gray-500">
-                                    {data.content.length}/200
-                                </span>
-                            )}
                         </>
                     )}
+
                     {!hunt.can_comment && (
                         <div className="rounded-lg bg-gray-100 p-4 text-center text-sm text-gray-600 dark:bg-gray-800 dark:text-gray-400">
                             Não tem permissão para comentar nesta publicação.

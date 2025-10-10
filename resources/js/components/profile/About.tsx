@@ -1,15 +1,18 @@
 import InputError from '@/components/input-error';
 import { ProfileCard } from '@/components/profile-card';
 import { Button } from '@/components/ui/button';
+import { CharacterCounter } from '@/components/ui/character-counter';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
+    DialogTrigger
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { CONTENT_LIMITS } from '@/constants/validation';
+import { useCharacterCount } from '@/hooks/use-character-count';
 import { useToast } from '@/hooks/use-toast';
 import profile from '@/routes/profile';
 import { useAboutStore } from '@/stores/about';
@@ -33,7 +36,12 @@ export function About() {
         bio: auth.user.bio ?? '',
     });
 
-    // const [openBioDialog, setOpenBioDialog] = useState(false);
+    const characterCount = useCharacterCount({
+        content: data.bio,
+        maxLength: CONTENT_LIMITS.BIO,
+        trim: false,
+    });
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         patch(profile.about().url, {
@@ -88,15 +96,26 @@ export function About() {
                             id="bio"
                             value={data.bio}
                             onChange={(e) => setData('bio', e.target.value)}
-                            maxLength={200}
+                            maxLength={CONTENT_LIMITS.BIO}
                             className="h-50"
                         />
                         <InputError className="mt-2" message={errors.bio} />
-                        <div className="mt-4 flex flex-col sm:flex-row sm:justify-end">
-                            <span className="float-end mb-4 flex-1 text-right text-sm text-muted md:text-left">
-                                {data.bio.length} / 200
-                            </span>
-                            <Button type="submit" disabled={processing}>
+                        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+                            <div className="flex-1">
+                                <CharacterCounter
+                                    count={characterCount.count}
+                                    max={characterCount.max}
+                                    isNearLimit={characterCount.isNearLimit}
+                                    isOverLimit={characterCount.isOverLimit}
+                                    className="justify-end sm:justify-start"
+                                />
+                            </div>
+                            <Button
+                                type="submit"
+                                disabled={
+                                    processing || !characterCount.canSubmit
+                                }
+                            >
                                 <UserIcon /> Guardar
                             </Button>
                         </div>
