@@ -1,13 +1,11 @@
 import NotificationController from '@/actions/App/Http/Controllers/Notification/NotificationController';
-import { SectionHeader } from '@/components/feed/SectionHeader';
 import { NotificationItem } from '@/components/notifications/NotificationItem';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Layout from '@/layouts/app-layout';
-import { cn } from '@/lib/utils';
 import { useSetNotifications } from '@/stores/notificationStore';
 import { Notification, NotificationCounts } from '@/types';
-import { Head, InfiniteScroll, Link, router } from '@inertiajs/react';
+import { Head, InfiniteScroll, router } from '@inertiajs/react';
 import { Bell, Check } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -68,20 +66,31 @@ export default function Notifications({
         );
     };
 
-    const tabBase =
-        'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors';
-
-    const tabVariants = {
-        active: 'bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300',
-        inactive:
-            'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800',
-    };
-
+    // Mostrar tab "Lidas" apenas se houver notificações não lidas
     const filters = [
         { key: 'all', label: 'Todas', count: counts.all },
         { key: 'unread', label: 'Não lidas', count: counts.unread },
-        { key: 'read', label: 'Lidas', count: counts.read },
+        ...(counts.unread > 0
+            ? [{ key: 'read', label: 'Lidas', count: counts.read }]
+            : []),
     ];
+
+    // Map filter key to tab value (1-indexed)
+    const currentTabValue = filters.findIndex((f) => f.key === filter) + 1;
+
+    const handleTabChange = (value: string) => {
+        const tabIndex = parseInt(value.replace('tab-', '')) - 1;
+        const selectedFilter = filters[tabIndex];
+        if (selectedFilter) {
+            router.get(
+                NotificationController.index.url({
+                    query: { filter: selectedFilter.key },
+                }),
+                {},
+                { preserveScroll: true },
+            );
+        }
+    };
 
     return (
         <Layout>
@@ -89,83 +98,116 @@ export default function Notifications({
 
             <div className="mx-auto max-w-4xl p-4 sm:p-6">
                 {/* Header */}
-                <div className="mb-6 flex items-start justify-between">
-                    <SectionHeader
-                        title="Notificações"
-                        description={`Você tem ${unread_count} notificação${unread_count !== 1 ? 's' : ''} não lida${unread_count !== 1 ? 's' : ''}`}
-                    />
-                    {unread_count > 0 && (
-                        <Button
-                            onClick={handleMarkAllAsRead}
-                            variant="outline"
-                            size="sm"
-                            className="flex cursor-pointer items-center gap-2"
-                        >
-                            <Check size={16} />
-                            Marcar todas como lidas
-                        </Button>
-                    )}
-                </div>
-
-                {/* Filter Tabs */}
-                <div className="mb-6">
-                    <div className="flex flex-wrap gap-2">
-                        {filters.map(({ key, label, count }) => (
-                            <Link
-                                key={key}
-                                href={NotificationController.index.url({
-                                    query: { filter: key },
-                                })}
-                                preserveScroll
-                                className={cn(
-                                    tabBase,
-                                    filter === key
-                                        ? tabVariants.active
-                                        : tabVariants.inactive,
-                                )}
+                <div className="mb-8">
+                    <div className="mb-6 flex items-start justify-between">
+                        <div>
+                            <h1 className="mb-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+                                Notificações
+                            </h1>
+                            {unread_count > 0 ? (
+                                <p className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                                    <span className="flex h-2 w-2">
+                                        <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-purple-400 opacity-75"></span>
+                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-purple-500"></span>
+                                    </span>
+                                    {unread_count} nova
+                                    {unread_count !== 1 ? 's' : ''} notificação
+                                    {unread_count !== 1 ? 'ões' : ''}
+                                </p>
+                            ) : (
+                                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                                    Você está em dia com tudo! 🎉
+                                </p>
+                            )}
+                        </div>
+                        {unread_count > 0 && (
+                            <Button
+                                onClick={handleMarkAllAsRead}
+                                variant="outline"
+                                size="sm"
+                                className="flex cursor-pointer items-center gap-2"
                             >
-                                {label}
-                                <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-700">
-                                    {count}
-                                </span>
-                            </Link>
-                        ))}
+                                <Check size={16} />
+                                Marcar todas como lidas
+                            </Button>
+                        )}
                     </div>
                 </div>
 
-                {/* Notifications List */}
-                <div className="space-y-4">
-                    {notifications.data.length === 0 ? (
-                        <Card>
-                            <CardContent className="flex flex-col items-center justify-center p-8 text-center">
-                                <div className="mb-4 grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700">
-                                    <Bell
-                                        size={24}
-                                        className="text-zinc-500 dark:text-zinc-400"
-                                    />
-                                </div>
-                                <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">
-                                    Nenhuma notificação
-                                </h3>
-                                <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                                    Você está em dia com todas as suas
-                                    notificações!
-                                </p>
-                            </CardContent>
-                        </Card>
-                    ) : (
-                        <InfiniteScroll data="notifications">
-                            {notifications.data.map((notification) => (
-                                <NotificationItem
-                                    key={notification.id}
-                                    notification={notification}
-                                    onClick={handleNotificationClick}
-                                    hideUnreadDot={filter === 'read'}
-                                />
-                            ))}
-                        </InfiniteScroll>
-                    )}
-                </div>
+                {/* Filter Tabs */}
+                <Tabs
+                    value={`tab-${currentTabValue}`}
+                    onValueChange={handleTabChange}
+                    className="mb-6"
+                >
+                    <TabsList className="gradient w-full sm:w-auto">
+                        {filters.map(({ label, count }, index) => (
+                            <TabsTrigger
+                                key={`tab-${index + 1}`}
+                                value={`tab-${index + 1}`}
+                                className="cursor-pointer"
+                            >
+                                {label}
+                                <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-700">
+                                    {count > 99 ? '99+' : count}
+                                </span>
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+
+                    {/* Tab Content - Same for all tabs since we're using server-side filtering */}
+                    {filters.map((_, index) => (
+                        <TabsContent
+                            key={`tab-content-${index + 1}`}
+                            value={`tab-${index + 1}`}
+                            className="mt-6"
+                        >
+                            <div className="space-y-3">
+                                {notifications.data.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-gradient-to-br from-zinc-50 to-zinc-100/50 p-12 text-center dark:border-zinc-700 dark:from-zinc-900/50 dark:to-zinc-800/30">
+                                        <div className="mb-6 grid h-20 w-20 place-items-center rounded-2xl bg-gradient-to-br from-purple-100 to-purple-200 shadow-lg dark:from-purple-900/30 dark:to-purple-800/20">
+                                            <Bell
+                                                size={32}
+                                                className="text-purple-600 dark:text-purple-400"
+                                            />
+                                        </div>
+                                        <h3 className="mb-2 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+                                            {filter === 'unread'
+                                                ? 'Nenhuma notificação não lida'
+                                                : filter === 'read'
+                                                  ? 'Nenhuma notificação lida'
+                                                  : 'Nenhuma notificação'}
+                                        </h3>
+                                        <p className="max-w-md text-sm text-zinc-600 dark:text-zinc-400">
+                                            {filter === 'unread'
+                                                ? 'Você está em dia com todas as suas notificações! 🎉'
+                                                : filter === 'read'
+                                                  ? 'Você ainda não leu nenhuma notificação.'
+                                                  : 'Quando você receber notificações, elas aparecerão aqui.'}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <InfiniteScroll data="notifications">
+                                        {notifications.data.map(
+                                            (notification) => (
+                                                <NotificationItem
+                                                    key={notification.id}
+                                                    notification={notification}
+                                                    onClick={
+                                                        handleNotificationClick
+                                                    }
+                                                    hideUnreadDot={
+                                                        filter === 'read'
+                                                    }
+                                                />
+                                            ),
+                                        )}
+                                    </InfiniteScroll>
+                                )}
+                            </div>
+                        </TabsContent>
+                    ))}
+                </Tabs>
             </div>
         </Layout>
     );
