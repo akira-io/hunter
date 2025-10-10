@@ -94,6 +94,10 @@ export function AppSidebar() {
             collapsible="icon"
             variant="sidebar"
             className="border-r border-border/50"
+            style={{
+                paddingTop: 'calc(env(safe-area-inset-top, 0px))',
+                paddingBottom: '10px',
+            }}
         >
             <SidebarHeader className="border-b border-border/50">
                 <SidebarMenu>
