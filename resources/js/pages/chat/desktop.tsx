@@ -169,17 +169,19 @@ export default function DesktopChat({
         if (!newMessage.trim() || sending) return;
 
         const messageContent = newMessage.trim();
-
-        // Clear immediately for instant UX feedback
-        setNewMessage('');
-
-        // Store reference and focus synchronously (critical for mobile)
         const textarea = textareaRef.current;
+
+        // CRITICAL: Focus FIRST, before any state changes
+        // This ensures focus is 100% synchronous with user gesture (mobile keyboard requirement)
+        if (textarea) {
+            textarea.focus();
+        }
+
+        // Now clear and reset
+        setNewMessage('');
         if (textarea) {
             textarea.style.height = 'auto';
             textarea.style.height = '44px';
-            // First focus - synchronous with user interaction (mobile requirement)
-            textarea.focus();
         }
 
         try {
@@ -193,8 +195,7 @@ export default function DesktopChat({
         } finally {
             setSending(false);
 
-            // Second focus - after state updates complete (PC requirement)
-            // Use double requestAnimationFrame to ensure it runs after setSending(false) render
+            // Re-focus after state updates for PC (in case lost during re-renders)
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     if (textareaRef.current) {
