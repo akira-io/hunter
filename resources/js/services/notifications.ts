@@ -22,9 +22,14 @@ export function shouldShowBrowserNotifications(): boolean {
 /**
  * Show a browser notification (only when not in PWA mode)
  */
-export function showBrowserNotification(title: string, options?: NotificationOptions) {
+export function showBrowserNotification(
+    title: string,
+    options?: NotificationOptions,
+) {
     if (!shouldShowBrowserNotifications()) {
-        console.log('[Notifications] Running as PWA, skipping browser notification');
+        console.log(
+            '[Notifications] Running as PWA, skipping browser notification',
+        );
         return;
     }
 
@@ -88,7 +93,8 @@ export const notificationService = {
             const registration = await navigator.serviceWorker.ready;
 
             // Check if already subscribed
-            const existingSubscription = await registration.pushManager.getSubscription();
+            const existingSubscription =
+                await registration.pushManager.getSubscription();
 
             if (existingSubscription) {
                 console.log('[Push] Already subscribed');
@@ -98,7 +104,9 @@ export const notificationService = {
             // Subscribe to push notifications
             const subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY || ''),
+                applicationServerKey: urlBase64ToUint8Array(
+                    import.meta.env.VITE_VAPID_PUBLIC_KEY || '',
+                ),
             });
 
             // Send subscription to backend
@@ -120,7 +128,8 @@ export const notificationService = {
     unsubscribeFromPush: async () => {
         try {
             const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.getSubscription();
+            const subscription =
+                await registration.pushManager.getSubscription();
 
             if (subscription) {
                 await subscription.unsubscribe();
@@ -161,7 +170,10 @@ export const notificationService = {
 
             return false;
         } catch (error) {
-            console.error('[Notifications] Failed to request permission:', error);
+            console.error(
+                '[Notifications] Failed to request permission:',
+                error,
+            );
             return false;
         }
     },
@@ -172,7 +184,9 @@ export const notificationService = {
  */
 function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
 
     const rawData = window.atob(base64);
     const buffer = new ArrayBuffer(rawData.length);

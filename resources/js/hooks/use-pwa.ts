@@ -16,7 +16,9 @@ export function usePWA() {
     useEffect(() => {
         const checkPWA = () => {
             // Check if running in standalone mode (iOS)
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            const isStandalone = window.matchMedia(
+                '(display-mode: standalone)',
+            ).matches;
 
             // Check if running as PWA on iOS Safari
             const isIOSStandalone =
@@ -28,7 +30,9 @@ export function usePWA() {
                 ).standalone;
 
             // Check if running in browser tab mode
-            const isInBrowser = window.matchMedia('(display-mode: browser)').matches;
+            const isInBrowser = window.matchMedia(
+                '(display-mode: browser)',
+            ).matches;
 
             // PWA is considered installed if running in standalone mode
             const isPWAMode = isStandalone || isIOSStandalone || !isInBrowser;
@@ -57,12 +61,16 @@ export function usePWA() {
  */
 export function usePushNotifications() {
     const [isSupported, setIsSupported] = useState(false);
-    const [permission, setPermission] = useState<NotificationPermission>('default');
+    const [permission, setPermission] =
+        useState<NotificationPermission>('default');
 
     useEffect(() => {
         const checkSupport = async () => {
             // Check if notifications are supported
-            const supported = 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+            const supported =
+                'Notification' in window &&
+                'serviceWorker' in navigator &&
+                'PushManager' in window;
 
             setIsSupported(supported);
 
@@ -105,8 +113,12 @@ export function usePushNotifications() {
 export function isPWAMode(): boolean {
     if (typeof window === 'undefined') return false;
 
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const isIOSStandalone = 'standalone' in window.navigator && (window.navigator as { standalone?: boolean }).standalone === true;
+    const isStandalone = window.matchMedia(
+        '(display-mode: standalone)',
+    ).matches;
+    const isIOSStandalone =
+        'standalone' in window.navigator &&
+        (window.navigator as { standalone?: boolean }).standalone === true;
 
     return isStandalone || isIOSStandalone;
 }
@@ -115,7 +127,8 @@ export function isPWAMode(): boolean {
  * Get install prompt event for PWA installation
  */
 export function useInstallPrompt() {
-    const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+    const [installPrompt, setInstallPrompt] =
+        useState<BeforeInstallPromptEvent | null>(null);
     const [isInstallable, setIsInstallable] = useState(false);
 
     useEffect(() => {
@@ -126,10 +139,16 @@ export function useInstallPrompt() {
             setIsInstallable(true);
         };
 
-        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.addEventListener(
+            'beforeinstallprompt',
+            handleBeforeInstallPrompt,
+        );
 
         return () => {
-            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            window.removeEventListener(
+                'beforeinstallprompt',
+                handleBeforeInstallPrompt,
+            );
         };
     }, []);
 

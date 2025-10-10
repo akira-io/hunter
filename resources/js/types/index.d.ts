@@ -110,7 +110,12 @@ export interface HuntMetrics {
     quality_score: number;
     virality_coefficient: number;
     avg_engagement_per_view: number;
-    performance_level: 'poor' | 'below_average' | 'average' | 'good' | 'excellent';
+    performance_level:
+        | 'poor'
+        | 'below_average'
+        | 'average'
+        | 'good'
+        | 'excellent';
     rank: number; // 1-5 stars
     is_viral: boolean;
     is_performing_well: boolean;

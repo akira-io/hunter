@@ -11,16 +11,31 @@ interface ProfileCard {
     onClick?: () => void;
 }
 
-export function ProfileCard({ title, className, icon, onClick, children }: ProfileCard) {
+export function ProfileCard({
+    title,
+    className,
+    icon,
+    onClick,
+    children,
+}: ProfileCard) {
     return (
-        <Card className={cn('gradient mt-4 max-h-100 w-full max-w-4xl overflow-y-auto', className)}>
+        <Card
+            className={cn(
+                'gradient mt-4 max-h-100 w-full max-w-4xl overflow-y-auto',
+                className,
+            )}
+        >
             <CardTitle className="-top-6 z-50 flex items-center justify-between px-4 py-2 text-sm shadow-sm backdrop-blur sm:px-6">
-                <h3 className="text-foreground text-lg font-semibold">{title}</h3>
+                <h3 className="text-lg font-semibold text-foreground">
+                    {title}
+                </h3>
                 <Button variant="ghost" onClick={onClick}>
                     {icon}
                 </Button>
             </CardTitle>
-            <CardContent className="mt-4 flex flex-col items-center space-y-6 px-4 text-center text-gray-500 sm:px-6">{children}</CardContent>
+            <CardContent className="mt-4 flex flex-col items-center space-y-6 px-4 text-center text-gray-500 sm:px-6">
+                {children}
+            </CardContent>
         </Card>
     );
 }

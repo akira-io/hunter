@@ -12,7 +12,10 @@ interface FinderProps {
 
 export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
     // Remove duplicatas baseado no ID
-    const uniqueUsers = users.filter((user, index, self) => index === self.findIndex((u) => u.id === user.id));
+    const uniqueUsers = users.filter(
+        (user, index, self) =>
+            index === self.findIndex((u) => u.id === user.id),
+    );
 
     return (
         <>
@@ -20,7 +23,7 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
             {onSearch && (
                 <div className="mt-15 mb-40 w-full max-w-2xl px-4 md:px-0">
                     <div className="relative">
-                        <Search className="text-muted-foreground absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
+                        <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="search"
                             name="hunter_search"
@@ -36,10 +39,10 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
                             data-1p-ignore="true"
                             role="searchbox"
                             aria-label="Procurar hunters"
-                            className="placeholder:text-muted-foreground focus:border-primary focus:ring-primary w-full rounded-lg border border-zinc-200 bg-white py-3 pr-4 pl-12 text-sm transition-all outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                            className="w-full rounded-lg border border-zinc-200 bg-white py-3 pr-4 pl-12 text-sm transition-all outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-primary dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                         />
                         {isSearchLoading && (
-                            <Loader className="text-muted-foreground absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 animate-spin" />
+                            <Loader className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 animate-spin text-muted-foreground" />
                         )}
                     </div>
                 </div>
@@ -51,7 +54,7 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
                     <Onboarding user={user} key={`user-${user.id}`} />
                 ))}
             </div>
-            <ScrollDown className="bg-foreground fixed bottom-0 h-8 w-8 rounded-md text-white dark:text-zinc-900" />
+            <ScrollDown className="fixed bottom-0 h-8 w-8 rounded-md bg-foreground text-white dark:text-zinc-900" />
         </>
     );
 }

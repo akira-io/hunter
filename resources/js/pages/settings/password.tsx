@@ -24,7 +24,15 @@ export default function Password() {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
-    const { data, setData, errors, put, reset, processing, recentlySuccessful } = useForm({
+    const {
+        data,
+        setData,
+        errors,
+        put,
+        reset,
+        processing,
+        recentlySuccessful,
+    } = useForm({
         current_password: '',
         password: '',
         password_confirmation: '',
@@ -55,7 +63,10 @@ export default function Password() {
             <Head title="Definições de Perfil" />
             <SettingsLayout>
                 <div className="space-y-4 sm:space-y-6">
-                    <HeadingSmall title="Dados de acesso" description="Gerencie a senha da sua conta" />
+                    <HeadingSmall
+                        title="Dados de acesso"
+                        description="Gerencie a senha da sua conta"
+                    />
 
                     <Card className="gradient">
                         {/*<CardHeader className="-mb-10 space-y-1 sm:p-6">*/}
@@ -66,28 +77,44 @@ export default function Password() {
                         {/*    <CardDescription className="text-sm">Tenha a certeza que a sua conta tenha uma password segura</CardDescription>*/}
                         {/*</CardHeader>*/}
                         <CardContent className="sm:p-6">
-                            <form onSubmit={updatePassword} className="space-y-4 sm:space-y-6">
+                            <form
+                                onSubmit={updatePassword}
+                                className="space-y-4 sm:space-y-6"
+                            >
                                 <div className="grid gap-2">
-                                    <Label htmlFor="current_password">Password Atual</Label>
+                                    <Label htmlFor="current_password">
+                                        Password Atual
+                                    </Label>
                                     <Input
                                         id="current_password"
                                         ref={currentPasswordInput}
                                         value={data.current_password}
-                                        onChange={(e) => setData('current_password', e.target.value)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'current_password',
+                                                e.target.value,
+                                            )
+                                        }
                                         type="password"
                                         className="mt-1 block w-full"
                                         autoComplete="current-password"
                                         placeholder="Password atual"
                                     />
-                                    <InputError message={errors.current_password} />
+                                    <InputError
+                                        message={errors.current_password}
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password">Nova password</Label>
+                                    <Label htmlFor="password">
+                                        Nova password
+                                    </Label>
                                     <Input
                                         id="password"
                                         ref={passwordInput}
                                         value={data.password}
-                                        onChange={(e) => setData('password', e.target.value)}
+                                        onChange={(e) =>
+                                            setData('password', e.target.value)
+                                        }
                                         type="password"
                                         className="mt-1 block w-full"
                                         autoComplete="new-password"
@@ -96,20 +123,32 @@ export default function Password() {
                                     <InputError message={errors.password} />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password_confirmation">Confirmar password</Label>
+                                    <Label htmlFor="password_confirmation">
+                                        Confirmar password
+                                    </Label>
                                     <Input
                                         id="password_confirmation"
                                         value={data.password_confirmation}
-                                        onChange={(e) => setData('password_confirmation', e.target.value)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'password_confirmation',
+                                                e.target.value,
+                                            )
+                                        }
                                         type="password"
                                         className="mt-1 block w-full"
                                         autoComplete="new-password"
                                         placeholder="Confirmar password"
                                     />
-                                    <InputError message={errors.password_confirmation} />
+                                    <InputError
+                                        message={errors.password_confirmation}
+                                    />
                                 </div>
                                 <div className="flex items-center justify-end gap-4">
-                                    <Button disabled={processing} variant="gradient">
+                                    <Button
+                                        disabled={processing}
+                                        variant="gradient"
+                                    >
                                         Guardar password
                                     </Button>
                                     <Transition
@@ -119,7 +158,9 @@ export default function Password() {
                                         leave="transition ease-in-out"
                                         leaveTo="opacity-0"
                                     >
-                                        <p className="text-sm text-neutral-600">Guardado</p>
+                                        <p className="text-sm text-neutral-600">
+                                            Guardado
+                                        </p>
                                     </Transition>
                                 </div>
                             </form>

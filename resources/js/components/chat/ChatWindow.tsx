@@ -37,7 +37,10 @@ interface ChatWindowProps {
     currentUserId?: number;
 }
 
-export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentUserId }) => {
+export const ChatWindow: React.FC<ChatWindowProps> = ({
+    conversationId,
+    currentUserId,
+}) => {
     const [newMessage, setNewMessage] = useState('');
     const [conversation, setConversation] = useState<Conversation | null>(null);
     const [localLoading, setLocalLoading] = useState(true);
@@ -47,11 +50,21 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const prevMessageCountRef = useRef<number>(0);
 
-    const { closeChatWindow, minimizedWindows, toggleMinimize, sendMessage, sending, markMessagesAsRead, conversations } = useChatContext();
+    const {
+        closeChatWindow,
+        minimizedWindows,
+        toggleMinimize,
+        sendMessage,
+        sending,
+        markMessagesAsRead,
+        conversations,
+    } = useChatContext();
     const { formatTime } = useTimeFormatting();
 
     // Get conversation from centralized state for real-time updates (especially unread_count)
-    const centralConversation = conversations.find((c) => c.id === conversationId);
+    const centralConversation = conversations.find(
+        (c) => c.id === conversationId,
+    );
 
     // Create a dedicated WebSocket connection for this specific conversation
     const conversationEcho = useEcho<{ message: Message }>(
@@ -77,12 +90,16 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
     }, [isMinimized, localLoading]);
 
     // Get the other participant (for direct conversations)
-    const otherParticipant = conversation?.participants.find((p) => p.id !== currentUserId);
+    const otherParticipant = conversation?.participants.find(
+        (p) => p.id !== currentUserId,
+    );
 
     // Check if the other participant is online
     const isOtherUserOnline = otherParticipant
         ? onlineUsers.some((user) => user.id === otherParticipant.id) ||
-          followedHunters.some((hunter) => hunter.id === otherParticipant.id && hunter.is_online)
+          followedHunters.some(
+              (hunter) => hunter.id === otherParticipant.id && hunter.is_online,
+          )
         : false;
 
     // Load conversation locally for this specific ChatWindow
@@ -90,15 +107,20 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         const fetchConversation = async () => {
             try {
                 setLocalLoading(true);
-                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                const response = await fetch(`/conversations/${conversationId}`, {
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': token || '',
-                        'X-Requested-With': 'XMLHttpRequest',
+                const token = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content');
+                const response = await fetch(
+                    `/conversations/${conversationId}`,
+                    {
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token || '',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
                     },
-                });
+                );
 
                 if (response.ok) {
                     const data = await response.json();
@@ -137,7 +159,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                 if (!prev) return prev;
 
                 // Check if message already exists (avoid duplicates)
-                const messageExists = prev.messages?.some((msg) => msg.id === event.message.id);
+                const messageExists = prev.messages?.some(
+                    (msg) => msg.id === event.message.id,
+                );
                 if (messageExists) {
                     return prev;
                 }
@@ -176,13 +200,22 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
             // 1. Messages were added (not just conversation loaded)
             // 2. Window is not minimized
             // 3. User is already near the bottom (not reading history)
-            if (currentMessageCount > prevMessageCount && !isMinimized && isNearBottom()) {
+            if (
+                currentMessageCount > prevMessageCount &&
+                !isMinimized &&
+                isNearBottom()
+            ) {
                 scrollToBottom();
             }
         }
 
         prevMessageCountRef.current = currentMessageCount;
-    }, [conversation?.messages?.length, isMinimized, conversationId, hasInitiallyScrolled]);
+    }, [
+        conversation?.messages?.length,
+        isMinimized,
+        conversationId,
+        hasInitiallyScrolled,
+    ]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -228,13 +261,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
         }
 
         // For direct conversations, show the other person's name
-        const otherParticipant = conversation.participants.find((p) => p.id !== currentUserId);
+        const otherParticipant = conversation.participants.find(
+            (p) => p.id !== currentUserId,
+        );
         return otherParticipant?.name || 'Unknown User';
     };
 
     if (localLoading) {
         return (
-            <div className="gradient bg-card w-80 rounded-2xl border border-zinc-200 shadow-2xl backdrop-blur-lg dark:border-zinc-700">
+            <div className="gradient w-80 rounded-2xl border border-zinc-200 bg-card shadow-2xl backdrop-blur-lg dark:border-zinc-700">
                 <div className="flex items-center justify-between rounded-t-2xl border-b border-zinc-200 bg-zinc-100 px-4 py-3 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
                     <span className="text-sm font-medium">Loading...</span>
                 </div>
@@ -247,8 +282,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
 
     return (
         <div
-            className={`gradient bg-card flex w-80 flex-col rounded-2xl border shadow-2xl backdrop-blur-lg ${isMinimized ? 'h-auto' : 'h-[26rem]'} relative ${
-                isMinimized && centralConversation?.unread_count && centralConversation.unread_count > 0
+            className={`gradient flex w-80 flex-col rounded-2xl border bg-card shadow-2xl backdrop-blur-lg ${isMinimized ? 'h-auto' : 'h-[26rem]'} relative ${
+                isMinimized &&
+                centralConversation?.unread_count &&
+                centralConversation.unread_count > 0
                     ? 'border-red-300 shadow-red-100 dark:border-red-700 dark:shadow-red-900/20'
                     : 'border-zinc-200 dark:border-zinc-700'
             }`}
@@ -270,38 +307,53 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                     alt={otherParticipant.name}
                                     className="size-8 rounded-full object-cover"
                                     onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
+                                        const target =
+                                            e.target as HTMLImageElement;
                                         target.style.display = 'none';
-                                        const fallback = target.nextElementSibling as HTMLElement;
-                                        if (fallback) fallback.style.display = 'grid';
+                                        const fallback =
+                                            target.nextElementSibling as HTMLElement;
+                                        if (fallback)
+                                            fallback.style.display = 'grid';
                                     }}
                                 />
                                 <div
                                     className="grid size-10 place-items-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 ring-2 ring-white dark:from-zinc-700 dark:to-zinc-600 dark:ring-zinc-800"
                                     style={{ display: 'none' }}
                                 >
-                                    <UserIcon size={20} className="text-zinc-600 dark:text-zinc-300" />
+                                    <UserIcon
+                                        size={20}
+                                        className="text-zinc-600 dark:text-zinc-300"
+                                    />
                                 </div>
                             </>
                         ) : (
                             <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600">
-                                <UserIcon size={16} className="text-zinc-600 dark:text-zinc-300" />
+                                <UserIcon
+                                    size={16}
+                                    className="text-zinc-600 dark:text-zinc-300"
+                                />
                             </div>
                         )}
 
                         {/* Status indicator */}
                         <div
                             className={`absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-zinc-100 dark:border-zinc-800 ${
-                                isOtherUserOnline ? 'animate-pulse bg-emerald-400' : 'bg-zinc-400'
+                                isOtherUserOnline
+                                    ? 'animate-pulse bg-emerald-400'
+                                    : 'bg-zinc-400'
                             }`}
                         />
                     </div>
 
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                            <span className="truncate text-sm font-medium">{getConversationTitle()}</span>
+                            <span className="truncate text-sm font-medium">
+                                {getConversationTitle()}
+                            </span>
                         </div>
-                        <span className="text-xs text-zinc-500 dark:text-zinc-400">{isOtherUserOnline ? 'Online' : 'Offline'}</span>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                            {isOtherUserOnline ? 'Online' : 'Offline'}
+                        </span>
                     </div>
                 </div>
                 <div className="flex gap-1">
@@ -336,9 +388,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                         {conversation?.messages?.length === 0 ? (
                             <div className="flex h-32 flex-col items-center justify-center text-center">
                                 <div className="mb-3 grid size-12 place-items-center rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700">
-                                    <UserIcon size={20} className="text-zinc-500 dark:text-zinc-400" />
+                                    <UserIcon
+                                        size={20}
+                                        className="text-zinc-500 dark:text-zinc-400"
+                                    />
                                 </div>
-                                <p className="text-sm text-zinc-500 dark:text-zinc-400">Inicie a conversa!</p>
+                                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                                    Inicie a conversa!
+                                </p>
                             </div>
                         ) : (
                             conversation?.messages?.map((message, index) => {
@@ -349,21 +406,31 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                         key={`${message.id}-${index}-${message.created_at}`}
                                         className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
                                     >
-                                        <div className={`flex max-w-[85%] gap-3 ${isOwn ? 'flex-row-reverse' : ''}`}>
+                                        <div
+                                            className={`flex max-w-[85%] gap-3 ${isOwn ? 'flex-row-reverse' : ''}`}
+                                        >
                                             <div className="flex-shrink-0">
                                                 {message.user.avatar_url ? (
                                                     <img
-                                                        src={message.user.avatar_url}
+                                                        src={
+                                                            message.user
+                                                                .avatar_url
+                                                        }
                                                         alt={message.user.name}
                                                         className="size-8 rounded-full object-cover ring-2 ring-white dark:ring-zinc-800"
                                                     />
                                                 ) : (
                                                     <div className="grid size-8 place-items-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 ring-2 ring-white dark:from-zinc-700 dark:to-zinc-600 dark:ring-zinc-800">
-                                                        <UserIcon size={14} className="text-zinc-600 dark:text-zinc-300" />
+                                                        <UserIcon
+                                                            size={14}
+                                                            className="text-zinc-600 dark:text-zinc-300"
+                                                        />
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} min-w-0 flex-1`}>
+                                            <div
+                                                className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} min-w-0 flex-1`}
+                                            >
                                                 <div
                                                     className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed break-words whitespace-pre-wrap ${
                                                         isOwn
@@ -372,14 +439,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                                     }`}
                                                     style={{
                                                         wordBreak: 'break-word',
-                                                        overflowWrap: 'anywhere',
+                                                        overflowWrap:
+                                                            'anywhere',
                                                         whiteSpace: 'pre-wrap',
                                                     }}
                                                 >
                                                     {message.content}
                                                 </div>
-                                                <div className={`mt-1 text-xs text-zinc-500 dark:text-zinc-400 ${isOwn ? 'mr-1' : 'ml-1'}`}>
-                                                    {formatTime(message.created_at)}
+                                                <div
+                                                    className={`mt-1 text-xs text-zinc-500 dark:text-zinc-400 ${isOwn ? 'mr-1' : 'ml-1'}`}
+                                                >
+                                                    {formatTime(
+                                                        message.created_at,
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -411,9 +483,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                     height: 'auto',
                                 }}
                                 onInput={(e) => {
-                                    const target = e.target as HTMLTextAreaElement;
+                                    const target =
+                                        e.target as HTMLTextAreaElement;
                                     target.style.height = 'auto';
-                                    target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                                    target.style.height =
+                                        Math.min(target.scrollHeight, 120) +
+                                        'px';
                                 }}
                             />
                             <button

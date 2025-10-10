@@ -10,7 +10,11 @@ import AppLayout from '@/layouts/app-layout';
 import followable from '@/routes/followable';
 import publicRoutes from '@/routes/public';
 import verification from '@/routes/verification';
-import { type BreadcrumbItem, type AcademicBackground as ProfessionalEducationType, type SharedData } from '@/types';
+import {
+    type BreadcrumbItem,
+    type AcademicBackground as ProfessionalEducationType,
+    type SharedData,
+} from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { formatDate } from 'date-fns/format';
 import { GoLocation } from 'react-icons/go';
@@ -32,22 +36,38 @@ interface ProfileProps {
     followings: number;
 }
 
-export default function Profile({ mustVerifyEmail, status, skills, highlightedSkills, academicBackgrounds, followings, followers }: ProfileProps) {
+export default function Profile({
+    mustVerifyEmail,
+    status,
+    skills,
+    highlightedSkills,
+    academicBackgrounds,
+    followings,
+    followers,
+}: ProfileProps) {
     const { auth } = usePage<SharedData>().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Definições Perfil" />
-            <div className="bg-background mx-auto flex max-w-6xl flex-col gap-4 text-gray-200 md:flex-row md:p-8">
-                <aside className="bg-background flex w-full flex-shrink-0 flex-col items-center self-start p-6 md:sticky md:top-10 md:w-80">
+            <div className="mx-auto flex max-w-6xl flex-col gap-4 bg-background text-gray-200 md:flex-row md:p-8">
+                <aside className="flex w-full flex-shrink-0 flex-col items-center self-start bg-background p-6 md:sticky md:top-10 md:w-80">
                     <div className="mb-4 w-full md:hidden">
-                        <ProfileCompletion academicBackgrounds={academicBackgrounds} skills={highlightedSkills} />
+                        <ProfileCompletion
+                            academicBackgrounds={academicBackgrounds}
+                            skills={highlightedSkills}
+                        />
                     </div>
                     <Card className="gradient w-full items-center justify-center p-6 md:w-80">
                         <CardContent className="flex flex-col items-center text-center">
                             <ProfileAvatarCard />
                             <h2 className="mt-4 text-xl font-semibold">
-                                <Link href={publicRoutes.profile.show.url(auth.user.id)} prefetch>
+                                <Link
+                                    href={publicRoutes.profile.show.url(
+                                        auth.user.id,
+                                    )}
+                                    prefetch
+                                >
                                     {auth.user.name}
                                 </Link>
                             </h2>
@@ -62,26 +82,41 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                             </div>
                         </CardContent>
                         <div className="grid grid-cols-2 items-end justify-end gap-4">
-                            <Link href={followable.followers.url()} className="flex gap-1 text-xs">
+                            <Link
+                                href={followable.followers.url()}
+                                className="flex gap-1 text-xs"
+                            >
                                 <b>{followers}</b> Hunters
                             </Link>
-                            <Link href={followable.followings.url()} className="flex gap-1 text-xs">
+                            <Link
+                                href={followable.followings.url()}
+                                className="flex gap-1 text-xs"
+                            >
                                 <b>{followings}</b> Huntings
                             </Link>
                         </div>
-                        <HighlightSkills skills={skills} authSkills={highlightedSkills} />
+                        <HighlightSkills
+                            skills={skills}
+                            authSkills={highlightedSkills}
+                        />
                         <p className="mt-0 border-t-1 py-2 text-xs text-gray-500">
-                            Hunter desde de: <b>{formatDate(auth.user.created_at, 'dd-MM-Y')}</b>
+                            Hunter desde de:{' '}
+                            <b>{formatDate(auth.user.created_at, 'dd-MM-Y')}</b>
                         </p>
                     </Card>
                     <ProfileLinks user={auth.user} />
                 </aside>
                 <main className="flex-1 space-y-6 overflow-y-auto p-6">
                     <div className="hidden md:block">
-                        <ProfileCompletion academicBackgrounds={academicBackgrounds} skills={highlightedSkills} />
+                        <ProfileCompletion
+                            academicBackgrounds={academicBackgrounds}
+                            skills={highlightedSkills}
+                        />
                     </div>
                     <About />
-                    <AcademicBackground academicBackgrounds={academicBackgrounds} />
+                    <AcademicBackground
+                        academicBackgrounds={academicBackgrounds}
+                    />
                     {/*<HighlightedProjects />*/}
                     {/*<section className="space-y-6">*/}
                     {/*    <ProfileCard title="Habilidades" icon={<PlusIcon />}>*/}
@@ -119,7 +154,7 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
             </div>
             {mustVerifyEmail && auth.user.email_verified_at === null && (
                 <div>
-                    <p className="text-muted-foreground text-md -mt-4">
+                    <p className="text-md -mt-4 text-muted-foreground">
                         O seu endereço de e-mail não está verificado.
                         <Link
                             href={verification.send.url()}
@@ -132,7 +167,8 @@ export default function Profile({ mustVerifyEmail, status, skills, highlightedSk
                     </p>
                     {status === 'verification-link-sent' && (
                         <div className="text-md mt-2 font-medium text-green-600">
-                            Um novo link de verificação foi enviado para o seu endereço de e-mail.
+                            Um novo link de verificação foi enviado para o seu
+                            endereço de e-mail.
                         </div>
                     )}
                 </div>

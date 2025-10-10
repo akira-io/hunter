@@ -1,5 +1,11 @@
 import NotificationController from '@/actions/App/Http/Controllers/Notification/NotificationController';
-import { useMarkAllAsRead, useMarkAsRead, useNotificationLoading, useNotifications, useUnreadCount } from '@/stores/notificationStore';
+import {
+    useMarkAllAsRead,
+    useMarkAsRead,
+    useNotificationLoading,
+    useNotifications,
+    useUnreadCount,
+} from '@/stores/notificationStore';
 import { User } from '@/types';
 import { router } from '@inertiajs/react';
 import { Bell, Check, User as UserIcon, X } from 'lucide-react';
@@ -10,7 +16,10 @@ interface NotificationDropdownProps {
     onClose: () => void;
 }
 
-export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onClose }) => {
+export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
+    isOpen,
+    onClose,
+}) => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const notifications = useNotifications();
     const loading = useNotificationLoading();
@@ -21,7 +30,10 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
                 onClose();
             }
         };
@@ -35,7 +47,10 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
         };
     }, [isOpen, onClose]);
 
-    const handleMarkAsRead = async (notification: { id: string; read_at: string | null }) => {
+    const handleMarkAsRead = async (notification: {
+        id: string;
+        read_at: string | null;
+    }) => {
         // Mark as read if unread
         if (!notification.read_at) {
             markAsRead(notification.id);
@@ -47,21 +62,31 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
                 {
                     preserveScroll: true,
                     onError: (error) => {
-                        console.error('Failed to mark notification as read:', error);
+                        console.error(
+                            'Failed to mark notification as read:',
+                            error,
+                        );
                     },
                 },
             );
         }
     };
 
-    const handleProfileClick = async (notification: { id: string; read_at: string | null; data: Record<string, unknown> }) => {
+    const handleProfileClick = async (notification: {
+        id: string;
+        read_at: string | null;
+        data: Record<string, unknown>;
+    }) => {
         // Mark as read first
         await handleMarkAsRead(notification);
 
         // Navigate to follower's profile
         let targetUrl = '';
 
-        if (notification.data.action_url && typeof notification.data.action_url === 'string') {
+        if (
+            notification.data.action_url &&
+            typeof notification.data.action_url === 'string'
+        ) {
             targetUrl = notification.data.action_url;
         } else if (
             notification.data.follower &&
@@ -87,7 +112,10 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
             {
                 preserveScroll: true,
                 onError: (error) => {
-                    console.error('Failed to mark all notifications as read:', error);
+                    console.error(
+                        'Failed to mark all notifications as read:',
+                        error,
+                    );
                 },
             },
         );
@@ -98,7 +126,9 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
     };
 
     // Filter to show only unread notifications
-    const unreadNotifications = notifications.filter((notification) => !notification.read_at);
+    const unreadNotifications = notifications.filter(
+        (notification) => !notification.read_at,
+    );
 
     // Render notification list content (shared between drawer and dropdown)
     const renderNotificationContent = () => (
@@ -110,10 +140,17 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
             ) : unreadNotifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center p-8 text-center">
                     <div className="mb-4 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700">
-                        <Bell size={20} className="text-zinc-500 dark:text-zinc-400" />
+                        <Bell
+                            size={20}
+                            className="text-zinc-500 dark:text-zinc-400"
+                        />
                     </div>
-                    <p className="mb-2 text-sm font-medium text-zinc-900 dark:text-zinc-100">Nenhuma notificação</p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">Você está em dia!</p>
+                    <p className="mb-2 text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                        Nenhuma notificação
+                    </p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                        Você está em dia!
+                    </p>
                 </div>
             ) : (
                 <div className="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -145,7 +182,10 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
                                             />
                                         ) : (
                                             <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 transition-opacity hover:opacity-80 active:opacity-70 dark:from-zinc-700 dark:to-zinc-600">
-                                                <UserIcon size={16} className="text-zinc-600 dark:text-zinc-300" />
+                                                <UserIcon
+                                                    size={16}
+                                                    className="text-zinc-600 dark:text-zinc-300"
+                                                />
                                             </div>
                                         )}
                                     </div>
@@ -163,14 +203,21 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
                                                 className="cursor-pointer font-medium transition-all hover:underline active:text-zinc-900 dark:active:text-zinc-200"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleProfileClick(notification);
+                                                    handleProfileClick(
+                                                        notification,
+                                                    );
                                                 }}
                                             >
                                                 {followerName}
                                             </span>
-                                            {notification.message.replace(followerName, '')}
+                                            {notification.message.replace(
+                                                followerName,
+                                                '',
+                                            )}
                                         </p>
-                                        <p className="mt-2 text-xs text-zinc-500">{notification.created_at_human}</p>
+                                        <p className="mt-2 text-xs text-zinc-500">
+                                            {notification.created_at_human}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -209,17 +256,21 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
     return (
         <div
             ref={dropdownRef}
-            className="gradient bg-card absolute top-12 right-0 z-50 hidden w-96 max-w-[calc(100vw-2rem)] flex-col rounded-lg border border-zinc-200 shadow-lg sm:flex dark:border-zinc-700"
+            className="gradient absolute top-12 right-0 z-50 hidden w-96 max-w-[calc(100vw-2rem)] flex-col rounded-lg border border-zinc-200 bg-card shadow-lg sm:flex dark:border-zinc-700"
             data-testid="notification-dropdown"
         >
             {/* Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-zinc-200 p-4 dark:border-zinc-700">
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Notificações</h3>
+                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                    Notificações
+                </h3>
                 {renderHeaderActions()}
             </div>
 
             {/* Content */}
-            <div className="max-h-80 flex-1 overflow-y-auto overscroll-contain">{renderNotificationContent()}</div>
+            <div className="max-h-80 flex-1 overflow-y-auto overscroll-contain">
+                {renderNotificationContent()}
+            </div>
 
             {/* Footer */}
             <div className="shrink-0 border-t border-zinc-200 p-3 dark:border-zinc-700">

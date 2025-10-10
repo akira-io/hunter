@@ -33,7 +33,9 @@ interface ConversationsListProps {
     currentUserId?: number;
 }
 
-export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUserId }) => {
+export const ConversationsList: React.FC<ConversationsListProps> = ({
+    currentUserId,
+}) => {
     const { conversations, loading } = useChat(currentUserId);
     const { openChatWindow } = useChatContext();
     const { formatRelativeTime } = useTimeFormatting();
@@ -74,7 +76,10 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
                         className="h-12 w-12 rounded-full object-cover"
                         onError={(e) => {
                             e.currentTarget.style.display = 'none';
-                            const fallback = e.currentTarget.parentElement?.querySelector('.avatar-fallback') as HTMLElement;
+                            const fallback =
+                                e.currentTarget.parentElement?.querySelector(
+                                    '.avatar-fallback',
+                                ) as HTMLElement;
                             if (fallback) {
                                 fallback.style.display = 'flex';
                             }
@@ -84,7 +89,10 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
                         className="avatar-fallback absolute inset-0 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600"
                         style={{ display: 'none' }}
                     >
-                        <UserIcon size={20} className="text-zinc-600 dark:text-zinc-300" />
+                        <UserIcon
+                            size={20}
+                            className="text-zinc-600 dark:text-zinc-300"
+                        />
                     </div>
                 </div>
             );
@@ -92,7 +100,10 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
 
         return (
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600">
-                <UserIcon size={20} className="text-zinc-600 dark:text-zinc-300" />
+                <UserIcon
+                    size={20}
+                    className="text-zinc-600 dark:text-zinc-300"
+                />
             </div>
         );
     };
@@ -118,12 +129,17 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
     return (
         <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
             <div className="border-b border-gray-200 p-4">
-                <h2 className="text-lg font-semibold text-gray-900">Mensagens</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                    Mensagens
+                </h2>
             </div>
             <div className="max-h-96 overflow-y-auto">
                 {conversations.length === 0 ? (
                     <div className="p-8 text-center text-gray-500">
-                        <MessageCircle size={48} className="mx-auto mb-4 text-gray-300" />
+                        <MessageCircle
+                            size={48}
+                            className="mx-auto mb-4 text-gray-300"
+                        />
                         <p>No conversations yet</p>
                         <p className="text-sm">Start chatting with someone!</p>
                     </div>
@@ -133,24 +149,36 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({ currentUse
                             <div
                                 key={conversation.id}
                                 className="flex cursor-pointer items-center gap-3 border-b border-gray-100 p-3 last:border-b-0 hover:bg-gray-50"
-                                onClick={() => handleConversationClick(conversation.id)}
+                                onClick={() =>
+                                    handleConversationClick(conversation.id)
+                                }
                             >
                                 <div className="relative flex-shrink-0">
                                     {getConversationAvatar(conversation)}
                                     {conversation.unread_count > 0 && (
                                         <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                                            {conversation.unread_count > 99 ? '99+' : conversation.unread_count}
+                                            {conversation.unread_count > 99
+                                                ? '99+'
+                                                : conversation.unread_count}
                                         </div>
                                     )}
                                 </div>
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center justify-between">
-                                        <h3 className="truncate text-sm font-medium text-gray-900">{getConversationTitle(conversation)}</h3>
-                                        <span className="text-xs text-gray-500">{formatRelativeTime(conversation.last_message_at)}</span>
+                                        <h3 className="truncate text-sm font-medium text-gray-900">
+                                            {getConversationTitle(conversation)}
+                                        </h3>
+                                        <span className="text-xs text-gray-500">
+                                            {formatRelativeTime(
+                                                conversation.last_message_at,
+                                            )}
+                                        </span>
                                     </div>
                                     {conversation.last_message && (
                                         <p className="mt-1 truncate text-sm text-gray-600">
-                                            {conversation.last_message.user.id === currentUserId && 'You: '}
+                                            {conversation.last_message.user
+                                                .id === currentUserId &&
+                                                'You: '}
                                             {conversation.last_message.content}
                                         </p>
                                     )}

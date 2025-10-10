@@ -6,7 +6,11 @@ interface UseMarkdownEditorOptions {
     name?: string;
 }
 
-export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOptions) {
+export function useMarkdownEditor({
+    value,
+    onChange,
+    name,
+}: UseMarkdownEditorOptions) {
     const editorRef = useRef<HTMLTextAreaElement>(null);
     const [activeTab, setActiveTab] = useState('edit');
 
@@ -25,7 +29,9 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
         // Remove minimum indentation from all lines
         if (minIndent > 0 && minIndent !== Infinity) {
             return lines
-                .map((line) => (line.trim().length > 0 ? line.substring(minIndent) : line))
+                .map((line) =>
+                    line.trim().length > 0 ? line.substring(minIndent) : line,
+                )
                 .join('\n')
                 .trim();
         }
@@ -37,7 +43,12 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
         const trimmed = code.trim();
 
         // Detect PHP (highest priority for PHP tags)
-        if (trimmed.includes('<?php') || trimmed.includes('<?=') || trimmed.includes('namespace ') || trimmed.includes('use ')) {
+        if (
+            trimmed.includes('<?php') ||
+            trimmed.includes('<?=') ||
+            trimmed.includes('namespace ') ||
+            trimmed.includes('use ')
+        ) {
             return 'php';
         }
 
@@ -45,7 +56,10 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
         if (
             trimmed.includes('<') &&
             trimmed.includes('>') &&
-            (trimmed.includes('className') || trimmed.includes('onClick') || trimmed.includes('useState') || trimmed.includes('useEffect'))
+            (trimmed.includes('className') ||
+                trimmed.includes('onClick') ||
+                trimmed.includes('useState') ||
+                trimmed.includes('useEffect'))
         ) {
             return 'jsx';
         }
@@ -54,23 +68,39 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
         if (
             trimmed.includes('<!DOCTYPE') ||
             trimmed.includes('<html') ||
-            (trimmed.includes('<') && trimmed.includes('</') && !trimmed.includes('function'))
+            (trimmed.includes('<') &&
+                trimmed.includes('</') &&
+                !trimmed.includes('function'))
         ) {
             return 'html';
         }
 
         // Detect TypeScript (interface, type, etc)
-        if (trimmed.includes('interface ') || trimmed.includes('type ') || trimmed.includes(': string') || trimmed.includes(': number')) {
+        if (
+            trimmed.includes('interface ') ||
+            trimmed.includes('type ') ||
+            trimmed.includes(': string') ||
+            trimmed.includes(': number')
+        ) {
             return 'typescript';
         }
 
         // Detect Python
-        if (trimmed.includes('def ') || trimmed.includes('import ') || trimmed.includes('from ') || trimmed.includes('print(')) {
+        if (
+            trimmed.includes('def ') ||
+            trimmed.includes('import ') ||
+            trimmed.includes('from ') ||
+            trimmed.includes('print(')
+        ) {
             return 'python';
         }
 
         // Detect JSON
-        if ((trimmed.startsWith('{') || trimmed.startsWith('[')) && trimmed.includes(':') && trimmed.includes('"')) {
+        if (
+            (trimmed.startsWith('{') || trimmed.startsWith('[')) &&
+            trimmed.includes(':') &&
+            trimmed.includes('"')
+        ) {
             try {
                 JSON.parse(trimmed);
                 return 'json';
@@ -80,17 +110,31 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
         }
 
         // Detect CSS/SCSS
-        if (trimmed.match(/[.#][\w-]+\s*\{/) || (trimmed.includes('{') && trimmed.includes('}') && trimmed.includes(':') && trimmed.includes(';'))) {
+        if (
+            trimmed.match(/[.#][\w-]+\s*\{/) ||
+            (trimmed.includes('{') &&
+                trimmed.includes('}') &&
+                trimmed.includes(':') &&
+                trimmed.includes(';'))
+        ) {
             return 'css';
         }
 
         // Detect SQL
-        if (trimmed.match(/\b(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)\b/i)) {
+        if (
+            trimmed.match(
+                /\b(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)\b/i,
+            )
+        ) {
             return 'sql';
         }
 
         // Detect Bash/Shell
-        if (trimmed.startsWith('#!') || trimmed.includes('#!/bin/bash') || trimmed.match(/\b(echo|cd|ls|mkdir|rm)\b/)) {
+        if (
+            trimmed.startsWith('#!') ||
+            trimmed.includes('#!/bin/bash') ||
+            trimmed.match(/\b(echo|cd|ls|mkdir|rm)\b/)
+        ) {
             return 'bash';
         }
 
@@ -110,7 +154,10 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
     };
 
     const handlePaste = (e: React.ClipboardEvent | ClipboardEvent) => {
-        const clipboardData = 'clipboardData' in e ? e.clipboardData : (e as ClipboardEvent).clipboardData;
+        const clipboardData =
+            'clipboardData' in e
+                ? e.clipboardData
+                : (e as ClipboardEvent).clipboardData;
         if (!clipboardData) return;
 
         const pastedText = clipboardData.getData('text');
@@ -119,22 +166,30 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
         const looksLikeCode =
             (pastedText.includes('<') && pastedText.includes('>')) ||
             pastedText.split('\n').length > 3 ||
-            (pastedText.includes('{') && pastedText.includes('}') && pastedText.includes(';'));
+            (pastedText.includes('{') &&
+                pastedText.includes('}') &&
+                pastedText.includes(';'));
 
         if (looksLikeCode && !pastedText.startsWith('```')) {
             e.preventDefault();
 
             const formattedText = formatIndentation(pastedText);
             const language = detectCodeLanguage(formattedText);
-            const formattedCode = language ? `\`\`\`${language}\n${formattedText}\n\`\`\`` : `\`\`\`\n${formattedText}\n\`\`\``;
+            const formattedCode = language
+                ? `\`\`\`${language}\n${formattedText}\n\`\`\``
+                : `\`\`\`\n${formattedText}\n\`\`\``;
 
             // Try to get textarea from ref or from the event target
-            const textarea = editorRef.current || (e.target as HTMLTextAreaElement);
+            const textarea =
+                editorRef.current || (e.target as HTMLTextAreaElement);
             if (!textarea) return;
 
             const start = textarea.selectionStart || 0;
             const end = textarea.selectionEnd || 0;
-            const newValue = value.substring(0, start) + formattedCode + value.substring(end);
+            const newValue =
+                value.substring(0, start) +
+                formattedCode +
+                value.substring(end);
 
             const event = {
                 target: {
@@ -201,7 +256,8 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
             cursorOffset = template.length;
         }
 
-        const newValue = value.substring(0, start) + newText + value.substring(end);
+        const newValue =
+            value.substring(0, start) + newText + value.substring(end);
 
         // Create a synthetic event
         const event = {
@@ -228,7 +284,8 @@ export function useMarkdownEditor({ value, onChange, name }: UseMarkdownEditorOp
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
 
-        const newValue = value.substring(0, start) + emoji + value.substring(end);
+        const newValue =
+            value.substring(0, start) + emoji + value.substring(end);
 
         const event = {
             target: {

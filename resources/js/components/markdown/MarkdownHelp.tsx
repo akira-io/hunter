@@ -1,5 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 import { HelpCircle } from 'lucide-react';
 import { useState } from 'react';
 
@@ -22,14 +26,30 @@ export function MarkdownHelp({ onInsert }: MarkdownHelpProps) {
             { text: '~~riscado~~', value: '~~texto~~', type: 'wrap' as const },
         ],
         lists: [
-            { text: '- Item não ordenado', value: '- ', type: 'prefix' as const },
+            {
+                text: '- Item não ordenado',
+                value: '- ',
+                type: 'prefix' as const,
+            },
             { text: '1. Item numerado', value: '1. ', type: 'prefix' as const },
             { text: '- [ ] Tarefa', value: '- [ ] ', type: 'prefix' as const },
         ],
         links: [
-            { text: '[texto do link](url)', value: '[texto](url)', type: 'wrap' as const },
-            { text: '`código inline`', value: '`código`', type: 'wrap' as const },
-            { text: '```\ncódigo bloco\n```', value: '```\ncódigo\n```', type: 'wrap' as const },
+            {
+                text: '[texto do link](url)',
+                value: '[texto](url)',
+                type: 'wrap' as const,
+            },
+            {
+                text: '`código inline`',
+                value: '`código`',
+                type: 'wrap' as const,
+            },
+            {
+                text: '```\ncódigo bloco\n```',
+                value: '```\ncódigo\n```',
+                type: 'wrap' as const,
+            },
         ],
         quotes: [
             { text: '> Citação', value: '> ', type: 'prefix' as const },
@@ -45,27 +65,47 @@ export function MarkdownHelp({ onInsert }: MarkdownHelpProps) {
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-foreground"
+                >
                     <HelpCircle className="h-4 w-4" />
                     <span className="ml-1 hidden sm:inline">Ajuda</span>
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[320px] sm:w-[380px]" align="end" sideOffset={8}>
+            <PopoverContent
+                className="w-[320px] sm:w-[380px]"
+                align="end"
+                sideOffset={8}
+            >
                 <div className="space-y-4">
                     <div>
-                        <h4 className="text-foreground text-sm font-semibold">Guia Rápido de Markdown</h4>
-                        <p className="text-muted-foreground mt-1 text-xs">Clique em um exemplo para inseri-lo no editor</p>
+                        <h4 className="text-sm font-semibold text-foreground">
+                            Guia Rápido de Markdown
+                        </h4>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            Clique em um exemplo para inseri-lo no editor
+                        </p>
                     </div>
 
                     <div className="max-h-[60vh] space-y-4 overflow-y-auto pr-1 text-xs">
                         <div>
-                            <p className="text-foreground mb-2 font-medium">Títulos</p>
+                            <p className="mb-2 font-medium text-foreground">
+                                Títulos
+                            </p>
                             <div className="space-y-1">
                                 {examples.headings.map((example, i) => (
                                     <code
                                         key={i}
-                                        onClick={() => handleInsert(example.value, example.type)}
-                                        className="bg-muted text-foreground hover:bg-accent hover:text-accent-foreground block cursor-pointer rounded-md px-2 py-1.5 transition-all"
+                                        onClick={() =>
+                                            handleInsert(
+                                                example.value,
+                                                example.type,
+                                            )
+                                        }
+                                        className="block cursor-pointer rounded-md bg-muted px-2 py-1.5 text-foreground transition-all hover:bg-accent hover:text-accent-foreground"
                                     >
                                         {example.text}
                                     </code>
@@ -74,13 +114,20 @@ export function MarkdownHelp({ onInsert }: MarkdownHelpProps) {
                         </div>
 
                         <div>
-                            <p className="text-foreground mb-2 font-medium">Formatação de texto</p>
+                            <p className="mb-2 font-medium text-foreground">
+                                Formatação de texto
+                            </p>
                             <div className="space-y-1">
                                 {examples.formatting.map((example, i) => (
                                     <code
                                         key={i}
-                                        onClick={() => handleInsert(example.value, example.type)}
-                                        className="bg-muted text-foreground hover:bg-accent hover:text-accent-foreground block cursor-pointer rounded-md px-2 py-1.5 transition-all"
+                                        onClick={() =>
+                                            handleInsert(
+                                                example.value,
+                                                example.type,
+                                            )
+                                        }
+                                        className="block cursor-pointer rounded-md bg-muted px-2 py-1.5 text-foreground transition-all hover:bg-accent hover:text-accent-foreground"
                                     >
                                         {example.text}
                                     </code>
@@ -89,13 +136,20 @@ export function MarkdownHelp({ onInsert }: MarkdownHelpProps) {
                         </div>
 
                         <div>
-                            <p className="text-foreground mb-2 font-medium">Listas</p>
+                            <p className="mb-2 font-medium text-foreground">
+                                Listas
+                            </p>
                             <div className="space-y-1">
                                 {examples.lists.map((example, i) => (
                                     <code
                                         key={i}
-                                        onClick={() => handleInsert(example.value, example.type)}
-                                        className="bg-muted text-foreground hover:bg-accent hover:text-accent-foreground block cursor-pointer rounded-md px-2 py-1.5 transition-all"
+                                        onClick={() =>
+                                            handleInsert(
+                                                example.value,
+                                                example.type,
+                                            )
+                                        }
+                                        className="block cursor-pointer rounded-md bg-muted px-2 py-1.5 text-foreground transition-all hover:bg-accent hover:text-accent-foreground"
                                     >
                                         {example.text}
                                     </code>
@@ -104,13 +158,20 @@ export function MarkdownHelp({ onInsert }: MarkdownHelpProps) {
                         </div>
 
                         <div>
-                            <p className="text-foreground mb-2 font-medium">Links e código</p>
+                            <p className="mb-2 font-medium text-foreground">
+                                Links e código
+                            </p>
                             <div className="space-y-1">
                                 {examples.links.map((example, i) => (
                                     <code
                                         key={i}
-                                        onClick={() => handleInsert(example.value, example.type)}
-                                        className="bg-muted text-foreground hover:bg-accent hover:text-accent-foreground block cursor-pointer rounded-md px-2 py-1.5 transition-all"
+                                        onClick={() =>
+                                            handleInsert(
+                                                example.value,
+                                                example.type,
+                                            )
+                                        }
+                                        className="block cursor-pointer rounded-md bg-muted px-2 py-1.5 text-foreground transition-all hover:bg-accent hover:text-accent-foreground"
                                     >
                                         {example.text}
                                     </code>
@@ -119,13 +180,20 @@ export function MarkdownHelp({ onInsert }: MarkdownHelpProps) {
                         </div>
 
                         <div>
-                            <p className="text-foreground mb-2 font-medium">Citações e separadores</p>
+                            <p className="mb-2 font-medium text-foreground">
+                                Citações e separadores
+                            </p>
                             <div className="space-y-1">
                                 {examples.quotes.map((example, i) => (
                                     <code
                                         key={i}
-                                        onClick={() => handleInsert(example.value, example.type)}
-                                        className="bg-muted text-foreground hover:bg-accent hover:text-accent-foreground block cursor-pointer rounded-md px-2 py-1.5 transition-all"
+                                        onClick={() =>
+                                            handleInsert(
+                                                example.value,
+                                                example.type,
+                                            )
+                                        }
+                                        className="block cursor-pointer rounded-md bg-muted px-2 py-1.5 text-foreground transition-all hover:bg-accent hover:text-accent-foreground"
                                     >
                                         {example.text}
                                     </code>

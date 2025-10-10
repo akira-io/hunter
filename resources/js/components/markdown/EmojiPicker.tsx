@@ -1,5 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 import { Search, Smile } from 'lucide-react';
 import { useState } from 'react';
 
@@ -120,7 +124,13 @@ export function EmojiPicker({ onInsert }: EmojiPickerProps) {
     const [search, setSearch] = useState('');
     const [open, setOpen] = useState(false);
 
-    const filteredEmojis = search ? allEmojis.filter((e) => e.name.toLowerCase().includes(search.toLowerCase()) || e.emoji.includes(search)) : null;
+    const filteredEmojis = search
+        ? allEmojis.filter(
+              (e) =>
+                  e.name.toLowerCase().includes(search.toLowerCase()) ||
+                  e.emoji.includes(search),
+          )
+        : null;
 
     const handleInsert = (emoji: string) => {
         onInsert(emoji);
@@ -130,23 +140,34 @@ export function EmojiPicker({ onInsert }: EmojiPickerProps) {
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-foreground"
+                >
                     <Smile className="h-4 w-4" />
                     <span className="ml-1 hidden sm:inline">Emoji</span>
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[280px] sm:w-[340px]" align="end" sideOffset={8}>
+            <PopoverContent
+                className="w-[280px] sm:w-[340px]"
+                align="end"
+                sideOffset={8}
+            >
                 <div className="flex flex-col space-y-3">
                     <div>
-                        <h4 className="text-foreground text-sm font-semibold">Escolha um Emoji</h4>
+                        <h4 className="text-sm font-semibold text-foreground">
+                            Escolha um Emoji
+                        </h4>
                         <div className="relative mt-2">
-                            <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                             <input
                                 type="text"
                                 placeholder="Pesquisar emoji..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="border-border bg-muted text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20 w-full rounded-md border py-2 pr-3 pl-9 text-sm focus:ring-2 focus:outline-none"
+                                className="w-full rounded-md border border-border bg-muted py-2 pr-3 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                             />
                         </div>
                     </div>
@@ -158,7 +179,7 @@ export function EmojiPicker({ onInsert }: EmojiPickerProps) {
                                         key={i}
                                         type="button"
                                         onClick={() => handleInsert(item.emoji)}
-                                        className="hover:bg-accent flex h-9 w-9 items-center justify-center rounded-md text-xl transition-colors"
+                                        className="flex h-9 w-9 items-center justify-center rounded-md text-xl transition-colors hover:bg-accent"
                                         title={item.name}
                                     >
                                         {item.emoji}
@@ -167,28 +188,38 @@ export function EmojiPicker({ onInsert }: EmojiPickerProps) {
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                {Object.entries(emojiCategories).map(([category, emojis]) => (
-                                    <div key={category}>
-                                        <p className="text-muted-foreground mb-2 text-xs font-medium">{category}</p>
-                                        <div className="grid grid-cols-8 gap-1">
-                                            {emojis.map((item, i) => (
-                                                <button
-                                                    key={i}
-                                                    type="button"
-                                                    onClick={() => handleInsert(item.emoji)}
-                                                    className="hover:bg-accent flex h-9 w-9 items-center justify-center rounded-md text-xl transition-colors"
-                                                    title={item.name}
-                                                >
-                                                    {item.emoji}
-                                                </button>
-                                            ))}
+                                {Object.entries(emojiCategories).map(
+                                    ([category, emojis]) => (
+                                        <div key={category}>
+                                            <p className="mb-2 text-xs font-medium text-muted-foreground">
+                                                {category}
+                                            </p>
+                                            <div className="grid grid-cols-8 gap-1">
+                                                {emojis.map((item, i) => (
+                                                    <button
+                                                        key={i}
+                                                        type="button"
+                                                        onClick={() =>
+                                                            handleInsert(
+                                                                item.emoji,
+                                                            )
+                                                        }
+                                                        className="flex h-9 w-9 items-center justify-center rounded-md text-xl transition-colors hover:bg-accent"
+                                                        title={item.name}
+                                                    >
+                                                        {item.emoji}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ),
+                                )}
                             </div>
                         )}
                         {filteredEmojis && filteredEmojis.length === 0 && (
-                            <p className="text-muted-foreground py-8 text-center text-sm">Nenhum emoji encontrado</p>
+                            <p className="py-8 text-center text-sm text-muted-foreground">
+                                Nenhum emoji encontrado
+                            </p>
                         )}
                     </div>
                 </div>

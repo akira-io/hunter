@@ -4,7 +4,13 @@ import { HuntModal } from '@/components/feed/HuntModal';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { cn } from '@/lib/utils';
@@ -12,9 +18,25 @@ import hunts from '@/routes/hunts';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import { BarChart, EllipsisVerticalIcon, Eye, Flame, Heart, Loader2, MessageCircle, Repeat2, ShieldAlert, TrendingUp } from 'lucide-react';
+import {
+    BarChart,
+    EllipsisVerticalIcon,
+    Eye,
+    Flame,
+    Heart,
+    Loader2,
+    MessageCircle,
+    Repeat2,
+    ShieldAlert,
+    TrendingUp,
+} from 'lucide-react';
 import { useState } from 'react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
 interface HuntCardProps {
     hunt: Hunt;
@@ -28,12 +50,17 @@ export function HuntCardConnector() {
     return (
         <>
             <div className="absolute -top-10 left-5 flex h-10 w-1 items-center justify-center rounded-full bg-white text-xs dark:bg-zinc-900" />
-            <div className="bg-card absolute -top-10 right-5 flex h-10 w-1 items-center justify-center rounded-full text-xs dark:bg-zinc-900" />
+            <div className="absolute -top-10 right-5 flex h-10 w-1 items-center justify-center rounded-full bg-card text-xs dark:bg-zinc-900" />
         </>
     );
 }
 
-export function HuntCard({ hunt, withOpenComments = false, width = 'default', showViralBanner = true }: HuntCardProps) {
+export function HuntCard({
+    hunt,
+    withOpenComments = false,
+    width = 'default',
+    showViralBanner = true,
+}: HuntCardProps) {
     const { auth } = usePage<SharedData>().props;
     const [isOpenComments, setOpenComments] = useState(withOpenComments);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,21 +112,38 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
     return (
         <>
             {/* Hunt Modal - opens for all hunts */}
-            <HuntModal hunt={hunt} open={isModalOpen} onOpenChange={setIsModalOpen} />
+            <HuntModal
+                hunt={hunt}
+                open={isModalOpen}
+                onOpenChange={setIsModalOpen}
+            />
 
-            <Card className={cn('relative mx-auto mb-4 overflow-hidden', widthClasses[width])} data-pan={`hunt-${hunt.id}`}>
+            <Card
+                className={cn(
+                    'relative mx-auto mb-4 overflow-hidden',
+                    widthClasses[width],
+                )}
+                data-pan={`hunt-${hunt.id}`}
+            >
                 {/* Owner's Viral Performance Banner - Mobile Optimized - Only show in feed, not on show page */}
                 {isOwner && isViral && showViralBanner && (
                     <div className="border-b border-orange-500/20 bg-gradient-to-r from-orange-500/10 via-red-500/10 to-pink-500/10 px-3 py-2 sm:px-4 sm:py-2.5">
                         <div className="flex items-center justify-between gap-2 text-xs sm:text-sm">
                             <div className="flex items-center gap-1.5 sm:gap-2">
                                 <Flame className="h-3.5 w-3.5 text-orange-500 sm:h-4 sm:w-4" />
-                                <span className="font-semibold text-orange-600 dark:text-orange-400">Conteúdo Viral!</span>
+                                <span className="font-semibold text-orange-600 dark:text-orange-400">
+                                    Conteúdo Viral!
+                                </span>
                             </div>
-                            <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <TrendingUp className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                                <span className="hidden sm:inline">{metrics.virality_coefficient?.toFixed(1)}% taxa de share</span>
-                                <span className="sm:hidden">{metrics.virality_coefficient?.toFixed(0)}%</span>
+                                <span className="hidden sm:inline">
+                                    {metrics.virality_coefficient?.toFixed(1)}%
+                                    taxa de share
+                                </span>
+                                <span className="sm:hidden">
+                                    {metrics.virality_coefficient?.toFixed(0)}%
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -107,12 +151,21 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
 
                 {/* Owner's Metrics Dashboard - Mobile First Design */}
                 {showViralBanner && isOwner && (
-                    <div className="bg-muted/30 border-b px-3 py-3 sm:px-4 sm:py-4">
+                    <div className="border-b bg-muted/30 px-3 py-3 sm:px-4 sm:py-4">
                         <div className="mb-2 flex items-center justify-between">
-                            <h3 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase sm:text-sm">Performance</h3>
-                            <Button variant="ghost" size="sm" className="h-7 gap-1.5 text-xs sm:h-8 sm:text-sm" onClick={gotoMetrics}>
+                            <h3 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase sm:text-sm">
+                                Performance
+                            </h3>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 gap-1.5 text-xs sm:h-8 sm:text-sm"
+                                onClick={gotoMetrics}
+                            >
                                 <BarChart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline">Ver Detalhes</span>
+                                <span className="hidden sm:inline">
+                                    Ver Detalhes
+                                </span>
                                 <span className="sm:hidden">Ver</span>
                             </Button>
                         </div>
@@ -121,61 +174,81 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
                             {/* Views */}
                             <button
-                                className="bg-background/50 hover:bg-background/80 rounded-lg p-2.5 text-left transition-colors sm:p-3"
+                                className="rounded-lg bg-background/50 p-2.5 text-left transition-colors hover:bg-background/80 sm:p-3"
                                 onClick={gotoHuntDetail}
                             >
                                 <div className="flex items-center gap-1.5">
                                     <Eye className="h-3.5 w-3.5 text-blue-500 sm:h-4 sm:w-4" />
                                     <span className="text-xs">Views</span>
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.views ?? hunt.views}</p>
+                                <p className="mt-1 text-lg font-bold sm:text-xl">
+                                    {metrics?.views ?? hunt.views}
+                                </p>
                                 {metrics?.engagement_rate !== undefined && (
-                                    <p className="text-muted-foreground mt-0.5 text-xs">{metrics.engagement_rate.toFixed(1)}% engaj.</p>
+                                    <p className="mt-0.5 text-xs text-muted-foreground">
+                                        {metrics.engagement_rate.toFixed(1)}%
+                                        engaj.
+                                    </p>
                                 )}
                             </button>
 
                             {/* Likes */}
                             <button
-                                className="bg-background/50 hover:bg-background/80 rounded-lg p-2.5 text-left transition-colors sm:p-3"
+                                className="rounded-lg bg-background/50 p-2.5 text-left transition-colors hover:bg-background/80 sm:p-3"
                                 onClick={gotoHuntDetail}
                             >
                                 <div className="flex items-center gap-1.5">
                                     <Heart className="h-3.5 w-3.5 text-purple-500 sm:h-4 sm:w-4" />
                                     <span className="text-xs">Likes</span>
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.likes ?? hunt.likes_count}</p>
+                                <p className="mt-1 text-lg font-bold sm:text-xl">
+                                    {metrics?.likes ?? hunt.likes_count}
+                                </p>
                                 {metrics?.interaction_rate !== undefined && (
-                                    <p className="text-muted-foreground mt-0.5 text-xs">{metrics.interaction_rate.toFixed(1)}% taxa</p>
+                                    <p className="mt-0.5 text-xs text-muted-foreground">
+                                        {metrics.interaction_rate.toFixed(1)}%
+                                        taxa
+                                    </p>
                                 )}
                             </button>
 
                             {/* Shares */}
                             <button
-                                className="bg-background/50 hover:bg-background/80 rounded-lg p-2.5 text-left transition-colors sm:p-3"
+                                className="rounded-lg bg-background/50 p-2.5 text-left transition-colors hover:bg-background/80 sm:p-3"
                                 onClick={gotoHuntDetail}
                             >
                                 <div className="flex items-center gap-1.5">
                                     <Repeat2 className="h-3.5 w-3.5 text-orange-500 sm:h-4 sm:w-4" />
                                     <span className="text-xs">Partilhas</span>
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.shares ?? hunt.shares}</p>
+                                <p className="mt-1 text-lg font-bold sm:text-xl">
+                                    {metrics?.shares ?? hunt.shares}
+                                </p>
                                 {metrics?.share_rate !== undefined && (
-                                    <p className="text-muted-foreground mt-0.5 text-xs">{metrics.share_rate.toFixed(1)}% taxa</p>
+                                    <p className="mt-0.5 text-xs text-muted-foreground">
+                                        {metrics.share_rate.toFixed(1)}% taxa
+                                    </p>
                                 )}
                             </button>
 
                             {/* Comments - Opens Comments Section */}
                             <button
-                                className="bg-background/50 hover:bg-background/80 cursor-pointer rounded-lg p-2.5 text-left transition-colors sm:p-3"
+                                className="cursor-pointer rounded-lg bg-background/50 p-2.5 text-left transition-colors hover:bg-background/80 sm:p-3"
                                 onClick={() => setOpenComments((prev) => !prev)}
                             >
                                 <div className="flex items-center gap-1.5">
                                     <MessageCircle className="h-3.5 w-3.5 text-green-500 sm:h-4 sm:w-4" />
                                     <span className="text-xs">Comentarios</span>
                                 </div>
-                                <p className="mt-1 text-lg font-bold sm:text-xl">{metrics?.comments ?? hunt.comments?.length ?? 0}</p>
+                                <p className="mt-1 text-lg font-bold sm:text-xl">
+                                    {metrics?.comments ??
+                                        hunt.comments?.length ??
+                                        0}
+                                </p>
                                 {metrics?.comment_rate !== undefined && (
-                                    <p className="text-muted-foreground mt-0.5 text-xs">{metrics.comment_rate.toFixed(1)}% taxa</p>
+                                    <p className="mt-0.5 text-xs text-muted-foreground">
+                                        {metrics.comment_rate.toFixed(1)}% taxa
+                                    </p>
                                 )}
                             </button>
                         </div>
@@ -184,10 +257,14 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                         {metrics.quality_score !== undefined && (
                             <div className="mt-3">
                                 <div className="mb-1 flex items-center justify-between text-xs">
-                                    <span className="text-muted-foreground">Score de Qualidade</span>
-                                    <span className="font-semibold">{metrics.quality_score.toFixed(0)}/100</span>
+                                    <span className="text-muted-foreground">
+                                        Score de Qualidade
+                                    </span>
+                                    <span className="font-semibold">
+                                        {metrics.quality_score.toFixed(0)}/100
+                                    </span>
                                 </div>
-                                <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full sm:h-2">
+                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted sm:h-2">
                                     <div
                                         className={cn(
                                             'h-full transition-all',
@@ -199,7 +276,9 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                                                     ? 'bg-gradient-to-r from-yellow-500 to-orange-500'
                                                     : 'bg-gradient-to-r from-gray-400 to-gray-500',
                                         )}
-                                        style={{ width: `${metrics.quality_score}%` }}
+                                        style={{
+                                            width: `${metrics.quality_score}%`,
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -215,14 +294,24 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                         onClick={gotoProfile}
                     />
                     <div className="flex min-w-0 flex-1 flex-col">
-                        <CardTitle className="cursor-pointer truncate text-sm font-semibold sm:text-base" onClick={gotoProfile}>
+                        <CardTitle
+                            className="cursor-pointer truncate text-sm font-semibold sm:text-base"
+                            onClick={gotoProfile}
+                        >
                             {hunt.owner.name}
                         </CardTitle>
                         <div
-                            className="text-muted-foreground cursor-pointer truncate text-xs sm:text-sm"
-                            onClick={() => router.get(publicRoutes.profile.show.url(hunt.owner.id))}
+                            className="cursor-pointer truncate text-xs text-muted-foreground sm:text-sm"
+                            onClick={() =>
+                                router.get(
+                                    publicRoutes.profile.show.url(
+                                        hunt.owner.id,
+                                    ),
+                                )
+                            }
                         >
-                            @{hunt.owner.user_name || hunt.owner.name} · {hunt.created_at}
+                            @{hunt.owner.user_name || hunt.owner.name} ·{' '}
+                            {hunt.created_at}
                         </div>
                     </div>
                     <DropdownMenu>
@@ -236,17 +325,31 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="gradient">
                             <DropdownMenuItem onClick={gotoHuntDetail}>
-                                <Eye size={16} className="opacity-60" aria-hidden="true" />
+                                <Eye
+                                    size={16}
+                                    className="opacity-60"
+                                    aria-hidden="true"
+                                />
                                 Preview
                             </DropdownMenuItem>
                             {hunt.is_owner && (
                                 <DropdownMenuItem onClick={gotoMetrics}>
-                                    <BarChart size={16} className="opacity-60" aria-hidden="true" />
+                                    <BarChart
+                                        size={16}
+                                        className="opacity-60"
+                                        aria-hidden="true"
+                                    />
                                     Métricas Completas
                                 </DropdownMenuItem>
                             )}
-                            <DropdownMenuItem onClick={() => setOpenComments((prev) => !prev)}>
-                                <MessageCircle size={16} className="opacity-60" aria-hidden="true" />
+                            <DropdownMenuItem
+                                onClick={() => setOpenComments((prev) => !prev)}
+                            >
+                                <MessageCircle
+                                    size={16}
+                                    className="opacity-60"
+                                    aria-hidden="true"
+                                />
                                 {isOpenComments ? 'Fechar' : 'Ver'} Comentários
                             </DropdownMenuItem>
                             {/*<DropdownMenuItem>*/}
@@ -259,7 +362,9 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                                     {/*    <Edit size={16} className="opacity-60" aria-hidden="true" />*/}
                                     {/*    Editar*/}
                                     {/*</DropdownMenuItem>*/}
-                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem
+                                        onSelect={(e) => e.preventDefault()}
+                                    >
                                         <DeleteHunt hunt={hunt} />
                                     </DropdownMenuItem>
                                 </>
@@ -284,18 +389,28 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                 </CardHeader>
                 <CardContent className="space-y-3 overflow-hidden px-3 break-words sm:space-y-4 sm:px-6">
                     {hunt.content && (
-                        <div className="cursor-pointer overflow-hidden" onClick={gotoHuntDetail}>
+                        <div
+                            className="cursor-pointer overflow-hidden"
+                            onClick={gotoHuntDetail}
+                        >
                             <MarkdownRenderer content={hunt.content} />
                         </div>
                     )}
                     {/* Image or Processing State */}
-                    {hunt.image_processing_status === 'pending' || hunt.image_processing_status === 'processing' ? (
-                        <div className="relative w-full overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800" style={{ height: '200px' }}>
+                    {hunt.image_processing_status === 'pending' ||
+                    hunt.image_processing_status === 'processing' ? (
+                        <div
+                            className="relative w-full overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800"
+                            style={{ height: '200px' }}
+                        >
                             <div className="flex h-full w-full items-center justify-center">
                                 <div className="text-center">
                                     <Loader2 className="mx-auto mb-2 h-8 w-8 animate-spin text-purple-500" />
                                     <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                                        {hunt.image_processing_status === 'pending' ? 'Preparando imagem...' : 'Processando imagem...'}
+                                        {hunt.image_processing_status ===
+                                        'pending'
+                                            ? 'Preparando imagem...'
+                                            : 'Processando imagem...'}
                                     </p>
                                 </div>
                             </div>
@@ -308,12 +423,17 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                             <div className="flex h-full w-full items-center justify-center">
                                 <div className="text-center">
                                     <ShieldAlert className="mx-auto mb-2 h-8 w-8 text-red-500" />
-                                    <p className="text-sm text-red-600 dark:text-red-400">Falha ao processar imagem</p>
+                                    <p className="text-sm text-red-600 dark:text-red-400">
+                                        Falha ao processar imagem
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     ) : sanitizedImageUrl ? (
-                        <div className="relative w-full overflow-hidden rounded-lg" style={{ height: '200px' }}>
+                        <div
+                            className="relative w-full overflow-hidden rounded-lg"
+                            style={{ height: '200px' }}
+                        >
                             <img
                                 src={sanitizedImageUrl}
                                 alt="Hunt image"
@@ -329,7 +449,7 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
 
                 {/* Footer - Always show basic metrics for non-owners */}
                 {!isOwner && (
-                    <CardFooter className="text-muted-foreground flex flex-wrap justify-between gap-1.5 px-3 text-xs sm:gap-2 sm:px-6 sm:text-sm">
+                    <CardFooter className="flex flex-wrap justify-between gap-1.5 px-3 text-xs text-muted-foreground sm:gap-2 sm:px-6 sm:text-sm">
                         <HuntLikes hunt={hunt} />
                         <Button
                             variant="ghost"
@@ -338,19 +458,35 @@ export function HuntCard({ hunt, withOpenComments = false, width = 'default', sh
                             onClick={() => setOpenComments((prev) => !prev)}
                         >
                             <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
-                            <span className="hidden sm:inline">{hunt.comments?.length || 0}</span>
-                            <span className="sm:hidden">{hunt.comments?.length || 0}</span>
+                            <span className="hidden sm:inline">
+                                {hunt.comments?.length || 0}
+                            </span>
+                            <span className="sm:hidden">
+                                {hunt.comments?.length || 0}
+                            </span>
                         </Button>
 
-                        <Button variant="ghost" size="sm" className="flex items-center gap-1 px-2 sm:px-3">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1 px-2 sm:px-3"
+                        >
                             <Repeat2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                            <span className="hidden sm:inline">{hunt.shares}</span>
+                            <span className="hidden sm:inline">
+                                {hunt.shares}
+                            </span>
                             <span className="sm:hidden">{hunt.shares}</span>
                         </Button>
 
-                        <Button variant="ghost" size="sm" className="flex items-center gap-1 px-2 sm:px-3">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1 px-2 sm:px-3"
+                        >
                             <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
-                            <span className="hidden sm:inline">{hunt.views}</span>
+                            <span className="hidden sm:inline">
+                                {hunt.views}
+                            </span>
                             <span className="sm:hidden">{hunt.views}</span>
                         </Button>
                     </CardFooter>

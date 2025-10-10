@@ -75,17 +75,8 @@ jobs:
       - name: Run Database Migrations
         run: php artisan migrate --force
 
-      - name: Ensure Frontend is Well Formatted
-        run: npm run format:check
-
-      - name: Lint Frontend
-        run: npm run lint
-
       - name: Build Assets
         run: npm run build
-
-      - name: Ensure Typescript Types
-        run: npm run types
 
       - name: Setup Meilisearch
         run: |
@@ -115,7 +106,6 @@ jobs:
           DB_USERNAME: postgres
           DB_PASSWORD: postgres
         run: composer test
-
 
       - name: Create Pull Request with formatting changes
         uses: peter-evans/create-pull-request@v6

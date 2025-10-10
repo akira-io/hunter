@@ -7,10 +7,12 @@
     "dev": "vite",
     "format": "prettier --write resources/",
     "format:check": "prettier --check resources/",
-    "lint": "eslint . --fix",
     "types": "tsc --noEmit",
     "release": "release-it",
-    "test": "npm run format && npm run types && npm run lint"
+    "test": "npm run format && npm run types && npm run lint",
+    "lint": "eslint . --fix && prettier --write resources/",
+    "test:lint": "eslint . && prettier --check resources/",
+    "test:types": "tsc --noEmit"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

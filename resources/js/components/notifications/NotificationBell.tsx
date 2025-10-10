@@ -30,16 +30,21 @@ export const NotificationBell: React.FC<NotificationBellProps> = () => {
             <button
                 onClick={handleToggle}
                 className={`relative cursor-pointer touch-manipulation rounded-lg p-2 transition-all duration-200 ${
-                    isOpen ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                    isOpen
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
                 }`}
                 data-testid="notification-bell"
                 aria-label={`Notificações${unreadCount > 0 ? ` (${unreadCount} não lidas)` : ''}`}
                 aria-expanded={isOpen}
             >
-                <Bell size={20} className={`transition-transform duration-200 ${isOpen ? 'scale-110' : ''}`} />
+                <Bell
+                    size={20}
+                    className={`transition-transform duration-200 ${isOpen ? 'scale-110' : ''}`}
+                />
                 {unreadCount > 0 && (
                     <span
-                        className="ring-background absolute -top-0.5 -right-0.5 flex h-5 w-5 min-w-[20px] animate-pulse items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white shadow-sm ring-2"
+                        className="absolute -top-0.5 -right-0.5 flex h-5 w-5 min-w-[20px] animate-pulse items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white shadow-sm ring-2 ring-background"
                         data-testid="notification-badge"
                     >
                         {unreadCount > 99 ? '99+' : unreadCount}
@@ -47,7 +52,12 @@ export const NotificationBell: React.FC<NotificationBellProps> = () => {
                 )}
             </button>
 
-            {isOpen && <NotificationDropdown isOpen={isOpen} onClose={() => setIsOpen(false)} />}
+            {isOpen && (
+                <NotificationDropdown
+                    isOpen={isOpen}
+                    onClose={() => setIsOpen(false)}
+                />
+            )}
         </div>
     );
 };

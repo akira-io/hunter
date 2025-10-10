@@ -52,7 +52,10 @@ export default function HuntLine({ hunts, newHunt }: HuntLineProps) {
 
     useEffect(() => {
         if (newHunt) {
-            console.log('New hunt created with status:', newHunt.image_processing_status);
+            console.log(
+                'New hunt created with status:',
+                newHunt.image_processing_status,
+            );
         }
     }, [newHunt]);
 

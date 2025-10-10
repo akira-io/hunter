@@ -21,7 +21,8 @@ export const useDeviceDetection = (): DeviceInfo => {
         const detectDevice = () => {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
-            const touchSupported = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            const touchSupported =
+                'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
             // Check orientation: landscape if width > height
             const isLandscape = screenWidth > screenHeight;
@@ -30,21 +31,39 @@ export const useDeviceDetection = (): DeviceInfo => {
             // Tablet: 768px - 1024px (but landscape tablets behave like desktop)
             // Desktop: > 1024px
             const isMobile = screenWidth < 768;
-            const isTablet = screenWidth >= 768 && screenWidth <= 1024 && !isLandscape;
-            const isDesktop = screenWidth > 1024 || (screenWidth >= 768 && isLandscape);
+            const isTablet =
+                screenWidth >= 768 && screenWidth <= 1024 && !isLandscape;
+            const isDesktop =
+                screenWidth > 1024 || (screenWidth >= 768 && isLandscape);
 
             // Additional check for user agent (more reliable for some cases)
             const userAgent = navigator.userAgent.toLowerCase();
-            const mobileUserAgents = ['android', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone', 'mobile', 'tablet'];
+            const mobileUserAgents = [
+                'android',
+                'iphone',
+                'ipad',
+                'ipod',
+                'blackberry',
+                'windows phone',
+                'mobile',
+                'tablet',
+            ];
 
-            const userAgentIsMobile = mobileUserAgents.some((agent) => userAgent.includes(agent));
+            const userAgentIsMobile = mobileUserAgents.some((agent) =>
+                userAgent.includes(agent),
+            );
 
             // For tablets in landscape, treat as desktop even if user agent says mobile
             const shouldTreatAsDesktop = isLandscape && screenWidth >= 768;
 
             setDeviceInfo({
                 isMobile: isMobile || (userAgentIsMobile && screenWidth < 768),
-                isTablet: (isTablet || (userAgentIsMobile && screenWidth >= 768 && screenWidth <= 1024)) && !shouldTreatAsDesktop,
+                isTablet:
+                    (isTablet ||
+                        (userAgentIsMobile &&
+                            screenWidth >= 768 &&
+                            screenWidth <= 1024)) &&
+                    !shouldTreatAsDesktop,
                 isDesktop: isDesktop || shouldTreatAsDesktop,
                 screenWidth,
                 touchSupported,
@@ -77,9 +96,20 @@ export const shouldUseMobileChat = (): boolean => {
     // Check orientation: landscape if width > height
     const isLandscape = screenWidth > screenHeight;
 
-    const mobileUserAgents = ['android', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone', 'mobile', 'tablet'];
+    const mobileUserAgents = [
+        'android',
+        'iphone',
+        'ipad',
+        'ipod',
+        'blackberry',
+        'windows phone',
+        'mobile',
+        'tablet',
+    ];
 
-    const userAgentIsMobile = mobileUserAgents.some((agent) => userAgent.includes(agent));
+    const userAgentIsMobile = mobileUserAgents.some((agent) =>
+        userAgent.includes(agent),
+    );
 
     // For tablets in landscape mode (768px+), use desktop behavior
     if (isLandscape && screenWidth >= 768) {
@@ -90,5 +120,9 @@ export const shouldUseMobileChat = (): boolean => {
     // 1. Screen width is less than 768px (definitely mobile), OR
     // 2. Portrait mode and screen width is less than 1024px, OR
     // 3. User agent indicates mobile device and not landscape with good width
-    return screenWidth < 768 || (!isLandscape && screenWidth < 1024) || (userAgentIsMobile && screenWidth < 768);
+    return (
+        screenWidth < 768 ||
+        (!isLandscape && screenWidth < 1024) ||
+        (userAgentIsMobile && screenWidth < 768)
+    );
 };

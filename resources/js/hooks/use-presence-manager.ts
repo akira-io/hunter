@@ -1,7 +1,16 @@
 import '@/config/echo';
 import api from '@/lib/api';
-import { useClearFollowedHunters, useRefreshFollowedHunters, useUpdateHunterOnlineStatus } from '@/stores/followedHuntersStore';
-import { useClearUsers, useRemoveUser, useSetConnected, useSetUsers } from '@/stores/onlineUsersStore';
+import {
+    useClearFollowedHunters,
+    useRefreshFollowedHunters,
+    useUpdateHunterOnlineStatus,
+} from '@/stores/followedHuntersStore';
+import {
+    useClearUsers,
+    useRemoveUser,
+    useSetConnected,
+    useSetUsers,
+} from '@/stores/onlineUsersStore';
 import { useEchoPresence } from '@laravel/echo-react';
 import { useEffect } from 'react';
 
@@ -16,7 +25,9 @@ interface UsePresenceManagerProps {
     currentUserId?: number;
 }
 
-export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) => {
+export const usePresenceManager = ({
+    currentUserId,
+}: UsePresenceManagerProps) => {
     const setUsers = useSetUsers();
     const removeUser = useRemoveUser();
     const setConnected = useSetConnected();
@@ -40,7 +51,12 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
         }
     }, [currentUserId, clearUsers]);
 
-    const presence = useEchoPresence<OnlineUser>(currentUserId ? 'presence' : '', undefined, undefined, []);
+    const presence = useEchoPresence<OnlineUser>(
+        currentUserId ? 'presence' : '',
+        undefined,
+        undefined,
+        [],
+    );
 
     useEffect(() => {
         if (!currentUserId) {
@@ -50,7 +66,9 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
 
         const fetchOnlineUsers = async () => {
             try {
-                const response = await api.get<{ data: OnlineUser[] }>('/users/online');
+                const response = await api.get<{ data: OnlineUser[] }>(
+                    '/users/online',
+                );
                 const users = response.data.data;
 
                 setUsers(users);
@@ -75,7 +93,13 @@ export const usePresenceManager = ({ currentUserId }: UsePresenceManagerProps) =
         return () => {
             clearInterval(interval);
         };
-    }, [currentUserId, setUsers, setConnected, updateHunterOnlineStatus, clearUsers]);
+    }, [
+        currentUserId,
+        setUsers,
+        setConnected,
+        updateHunterOnlineStatus,
+        clearUsers,
+    ]);
 
     useEffect(() => {
         if (!currentUserId) {

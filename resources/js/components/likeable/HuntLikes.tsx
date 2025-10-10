@@ -17,5 +17,11 @@ export function HuntLikes({ hunt }: LikesProps) {
         });
     }
 
-    return <LikeButton count={hunt.likes_count} hasLiked={hunt.has_liked} onLike={handleLike} />;
+    return (
+        <LikeButton
+            count={hunt.likes_count}
+            hasLiked={hunt.has_liked}
+            onLike={handleLike}
+        />
+    );
 }

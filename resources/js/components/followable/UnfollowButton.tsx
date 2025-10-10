@@ -1,6 +1,14 @@
 import { Button } from '@/components/ui/button';
 
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import followable from '@/routes/followable';
@@ -14,7 +22,10 @@ interface UnfollowButtonProps extends HTMLAttributes<HTMLButtonElement> {
     user: User;
 }
 
-export default function UnfollowButton({ user, className }: UnfollowButtonProps) {
+export default function UnfollowButton({
+    user,
+    className,
+}: UnfollowButtonProps) {
     const { toast } = useToast();
     const { post, processing } = useForm({
         user_id: user.id,
@@ -54,7 +65,9 @@ export default function UnfollowButton({ user, className }: UnfollowButtonProps)
                     Deixar de Seguir <b>{user.name}</b> ?
                 </DialogTitle>
                 <DialogDescription className="pt-4">
-                    <span className="text-muted-foreground text-sm">Você pode voltar a segui-lo a qualquer momento.</span>
+                    <span className="text-sm text-muted-foreground">
+                        Você pode voltar a segui-lo a qualquer momento.
+                    </span>
                 </DialogDescription>
                 <DialogFooter className="pt-4">
                     <DialogClose asChild>
@@ -63,7 +76,11 @@ export default function UnfollowButton({ user, className }: UnfollowButtonProps)
                             Cancelar
                         </Button>
                     </DialogClose>
-                    <Button variant="destructive" disabled={processing} onClick={unFollow}>
+                    <Button
+                        variant="destructive"
+                        disabled={processing}
+                        onClick={unFollow}
+                    >
                         <CheckCircle /> Confirmar
                     </Button>
                 </DialogFooter>

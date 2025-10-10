@@ -4,7 +4,10 @@ import { ArrowDownIcon } from 'lucide-react';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-export function ScrollDown({ className, ...props }: React.ComponentProps<'div'>) {
+export function ScrollDown({
+    className,
+    ...props
+}: React.ComponentProps<'div'>) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isScrollable, setIsScrollable] = useState(false);
 
@@ -14,7 +17,9 @@ export function ScrollDown({ className, ...props }: React.ComponentProps<'div'>)
         };
 
         const checkScrollable = () => {
-            setIsScrollable(document.documentElement.scrollHeight > window.innerHeight);
+            setIsScrollable(
+                document.documentElement.scrollHeight > window.innerHeight,
+            );
         };
 
         handleScroll();
@@ -39,8 +44,18 @@ export function ScrollDown({ className, ...props }: React.ComponentProps<'div'>)
     return (
         <>
             {isScrollable && !isScrolled && (
-                <div className={cn('flex transform animate-bounce cursor-pointer flex-col items-center justify-center', className)} {...props}>
-                    <Button variant="ghost" className="flex items-center justify-center" onClick={handleClick}>
+                <div
+                    className={cn(
+                        'flex transform animate-bounce cursor-pointer flex-col items-center justify-center',
+                        className,
+                    )}
+                    {...props}
+                >
+                    <Button
+                        variant="ghost"
+                        className="flex items-center justify-center"
+                        onClick={handleClick}
+                    >
                         <ArrowDownIcon size={24} />
                     </Button>
                 </div>

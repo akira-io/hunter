@@ -1,5 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { AlertTriangle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -29,11 +36,13 @@ export function MobileWarningDialog() {
                     </div>
                     <DialogTitle>Atenção</DialogTitle>
                     <DialogDescription className="text-center">
-                        Esta aplicação ainda não está totalmente otimizada para dispositivos móveis. Você pode encontrar alguns bugs ou problemas de
-                        usabilidade.
+                        Esta aplicação ainda não está totalmente otimizada para
+                        dispositivos móveis. Você pode encontrar alguns bugs ou
+                        problemas de usabilidade.
                         <br />
                         <br />
-                        Para a melhor experiência, recomendamos usar um computador desktop.
+                        Para a melhor experiência, recomendamos usar um
+                        computador desktop.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="gap-2">

@@ -26,7 +26,9 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
-    const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
+    const { data, setData, post, processing, errors, reset } = useForm<
+        Required<LoginForm>
+    >({
         email: '',
         password: '',
         remember: false,
@@ -40,7 +42,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <AuthLayout title="Login" description="Iniciar sessão na sua conta Hunter">
+        <AuthLayout
+            title="Login"
+            description="Iniciar sessão na sua conta Hunter"
+        >
             <Head title="Login" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-1">
@@ -67,7 +72,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="flex items-center">
                             <Label htmlFor="password">Password</Label>
                             {canResetPassword && (
-                                <TextLink href={password.request.url()} className="ml-auto text-sm" tabIndex={5}>
+                                <TextLink
+                                    href={password.request.url()}
+                                    className="ml-auto text-sm"
+                                    tabIndex={5}
+                                >
                                     Esqueci-me da password
                                 </TextLink>
                             )}
@@ -79,7 +88,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             tabIndex={2}
                             autoComplete="current-password"
                             value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
                             placeholder="Password"
                         />
                         <InputError message={errors.password} />
@@ -94,19 +105,33 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         />
                         <Label htmlFor="remember">Lembrar-me</Label>
                     </div>
-                    <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing} variant="gradient">
-                        {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LogInIcon />}
+                    <Button
+                        type="submit"
+                        className="mt-4 w-full"
+                        tabIndex={4}
+                        disabled={processing}
+                        variant="gradient"
+                    >
+                        {processing ? (
+                            <LoaderCircle className="h-4 w-4 animate-spin" />
+                        ) : (
+                            <LogInIcon />
+                        )}
                         Iniciar sessão
                     </Button>
                 </div>
-                <div className="text-muted-foreground text-center text-sm">
+                <div className="text-center text-sm text-muted-foreground">
                     Você não tem uma conta?{' '}
                     <TextLink href={register.url()} tabIndex={7}>
                         Criar conta
                     </TextLink>
                 </div>
             </form>
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && (
+                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                    {status}
+                </div>
+            )}
         </AuthLayout>
     );
 }

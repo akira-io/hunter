@@ -26,7 +26,7 @@
     }
 
     .animate-glow {
-        @apply hover:shadow-primary/25 transition-all duration-300 ease-out hover:shadow-xl;
+        @apply transition-all duration-300 ease-out hover:shadow-xl hover:shadow-primary/25;
     }
 
     /* Enhanced card effects */
@@ -46,7 +46,13 @@
 
     /* Gradient animations */
     .gradient-animate {
-        background: linear-gradient(-45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+        background: linear-gradient(
+            -45deg,
+            var(--primary),
+            var(--secondary),
+            var(--accent),
+            var(--primary)
+        );
         background-size: 400% 400%;
         animation: gradient-shift 8s ease infinite;
     }
@@ -81,12 +87,22 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
         animation: shimmer 2s infinite;
     }
 
     .dark .skeleton-shimmer::after {
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+        );
     }
 
     @keyframes shimmer {

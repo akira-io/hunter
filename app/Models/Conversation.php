@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read  Carbon $created_at
  * @property-read  Carbon $updated_at
  * @property-read  int $created_by
+ *
+ * @method static Builder|Conversation forUser(User $user)
  */
 final class Conversation extends Model
 {
@@ -44,21 +46,6 @@ final class Conversation extends Model
             'created_by',
             'last_message_at',
         ];
-
-    /**
-     * Scope a query to only include conversations for a given user.
-     *
-     * @param  Builder<self>  $query
-     * @return Builder<self>
-     */
-    #[Scope]
-    public function forUser(Builder $query, User $user): Builder
-    {
-
-        return $query->whereHas('participants', function (Builder $q) use ($user): void {
-            $q->where('user_id', $user->id);
-        });
-    }
 
     /**
      * Scope a query to direct conversation between two users.
@@ -126,6 +113,21 @@ final class Conversation extends Model
     {
 
         return $this->hasOne(Message::class)->latestOfMany();
+    }
+
+    /**
+     * Scope a query to only include conversations for a given user.
+     *
+     * @param  Builder<self>  $query
+     * @return Builder<$this>
+     */
+    #[Scope]
+    public function forUser(Builder $query, User $user): Builder
+    {
+
+        return $query->whereHas('participants', function (Builder $q) use ($user): void {
+            $q->where('user_id', $user->id);
+        });
     }
 
     /**

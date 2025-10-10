@@ -20,7 +20,9 @@ export function HunterAlertDialog(props: {
             <AlertDialogContent className="sm:max-w-md">
                 <AlertDialogHeader>
                     <AlertDialogTitle>{props.title}</AlertDialogTitle>
-                    <AlertDialogDescription>{props.description}</AlertDialogDescription>
+                    <AlertDialogDescription>
+                        {props.description}
+                    </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <Button onClick={props.onClick}>Entendi</Button>

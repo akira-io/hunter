@@ -13,7 +13,12 @@ interface NotificationItemProps {
     hideUnreadDot?: boolean;
 }
 
-export const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onClick, className = '', hideUnreadDot = false }) => {
+export const NotificationItem: React.FC<NotificationItemProps> = ({
+    notification,
+    onClick,
+    className = '',
+    hideUnreadDot = false,
+}) => {
     const isUnread = !notification.read_at;
     const isHuntNotification = notification.data.type === 'hunt_published';
     const follower = notification.data.follower as User;
@@ -34,7 +39,10 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
                 {
                     preserveScroll: true,
                     onError: (error) => {
-                        console.error('Failed to mark notification as read:', error);
+                        console.error(
+                            'Failed to mark notification as read:',
+                            error,
+                        );
                     },
                 },
             );
@@ -48,7 +56,10 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
         // Navigate to action URL or profile
         let targetUrl = '';
 
-        if (notification.data.action_url && typeof notification.data.action_url === 'string') {
+        if (
+            notification.data.action_url &&
+            typeof notification.data.action_url === 'string'
+        ) {
             targetUrl = notification.data.action_url;
         } else if (displayUser?.id) {
             targetUrl = `/public-profile/${displayUser.id}`;
@@ -64,7 +75,9 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
     return (
         <Card
             className={`dark:hover:bg-zinc-800/50, mt-2 transition-colors hover:border-purple-200 hover:bg-purple-50/50 dark:hover:border-purple-100 dark:hover:bg-purple-900/10 ${
-                isUnread ? 'border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/10' : ''
+                isUnread
+                    ? 'border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/10'
+                    : ''
             } ${className}`}
             onClick={handleMarkAsRead}
         >
@@ -80,14 +93,21 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
                     >
                         {displayUser?.avatar_url ? (
                             <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
-                                <AvatarImage src={displayUser.avatar_url} alt={displayUser.name} className="object-cover" />
+                                <AvatarImage
+                                    src={displayUser.avatar_url}
+                                    alt={displayUser.name}
+                                    className="object-cover"
+                                />
                                 <AvatarFallback>
                                     <UserIcon size={16} />
                                 </AvatarFallback>
                             </Avatar>
                         ) : (
                             <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 transition-opacity hover:opacity-80 dark:from-zinc-700 dark:to-zinc-600">
-                                <UserIcon size={16} className="text-zinc-600 dark:text-zinc-300" />
+                                <UserIcon
+                                    size={16}
+                                    className="text-zinc-600 dark:text-zinc-300"
+                                />
                             </div>
                         )}
                     </div>
@@ -95,8 +115,12 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
                     {/* Content */}
                     <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                            <h4 className="text-sm leading-tight font-medium text-zinc-900 dark:text-zinc-100">{notification.title}</h4>
-                            {isUnread && !hideUnreadDot && <div className="h-2 w-2 flex-shrink-0 rounded-full bg-purple-500"></div>}
+                            <h4 className="text-sm leading-tight font-medium text-zinc-900 dark:text-zinc-100">
+                                {notification.title}
+                            </h4>
+                            {isUnread && !hideUnreadDot && (
+                                <div className="h-2 w-2 flex-shrink-0 rounded-full bg-purple-500"></div>
+                            )}
                         </div>
                         <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
                             <span
@@ -110,7 +134,9 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
                             </span>
                             {notification.message.replace(userName, '')}
                         </p>
-                        <p className="mt-2 text-xs text-zinc-500">{notification.created_at_human}</p>
+                        <p className="mt-2 text-xs text-zinc-500">
+                            {notification.created_at_human}
+                        </p>
                     </div>
                 </div>
             </CardContent>

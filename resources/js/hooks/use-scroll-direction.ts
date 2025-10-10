@@ -10,7 +10,8 @@ interface UseScrollDirectionOptions {
 
 export const useScrollDirection = (options: UseScrollDirectionOptions = {}) => {
     const { threshold = 10, onScrollUp, onScrollDown } = options;
-    const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(null);
+    const [scrollDirection, setScrollDirection] =
+        useState<ScrollDirection>(null);
     const [lastScrollY, setLastScrollY] = useState(0);
 
     useEffect(() => {

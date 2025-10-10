@@ -1,14 +1,30 @@
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from '@/components/ui/sidebar';
 import { useChatContext } from '@/contexts/ChatContext';
 import finder from '@/routes/finder';
 import followable from '@/routes/followable';
 import hunts from '@/routes/hunts';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, EyeIcon, FileSearch, MessageCircle, MessageCircleMore, NetworkIcon, Sparkles } from 'lucide-react';
+import {
+    BookOpen,
+    EyeIcon,
+    FileSearch,
+    MessageCircle,
+    MessageCircleMore,
+    NetworkIcon,
+    Sparkles,
+} from 'lucide-react';
 import { useMemo } from 'react';
 import { AiFillGithub } from 'react-icons/ai';
 
@@ -82,12 +98,24 @@ export function AppSidebar() {
     }, [totalUnreadCount]);
 
     return (
-        <Sidebar collapsible="icon" variant="sidebar" className="border-border/50 border-r">
-            <SidebarHeader className="border-border/50 border-b">
+        <Sidebar
+            collapsible="icon"
+            variant="sidebar"
+            className="border-r border-border/50"
+        >
+            <SidebarHeader className="border-b border-border/50">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="group hover:bg-accent/50 transition-all duration-200">
-                            <Link href="/" prefetch className="flex items-center gap-2">
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="group transition-all duration-200 hover:bg-accent/50"
+                        >
+                            <Link
+                                href="/"
+                                prefetch
+                                className="flex items-center gap-2"
+                            >
                                 <AppLogo className="transition-transform duration-200 group-hover:scale-105" />
                             </Link>
                         </SidebarMenuButton>

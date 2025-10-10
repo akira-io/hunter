@@ -9,7 +9,12 @@ interface LikeButtonProps {
     iconSize?: number;
 }
 
-export function LikeButton({ count, hasLiked, onLike, iconSize = 20 }: LikeButtonProps) {
+export function LikeButton({
+    count,
+    hasLiked,
+    onLike,
+    iconSize = 20,
+}: LikeButtonProps) {
     const [isAnimating, setIsAnimating] = useState(false);
 
     const handleClick = () => {
@@ -23,10 +28,13 @@ export function LikeButton({ count, hasLiked, onLike, iconSize = 20 }: LikeButto
             <Heart
                 onClick={handleClick}
                 size={iconSize}
-                className={cn('cursor-pointer transition-transform duration-300', {
-                    'text-primary scale-150': isAnimating,
-                    'fill-primary': hasLiked,
-                })}
+                className={cn(
+                    'cursor-pointer transition-transform duration-300',
+                    {
+                        'scale-150 text-primary': isAnimating,
+                        'fill-primary': hasLiked,
+                    },
+                )}
             />
             <span>{count}</span>
         </div>

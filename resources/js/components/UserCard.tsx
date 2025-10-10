@@ -3,7 +3,14 @@ import { SocialDropdownMenu } from '@/components/hunter/SocialDropdownMenu';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { useSocialActions } from '@/hooks/use-social-actions';
 import { User } from '@/types';
@@ -20,20 +27,35 @@ interface UserCardProps extends React.ComponentProps<'div'> {
 export default function UserCard({ user, ...props }: UserCardProps) {
     const sanitizedAvatarUrl = useSanitizeImageUrl(user.avatar_url);
     const config = genConfig({ sex: 'man', hairStyle: 'thick' });
-    const { processing, handleBlock, handleUnfollow, handleUnblock, state, setState } = useSocialActions(user);
+    const {
+        processing,
+        handleBlock,
+        handleUnfollow,
+        handleUnblock,
+        state,
+        setState,
+    } = useSocialActions(user);
 
     function gotoProfile() {
-        router.get(PublicProfileController.show({ user: user.id }).url, undefined, {
-            preserveScroll: true,
-            preserveState: true,
-        });
+        router.get(
+            PublicProfileController.show({ user: user.id }).url,
+            undefined,
+            {
+                preserveScroll: true,
+                preserveState: true,
+            },
+        );
     }
 
     return (
         <div {...props}>
             <Card className="gradient w-full transition-all hover:shadow-lg">
                 <CardContent className="flex items-center gap-2">
-                    <Avatar style={{ height: '32px', width: '32px' }} className="cursor-pointer shadow" onClick={gotoProfile}>
+                    <Avatar
+                        style={{ height: '32px', width: '32px' }}
+                        className="cursor-pointer shadow"
+                        onClick={gotoProfile}
+                    >
                         {sanitizedAvatarUrl ? (
                             <AvatarImage
                                 src={sanitizedAvatarUrl}
@@ -42,23 +64,38 @@ export default function UserCard({ user, ...props }: UserCardProps) {
                                 style={{ height: '32px', width: '32px' }}
                             />
                         ) : (
-                            <AvatarGenerator style={{ width: '32px', height: '32px' }} {...config} />
+                            <AvatarGenerator
+                                style={{ width: '32px', height: '32px' }}
+                                {...config}
+                            />
                         )}
                     </Avatar>
-                    <div className="min-w-0 flex-1 cursor-pointer" onClick={gotoProfile}>
-                        <p className="text-md truncate font-medium">{user.name}</p>
+                    <div
+                        className="min-w-0 flex-1 cursor-pointer"
+                        onClick={gotoProfile}
+                    >
+                        <p className="text-md truncate font-medium">
+                            {user.name}
+                        </p>
                     </div>
                     <SocialDropdownMenu user={user} />
                 </CardContent>
             </Card>
 
-            <Dialog open={state.unfollowDialogOpen} onOpenChange={(open) => setState({ ...state, unfollowDialogOpen: open })}>
+            <Dialog
+                open={state.unfollowDialogOpen}
+                onOpenChange={(open) =>
+                    setState({ ...state, unfollowDialogOpen: open })
+                }
+            >
                 <DialogContent className="p-6">
                     <DialogTitle>
                         Deixar de Seguir <b>{user.name}</b>?
                     </DialogTitle>
                     <DialogDescription className="pt-4">
-                        <span className="text-muted-foreground text-sm">Você pode voltar a segui-lo a qualquer momento.</span>
+                        <span className="text-sm text-muted-foreground">
+                            Você pode voltar a segui-lo a qualquer momento.
+                        </span>
                     </DialogDescription>
                     <DialogFooter className="pt-4">
                         <DialogClose asChild>
@@ -67,20 +104,29 @@ export default function UserCard({ user, ...props }: UserCardProps) {
                                 Cancelar
                             </Button>
                         </DialogClose>
-                        <Button variant="destructive" disabled={processing} onClick={handleUnfollow}>
+                        <Button
+                            variant="destructive"
+                            disabled={processing}
+                            onClick={handleUnfollow}
+                        >
                             <CheckCircle /> Confirmar
                         </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
-            <Dialog open={state.blockDialogOpen} onOpenChange={(open) => setState({ ...state, blockDialogOpen: open })}>
+            <Dialog
+                open={state.blockDialogOpen}
+                onOpenChange={(open) =>
+                    setState({ ...state, blockDialogOpen: open })
+                }
+            >
                 <DialogContent className="p-6">
                     <DialogTitle>
                         Bloquear <b>{user.name}</b>?
                     </DialogTitle>
                     <DialogDescription className="pt-4">
-                        <span className="text-muted-foreground text-sm">
+                        <span className="text-sm text-muted-foreground">
                             Ao bloquear este utilizador, ele não poderá:
                             <ul className="mt-2 list-disc pl-5">
                                 <li>Ver o seu perfil</li>
@@ -88,7 +134,10 @@ export default function UserCard({ user, ...props }: UserCardProps) {
                                 <li>Comentar nos seus hunts</li>
                                 <li>Segui-lo</li>
                             </ul>
-                            <span className="mt-2 block">Você pode desbloqueá-lo a qualquer momento nas configurações de privacidade.</span>
+                            <span className="mt-2 block">
+                                Você pode desbloqueá-lo a qualquer momento nas
+                                configurações de privacidade.
+                            </span>
                         </span>
                     </DialogDescription>
                     <DialogFooter className="pt-4">
@@ -98,21 +147,31 @@ export default function UserCard({ user, ...props }: UserCardProps) {
                                 Cancelar
                             </Button>
                         </DialogClose>
-                        <Button variant="destructive" disabled={processing} onClick={handleBlock}>
+                        <Button
+                            variant="destructive"
+                            disabled={processing}
+                            onClick={handleBlock}
+                        >
                             <BanIcon /> Bloquear
                         </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
-            <Dialog open={state.unblockDialogOpen} onOpenChange={(open) => setState({ ...state, unblockDialogOpen: open })}>
+            <Dialog
+                open={state.unblockDialogOpen}
+                onOpenChange={(open) =>
+                    setState({ ...state, unblockDialogOpen: open })
+                }
+            >
                 <DialogContent className="p-6">
                     <DialogTitle>
                         Desbloquear <b>{user.name}</b>?
                     </DialogTitle>
                     <DialogDescription className="pt-4">
-                        <span className="text-muted-foreground text-sm">
-                            Ao desbloquear este utilizador, ele poderá novamente:
+                        <span className="text-sm text-muted-foreground">
+                            Ao desbloquear este utilizador, ele poderá
+                            novamente:
                             <ul className="mt-2 list-disc pl-5">
                                 <li>Ver o seu perfil</li>
                                 <li>Enviar-lhe mensagens</li>
@@ -128,7 +187,11 @@ export default function UserCard({ user, ...props }: UserCardProps) {
                                 Cancelar
                             </Button>
                         </DialogClose>
-                        <Button variant="default" disabled={processing} onClick={handleUnblock}>
+                        <Button
+                            variant="default"
+                            disabled={processing}
+                            onClick={handleUnblock}
+                        >
                             <ShieldCheckIcon /> Desbloquear
                         </Button>
                     </DialogFooter>

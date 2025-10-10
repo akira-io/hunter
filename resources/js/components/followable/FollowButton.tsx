@@ -13,7 +13,13 @@ export function FollowButton({ user, className }: FollowButtonProps) {
     const { handleFollow, processing } = useSocialActions(user);
 
     return (
-        <Button className={cn(className)} size="sm" variant="default" onClick={handleFollow} disabled={processing}>
+        <Button
+            className={cn(className)}
+            size="sm"
+            variant="default"
+            onClick={handleFollow}
+            disabled={processing}
+        >
             <UserPlusIcon />
             Seguir
         </Button>

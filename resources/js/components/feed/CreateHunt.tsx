@@ -19,7 +19,9 @@ interface HuntForm {
 
 export function CreateHunt() {
     const { setIsFloatCreateHuntOpen } = useHuntStore();
-    const { errors, processing, post, data, setData } = useForm<Required<HuntForm>>({
+    const { errors, processing, post, data, setData } = useForm<
+        Required<HuntForm>
+    >({
         content: '',
         image: '',
     });
@@ -49,7 +51,8 @@ export function CreateHunt() {
             toast({
                 variant: 'destructive',
                 title: 'Imagem muito grande',
-                description: 'O ficheiro é demasiado grande. O tamanho máximo é de 2 MB.',
+                description:
+                    'O ficheiro é demasiado grande. O tamanho máximo é de 2 MB.',
             });
             return;
         }
@@ -59,7 +62,9 @@ export function CreateHunt() {
         }
 
         if (files) {
-            const fileArray = Array.from(files).map((file) => URL.createObjectURL(file));
+            const fileArray = Array.from(files).map((file) =>
+                URL.createObjectURL(file),
+            );
             setImagePreview((prev) => [...prev, ...fileArray]);
         }
     };
@@ -70,7 +75,9 @@ export function CreateHunt() {
         setImagePreview([]);
         setData('image', '');
 
-        const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+        const fileInput = document.getElementById(
+            'image-upload',
+        ) as HTMLInputElement;
         if (fileInput) {
             fileInput.value = '';
         }
@@ -103,7 +110,9 @@ export function CreateHunt() {
                     setImagePreview([]);
                     setIsFloatCreateHuntOpen(false);
 
-                    const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+                    const fileInput = document.getElementById(
+                        'image-upload',
+                    ) as HTMLInputElement;
                     if (fileInput) {
                         fileInput.value = '';
                     }
@@ -113,7 +122,8 @@ export function CreateHunt() {
                 toast({
                     variant: 'destructive',
                     title: 'Erro ao partilhar',
-                    description: 'Ocorreu um erro ao partilhar a hunt. Tente novamente.',
+                    description:
+                        'Ocorreu um erro ao partilhar a hunt. Tente novamente.',
                 });
             },
         });
@@ -123,18 +133,24 @@ export function CreateHunt() {
         <Card
             className={cn(
                 'gradient mx-auto w-full max-w-2xl transition-all duration-300',
-                isFocused && 'shadow-md ring-1 ring-zinc-300 dark:ring-zinc-700',
-                isSuccess && 'shadow-lg ring-2 shadow-emerald-500/20 ring-emerald-500/50',
+                isFocused &&
+                    'shadow-md ring-1 ring-zinc-300 dark:ring-zinc-700',
+                isSuccess &&
+                    'shadow-lg ring-2 shadow-emerald-500/20 ring-emerald-500/50',
             )}
         >
             <CardContent className="p-4 sm:p-6">
                 {isSuccess ? (
-                    <div className="animate-in fade-in zoom-in flex flex-col items-center justify-center py-8 text-center duration-300">
+                    <div className="flex flex-col items-center justify-center py-8 text-center duration-300 animate-in fade-in zoom-in">
                         <div className="mb-4 rounded-full bg-emerald-500/10 p-4">
-                            <CheckCircle2 className="animate-in zoom-in h-12 w-12 text-emerald-500 duration-500" />
+                            <CheckCircle2 className="h-12 w-12 text-emerald-500 duration-500 animate-in zoom-in" />
                         </div>
-                        <h3 className="text-xl font-semibold text-emerald-600 dark:text-emerald-400">Hunt Partilhado!</h3>
-                        <p className="text-muted-foreground mt-2 text-sm">O seu hunt está agora visível para todos</p>
+                        <h3 className="text-xl font-semibold text-emerald-600 dark:text-emerald-400">
+                            Hunt Partilhado!
+                        </h3>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                            O seu hunt está agora visível para todos
+                        </p>
                     </div>
                 ) : (
                     <form
@@ -170,7 +186,7 @@ export function CreateHunt() {
                                         />
                                         <label
                                             htmlFor="image-upload-mobile"
-                                            className="hover:bg-muted active:bg-muted/80 cursor-pointer rounded-lg p-2 transition-all hover:scale-105 active:scale-95"
+                                            className="cursor-pointer rounded-lg p-2 transition-all hover:scale-105 hover:bg-muted active:scale-95 active:bg-muted/80"
                                             aria-label="Carregar imagem"
                                         >
                                             <ImageIcon className="h-5 w-5" />
@@ -193,27 +209,37 @@ export function CreateHunt() {
                                 className={cn(
                                     'h-1 flex-1 transition-all duration-300',
                                     isOverLimit && 'bg-red-200 dark:bg-red-950',
-                                    isNearLimit && !isOverLimit && 'bg-amber-200 dark:bg-amber-950',
+                                    isNearLimit &&
+                                        !isOverLimit &&
+                                        'bg-amber-200 dark:bg-amber-950',
                                 )}
                                 indicatorClassName={cn(
                                     isOverLimit && 'bg-red-500',
-                                    isNearLimit && !isOverLimit && 'bg-amber-500',
+                                    isNearLimit &&
+                                        !isOverLimit &&
+                                        'bg-amber-500',
                                     !isNearLimit && 'bg-purple-500',
                                 )}
                             />
                         </div>
 
-                        <InputError message={errors.content} className="mt-2 text-sm" />
+                        <InputError
+                            message={errors.content}
+                            className="mt-2 text-sm"
+                        />
 
                         {/* Image preview */}
                         {sanitizedImageUrls.length > 0 && (
-                            <div className="animate-in fade-in slide-in-from-bottom-4 mt-4 duration-300">
+                            <div className="mt-4 duration-300 animate-in fade-in slide-in-from-bottom-4">
                                 {sanitizedImageUrls.map((src, index) => (
-                                    <div key={index} className="group relative overflow-hidden rounded-xl">
+                                    <div
+                                        key={index}
+                                        className="group relative overflow-hidden rounded-xl"
+                                    >
                                         <img
                                             src={src}
                                             alt={`Preview ${index}`}
-                                            className="border-border max-h-96 w-full rounded-xl border-2 object-cover shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                                            className="max-h-96 w-full rounded-xl border-2 border-border object-cover shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                                         <button
@@ -233,21 +259,31 @@ export function CreateHunt() {
                         {/* Actions footer */}
                         <div className="mt-6 flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
                             <div className="hidden items-center gap-2 sm:flex">
-                                <input type="file" accept="image/*" id="image-upload" className="hidden" onChange={handleImageChange} name="image" />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    id="image-upload"
+                                    className="hidden"
+                                    onChange={handleImageChange}
+                                    name="image"
+                                />
                                 <label
                                     htmlFor="image-upload"
                                     className={cn(
-                                        'hover:bg-muted active:bg-muted/80 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:scale-105 active:scale-95',
-                                        imagePreview.length > 0 && 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+                                        'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:scale-105 hover:bg-muted active:scale-95 active:bg-muted/80',
+                                        imagePreview.length > 0 &&
+                                            'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
                                     )}
                                     aria-label="Carregar imagem"
                                 >
                                     <ImageIcon className="h-4 w-4" />
-                                    {imagePreview.length > 0 ? 'Alterar imagem' : 'Adicionar imagem'}
+                                    {imagePreview.length > 0
+                                        ? 'Alterar imagem'
+                                        : 'Adicionar imagem'}
                                 </label>
 
                                 {imagePreview.length > 0 && (
-                                    <span className="text-muted-foreground animate-in fade-in slide-in-from-left-2 text-xs duration-300">
+                                    <span className="text-xs text-muted-foreground duration-300 animate-in fade-in slide-in-from-left-2">
                                         1 imagem selecionada
                                     </span>
                                 )}

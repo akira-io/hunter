@@ -32,15 +32,28 @@ interface Conversation {
     messages?: Message[];
 }
 
-export const useChat = (currentUserId?: number, chatWindows?: number[], minimizedWindows?: Set<number>) => {
+export const useChat = (
+    currentUserId?: number,
+    chatWindows?: number[],
+    minimizedWindows?: Set<number>,
+) => {
     const [conversations, setConversations] = useState<Conversation[]>([]);
-    const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+    const [activeConversation, setActiveConversation] =
+        useState<Conversation | null>(null);
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
-    const messageHandlerRef = useRef<((event: MessageEvent) => void) | null>(null);
+    const messageHandlerRef = useRef<((event: MessageEvent) => void) | null>(
+        null,
+    );
 
     // Use useEcho for user channel when we have a current user
-    const userEcho = useEcho<MessageEvent>(currentUserId ? `user.${currentUserId}` : '', undefined, undefined, [], 'private');
+    const userEcho = useEcho<MessageEvent>(
+        currentUserId ? `user.${currentUserId}` : '',
+        undefined,
+        undefined,
+        [],
+        'private',
+    );
 
     // Use useEcho for conversation channel when we have an active conversation
     const conversationEcho = useEcho<{ message: Message }>(
@@ -64,7 +77,10 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
         }
 
         // Listen for messages on the user channel
-        const messageHandler = (event: { message: Message; conversation_id: number }) => {
+        const messageHandler = (event: {
+            message: Message;
+            conversation_id: number;
+        }) => {
             const isMyMessage = event.message.user.id === currentUserId;
             if (isMyMessage) {
                 return; // Don't increment for our own messages
@@ -75,10 +91,13 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
                 prev.map((conv) => {
                     if (conv.id === event.conversation_id) {
                         // Check if this conversation is currently active (using state from closure)
-                        const isActiveConversation = activeConversation?.id === event.conversation_id;
+                        const isActiveConversation =
+                            activeConversation?.id === event.conversation_id;
 
                         // Check if there's an open (non-minimized) chat window for this conversation
-                        const hasOpenChatWindow = chatWindows?.includes(event.conversation_id) && !minimizedWindows?.has(event.conversation_id);
+                        const hasOpenChatWindow =
+                            chatWindows?.includes(event.conversation_id) &&
+                            !minimizedWindows?.has(event.conversation_id);
 
                         if (isActiveConversation || hasOpenChatWindow) {
                             return {
@@ -106,7 +125,10 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
 
         return () => {
             if (messageHandlerRef.current) {
-                channel.stopListening('.message.sent', messageHandlerRef.current);
+                channel.stopListening(
+                    '.message.sent',
+                    messageHandlerRef.current,
+                );
                 messageHandlerRef.current = null;
             }
         };
@@ -120,16 +142,24 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
         }
 
         channel
-            .listen('.conversations.snapshot', (e: { conversations: Conversation[] }) => {
-                setConversations(e.conversations || []);
-                setLoading(false);
-            })
-            .listen('.conversation.created', (e: { conversation: Conversation }) => {
-                setConversations((prev) => {
-                    const exists = prev.some((c) => c.id === e.conversation.id);
-                    return exists ? prev : [e.conversation, ...prev];
-                });
-            });
+            .listen(
+                '.conversations.snapshot',
+                (e: { conversations: Conversation[] }) => {
+                    setConversations(e.conversations || []);
+                    setLoading(false);
+                },
+            )
+            .listen(
+                '.conversation.created',
+                (e: { conversation: Conversation }) => {
+                    setConversations((prev) => {
+                        const exists = prev.some(
+                            (c) => c.id === e.conversation.id,
+                        );
+                        return exists ? prev : [e.conversation, ...prev];
+                    });
+                },
+            );
 
         return () => {
             // Laravel Echo React handles cleanup automatically
@@ -233,7 +263,12 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
     }, []);
 
     const sendMessage = useCallback(
-        async (conversationId: number, content: string, type: 'text' | 'image' | 'file' = 'text', metadata?: Record<string, unknown> | null) => {
+        async (
+            conversationId: number,
+            content: string,
+            type: 'text' | 'image' | 'file' = 'text',
+            metadata?: Record<string, unknown> | null,
+        ) => {
             try {
                 setSending(true);
 
@@ -266,7 +301,11 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
     );
 
     const createConversation = useCallback(
-        async (type: 'direct' | 'group', participants: number[], title?: string) => {
+        async (
+            type: 'direct' | 'group',
+            participants: number[],
+            title?: string,
+        ) => {
             try {
                 const response = await fetch('/conversations', {
                     method: 'POST',
@@ -280,10 +319,13 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    const errorMessage = errorData.error || 'Failed to create conversation';
+                    const errorMessage =
+                        errorData.error || 'Failed to create conversation';
 
                     // Create a custom error with status code
-                    const error = new Error(errorMessage) as Error & { status?: number };
+                    const error = new Error(errorMessage) as Error & {
+                        status?: number;
+                    };
                     error.status = response.status;
                     throw error;
                 }
@@ -301,23 +343,35 @@ export const useChat = (currentUserId?: number, chatWindows?: number[], minimize
         [loadConversations],
     );
 
-    const markMessagesAsRead = useCallback(async (conversationId: number, messageIds?: number[]) => {
-        try {
-            const response = await fetch(`/conversations/${conversationId}/messages/read`, {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify({
-                    message_ids: messageIds,
-                }),
-            });
+    const markMessagesAsRead = useCallback(
+        async (conversationId: number, messageIds?: number[]) => {
+            try {
+                const response = await fetch(
+                    `/conversations/${conversationId}/messages/read`,
+                    {
+                        method: 'POST',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify({
+                            message_ids: messageIds,
+                        }),
+                    },
+                );
 
-            if (response.ok) {
-                setConversations((prev) => prev.map((conv) => (conv.id === conversationId ? { ...conv, unread_count: 0 } : conv)));
+                if (response.ok) {
+                    setConversations((prev) =>
+                        prev.map((conv) =>
+                            conv.id === conversationId
+                                ? { ...conv, unread_count: 0 }
+                                : conv,
+                        ),
+                    );
+                }
+            } catch (error) {
+                console.error('Failed to mark messages as read:', error);
             }
-        } catch (error) {
-            console.error('Failed to mark messages as read:', error);
-        }
-    }, []);
+        },
+        [],
+    );
 
     const getAuthHeaders = () => {
         const metaTag = document.querySelector('meta[name="csrf-token"]');

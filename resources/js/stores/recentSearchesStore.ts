@@ -30,9 +30,14 @@ export const useRecentSearchesStore = create<RecentSearchesState>()(
 
                 const { searches, maxSearches } = get();
 
-                const filteredSearches = searches.filter((s) => s.query !== trimmedQuery);
+                const filteredSearches = searches.filter(
+                    (s) => s.query !== trimmedQuery,
+                );
 
-                const newSearches = [{ query: trimmedQuery, timestamp: Date.now() }, ...filteredSearches].slice(0, maxSearches); // Keep only the most recent maxSearches
+                const newSearches = [
+                    { query: trimmedQuery, timestamp: Date.now() },
+                    ...filteredSearches,
+                ].slice(0, maxSearches); // Keep only the most recent maxSearches
 
                 set({ searches: newSearches });
             },
@@ -60,7 +65,11 @@ export const useRecentSearchesStore = create<RecentSearchesState>()(
 );
 
 // Selector helpers for better performance
-export const useRecentSearches = () => useRecentSearchesStore((state) => state.searches);
-export const useAddSearch = () => useRecentSearchesStore((state) => state.addSearch);
-export const useRemoveSearch = () => useRecentSearchesStore((state) => state.removeSearch);
-export const useClearAllSearches = () => useRecentSearchesStore((state) => state.clearAll);
+export const useRecentSearches = () =>
+    useRecentSearchesStore((state) => state.searches);
+export const useAddSearch = () =>
+    useRecentSearchesStore((state) => state.addSearch);
+export const useRemoveSearch = () =>
+    useRecentSearchesStore((state) => state.removeSearch);
+export const useClearAllSearches = () =>
+    useRecentSearchesStore((state) => state.clearAll);

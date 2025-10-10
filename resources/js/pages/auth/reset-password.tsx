@@ -22,7 +22,9 @@ type ResetPasswordForm = {
 };
 
 export default function ResetPassword({ token, email }: ResetPasswordProps) {
-    const { data, setData, post, processing, errors, reset } = useForm<Required<ResetPasswordForm>>({
+    const { data, setData, post, processing, errors, reset } = useForm<
+        Required<ResetPasswordForm>
+    >({
         token: token,
         email: email,
         password: '',
@@ -37,7 +39,10 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
     };
 
     return (
-        <AuthLayout title="Reset password" description="Please enter your new password below">
+        <AuthLayout
+            title="Reset password"
+            description="Please enter your new password below"
+        >
             <Head title="Reset password" />
 
             <form onSubmit={submit}>
@@ -67,14 +72,18 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             value={data.password}
                             className="mt-1 block w-full"
                             autoFocus
-                            onChange={(e) => setData('password', e.target.value)}
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
                             placeholder="Password"
                         />
                         <InputError message={errors.password} />
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="password_confirmation">Confirm password</Label>
+                        <Label htmlFor="password_confirmation">
+                            Confirm password
+                        </Label>
                         <Input
                             id="password_confirmation"
                             type="password"
@@ -82,14 +91,28 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             autoComplete="new-password"
                             value={data.password_confirmation}
                             className="mt-1 block w-full"
-                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                            onChange={(e) =>
+                                setData('password_confirmation', e.target.value)
+                            }
                             placeholder="Confirm password"
                         />
-                        <InputError message={errors.password_confirmation} className="mt-2" />
+                        <InputError
+                            message={errors.password_confirmation}
+                            className="mt-2"
+                        />
                     </div>
 
-                    <Button type="submit" className="mt-4 w-full" disabled={processing} variant="gradient">
-                        {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
+                    <Button
+                        type="submit"
+                        className="mt-4 w-full"
+                        disabled={processing}
+                        variant="gradient"
+                    >
+                        {processing ? (
+                            <LoaderCircle className="h-4 w-4 animate-spin" />
+                        ) : (
+                            <Key className="h-4 w-4" />
+                        )}
                         Resetar password
                     </Button>
                 </div>

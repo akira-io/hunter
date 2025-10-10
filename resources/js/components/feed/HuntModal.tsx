@@ -6,7 +6,13 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import hunts from '@/routes/hunts';
 import { Hunt } from '@/types';
 import { router } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Eye, MessageCircle, Repeat2 } from 'lucide-react';
+import {
+    ArrowLeft,
+    ArrowRight,
+    Eye,
+    MessageCircle,
+    Repeat2,
+} from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 interface HuntModalProps {
@@ -19,10 +25,19 @@ interface HuntModalProps {
     hasPrevious?: boolean;
 }
 
-export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNext = false, hasPrevious = false }: HuntModalProps) {
+export function HuntModal({
+    hunt,
+    open,
+    onOpenChange,
+    onNext,
+    onPrevious,
+    hasNext = false,
+    hasPrevious = false,
+}: HuntModalProps) {
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
-    const [scrollableElement, setScrollableElement] = useState<HTMLElement | null>(null);
+    const [scrollableElement, setScrollableElement] =
+        useState<HTMLElement | null>(null);
 
     const minSwipeDistance = 150;
 
@@ -149,11 +164,19 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                     {/* Left Column - Image */}
                     <div className="relative flex items-center justify-center overflow-hidden bg-black md:h-full">
                         {hunt.image_url ? (
-                            <img src={hunt.image_url} alt="Hunt image" className="h-auto w-full object-contain md:h-full" loading="lazy" />
+                            <img
+                                src={hunt.image_url}
+                                alt="Hunt image"
+                                className="h-auto w-full object-contain md:h-full"
+                                loading="lazy"
+                            />
                         ) : (
                             <div className="flex h-full min-h-[300px] w-full items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-900 md:min-h-0">
                                 <div className="text-center text-zinc-500">
-                                    <Eye size={64} className="mx-auto mb-4 opacity-20" />
+                                    <Eye
+                                        size={64}
+                                        className="mx-auto mb-4 opacity-20"
+                                    />
                                     <p className="text-sm">Sem imagem</p>
                                 </div>
                             </div>
@@ -164,14 +187,27 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                     <div className="flex flex-col md:h-full md:overflow-hidden">
                         {/* Hunt Header */}
                         <div className="flex items-start gap-3 border-b border-zinc-200 p-4 dark:border-zinc-700">
-                            <OnboardingAvatar avatarUrl={hunt.owner.avatar_url} size={10} />
+                            <OnboardingAvatar
+                                avatarUrl={hunt.owner.avatar_url}
+                                size={10}
+                            />
                             <div className="flex-1">
                                 <div className="flex items-center gap-2">
-                                    <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">{hunt.owner.name}</h3>
-                                    <span className="text-sm text-zinc-500 dark:text-zinc-400">•</span>
-                                    <span className="text-sm text-zinc-500 dark:text-zinc-400">{hunt.created_at}</span>
+                                    <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                                        {hunt.owner.name}
+                                    </h3>
+                                    <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                                        •
+                                    </span>
+                                    <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                                        {hunt.created_at}
+                                    </span>
                                 </div>
-                                {hunt.owner.user_name && <p className="text-sm text-zinc-500 dark:text-zinc-400">@{hunt.owner.user_name}</p>}
+                                {hunt.owner.user_name && (
+                                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                                        @{hunt.owner.user_name}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -185,10 +221,17 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                         {/* Stats and Actions Combined */}
                         <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-700">
                             <div className="flex items-center gap-4">
-                                <LikeButton count={hunt.likes_count} hasLiked={hunt.has_liked} onLike={handleLike} iconSize={18} />
+                                <LikeButton
+                                    count={hunt.likes_count}
+                                    hasLiked={hunt.has_liked}
+                                    onLike={handleLike}
+                                    iconSize={18}
+                                />
                                 <button className="flex items-center gap-1.5 text-zinc-600 transition-colors hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400">
                                     <MessageCircle size={18} />
-                                    <span className="text-sm">{hunt.comments.length}</span>
+                                    <span className="text-sm">
+                                        {hunt.comments.length}
+                                    </span>
                                 </button>
 
                                 <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
@@ -200,7 +243,9 @@ export function HuntModal({ hunt, open, onOpenChange, onNext, onPrevious, hasNex
                                     className="flex items-center gap-1.5 text-zinc-600 transition-colors hover:text-purple-600 dark:text-zinc-400 dark:hover:text-purple-400"
                                 >
                                     <Repeat2 size={18} />
-                                    <span className="text-sm">{hunt.shares ?? 0}</span>
+                                    <span className="text-sm">
+                                        {hunt.shares ?? 0}
+                                    </span>
                                 </button>
                             </div>
                         </div>

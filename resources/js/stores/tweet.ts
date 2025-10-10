@@ -5,7 +5,9 @@ interface TweetStore {
     setIsFloatCreateTweetOpen: (isOpen: boolean) => void;
 }
 
-export const useTweetStore: UseBoundStore<Mutate<StoreApi<TweetStore>, []>> = create((set) => ({
-    isFloatCreateTweetOpen: false,
-    setIsFloatCreateTweetOpen: (condition: boolean) => set({ isFloatCreateTweetOpen: condition }),
-}));
+export const useTweetStore: UseBoundStore<Mutate<StoreApi<TweetStore>, []>> =
+    create((set) => ({
+        isFloatCreateTweetOpen: false,
+        setIsFloatCreateTweetOpen: (condition: boolean) =>
+            set({ isFloatCreateTweetOpen: condition }),
+    }));

@@ -12,7 +12,14 @@ import { useOnlineUsers } from '@/stores/onlineUsersStore';
 import { type BreadcrumbItem, type Notification } from '@/types';
 import { type Conversation, type User } from '@/types/chat';
 import { Head, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, MessageCircle, MessageSquarePlus, Search, User as UserIcon, X } from 'lucide-react';
+import {
+    ArrowLeft,
+    MessageCircle,
+    MessageSquarePlus,
+    Search,
+    User as UserIcon,
+    X,
+} from 'lucide-react';
 import { type ReactNode, useMemo } from 'react';
 
 interface ChatLayoutProps {
@@ -23,7 +30,12 @@ interface ChatLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conversationId }: ChatLayoutProps) {
+function ChatLayoutContent({
+    children,
+    title = 'Chat',
+    showSidebar = true,
+    conversationId,
+}: ChatLayoutProps) {
     const { conversations, loading } = useChatContext();
     const page = usePage<{ auth: { user?: User } }>();
     const currentUserId = page.props.auth.user?.id;
@@ -31,13 +43,21 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
     const onlineUsers = useOnlineUsers();
     const followedHunters = useFollowedHunters();
 
-    const { searchQuery, setSearchQuery, isSearchFocused, setIsSearchFocused, filteredConversations, clearSearch, hasResults, isSearching } =
-        useChatSearch({
-            conversations,
-            onlineUsers,
-            followedHunters,
-            currentUserId,
-        });
+    const {
+        searchQuery,
+        setSearchQuery,
+        isSearchFocused,
+        setIsSearchFocused,
+        filteredConversations,
+        clearSearch,
+        hasResults,
+        isSearching,
+    } = useChatSearch({
+        conversations,
+        onlineUsers,
+        followedHunters,
+        currentUserId,
+    });
 
     const { formatRelativeTime } = useTimeFormatting();
 
@@ -56,7 +76,12 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
     };
 
     const isUserOnline = (userId: number) => {
-        return onlineUsers.some((user) => user.id === userId) || followedHunters.some((hunter) => hunter.id === userId && hunter.is_online);
+        return (
+            onlineUsers.some((user) => user.id === userId) ||
+            followedHunters.some(
+                (hunter) => hunter.id === userId && hunter.is_online,
+            )
+        );
     };
 
     const handleNewConversation = () => {
@@ -80,14 +105,18 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                         <div className="border-b border-zinc-200 dark:border-zinc-700">
                             <div className="flex items-center justify-between p-4">
                                 <button
-                                    onClick={() => router.visit(hunts.index.url())}
+                                    onClick={() =>
+                                        router.visit(hunts.index.url())
+                                    }
                                     className="rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-700"
                                     aria-label="Voltar para home"
                                     title="Voltar para home"
                                 >
                                     <ArrowLeft size={20} />
                                 </button>
-                                <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Mensagens</h1>
+                                <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+                                    Mensagens
+                                </h1>
                                 <div className="flex items-center gap-1">
                                     <button
                                         onClick={handleNewConversation}
@@ -109,12 +138,17 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                                             : 'border-zinc-200 dark:border-zinc-700'
                                     }`}
                                 >
-                                    <Search size={18} className="flex-shrink-0 text-zinc-400 dark:text-zinc-500" />
+                                    <Search
+                                        size={18}
+                                        className="flex-shrink-0 text-zinc-400 dark:text-zinc-500"
+                                    />
                                     <input
                                         type="text"
                                         placeholder="Procurar conversas..."
                                         value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
                                         onFocus={() => setIsSearchFocused(true)}
                                         onBlur={() => setIsSearchFocused(false)}
                                         className="flex-1 bg-transparent text-sm text-zinc-900 placeholder-zinc-500 outline-none dark:text-zinc-100 dark:placeholder-zinc-400"
@@ -125,7 +159,10 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                                             className="flex-shrink-0 rounded-full p-1 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700"
                                             aria-label="Limpar busca"
                                         >
-                                            <X size={14} className="text-zinc-500 dark:text-zinc-400" />
+                                            <X
+                                                size={14}
+                                                className="text-zinc-500 dark:text-zinc-400"
+                                            />
                                         </button>
                                     )}
                                 </div>
@@ -137,7 +174,10 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                             {loading ? (
                                 <div className="space-y-2 p-4">
                                     {[...Array(5)].map((_, i) => (
-                                        <div key={i} className="flex animate-pulse items-center gap-3 p-3">
+                                        <div
+                                            key={i}
+                                            className="flex animate-pulse items-center gap-3 p-3"
+                                        >
                                             <div className="size-12 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
                                             <div className="flex-1">
                                                 <div className="mb-2 h-4 w-3/4 rounded bg-zinc-200 dark:bg-zinc-700"></div>
@@ -149,10 +189,17 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                             ) : conversations.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center p-8 text-center">
                                     <div className="mb-4 grid size-16 place-items-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-                                        <MessageCircle size={32} className="text-zinc-400" />
+                                        <MessageCircle
+                                            size={32}
+                                            className="text-zinc-400"
+                                        />
                                     </div>
-                                    <p className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Nenhuma conversa ainda</p>
-                                    <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">Comece a conversar com alguém!</p>
+                                    <p className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                                        Nenhuma conversa ainda
+                                    </p>
+                                    <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
+                                        Comece a conversar com alguém!
+                                    </p>
                                     <button
                                         onClick={handleNewConversation}
                                         className="flex items-center gap-2 rounded-lg bg-purple-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-600"
@@ -164,10 +211,18 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                             ) : !hasResults && isSearching ? (
                                 <div className="flex flex-col items-center justify-center p-8 text-center">
                                     <div className="mb-4 grid size-16 place-items-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-                                        <Search size={32} className="text-zinc-400" />
+                                        <Search
+                                            size={32}
+                                            className="text-zinc-400"
+                                        />
                                     </div>
-                                    <p className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Nenhum resultado</p>
-                                    <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">Não encontramos conversas para "{searchQuery}"</p>
+                                    <p className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                                        Nenhum resultado
+                                    </p>
+                                    <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
+                                        Não encontramos conversas para "
+                                        {searchQuery}"
+                                    </p>
                                     <button
                                         onClick={clearSearch}
                                         className="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
@@ -177,80 +232,129 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                                 </div>
                             ) : (
                                 <div className="divide-y divide-zinc-100 dark:divide-zinc-700">
-                                    {filteredConversations.map((conversation) => {
-                                        const otherParticipant = conversation.other_participant;
-                                        const isOnline = otherParticipant ? isUserOnline(otherParticipant.id) : false;
+                                    {filteredConversations.map(
+                                        (conversation) => {
+                                            const otherParticipant =
+                                                conversation.other_participant;
+                                            const isOnline = otherParticipant
+                                                ? isUserOnline(
+                                                      otherParticipant.id,
+                                                  )
+                                                : false;
 
-                                        return (
-                                            <button
-                                                key={conversation.id}
-                                                onClick={() => handleConversationClick(conversation.id)}
-                                                onTouchEnd={(e) => {
-                                                    e.preventDefault();
-                                                    handleConversationClick(conversation.id);
-                                                }}
-                                                className={`flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-zinc-50 active:bg-zinc-100 dark:hover:bg-zinc-700/50 dark:active:bg-zinc-700 ${
-                                                    conversationId === conversation.id ? 'bg-zinc-100 dark:bg-zinc-700' : ''
-                                                }`}
-                                                style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
-                                            >
-                                                <div className="relative flex-shrink-0">
-                                                    {otherParticipant?.avatar_url ? (
-                                                        <img
-                                                            src={otherParticipant.avatar_url}
-                                                            alt={otherParticipant.name}
-                                                            className="size-12 rounded-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600">
-                                                            <UserIcon size={20} className="text-zinc-600 dark:text-zinc-300" />
-                                                        </div>
-                                                    )}
-                                                    {/* Online Status Indicator */}
-                                                    {conversation.type === 'direct' && (
-                                                        <div
-                                                            className={`absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-white dark:border-zinc-800 ${
-                                                                isOnline ? 'bg-emerald-400' : 'bg-zinc-400'
-                                                            }`}
-                                                        />
-                                                    )}
-                                                    {conversation.unread_count > 0 && (
-                                                        <div className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-purple-500 text-xs font-bold text-white">
-                                                            {conversation.unread_count > 9 ? '9+' : conversation.unread_count}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="min-w-0 flex-1">
-                                                    <div className="flex items-center justify-between gap-2">
-                                                        <h3
-                                                            className={`truncate text-sm font-medium ${
-                                                                conversation.unread_count > 0
-                                                                    ? 'text-zinc-900 dark:text-zinc-100'
-                                                                    : 'text-zinc-700 dark:text-zinc-300'
-                                                            }`}
-                                                        >
-                                                            {getConversationTitle(conversation)}
-                                                        </h3>
-                                                        <span className="flex-shrink-0 text-xs text-zinc-500 dark:text-zinc-400">
-                                                            {formatRelativeTime(conversation.last_message_at)}
-                                                        </span>
+                                            return (
+                                                <button
+                                                    key={conversation.id}
+                                                    onClick={() =>
+                                                        handleConversationClick(
+                                                            conversation.id,
+                                                        )
+                                                    }
+                                                    onTouchEnd={(e) => {
+                                                        e.preventDefault();
+                                                        handleConversationClick(
+                                                            conversation.id,
+                                                        );
+                                                    }}
+                                                    className={`flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-zinc-50 active:bg-zinc-100 dark:hover:bg-zinc-700/50 dark:active:bg-zinc-700 ${
+                                                        conversationId ===
+                                                        conversation.id
+                                                            ? 'bg-zinc-100 dark:bg-zinc-700'
+                                                            : ''
+                                                    }`}
+                                                    style={{
+                                                        touchAction:
+                                                            'manipulation',
+                                                        WebkitTapHighlightColor:
+                                                            'transparent',
+                                                    }}
+                                                >
+                                                    <div className="relative flex-shrink-0">
+                                                        {otherParticipant?.avatar_url ? (
+                                                            <img
+                                                                src={
+                                                                    otherParticipant.avatar_url
+                                                                }
+                                                                alt={
+                                                                    otherParticipant.name
+                                                                }
+                                                                className="size-12 rounded-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600">
+                                                                <UserIcon
+                                                                    size={20}
+                                                                    className="text-zinc-600 dark:text-zinc-300"
+                                                                />
+                                                            </div>
+                                                        )}
+                                                        {/* Online Status Indicator */}
+                                                        {conversation.type ===
+                                                            'direct' && (
+                                                            <div
+                                                                className={`absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-white dark:border-zinc-800 ${
+                                                                    isOnline
+                                                                        ? 'bg-emerald-400'
+                                                                        : 'bg-zinc-400'
+                                                                }`}
+                                                            />
+                                                        )}
+                                                        {conversation.unread_count >
+                                                            0 && (
+                                                            <div className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-purple-500 text-xs font-bold text-white">
+                                                                {conversation.unread_count >
+                                                                9
+                                                                    ? '9+'
+                                                                    : conversation.unread_count}
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                    {conversation.last_message && (
-                                                        <p
-                                                            className={`mt-1 truncate text-sm ${
-                                                                conversation.unread_count > 0
-                                                                    ? 'font-medium text-zinc-700 dark:text-zinc-300'
-                                                                    : 'text-zinc-500 dark:text-zinc-400'
-                                                            }`}
-                                                        >
-                                                            {conversation.last_message.user.id === currentUserId && 'You: '}
-                                                            {conversation.last_message.content}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </button>
-                                        );
-                                    })}
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex items-center justify-between gap-2">
+                                                            <h3
+                                                                className={`truncate text-sm font-medium ${
+                                                                    conversation.unread_count >
+                                                                    0
+                                                                        ? 'text-zinc-900 dark:text-zinc-100'
+                                                                        : 'text-zinc-700 dark:text-zinc-300'
+                                                                }`}
+                                                            >
+                                                                {getConversationTitle(
+                                                                    conversation,
+                                                                )}
+                                                            </h3>
+                                                            <span className="flex-shrink-0 text-xs text-zinc-500 dark:text-zinc-400">
+                                                                {formatRelativeTime(
+                                                                    conversation.last_message_at,
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                        {conversation.last_message && (
+                                                            <p
+                                                                className={`mt-1 truncate text-sm ${
+                                                                    conversation.unread_count >
+                                                                    0
+                                                                        ? 'font-medium text-zinc-700 dark:text-zinc-300'
+                                                                        : 'text-zinc-500 dark:text-zinc-400'
+                                                                }`}
+                                                            >
+                                                                {conversation
+                                                                    .last_message
+                                                                    .user.id ===
+                                                                    currentUserId &&
+                                                                    'You: '}
+                                                                {
+                                                                    conversation
+                                                                        .last_message
+                                                                        .content
+                                                                }
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </button>
+                                            );
+                                        },
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -258,7 +362,11 @@ function ChatLayoutContent({ children, title = 'Chat', showSidebar = true, conve
                 )}
 
                 {/* Main Chat Area (Hidden on mobile when no conversation is selected) */}
-                <div className={`flex flex-1 flex-col ${conversationId ? '' : 'hidden md:flex'}`}>{children}</div>
+                <div
+                    className={`flex flex-1 flex-col ${conversationId ? '' : 'hidden md:flex'}`}
+                >
+                    {children}
+                </div>
             </div>
 
             <Toaster />

@@ -16,7 +16,10 @@ interface DesktopChatProps {
     currentUser: User;
 }
 
-export default function DesktopChat({ conversationId, currentUser }: DesktopChatProps) {
+export default function DesktopChat({
+    conversationId,
+    currentUser,
+}: DesktopChatProps) {
     const [conversation, setConversation] = useState<Conversation | null>(null);
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -35,20 +38,26 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
         'private',
     );
 
-    const otherParticipant = conversation?.participants.find((p) => p.id !== currentUser.id);
+    const otherParticipant = conversation?.participants.find(
+        (p) => p.id !== currentUser.id,
+    );
     const onlineUsers = useOnlineUsers();
     const followedHunters = useFollowedHunters();
 
     const isOtherUserOnline = otherParticipant
         ? onlineUsers.some((user) => user.id === otherParticipant.id) ||
-          followedHunters.some((hunter) => hunter.id === otherParticipant.id && hunter.is_online)
+          followedHunters.some(
+              (hunter) => hunter.id === otherParticipant.id && hunter.is_online,
+          )
         : false;
 
     useEffect(() => {
         const fetchConversation = async () => {
             try {
                 setLoading(true);
-                const response = await api.get(`/conversations/${conversationId}`);
+                const response = await api.get(
+                    `/conversations/${conversationId}`,
+                );
 
                 if (response.data) {
                     setConversation(response.data);
@@ -77,7 +86,9 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
             setConversation((prev) => {
                 if (!prev) return prev;
 
-                const messageExists = prev.messages?.some((msg) => msg.id === event.message.id);
+                const messageExists = prev.messages?.some(
+                    (msg) => msg.id === event.message.id,
+                );
                 if (messageExists) {
                     return prev;
                 }
@@ -119,7 +130,10 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
         }
     }, [loading, conversationId]);
 
-    const markMessagesAsRead = async (conversationId: number, messageIds?: number[]) => {
+    const markMessagesAsRead = async (
+        conversationId: number,
+        messageIds?: number[],
+    ) => {
         try {
             await api.post(`/conversations/${conversationId}/messages/read`, {
                 message_ids: messageIds,
@@ -129,7 +143,10 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
         }
     };
 
-    const sendMessageToServer = async (conversationId: number, content: string) => {
+    const sendMessageToServer = async (
+        conversationId: number,
+        content: string,
+    ) => {
         try {
             const response = await api.post('/messages', {
                 conversation_id: conversationId,
@@ -181,7 +198,11 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
 
     if (loading) {
         return (
-            <ChatLayout title="Chat - Loading..." showSidebar={true} conversationId={conversationId}>
+            <ChatLayout
+                title="Chat - Loading..."
+                showSidebar={true}
+                conversationId={conversationId}
+            >
                 <div className="flex h-full items-center justify-center">
                     <div className="size-12 animate-spin rounded-full border-b-2 border-purple-500"></div>
                 </div>
@@ -190,14 +211,24 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
     }
 
     return (
-        <ChatLayout title={`Chat - ${getConversationTitle()}`} showSidebar={true} conversationId={conversationId}>
+        <ChatLayout
+            title={`Chat - ${getConversationTitle()}`}
+            showSidebar={true}
+            conversationId={conversationId}
+        >
             <Head title={`Chat - ${getConversationTitle()}`} />
             {/* Mobile viewport meta for proper rendering */}
             <Head>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+                />
                 <meta name="mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />
-                <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+                <meta
+                    name="apple-mobile-web-app-status-bar-style"
+                    content="default"
+                />
             </Head>
 
             <div className="flex h-full flex-col">
@@ -209,42 +240,66 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
                         className="rounded-lg p-2 transition-colors hover:bg-zinc-100 md:hidden dark:hover:bg-zinc-700"
                         aria-label="Back to conversations"
                     >
-                        <ArrowLeft size={20} className="text-zinc-600 dark:text-zinc-400" />
+                        <ArrowLeft
+                            size={20}
+                            className="text-zinc-600 dark:text-zinc-400"
+                        />
                     </button>
                     <div className="relative">
                         {otherParticipant?.avatar_url ? (
-                            <img src={otherParticipant.avatar_url} alt={otherParticipant.name} className="size-10 rounded-full object-cover" />
+                            <img
+                                src={otherParticipant.avatar_url}
+                                alt={otherParticipant.name}
+                                className="size-10 rounded-full object-cover"
+                            />
                         ) : (
                             <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600">
-                                <UserIcon size={20} className="text-zinc-600 dark:text-zinc-300" />
+                                <UserIcon
+                                    size={20}
+                                    className="text-zinc-600 dark:text-zinc-300"
+                                />
                             </div>
                         )}
-                        {conversation?.type === 'direct' && otherParticipant && (
-                            <div
-                                className={`absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-white dark:border-zinc-800 ${
-                                    isOtherUserOnline ? 'bg-emerald-400' : 'bg-zinc-400'
-                                }`}
-                            />
-                        )}
+                        {conversation?.type === 'direct' &&
+                            otherParticipant && (
+                                <div
+                                    className={`absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-white dark:border-zinc-800 ${
+                                        isOtherUserOnline
+                                            ? 'bg-emerald-400'
+                                            : 'bg-zinc-400'
+                                    }`}
+                                />
+                            )}
                     </div>
                     <div className="flex-1">
-                        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{getConversationTitle()}</h2>
+                        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                            {getConversationTitle()}
+                        </h2>
                         <div className="flex items-center gap-2">
                             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                                {conversation?.type === 'direct' ? 'Direct conversation' : 'Group chat'}
+                                {conversation?.type === 'direct'
+                                    ? 'Direct conversation'
+                                    : 'Group chat'}
                             </p>
-                            {conversation?.type === 'direct' && otherParticipant && (
-                                <>
-                                    <span className="text-xs text-zinc-400">•</span>
-                                    <span
-                                        className={`text-xs font-medium ${
-                                            isOtherUserOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-500 dark:text-zinc-400'
-                                        }`}
-                                    >
-                                        {isOtherUserOnline ? 'Online' : 'Offline'}
-                                    </span>
-                                </>
-                            )}
+                            {conversation?.type === 'direct' &&
+                                otherParticipant && (
+                                    <>
+                                        <span className="text-xs text-zinc-400">
+                                            •
+                                        </span>
+                                        <span
+                                            className={`text-xs font-medium ${
+                                                isOtherUserOnline
+                                                    ? 'text-emerald-600 dark:text-emerald-400'
+                                                    : 'text-zinc-500 dark:text-zinc-400'
+                                            }`}
+                                        >
+                                            {isOtherUserOnline
+                                                ? 'Online'
+                                                : 'Offline'}
+                                        </span>
+                                    </>
+                                )}
                         </div>
                     </div>
                 </div>
@@ -254,27 +309,43 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
                     {conversation?.messages?.length === 0 ? (
                         <div className="flex h-full flex-col items-center justify-center text-center">
                             <div className="mb-4 grid size-16 place-items-center rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700">
-                                <UserIcon size={24} className="text-zinc-500 dark:text-zinc-400" />
+                                <UserIcon
+                                    size={24}
+                                    className="text-zinc-500 dark:text-zinc-400"
+                                />
                             </div>
-                            <p className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">Start the conversation!</p>
-                            <p className="text-sm text-zinc-500 dark:text-zinc-400">Send a message to get started</p>
+                            <p className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                                Start the conversation!
+                            </p>
+                            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                                Send a message to get started
+                            </p>
                         </div>
                     ) : (
                         conversation?.messages?.map((message) => {
                             const isOwn = message.user.id === currentUser.id;
 
                             return (
-                                <div key={message.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'} w-full`}>
-                                    <div className={`flex max-w-[85%] min-w-0 gap-3 md:max-w-[70%] ${isOwn ? 'flex-row-reverse' : ''}`}>
+                                <div
+                                    key={message.id}
+                                    className={`flex ${isOwn ? 'justify-end' : 'justify-start'} w-full`}
+                                >
+                                    <div
+                                        className={`flex max-w-[85%] min-w-0 gap-3 md:max-w-[70%] ${isOwn ? 'flex-row-reverse' : ''}`}
+                                    >
                                         <div className="flex-shrink-0">
                                             <UserAvatar
-                                                avatarUrl={message.user.avatar_url}
+                                                avatarUrl={
+                                                    message.user.avatar_url
+                                                }
                                                 userName={message.user.name}
                                                 className="size-8"
                                                 fallbackClassName="text-xs"
                                             />
                                         </div>
-                                        <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
+                                        <div
+                                            className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}
+                                        >
                                             <div
                                                 className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                                                     isOwn
@@ -288,7 +359,9 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
                                             >
                                                 {message.content}
                                             </div>
-                                            <div className={`mt-1 text-xs text-zinc-500 dark:text-zinc-400 ${isOwn ? 'mr-1' : 'ml-1'}`}>
+                                            <div
+                                                className={`mt-1 text-xs text-zinc-500 dark:text-zinc-400 ${isOwn ? 'mr-1' : 'ml-1'}`}
+                                            >
                                                 {formatTime(message.created_at)}
                                             </div>
                                         </div>
@@ -302,7 +375,10 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
 
                 {/* Message Input */}
                 <div className="border-t border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                    <form onSubmit={handleSendMessage} className="flex items-end gap-3">
+                    <form
+                        onSubmit={handleSendMessage}
+                        className="flex items-end gap-3"
+                    >
                         <textarea
                             ref={textareaRef}
                             value={newMessage}
@@ -326,7 +402,8 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
                             onInput={(e) => {
                                 const target = e.target as HTMLTextAreaElement;
                                 target.style.height = 'auto';
-                                target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                                target.style.height =
+                                    Math.min(target.scrollHeight, 120) + 'px';
                             }}
                         />
                         <button

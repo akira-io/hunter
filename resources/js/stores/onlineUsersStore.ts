@@ -30,7 +30,10 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
 
             setUsers: (users: OnlineUser[]) => {
                 set({
-                    users: users.map((u) => ({ ...u, status: 'online' as const })),
+                    users: users.map((u) => ({
+                        ...u,
+                        status: 'online' as const,
+                    })),
                     lastUpdated: Date.now(),
                 });
             },
@@ -40,7 +43,10 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
                 const exists = users.some((u) => u.id === user.id);
                 if (!exists) {
                     set({
-                        users: [...users, { ...user, status: 'online' as const }],
+                        users: [
+                            ...users,
+                            { ...user, status: 'online' as const },
+                        ],
                         lastUpdated: Date.now(),
                     });
                 }
@@ -99,11 +105,15 @@ export const useOnlineUsersStore = create<OnlineUsersState>()(
 
 // Selector helpers for better performance
 export const useOnlineUsers = () => useOnlineUsersStore((state) => state.users);
-export const useIsConnected = () => useOnlineUsersStore((state) => state.isConnected);
+export const useIsConnected = () =>
+    useOnlineUsersStore((state) => state.isConnected);
 
 // Individual action selectors to avoid recreating objects
 export const useSetUsers = () => useOnlineUsersStore((state) => state.setUsers);
 export const useAddUser = () => useOnlineUsersStore((state) => state.addUser);
-export const useRemoveUser = () => useOnlineUsersStore((state) => state.removeUser);
-export const useSetConnected = () => useOnlineUsersStore((state) => state.setConnected);
-export const useClearUsers = () => useOnlineUsersStore((state) => state.clearUsers);
+export const useRemoveUser = () =>
+    useOnlineUsersStore((state) => state.removeUser);
+export const useSetConnected = () =>
+    useOnlineUsersStore((state) => state.setConnected);
+export const useClearUsers = () =>
+    useOnlineUsersStore((state) => state.clearUsers);

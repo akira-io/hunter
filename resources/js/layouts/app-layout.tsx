@@ -51,7 +51,10 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                     <>
                         <ChatContainer currentUserId={currentUserId} />
                         <OnlineUsers currentUserId={currentUserId} />
-                        <OnboardingWizard isOpen={showOnboarding} onClose={closeOnboarding} />
+                        <OnboardingWizard
+                            isOpen={showOnboarding}
+                            onClose={closeOnboarding}
+                        />
                         <MobileWarningDialog />
                     </>
                 )}

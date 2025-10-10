@@ -8,7 +8,9 @@ interface UseOnboardingReturn {
 }
 
 export function useOnboarding(): UseOnboardingReturn {
-    const { auth } = usePage<{ auth: { user?: { onboarding_completed?: boolean } } }>().props;
+    const { auth } = usePage<{
+        auth: { user?: { onboarding_completed?: boolean } };
+    }>().props;
     const [showOnboarding, setShowOnboarding] = useState(false);
 
     useEffect(() => {

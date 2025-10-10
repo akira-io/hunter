@@ -31,5 +31,11 @@ export default function DeleteComment({ comment }: DeleteComentProps) {
         });
     }
 
-    return <HunterConfirmDialog processing={processing} onConfirm={deleteComment} title="Comentário" />;
+    return (
+        <HunterConfirmDialog
+            processing={processing}
+            onConfirm={deleteComment}
+            title="Comentário"
+        />
+    );
 }

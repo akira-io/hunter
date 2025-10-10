@@ -30,8 +30,15 @@ interface ChatContextType {
         type?: 'text' | 'image' | 'file',
         metadata?: Record<string, unknown> | null,
     ) => Promise<void>;
-    createConversation: (type: 'direct' | 'group', participants: number[], title?: string) => Promise<Conversation>;
-    markMessagesAsRead: (conversationId: number, messageIds?: number[]) => Promise<void>;
+    createConversation: (
+        type: 'direct' | 'group',
+        participants: number[],
+        title?: string,
+    ) => Promise<Conversation>;
+    markMessagesAsRead: (
+        conversationId: number,
+        messageIds?: number[],
+    ) => Promise<void>;
     setActiveConversation: (conversation: Conversation | null) => void;
 }
 
@@ -87,15 +94,26 @@ const saveChatState = (state: ChatState) => {
     }
 };
 
-export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUserId }) => {
+export const ChatProvider: React.FC<ChatProviderProps> = ({
+    children,
+    currentUserId,
+}) => {
     const [isChatOpen, setChatOpen] = useState(false);
-    const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
+    const [activeConversationId, setActiveConversationId] = useState<
+        number | null
+    >(null);
 
     // Load initial state from localStorage
     const initialState = loadChatState();
-    const [chatWindows, setChatWindows] = useState<number[]>(initialState.chatWindows);
-    const [backgroundWindows, setBackgroundWindows] = useState<number[]>(initialState.backgroundWindows);
-    const [minimizedWindows, setMinimizedWindows] = useState<Set<number>>(new Set(initialState.minimizedWindows));
+    const [chatWindows, setChatWindows] = useState<number[]>(
+        initialState.chatWindows,
+    );
+    const [backgroundWindows, setBackgroundWindows] = useState<number[]>(
+        initialState.backgroundWindows,
+    );
+    const [minimizedWindows, setMinimizedWindows] = useState<Set<number>>(
+        new Set(initialState.minimizedWindows),
+    );
 
     // Use the central chat hook with chat window state
     const chatHook = useChat(currentUserId, chatWindows, minimizedWindows);
@@ -112,7 +130,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
 
     const openChatWindow = (conversationId: number) => {
         // Remove from background windows if exists
-        setBackgroundWindows((prev) => prev.filter((id) => id !== conversationId));
+        setBackgroundWindows((prev) =>
+            prev.filter((id) => id !== conversationId),
+        );
 
         setChatWindows((prev) => {
             if (prev.includes(conversationId)) {
@@ -125,7 +145,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
             } else {
                 // Move current to background, add new one
                 const [current] = prev;
-                setBackgroundWindows((bg) => (bg.includes(current) ? bg : [...bg, current]));
+                setBackgroundWindows((bg) =>
+                    bg.includes(current) ? bg : [...bg, current],
+                );
                 return [conversationId];
             }
         });
@@ -151,7 +173,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
             return filtered;
         });
 
-        setBackgroundWindows((prev) => prev.filter((id) => id !== conversationId));
+        setBackgroundWindows((prev) =>
+            prev.filter((id) => id !== conversationId),
+        );
         setMinimizedWindows((prev) => {
             const newSet = new Set(prev);
             newSet.delete(conversationId);
@@ -162,7 +186,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
     const switchToWindow = (conversationId: number) => {
         // Move window from background to visible
         if (backgroundWindows.includes(conversationId)) {
-            setBackgroundWindows((prev) => prev.filter((id) => id !== conversationId));
+            setBackgroundWindows((prev) =>
+                prev.filter((id) => id !== conversationId),
+            );
 
             setChatWindows((prev) => {
                 if (prev.length < 1) {
@@ -184,13 +210,18 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
 
             // Mark messages as read when opening from background
             chatHook.markMessagesAsRead(conversationId).catch((error) => {
-                console.error('Failed to mark messages as read when opening from background:', error);
+                console.error(
+                    'Failed to mark messages as read when opening from background:',
+                    error,
+                );
             });
         }
     };
 
     const closeBackgroundWindow = (conversationId: number) => {
-        setBackgroundWindows((prev) => prev.filter((id) => id !== conversationId));
+        setBackgroundWindows((prev) =>
+            prev.filter((id) => id !== conversationId),
+        );
         setMinimizedWindows((prev) => {
             const newSet = new Set(prev);
             newSet.delete(conversationId);
@@ -208,7 +239,10 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children, currentUse
                 newSet.delete(conversationId);
                 // Call markMessagesAsRead when restoring
                 chatHook.markMessagesAsRead(conversationId).catch((error) => {
-                    console.error('Failed to mark messages as read when restoring chat:', error);
+                    console.error(
+                        'Failed to mark messages as read when restoring chat:',
+                        error,
+                    );
                 });
             } else {
                 newSet.add(conversationId);

@@ -1,7 +1,13 @@
 import { isPWAMode } from '@/hooks/use-pwa';
 import { toast } from '@/hooks/use-toast';
-import { notificationService, showBrowserNotification } from '@/services/notifications';
-import { useAddNotification, useSetNotifications } from '@/stores/notificationStore';
+import {
+    notificationService,
+    showBrowserNotification,
+} from '@/services/notifications';
+import {
+    useAddNotification,
+    useSetNotifications,
+} from '@/stores/notificationStore';
 import { useEcho } from '@laravel/echo-react';
 import { useEffect } from 'react';
 
@@ -47,12 +53,21 @@ interface NotificationData {
     read_at: string | null;
 }
 
-export const useNotificationManager = ({ currentUserId, notifications }: UseNotificationManagerProps) => {
+export const useNotificationManager = ({
+    currentUserId,
+    notifications,
+}: UseNotificationManagerProps) => {
     const addNotification = useAddNotification();
     const setNotifications = useSetNotifications();
 
     // Use Echo for private notification channel
-    const notificationEcho = useEcho<NotificationData>(currentUserId ? `App.Models.User.${currentUserId}` : '', undefined, undefined, [], 'private');
+    const notificationEcho = useEcho<NotificationData>(
+        currentUserId ? `App.Models.User.${currentUserId}` : '',
+        undefined,
+        undefined,
+        [],
+        'private',
+    );
 
     // Sync Inertia notifications data with store
     useEffect(() => {
@@ -83,7 +98,10 @@ export const useNotificationManager = ({ currentUserId, notifications }: UseNoti
                         type: notification.type,
                         title: notification.title,
                         message: notification.message,
-                        data: notification as unknown as Record<string, unknown>,
+                        data: notification as unknown as Record<
+                            string,
+                            unknown
+                        >,
                         read_at: notification.read_at,
                         created_at: notification.created_at,
                         created_at_human: notification.created_at_human,
@@ -100,7 +118,10 @@ export const useNotificationManager = ({ currentUserId, notifications }: UseNoti
                     }
 
                     // Show browser notification (automatically handled based on PWA mode)
-                    const avatarUrl = notification.follower?.avatar_url || notification.author?.avatar_url || '/favicon.ico';
+                    const avatarUrl =
+                        notification.follower?.avatar_url ||
+                        notification.author?.avatar_url ||
+                        '/favicon.ico';
                     showBrowserNotification(notification.title, {
                         body: notification.message,
                         icon: avatarUrl,

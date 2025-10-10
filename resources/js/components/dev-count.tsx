@@ -16,17 +16,31 @@ function UserAvatar({ user }: { user: User }) {
 
     return sanitizedAvatarUrl ? (
         <Avatar className="h-auto w-10" key={user.email}>
-            <AvatarImage src={sanitizedAvatarUrl} alt={user.name} key={user.email} />
+            <AvatarImage
+                src={sanitizedAvatarUrl}
+                alt={user.name}
+                key={user.email}
+            />
         </Avatar>
     ) : (
-        <GenAvatar className="h-10 w-10" {...genConfig({ sex: 'man' })} key={user.email} />
+        <GenAvatar
+            className="h-10 w-10"
+            {...genConfig({ sex: 'man' })}
+            key={user.email}
+        />
     );
 }
 
-export default function DevCount({ users, total }: { users: User[]; total: number }) {
+export default function DevCount({
+    users,
+    total,
+}: {
+    users: User[];
+    total: number;
+}) {
     const shuffledUsers = shuffleArray<User>(users);
     return (
-        <div className="bg-card mt-2 flex items-center rounded-full">
+        <div className="mt-2 flex items-center rounded-full bg-card">
             <div className="flex -space-x-4">
                 {shuffledUsers.slice(0, 10).map((user) => (
                     <UserAvatar key={user.email} user={user} />
@@ -35,7 +49,7 @@ export default function DevCount({ users, total }: { users: User[]; total: numbe
             {total > 10 && (
                 <Button
                     variant="outline"
-                    className="text-muted-foreground hover:text-foreground flex items-center justify-center rounded-full border-none bg-transparent px-2 text-xs shadow-none hover:bg-transparent"
+                    className="flex items-center justify-center rounded-full border-none bg-transparent px-2 text-xs text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground"
                 >
                     +{total - 10} hunters
                 </Button>

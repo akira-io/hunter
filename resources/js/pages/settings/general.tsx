@@ -2,7 +2,13 @@ import { Head, useForm } from '@inertiajs/react';
 
 import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { type BreadcrumbItem } from '@/types';
 import { BookOpen, Loader2 } from 'lucide-react';
 
@@ -28,14 +34,16 @@ export default function General() {
             onSuccess: () => {
                 toast({
                     title: 'Tutorial reiniciado',
-                    description: 'O tutorial será aberto em alguns instantes...',
+                    description:
+                        'O tutorial será aberto em alguns instantes...',
                     duration: 3000,
                 });
             },
             onError: () => {
                 toast({
                     title: 'Erro',
-                    description: 'Não foi possível reiniciar o tutorial. Tente novamente.',
+                    description:
+                        'Não foi possível reiniciar o tutorial. Tente novamente.',
                     variant: 'destructive',
                     duration: 3000,
                 });
@@ -48,7 +56,10 @@ export default function General() {
             <Head title="Definições gerais" />
             <SettingsLayout>
                 <div className="space-y-4 sm:space-y-6">
-                    <HeadingSmall title="Definições gerais" description="Gerencie as configurações gerais da sua conta" />
+                    <HeadingSmall
+                        title="Definições gerais"
+                        description="Gerencie as configurações gerais da sua conta"
+                    />
 
                     {/* Replay Tutorial Section */}
                     <Card className="gradient">
@@ -58,13 +69,24 @@ export default function General() {
                                 Tutorial de Boas-Vindas
                             </CardTitle>
                             <CardDescription className="text-sm">
-                                Reveja o tutorial para relembrar as principais funcionalidades do DevHunter
+                                Reveja o tutorial para relembrar as principais
+                                funcionalidades do DevHunter
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="flex justify-end p-4 pt-0 sm:p-6 sm:pt-0">
-                            <Button onClick={handleReplayTutorial} className="w-full cursor-pointer sm:w-auto" disabled={processing}>
-                                {processing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <BookOpen className="mr-2 h-4 w-4" />}
-                                {processing ? 'A reiniciar tutorial...' : 'Repetir Tutorial'}
+                            <Button
+                                onClick={handleReplayTutorial}
+                                className="w-full cursor-pointer sm:w-auto"
+                                disabled={processing}
+                            >
+                                {processing ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <BookOpen className="mr-2 h-4 w-4" />
+                                )}
+                                {processing
+                                    ? 'A reiniciar tutorial...'
+                                    : 'Repetir Tutorial'}
                             </Button>
                         </CardContent>
                     </Card>

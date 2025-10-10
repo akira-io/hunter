@@ -16,7 +16,9 @@ export interface UseTimeFormattingReturn {
     getRelativeTimeInWords: (dateString: string) => string;
 }
 
-export const useTimeFormatting = (options: TimeFormattingOptions = {}): UseTimeFormattingReturn => {
+export const useTimeFormatting = (
+    options: TimeFormattingOptions = {},
+): UseTimeFormattingReturn => {
     const { showSeconds = false, use24Hour = false, locale } = options;
 
     const formatRelativeTime = useCallback(
@@ -95,7 +97,9 @@ export const useTimeFormatting = (options: TimeFormattingOptions = {}): UseTimeF
         }
 
         if (diffMinutes < 60) {
-            return diffMinutes === 1 ? 'há 1 minuto' : `há ${diffMinutes} minutos`;
+            return diffMinutes === 1
+                ? 'há 1 minuto'
+                : `há ${diffMinutes} minutos`;
         }
 
         if (diffHours < 24) {

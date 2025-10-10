@@ -18,21 +18,25 @@ export function GithubLoginButton() {
                     setLoading(false);
                     toast({
                         title: 'Erro de conexão',
-                        description: 'Não foi possível conectar com GitHub. Verifique sua conexão e tente novamente.',
+                        description:
+                            'Não foi possível conectar com GitHub. Verifique sua conexão e tente novamente.',
                         variant: 'destructive',
                     });
                 }
             }, 10000); // 10 second timeout
 
             // Clear timeout if user navigates away successfully
-            window.addEventListener('beforeunload', () => clearTimeout(timeoutId));
+            window.addEventListener('beforeunload', () =>
+                clearTimeout(timeoutId),
+            );
 
             window.location.assign(github.login.url());
         } catch {
             setLoading(false);
             toast({
                 title: 'Erro no GitHub',
-                description: 'Ocorreu um problema ao tentar conectar com GitHub. Tente novamente.',
+                description:
+                    'Ocorreu um problema ao tentar conectar com GitHub. Tente novamente.',
                 variant: 'destructive',
             });
         }
@@ -48,7 +52,8 @@ export function GithubLoginButton() {
                         setLoading(false);
                         toast({
                             title: 'Login cancelado',
-                            description: 'O login com GitHub foi cancelado ou falhou. Tente novamente se necessário.',
+                            description:
+                                'O login com GitHub foi cancelado ou falhou. Tente novamente se necessário.',
                             variant: 'default',
                         });
                     }
@@ -57,15 +62,30 @@ export function GithubLoginButton() {
         };
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+        return () =>
+            document.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange,
+            );
     }, [loading, toast]);
 
     return (
-        <Button variant="outline" type="button" className="w-full" onClick={handleGithubLogin} tabIndex={1} disabled={loading}>
+        <Button
+            variant="outline"
+            type="button"
+            className="w-full"
+            onClick={handleGithubLogin}
+            tabIndex={1}
+            disabled={loading}
+        >
             {loading ? (
                 <LoaderCircle className="h-4 w-4 animate-spin" />
             ) : (
-                <RiGithubFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
+                <RiGithubFill
+                    className="me-1 text-[#333333] dark:text-white/60"
+                    size={16}
+                    aria-hidden="true"
+                />
             )}
             {loading ? 'Conectando com GitHub...' : 'Continuar com GitHub'}
         </Button>

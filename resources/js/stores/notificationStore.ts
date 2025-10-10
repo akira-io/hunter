@@ -39,7 +39,9 @@ export const useNotificationStore = create<NotificationState>()(
 
             setNotifications: (notifications: Notification[]) => {
                 // Calculate unread count from the notifications themselves
-                const calculatedUnreadCount = notifications.filter((n) => !n.read_at).length;
+                const calculatedUnreadCount = notifications.filter(
+                    (n) => !n.read_at,
+                ).length;
 
                 set({
                     notifications,
@@ -51,34 +53,50 @@ export const useNotificationStore = create<NotificationState>()(
 
             addNotification: (notification: Notification) => {
                 const { notifications } = get();
-                const exists = notifications.some((n) => n.id === notification.id);
+                const exists = notifications.some(
+                    (n) => n.id === notification.id,
+                );
                 if (!exists) {
                     set({
                         notifications: [notification, ...notifications],
                         lastUpdated: Date.now(),
-                        unreadCount: get().unreadCount + (notification.read_at ? 0 : 1),
+                        unreadCount:
+                            get().unreadCount + (notification.read_at ? 0 : 1),
                     });
                 }
             },
 
             markAsRead: (notificationId: string) => {
                 const { notifications } = get();
-                const updatedNotifications = notifications.map((notification) =>
-                    notification.id === notificationId ? { ...notification, read_at: new Date().toISOString() } : notification,
+                const updatedNotifications = notifications.map(
+                    (notification) =>
+                        notification.id === notificationId
+                            ? {
+                                  ...notification,
+                                  read_at: new Date().toISOString(),
+                              }
+                            : notification,
                 );
-                const wasUnread = notifications.find((n) => n.id === notificationId && !n.read_at);
+                const wasUnread = notifications.find(
+                    (n) => n.id === notificationId && !n.read_at,
+                );
                 set({
                     notifications: updatedNotifications,
-                    unreadCount: wasUnread ? Math.max(0, get().unreadCount - 1) : get().unreadCount,
+                    unreadCount: wasUnread
+                        ? Math.max(0, get().unreadCount - 1)
+                        : get().unreadCount,
                 });
             },
 
             markAllAsRead: () => {
                 const { notifications } = get();
-                const updatedNotifications = notifications.map((notification) => ({
-                    ...notification,
-                    read_at: notification.read_at || new Date().toISOString(),
-                }));
+                const updatedNotifications = notifications.map(
+                    (notification) => ({
+                        ...notification,
+                        read_at:
+                            notification.read_at || new Date().toISOString(),
+                    }),
+                );
                 set({
                     notifications: updatedNotifications,
                     unreadCount: 0,
@@ -106,7 +124,9 @@ export const useNotificationStore = create<NotificationState>()(
                 // In Reverb/WebSocket setup, notifications are pushed via real-time events
                 // This function just recalculates unread count from existing notifications
                 const { notifications } = get();
-                const calculatedUnreadCount = notifications.filter((n) => !n.read_at).length;
+                const calculatedUnreadCount = notifications.filter(
+                    (n) => !n.read_at,
+                ).length;
                 set({ unreadCount: calculatedUnreadCount });
             },
         }),
@@ -140,14 +160,23 @@ export const useNotificationStore = create<NotificationState>()(
 );
 
 // Selector helpers for better performance
-export const useNotifications = () => useNotificationStore((state) => state.notifications);
-export const useUnreadCount = () => useNotificationStore((state) => state.unreadCount);
-export const useNotificationLoading = () => useNotificationStore((state) => state.loading);
+export const useNotifications = () =>
+    useNotificationStore((state) => state.notifications);
+export const useUnreadCount = () =>
+    useNotificationStore((state) => state.unreadCount);
+export const useNotificationLoading = () =>
+    useNotificationStore((state) => state.loading);
 
 // Individual action selectors
-export const useSetNotifications = () => useNotificationStore((state) => state.setNotifications);
-export const useAddNotification = () => useNotificationStore((state) => state.addNotification);
-export const useMarkAsRead = () => useNotificationStore((state) => state.markAsRead);
-export const useMarkAllAsRead = () => useNotificationStore((state) => state.markAllAsRead);
-export const useRefreshNotifications = () => useNotificationStore((state) => state.refreshNotifications);
-export const useClearNotifications = () => useNotificationStore((state) => state.clearNotifications);
+export const useSetNotifications = () =>
+    useNotificationStore((state) => state.setNotifications);
+export const useAddNotification = () =>
+    useNotificationStore((state) => state.addNotification);
+export const useMarkAsRead = () =>
+    useNotificationStore((state) => state.markAsRead);
+export const useMarkAllAsRead = () =>
+    useNotificationStore((state) => state.markAllAsRead);
+export const useRefreshNotifications = () =>
+    useNotificationStore((state) => state.refreshNotifications);
+export const useClearNotifications = () =>
+    useNotificationStore((state) => state.clearNotifications);

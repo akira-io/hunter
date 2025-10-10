@@ -11,8 +11,16 @@ interface ChatContainerProps {
     currentUserId?: number;
 }
 
-export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) => {
-    const { chatWindows, backgroundWindows, switchToWindow, closeBackgroundWindow, conversations } = useChatContext();
+export const ChatContainer: React.FC<ChatContainerProps> = ({
+    currentUserId,
+}) => {
+    const {
+        chatWindows,
+        backgroundWindows,
+        switchToWindow,
+        closeBackgroundWindow,
+        conversations,
+    } = useChatContext();
 
     const getConversationTitle = (conversationId: number) => {
         const conv = conversations.find((c) => c.id === conversationId);
@@ -20,7 +28,9 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) =
 
         if (conv.title) return conv.title;
 
-        const otherParticipant = conv.participants.find((p) => p.id !== currentUserId);
+        const otherParticipant = conv.participants.find(
+            (p) => p.id !== currentUserId,
+        );
         return otherParticipant?.name || 'Unknown User';
     };
 
@@ -42,7 +52,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) =
                 <div className="flex flex-col items-end gap-1">
                     {backgroundWindows.map((conversationId) => {
                         const unreadCount = getUnreadCount(conversationId);
-                        const otherParticipant = getOtherParticipant(conversationId);
+                        const otherParticipant =
+                            getOtherParticipant(conversationId);
                         return (
                             <div
                                 key={conversationId}
@@ -51,7 +62,9 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) =
                                 <button
                                     onClick={() => {
                                         if (shouldUseMobileChat()) {
-                                            router.visit(chat.show.url(conversationId));
+                                            router.visit(
+                                                chat.show.url(conversationId),
+                                            );
                                         } else {
                                             switchToWindow(conversationId);
                                         }
@@ -61,15 +74,21 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) =
                                     {/* Avatar */}
                                     <UserAvatar
                                         avatarUrl={otherParticipant?.avatar_url}
-                                        userName={otherParticipant?.name || 'Unknown'}
+                                        userName={
+                                            otherParticipant?.name || 'Unknown'
+                                        }
                                         className="size-6 ring-1 ring-white/20"
                                         fallbackClassName="text-[10px]"
                                     />
 
-                                    <span className="flex-1 truncate">{getConversationTitle(conversationId)}</span>
+                                    <span className="flex-1 truncate">
+                                        {getConversationTitle(conversationId)}
+                                    </span>
                                     {unreadCount > 0 && (
                                         <div className="flex h-4 min-w-[16px] shrink-0 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-bold text-white">
-                                            {unreadCount > 9 ? '9+' : unreadCount}
+                                            {unreadCount > 9
+                                                ? '9+'
+                                                : unreadCount}
                                         </div>
                                     )}
                                 </button>
@@ -91,7 +110,11 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ currentUserId }) =
             {/* Active chat window */}
             <div className="flex items-end">
                 {chatWindows.map((conversationId) => (
-                    <ChatWindow key={conversationId} conversationId={conversationId} currentUserId={currentUserId} />
+                    <ChatWindow
+                        key={conversationId}
+                        conversationId={conversationId}
+                        currentUserId={currentUserId}
+                    />
                 ))}
             </div>
         </div>

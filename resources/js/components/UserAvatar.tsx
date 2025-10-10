@@ -14,10 +14,18 @@ interface UserAvatarProps extends ComponentProps<typeof Avatar> {
  * UserAvatar component - Always shows a fallback with user initials
  * if the avatar_url is missing or fails to load
  */
-export function UserAvatar({ avatarUrl, userName, fallbackClassName, className, ...props }: UserAvatarProps) {
+export function UserAvatar({
+    avatarUrl,
+    userName,
+    fallbackClassName,
+    className,
+    ...props
+}: UserAvatarProps) {
     const getInitials = useInitials();
     const sanitizedAvatarUrl = useSanitizeImageUrl(avatarUrl);
-    const [imageStatus, setImageStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+    const [imageStatus, setImageStatus] = useState<
+        'loading' | 'loaded' | 'error'
+    >('loading');
 
     // Reset and test image quando a URL muda
     useEffect(() => {
@@ -56,9 +64,18 @@ export function UserAvatar({ avatarUrl, userName, fallbackClassName, className, 
     return (
         <Avatar className={cn('overflow-hidden', className)} {...props}>
             {shouldShowImage ? (
-                <AvatarImage src={sanitizedAvatarUrl} alt={userName} className="object-cover" />
+                <AvatarImage
+                    src={sanitizedAvatarUrl}
+                    alt={userName}
+                    className="object-cover"
+                />
             ) : (
-                <AvatarFallback className={cn('bg-gradient-to-br from-purple-500 to-purple-800 font-semibold text-white', fallbackClassName)}>
+                <AvatarFallback
+                    className={cn(
+                        'bg-gradient-to-br from-purple-500 to-purple-800 font-semibold text-white',
+                        fallbackClassName,
+                    )}
+                >
                     {getInitials(userName)}
                 </AvatarFallback>
             )}

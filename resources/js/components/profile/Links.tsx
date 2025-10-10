@@ -2,19 +2,37 @@ import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { useSanitizeExternalUrl } from '@/hooks/use-sanitize-image-url';
 import { useToast } from '@/hooks/use-toast';
 import profile from '@/routes/profile';
 import { LinkName, useLinkStore } from '@/stores/link';
 import { User } from '@/types';
 import { useForm } from '@inertiajs/react';
-import { RiBlueskyFill, RiGithubFill, RiLinkedinBoxFill, RiTwitterXFill, RiYoutubeFill } from '@remixicon/react';
+import {
+    RiBlueskyFill,
+    RiGithubFill,
+    RiLinkedinBoxFill,
+    RiTwitterXFill,
+    RiYoutubeFill,
+} from '@remixicon/react';
 import { Globe, PlusIcon, UserIcon } from 'lucide-react';
 import { FormEvent, JSX } from 'react';
 import { PiNotePencilBold } from 'react-icons/pi';
 
-function SafeLink({ url, children }: { url: string | undefined; children: React.ReactNode }) {
+function SafeLink({
+    url,
+    children,
+}: {
+    url: string | undefined;
+    children: React.ReactNode;
+}) {
     const sanitizedUrl = useSanitizeExternalUrl(url);
 
     return sanitizedUrl ? (
@@ -40,9 +58,24 @@ export function ProfileLinks({ user }: { user: User }) {
         website_url: user.website_url,
     });
 
-    const links: { name: LinkName; url: string | undefined; icon: JSX.Element; placeholer: string }[] = [
-        { name: 'GitHub', url: user.github_url, icon: <RiGithubFill />, placeholer: 'https://github.com/username' },
-        { name: 'Twitter', url: user.twitter_url, icon: <RiTwitterXFill />, placeholer: 'https://x.com/username' },
+    const links: {
+        name: LinkName;
+        url: string | undefined;
+        icon: JSX.Element;
+        placeholer: string;
+    }[] = [
+        {
+            name: 'GitHub',
+            url: user.github_url,
+            icon: <RiGithubFill />,
+            placeholer: 'https://github.com/username',
+        },
+        {
+            name: 'Twitter',
+            url: user.twitter_url,
+            icon: <RiTwitterXFill />,
+            placeholer: 'https://x.com/username',
+        },
         {
             name: 'YouTube',
             url: user.youtube_url,
@@ -61,7 +94,12 @@ export function ProfileLinks({ user }: { user: User }) {
             icon: <RiBlueskyFill />,
             placeholer: 'https://bsky.app/profile/username',
         },
-        { name: 'Website', url: user.website_url, icon: <Globe />, placeholer: 'https://www.seu-site.com' },
+        {
+            name: 'Website',
+            url: user.website_url,
+            icon: <Globe />,
+            placeholer: 'https://www.seu-site.com',
+        },
     ];
 
     function submit(e: FormEvent) {
@@ -113,15 +151,23 @@ export function ProfileLinks({ user }: { user: User }) {
                         <DialogHeader>
                             <DialogTitle>Links</DialogTitle>
                             <DialogDescription>
-                                Adicione suas redes sociais e seu site ou portfólio. Isso permitirá que recrutadores conheçam melhor seu trabalho e
-                                sua presença online.
+                                Adicione suas redes sociais e seu site ou
+                                portfólio. Isso permitirá que recrutadores
+                                conheçam melhor seu trabalho e sua presença
+                                online.
                             </DialogDescription>
                         </DialogHeader>
                         <form onSubmit={submit} className="p-4">
                             <div className="grid grid-cols-1 items-center justify-center gap-4">
                                 {links.map((link) => (
-                                    <div key={link.name} className="flex items-center justify-center gap-2">
-                                        <Badge className="flex aspect-square h-10 w-10 items-center justify-center p-0" variant="outline">
+                                    <div
+                                        key={link.name}
+                                        className="flex items-center justify-center gap-2"
+                                    >
+                                        <Badge
+                                            className="flex aspect-square h-10 w-10 items-center justify-center p-0"
+                                            variant="outline"
+                                        >
                                             <span> {link.icon}</span>
                                         </Badge>
                                         <div className="grid w-full gap-2">
@@ -129,10 +175,20 @@ export function ProfileLinks({ user }: { user: User }) {
                                                 type="text"
                                                 placeholder={link.placeholer}
                                                 value={data[Link[link.name]]}
-                                                onChange={(e) => setData(Link[link.name], e.target.value)}
-                                                className="placeholder:text-muted w-full rounded-md border p-2"
+                                                onChange={(e) =>
+                                                    setData(
+                                                        Link[link.name],
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="w-full rounded-md border p-2 placeholder:text-muted"
                                             />
-                                            <InputError className="mt-2" message={errors[Link[link.name]]} />
+                                            <InputError
+                                                className="mt-2"
+                                                message={
+                                                    errors[Link[link.name]]
+                                                }
+                                            />
                                         </div>
                                     </div>
                                 ))}

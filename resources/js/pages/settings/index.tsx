@@ -4,7 +4,14 @@ import AppLayout from '@/layouts/app-layout';
 import { appearance } from '@/routes';
 import { notifications } from '@/routes/settings';
 import { Link } from '@inertiajs/react';
-import { Bell, ChevronRight, Lock, Palette, Settings2, Shield } from 'lucide-react';
+import {
+    Bell,
+    ChevronRight,
+    Lock,
+    Palette,
+    Settings2,
+    Shield,
+} from 'lucide-react';
 
 interface SettingItem {
     title: string;
@@ -50,7 +57,10 @@ export default function SettingsIndex() {
     return (
         <AppLayout>
             <div className="container mx-auto max-w-4xl px-4 py-6">
-                <Heading title="Definições" description="Gerencie as configurações da sua conta" />
+                <Heading
+                    title="Definições"
+                    description="Gerencie as configurações da sua conta"
+                />
 
                 <div className="grid space-y-2 md:grid-cols-2 md:items-center md:justify-center md:gap-2 md:space-y-0">
                     {settingsItems.map((item) => (
@@ -61,8 +71,12 @@ export default function SettingsIndex() {
                                         {item.icon}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <h3 className="font-semibold">{item.title}</h3>
-                                        <p className="text-sm opacity-80">{item.description}</p>
+                                        <h3 className="font-semibold">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-sm opacity-80">
+                                            {item.description}
+                                        </p>
                                     </div>
                                     <ChevronRight className="size-5 shrink-0 opacity-50 transition-transform group-hover:translate-x-1 group-hover:opacity-100" />
                                 </CardContent>

@@ -1,5 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { History, Smile, Sparkles } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -9,7 +16,11 @@ interface UpdateAvailableDialogProps {
     onLater: () => void;
 }
 
-export function UpdateAvailableDialog({ open, onUpdate, onLater }: UpdateAvailableDialogProps) {
+export function UpdateAvailableDialog({
+    open,
+    onUpdate,
+    onLater,
+}: UpdateAvailableDialogProps) {
     useEffect(() => {
         console.log('[UpdateDialog] Open state changed:', open);
     }, [open]);
@@ -43,19 +54,28 @@ export function UpdateAvailableDialog({ open, onUpdate, onLater }: UpdateAvailab
                         {/* Icon with pulse animation */}
                         <div className="animate-pulse-slow mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-purple-500/10 ring-4 ring-purple-500/20 backdrop-blur-sm dark:bg-purple-500/20 dark:ring-purple-400/30">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-purple-700 shadow-lg">
-                                <History className="animate-ping-slow h-8 w-8 text-white" style={{ animationDuration: '1.5s' }} />
+                                <History
+                                    className="animate-ping-slow h-8 w-8 text-white"
+                                    style={{ animationDuration: '1.5s' }}
+                                />
                             </div>
                         </div>
 
                         <div className="space-y-3">
                             <DialogTitle className="text-center text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-                                <span className="animate-fade-in inline-block">Nova Versão</span>{' '}
+                                <span className="animate-fade-in inline-block">
+                                    Nova Versão
+                                </span>{' '}
                             </DialogTitle>
                             <DialogDescription className="text-center text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
-                                🚀 O <span className="font-semibold">Hunter</span> acaba de dar mais um grande passo!
+                                🚀 O{' '}
+                                <span className="font-semibold">Hunter</span>{' '}
+                                acaba de dar mais um grande passo!
                                 <span className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                                    A tua experiência foi atualizada para a versão mais recente
-                                    <br /> Obrigado por construir esta jornada connosco! ✨
+                                    A tua experiência foi atualizada para a
+                                    versão mais recente
+                                    <br /> Obrigado por construir esta jornada
+                                    connosco! ✨
                                 </span>
                             </DialogDescription>
                         </div>

@@ -205,7 +205,7 @@ describe('HuntSearchProvider', function () {
             $dto = $this->provider->mapToSearchResults($hunt);
 
             expect($dto)->toBeInstanceOf(App\DataTransferObjects\Search\SearchResult::class)
-                ->and($dto->id)->toBe((string) $hunt->id)
+                ->and($dto->id)->toBe($hunt->id)
                 ->and($dto->title)->toBe('Looking for developers')
                 ->and($dto->subtitle)->toBe('por Jane Doe')
                 ->and($dto->image)->toBe($owner->avatar_url)

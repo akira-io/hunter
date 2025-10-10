@@ -82,7 +82,9 @@ export const reducer = (state: State, action: Action): State => {
         case 'UPDATE_TOAST':
             return {
                 ...state,
-                toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
+                toasts: state.toasts.map((t) =>
+                    t.id === action.toast.id ? { ...t, ...action.toast } : t,
+                ),
             };
 
         case 'DISMISS_TOAST': {
@@ -144,17 +146,25 @@ function toast({ ...props }: Toast) {
     let title = props.title;
     switch (props.variant) {
         case 'destructive':
-            icon = React.createElement(XCircle, { className: 'h-5 w-5 text-red-500' });
+            icon = React.createElement(XCircle, {
+                className: 'h-5 w-5 text-red-500',
+            });
             title = 'Erro';
             break;
     }
 
     if (props.description) {
-        const existingToast = memoryState.toasts.find((t) => t.description === props.description && t.open);
+        const existingToast = memoryState.toasts.find(
+            (t) => t.description === props.description && t.open,
+        );
         if (existingToast) {
             return {
                 id: existingToast.id,
-                dismiss: () => dispatch({ type: 'DISMISS_TOAST', toastId: existingToast.id }),
+                dismiss: () =>
+                    dispatch({
+                        type: 'DISMISS_TOAST',
+                        toastId: existingToast.id,
+                    }),
                 update: (updateProps: ToasterToast) =>
                     dispatch({
                         type: 'UPDATE_TOAST',
@@ -208,7 +218,8 @@ function useToast() {
     return {
         ...state,
         toast,
-        dismiss: (toastId?: string) => dispatch({ type: 'DISMISS_TOAST', toastId }),
+        dismiss: (toastId?: string) =>
+            dispatch({ type: 'DISMISS_TOAST', toastId }),
     };
 }
 

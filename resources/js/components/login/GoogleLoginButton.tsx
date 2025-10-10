@@ -18,21 +18,25 @@ export function GoogleLoginButton() {
                     setLoading(false);
                     toast({
                         title: 'Erro de conexão',
-                        description: 'Não foi possível conectar com Google. Verifique sua conexão e tente novamente.',
+                        description:
+                            'Não foi possível conectar com Google. Verifique sua conexão e tente novamente.',
                         variant: 'destructive',
                     });
                 }
             }, 10000); // 10 second timeout
 
             // Clear timeout if user navigates away successfully
-            window.addEventListener('beforeunload', () => clearTimeout(timeoutId));
+            window.addEventListener('beforeunload', () =>
+                clearTimeout(timeoutId),
+            );
 
             window.location.assign(google.login.url());
         } catch {
             setLoading(false);
             toast({
                 title: 'Erro no Google',
-                description: 'Ocorreu um problema ao tentar conectar com Google. Tente novamente.',
+                description:
+                    'Ocorreu um problema ao tentar conectar com Google. Tente novamente.',
                 variant: 'destructive',
             });
         }
@@ -48,7 +52,8 @@ export function GoogleLoginButton() {
                         setLoading(false);
                         toast({
                             title: 'Login cancelado',
-                            description: 'O login com Google foi cancelado ou falhou. Tente novamente se necessário.',
+                            description:
+                                'O login com Google foi cancelado ou falhou. Tente novamente se necessário.',
                             variant: 'default',
                         });
                     }
@@ -57,15 +62,30 @@ export function GoogleLoginButton() {
         };
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+        return () =>
+            document.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange,
+            );
     }, [loading, toast]);
 
     return (
-        <Button variant="outline" type="button" className="w-full" onClick={handleLogin} tabIndex={6} disabled={loading}>
+        <Button
+            variant="outline"
+            type="button"
+            className="w-full"
+            onClick={handleLogin}
+            tabIndex={6}
+            disabled={loading}
+        >
             {loading ? (
                 <LoaderCircle className="h-4 w-4 animate-spin" />
             ) : (
-                <RiGoogleFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
+                <RiGoogleFill
+                    className="me-1 text-[#333333] dark:text-white/60"
+                    size={16}
+                    aria-hidden="true"
+                />
             )}
             {loading ? 'Conectando com Google...' : 'Continuar com Google'}
         </Button>

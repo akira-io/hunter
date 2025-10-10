@@ -52,6 +52,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read  \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $unreadNotifications
  * @property-read CarbonInterface $onboarding_completed_at
  * @property-read bool $onboarding_completed
+ * @property-read  array<string, mixed> $notification_settings
+ * @property-read  array<string, mixed> $privacy_settings
  *
  * @method void markAsRead()
  */

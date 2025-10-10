@@ -18,7 +18,10 @@ export function highlightText(text: string, query: string): JSX.Element {
                 regex.lastIndex = 0; // Reset regex index for next test
 
                 return isMatch ? (
-                    <mark key={index} className="rounded bg-yellow-200 px-0.5 text-yellow-900 dark:bg-yellow-500/30 dark:text-yellow-200">
+                    <mark
+                        key={index}
+                        className="rounded bg-yellow-200 px-0.5 text-yellow-900 dark:bg-yellow-500/30 dark:text-yellow-200"
+                    >
                         {part}
                     </mark>
                 ) : (
@@ -29,12 +32,17 @@ export function highlightText(text: string, query: string): JSX.Element {
     );
 }
 
-export function highlightMultiple(text: string, queries: string[]): JSX.Element {
+export function highlightMultiple(
+    text: string,
+    queries: string[],
+): JSX.Element {
     if (!queries.length || !text) {
         return <>{text}</>;
     }
 
-    const escapedQueries = queries.filter((q) => q.trim().length > 0).map((q) => q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const escapedQueries = queries
+        .filter((q) => q.trim().length > 0)
+        .map((q) => q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
     if (escapedQueries.length === 0) {
         return <>{text}</>;
@@ -53,7 +61,10 @@ export function highlightMultiple(text: string, queries: string[]): JSX.Element 
                 regex.lastIndex = 0; // Reset regex index for next test
 
                 return isMatch ? (
-                    <mark key={index} className="rounded bg-yellow-200 px-0.5 text-yellow-900 dark:bg-yellow-500/30 dark:text-yellow-200">
+                    <mark
+                        key={index}
+                        className="rounded bg-yellow-200 px-0.5 text-yellow-900 dark:bg-yellow-500/30 dark:text-yellow-200"
+                    >
                         {part}
                     </mark>
                 ) : (

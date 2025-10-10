@@ -20,7 +20,12 @@ interface NotificationsPageProps {
     counts: NotificationCounts;
 }
 
-export default function Notifications({ notifications, unread_count, filter, counts }: NotificationsPageProps) {
+export default function Notifications({
+    notifications,
+    unread_count,
+    filter,
+    counts,
+}: NotificationsPageProps) {
     const setNotifications = useSetNotifications();
 
     // Sync Inertia data with store
@@ -38,7 +43,11 @@ export default function Notifications({ notifications, unread_count, filter, cou
                 {},
                 {
                     preserveScroll: true,
-                    onError: (error) => console.error('Failed to mark notification as read:', error),
+                    onError: (error) =>
+                        console.error(
+                            'Failed to mark notification as read:',
+                            error,
+                        ),
                 },
             );
         }
@@ -50,16 +59,22 @@ export default function Notifications({ notifications, unread_count, filter, cou
             {},
             {
                 preserveScroll: true,
-                onError: (error) => console.error('Failed to mark all notifications as read:', error),
+                onError: (error) =>
+                    console.error(
+                        'Failed to mark all notifications as read:',
+                        error,
+                    ),
             },
         );
     };
 
-    const tabBase = 'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors';
+    const tabBase =
+        'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors';
 
     const tabVariants = {
         active: 'bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300',
-        inactive: 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800',
+        inactive:
+            'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800',
     };
 
     const filters = [
@@ -80,7 +95,12 @@ export default function Notifications({ notifications, unread_count, filter, cou
                         description={`Você tem ${unread_count} notificação${unread_count !== 1 ? 's' : ''} não lida${unread_count !== 1 ? 's' : ''}`}
                     />
                     {unread_count > 0 && (
-                        <Button onClick={handleMarkAllAsRead} variant="outline" size="sm" className="flex cursor-pointer items-center gap-2">
+                        <Button
+                            onClick={handleMarkAllAsRead}
+                            variant="outline"
+                            size="sm"
+                            className="flex cursor-pointer items-center gap-2"
+                        >
                             <Check size={16} />
                             Marcar todas como lidas
                         </Button>
@@ -93,12 +113,21 @@ export default function Notifications({ notifications, unread_count, filter, cou
                         {filters.map(({ key, label, count }) => (
                             <Link
                                 key={key}
-                                href={NotificationController.index.url({ query: { filter: key } })}
+                                href={NotificationController.index.url({
+                                    query: { filter: key },
+                                })}
                                 preserveScroll
-                                className={cn(tabBase, filter === key ? tabVariants.active : tabVariants.inactive)}
+                                className={cn(
+                                    tabBase,
+                                    filter === key
+                                        ? tabVariants.active
+                                        : tabVariants.inactive,
+                                )}
                             >
                                 {label}
-                                <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-700">{count}</span>
+                                <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-700">
+                                    {count}
+                                </span>
                             </Link>
                         ))}
                     </div>
@@ -110,10 +139,18 @@ export default function Notifications({ notifications, unread_count, filter, cou
                         <Card>
                             <CardContent className="flex flex-col items-center justify-center p-8 text-center">
                                 <div className="mb-4 grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700">
-                                    <Bell size={24} className="text-zinc-500 dark:text-zinc-400" />
+                                    <Bell
+                                        size={24}
+                                        className="text-zinc-500 dark:text-zinc-400"
+                                    />
                                 </div>
-                                <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">Nenhuma notificação</h3>
-                                <p className="text-sm text-zinc-500 dark:text-zinc-400">Você está em dia com todas as suas notificações!</p>
+                                <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                                    Nenhuma notificação
+                                </h3>
+                                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                                    Você está em dia com todas as suas
+                                    notificações!
+                                </p>
                             </CardContent>
                         </Card>
                     ) : (

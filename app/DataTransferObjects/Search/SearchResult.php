@@ -10,7 +10,7 @@ final readonly class SearchResult
      * @param  array<string, mixed>  $metadata
      */
     public function __construct(
-        public string $id,
+        public string|int $id,
         public string $title,
         public ?string $subtitle,
         public ?string $description,

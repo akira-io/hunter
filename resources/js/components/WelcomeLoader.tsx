@@ -25,7 +25,10 @@ export function WelcomeLoader({ onComplete }: WelcomeLoaderProps) {
                     return 100;
                 }
 
-                const increment = prev < 70 ? Math.random() * 15 + 10 : Math.random() * 8 + 15;
+                const increment =
+                    prev < 70
+                        ? Math.random() * 15 + 10
+                        : Math.random() * 8 + 15;
                 return Math.min(prev + increment, 100);
             });
         }, 300);
@@ -70,7 +73,10 @@ export function WelcomeLoader({ onComplete }: WelcomeLoaderProps) {
 
                 {/* Welcome text with staggered animation */}
                 <div className="space-y-3">
-                    <h1 className="animate-slide-up text-5xl font-bold text-white opacity-0" style={{ animationDelay: '0.2s' }}>
+                    <h1
+                        className="animate-slide-up text-5xl font-bold text-white opacity-0"
+                        style={{ animationDelay: '0.2s' }}
+                    >
                         Bem-vindo ao
                     </h1>
                     <h2
@@ -79,13 +85,19 @@ export function WelcomeLoader({ onComplete }: WelcomeLoaderProps) {
                     >
                         Hunter
                     </h2>
-                    <p className="animate-slide-up text-lg text-purple-200 opacity-0" style={{ animationDelay: '0.6s' }}>
+                    <p
+                        className="animate-slide-up text-lg text-purple-200 opacity-0"
+                        style={{ animationDelay: '0.6s' }}
+                    >
                         Conectando talentos, construindo o futuro 🇨🇻
                     </p>
                 </div>
 
                 {/* Progress bar container */}
-                <div className="animate-slide-up w-full max-w-md space-y-3 opacity-0" style={{ animationDelay: '0.8s' }}>
+                <div
+                    className="animate-slide-up w-full max-w-md space-y-3 opacity-0"
+                    style={{ animationDelay: '0.8s' }}
+                >
                     {/* Progress bar */}
                     <div className="relative h-3 overflow-hidden rounded-full bg-slate-800/50 backdrop-blur-sm">
                         <div
@@ -103,13 +115,20 @@ export function WelcomeLoader({ onComplete }: WelcomeLoaderProps) {
 
                     {/* Progress percentage */}
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-purple-300">Carregando experiência...</span>
-                        <span className="font-mono text-xl font-bold text-purple-400">{Math.round(progress)}%</span>
+                        <span className="text-purple-300">
+                            Carregando experiência...
+                        </span>
+                        <span className="font-mono text-xl font-bold text-purple-400">
+                            {Math.round(progress)}%
+                        </span>
                     </div>
                 </div>
 
                 {/* Loading dots */}
-                <div className="animate-slide-up flex gap-2 opacity-0" style={{ animationDelay: '1s' }}>
+                <div
+                    className="animate-slide-up flex gap-2 opacity-0"
+                    style={{ animationDelay: '1s' }}
+                >
                     {[...Array(3)].map((_, i) => (
                         <div
                             key={i}

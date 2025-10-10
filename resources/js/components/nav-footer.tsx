@@ -1,5 +1,12 @@
 import { Icon } from '@/components/icon';
-import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import {
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
+} from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { ExternalLink } from 'lucide-react';
@@ -22,14 +29,20 @@ export function NavFooter({
     };
 
     return (
-        <SidebarGroup {...props} className={cn('border-border/50 border-t pt-2 group-data-[collapsible=icon]:p-0', className)}>
+        <SidebarGroup
+            {...props}
+            className={cn(
+                'border-t border-border/50 pt-2 group-data-[collapsible=icon]:p-0',
+                className,
+            )}
+        >
             <SidebarGroupContent>
                 <SidebarMenu className="gap-2">
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 asChild
-                                className="group text-muted-foreground hover:bg-accent/50 hover:text-foreground h-11 transition-all duration-200"
+                                className="group h-11 text-muted-foreground transition-all duration-200 hover:bg-accent/50 hover:text-foreground"
                             >
                                 <a
                                     href={item.href}
@@ -45,7 +58,9 @@ export function NavFooter({
                                                 className="h-[18px] w-[18px] transition-transform duration-200 group-hover:scale-110"
                                             />
                                         )}
-                                        <span className="truncate text-[15px]">{item.title}</span>
+                                        <span className="truncate text-[15px]">
+                                            {item.title}
+                                        </span>
                                     </div>
                                     <ExternalLink className="h-3.5 w-3.5 opacity-0 transition-opacity duration-200 group-hover:opacity-50" />
                                 </a>

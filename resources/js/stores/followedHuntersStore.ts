@@ -42,7 +42,11 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
 
             updateHunterOnlineStatus: (hunterId: number, isOnline: boolean) => {
                 const { hunters } = get();
-                const updatedHunters = hunters.map((hunter) => (hunter.id === hunterId ? { ...hunter, is_online: isOnline } : hunter));
+                const updatedHunters = hunters.map((hunter) =>
+                    hunter.id === hunterId
+                        ? { ...hunter, is_online: isOnline }
+                        : hunter,
+                );
                 set({ hunters: updatedHunters });
             },
 
@@ -88,7 +92,10 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
                     const response = await fetch('/followed-hunters', {
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                            'X-CSRF-TOKEN':
+                                document
+                                    .querySelector('meta[name="csrf-token"]')
+                                    ?.getAttribute('content') || '',
                             'X-Requested-With': 'XMLHttpRequest',
                         },
                         credentials: 'same-origin',
@@ -96,7 +103,9 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
 
                     if (response.ok) {
                         const data = await response.json();
-                        const hunters = Array.isArray(data) ? data : (data?.data ?? []);
+                        const hunters = Array.isArray(data)
+                            ? data
+                            : (data?.data ?? []);
                         setHunters(hunters);
                     } else {
                         setLoading(false);
@@ -135,13 +144,21 @@ export const useFollowedHuntersStore = create<FollowedHuntersState>()(
 );
 
 // Selector helpers for better performance
-export const useFollowedHunters = () => useFollowedHuntersStore((state) => state.hunters);
-export const useFollowedHuntersLoading = () => useFollowedHuntersStore((state) => state.loading);
+export const useFollowedHunters = () =>
+    useFollowedHuntersStore((state) => state.hunters);
+export const useFollowedHuntersLoading = () =>
+    useFollowedHuntersStore((state) => state.loading);
 
 // Individual action selectors
-export const useSetFollowedHunters = () => useFollowedHuntersStore((state) => state.setHunters);
-export const useUpdateHunterOnlineStatus = () => useFollowedHuntersStore((state) => state.updateHunterOnlineStatus);
-export const useAddFollowedHunter = () => useFollowedHuntersStore((state) => state.addHunter);
-export const useRemoveFollowedHunter = () => useFollowedHuntersStore((state) => state.removeHunter);
-export const useRefreshFollowedHunters = () => useFollowedHuntersStore((state) => state.refreshHunters);
-export const useClearFollowedHunters = () => useFollowedHuntersStore((state) => state.clearHunters);
+export const useSetFollowedHunters = () =>
+    useFollowedHuntersStore((state) => state.setHunters);
+export const useUpdateHunterOnlineStatus = () =>
+    useFollowedHuntersStore((state) => state.updateHunterOnlineStatus);
+export const useAddFollowedHunter = () =>
+    useFollowedHuntersStore((state) => state.addHunter);
+export const useRemoveFollowedHunter = () =>
+    useFollowedHuntersStore((state) => state.removeHunter);
+export const useRefreshFollowedHunters = () =>
+    useFollowedHuntersStore((state) => state.refreshHunters);
+export const useClearFollowedHunters = () =>
+    useFollowedHuntersStore((state) => state.clearHunters);

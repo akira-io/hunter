@@ -12,9 +12,21 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
@@ -22,7 +34,20 @@ import SettingsLayout from '@/layouts/settings/layout';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { CheckCircle, Eye, Globe, Lock, MessageSquare, Search, Shield, User, UserCheck, Users, UserX, XCircle } from 'lucide-react';
+import {
+    CheckCircle,
+    Eye,
+    Globe,
+    Lock,
+    MessageSquare,
+    Search,
+    Shield,
+    User,
+    UserCheck,
+    Users,
+    UserX,
+    XCircle,
+} from 'lucide-react';
 import { type FormEventHandler, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -57,7 +82,8 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
     const { toast } = useToast();
     const [userToUnblock, setUserToUnblock] = useState<number | null>(null);
 
-    const { data, setData, post, errors, processing } = useForm<PrivacySettings>(privacySettings);
+    const { data, setData, post, errors, processing } =
+        useForm<PrivacySettings>(privacySettings);
 
     const updatePrivacySettings: FormEventHandler = (e) => {
         e.preventDefault();
@@ -67,7 +93,8 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                 toast({
                     icon: <CheckCircle className="text-green-400" />,
                     title: 'Definições atualizadas',
-                    description: 'As suas definições de privacidade foram atualizadas com sucesso.',
+                    description:
+                        'As suas definições de privacidade foram atualizadas com sucesso.',
                 });
             },
             onError: () => {
@@ -75,7 +102,8 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                     variant: 'destructive',
                     icon: <XCircle className="text-red-400" />,
                     title: 'Erro',
-                    description: 'Erro ao atualizar as definições de privacidade. Tente novamente.',
+                    description:
+                        'Erro ao atualizar as definições de privacidade. Tente novamente.',
                 });
             },
         });
@@ -112,7 +140,10 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                     {/* Header */}
                     <div>
                         <HeadingSmall title="Privacidade" />
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400">Controle quem pode ver o seu perfil, publicações e atividade</p>
+                        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                            Controle quem pode ver o seu perfil, publicações e
+                            atividade
+                        </p>
                     </div>
 
                     {/* Privacy Settings Form */}
@@ -125,11 +156,18 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 dark:bg-violet-500/20">
                                                 <Eye className="size-5 text-violet-600 dark:text-violet-400" />
                                             </div>
-                                            <span className="leading-tight">Visibilidade e Permissões</span>
+                                            <span className="leading-tight">
+                                                Visibilidade e Permissões
+                                            </span>
                                         </CardTitle>
-                                        <CardDescription className="text-base">Gerencie quem pode interagir consigo</CardDescription>
+                                        <CardDescription className="text-base">
+                                            Gerencie quem pode interagir consigo
+                                        </CardDescription>
                                     </div>
-                                    <Badge variant="secondary" className="flex hidden w-fit items-center gap-1.5 md:flex">
+                                    <Badge
+                                        variant="secondary"
+                                        className="flex hidden w-fit items-center gap-1.5 md:flex"
+                                    >
                                         <Shield className="size-3" />
                                         Privacidade
                                     </Badge>
@@ -143,14 +181,25 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                         <span>Visibilidade do Perfil</span>
                                     </div>
                                     <div className="space-y-3 rounded-xl bg-zinc-50/50 p-4 dark:bg-zinc-900/30">
-                                        <Label htmlFor="profile_visibility" className="text-sm font-medium">
+                                        <Label
+                                            htmlFor="profile_visibility"
+                                            className="text-sm font-medium"
+                                        >
                                             Quem pode ver o seu perfil
                                         </Label>
                                         <Select
                                             value={data.profile_visibility}
-                                            onValueChange={(value) => setData('profile_visibility', value as PrivacySettings['profile_visibility'])}
+                                            onValueChange={(value) =>
+                                                setData(
+                                                    'profile_visibility',
+                                                    value as PrivacySettings['profile_visibility'],
+                                                )
+                                            }
                                         >
-                                            <SelectTrigger id="profile_visibility" className="h-11">
+                                            <SelectTrigger
+                                                id="profile_visibility"
+                                                className="h-11"
+                                            >
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -158,7 +207,9 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                     <div className="flex items-start gap-3">
                                                         <Globe className="size-4 shrink-0 text-green-600 dark:text-green-400" />
                                                         <div className="flex flex-col gap-0.5">
-                                                            <span className="leading-tight font-medium">Público</span>
+                                                            <span className="leading-tight font-medium">
+                                                                Público
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </SelectItem>
@@ -166,7 +217,9 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                     <div className="flex items-start gap-3">
                                                         <Users className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" />
                                                         <div className="flex flex-col gap-0.5">
-                                                            <span className="leading-tight font-medium">Seguidores</span>
+                                                            <span className="leading-tight font-medium">
+                                                                Seguidores
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </SelectItem>
@@ -174,7 +227,9 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                     <div className="flex items-start gap-3">
                                                         <Lock className="mt-0.5 size-4 shrink-0 text-red-600 dark:text-red-400" />
                                                         <div className="flex flex-col gap-0.5">
-                                                            <span className="leading-tight font-medium">Privado</span>
+                                                            <span className="leading-tight font-medium">
+                                                                Privado
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </SelectItem>
@@ -187,8 +242,13 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                             </p>
                                         )}
                                         <p className="flex items-start gap-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-                                            <span className="mt-0.5 text-violet-500">•</span>
-                                            <span>Controle quem pode visualizar o seu perfil completo e atividade</span>
+                                            <span className="mt-0.5 text-violet-500">
+                                                •
+                                            </span>
+                                            <span>
+                                                Controle quem pode visualizar o
+                                                seu perfil completo e atividade
+                                            </span>
                                         </p>
                                     </div>
                                 </div>
@@ -203,14 +263,25 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                     <div className="space-y-4">
                                         {/* Who Can Message */}
                                         <div className="space-y-3 rounded-xl bg-zinc-50/50 p-4 dark:bg-zinc-900/30">
-                                            <Label htmlFor="who_can_message" className="text-sm font-medium">
+                                            <Label
+                                                htmlFor="who_can_message"
+                                                className="text-sm font-medium"
+                                            >
                                                 Quem pode enviar mensagens
                                             </Label>
                                             <Select
                                                 value={data.who_can_message}
-                                                onValueChange={(value) => setData('who_can_message', value as PrivacySettings['who_can_message'])}
+                                                onValueChange={(value) =>
+                                                    setData(
+                                                        'who_can_message',
+                                                        value as PrivacySettings['who_can_message'],
+                                                    )
+                                                }
                                             >
-                                                <SelectTrigger id="who_can_message" className="h-11">
+                                                <SelectTrigger
+                                                    id="who_can_message"
+                                                    className="h-11"
+                                                >
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -223,7 +294,10 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                     <SelectItem value="followers">
                                                         <div className="flex items-center gap-2.5">
                                                             <Users className="size-4 shrink-0 text-blue-600 dark:text-blue-400" />
-                                                            <span>Apenas seguidores</span>
+                                                            <span>
+                                                                Apenas
+                                                                seguidores
+                                                            </span>
                                                         </div>
                                                     </SelectItem>
                                                     <SelectItem value="none">
@@ -241,21 +315,38 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                 </p>
                                             )}
                                             <p className="flex items-start gap-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-                                                <span className="mt-0.5 text-violet-500">•</span>
-                                                <span>Defina quem pode iniciar conversas diretas consigo</span>
+                                                <span className="mt-0.5 text-violet-500">
+                                                    •
+                                                </span>
+                                                <span>
+                                                    Defina quem pode iniciar
+                                                    conversas diretas consigo
+                                                </span>
                                             </p>
                                         </div>
 
                                         {/* Who Can Comment */}
                                         <div className="space-y-3 rounded-xl bg-zinc-50/50 p-4 dark:bg-zinc-900/30">
-                                            <Label htmlFor="who_can_comment" className="text-sm font-medium">
-                                                Quem pode comentar nas suas publicações
+                                            <Label
+                                                htmlFor="who_can_comment"
+                                                className="text-sm font-medium"
+                                            >
+                                                Quem pode comentar nas suas
+                                                publicações
                                             </Label>
                                             <Select
                                                 value={data.who_can_comment}
-                                                onValueChange={(value) => setData('who_can_comment', value as PrivacySettings['who_can_comment'])}
+                                                onValueChange={(value) =>
+                                                    setData(
+                                                        'who_can_comment',
+                                                        value as PrivacySettings['who_can_comment'],
+                                                    )
+                                                }
                                             >
-                                                <SelectTrigger id="who_can_comment" className="h-11">
+                                                <SelectTrigger
+                                                    id="who_can_comment"
+                                                    className="h-11"
+                                                >
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -268,13 +359,18 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                     <SelectItem value="followers">
                                                         <div className="flex items-center gap-2.5">
                                                             <Users className="size-4 shrink-0 text-blue-600 dark:text-blue-400" />
-                                                            <span>Apenas seguidores</span>
+                                                            <span>
+                                                                Apenas
+                                                                seguidores
+                                                            </span>
                                                         </div>
                                                     </SelectItem>
                                                     <SelectItem value="disabled">
                                                         <div className="flex items-center gap-2.5">
                                                             <Lock className="size-4 shrink-0 text-red-600 dark:text-red-400" />
-                                                            <span>Desativado</span>
+                                                            <span>
+                                                                Desativado
+                                                            </span>
                                                         </div>
                                                     </SelectItem>
                                                 </SelectContent>
@@ -286,8 +382,13 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                 </p>
                                             )}
                                             <p className="flex items-start gap-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-                                                <span className="mt-0.5 text-violet-500">•</span>
-                                                <span>Controle quem pode comentar nos seus hunts e publicações</span>
+                                                <span className="mt-0.5 text-violet-500">
+                                                    •
+                                                </span>
+                                                <span>
+                                                    Controle quem pode comentar
+                                                    nos seus hunts e publicações
+                                                </span>
                                             </p>
                                         </div>
                                     </div>
@@ -311,18 +412,35 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                             )}
                                         >
                                             <div className="flex-1 space-y-1.5">
-                                                <Label htmlFor="searchable" className="flex cursor-pointer items-center gap-2 text-sm font-medium">
-                                                    <Search className={cn('size-4', data.searchable ? 'text-violet-600 dark:text-violet-400' : '')} />
+                                                <Label
+                                                    htmlFor="searchable"
+                                                    className="flex cursor-pointer items-center gap-2 text-sm font-medium"
+                                                >
+                                                    <Search
+                                                        className={cn(
+                                                            'size-4',
+                                                            data.searchable
+                                                                ? 'text-violet-600 dark:text-violet-400'
+                                                                : '',
+                                                        )}
+                                                    />
                                                     Aparecer nas pesquisas
                                                 </Label>
                                                 <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-                                                    Permite que outros Hunters encontrem o seu perfil através de pesquisas
+                                                    Permite que outros Hunters
+                                                    encontrem o seu perfil
+                                                    através de pesquisas
                                                 </p>
                                             </div>
                                             <Switch
                                                 id="searchable"
                                                 checked={data.searchable}
-                                                onCheckedChange={(checked) => setData('searchable', checked)}
+                                                onCheckedChange={(checked) =>
+                                                    setData(
+                                                        'searchable',
+                                                        checked,
+                                                    )
+                                                }
                                             />
                                         </div>
 
@@ -343,31 +461,49 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                     <Lock
                                                         className={cn(
                                                             'size-4',
-                                                            data.show_activity_status ? 'text-violet-600 dark:text-violet-400' : '',
+                                                            data.show_activity_status
+                                                                ? 'text-violet-600 dark:text-violet-400'
+                                                                : '',
                                                         )}
                                                     />
                                                     Mostrar status de atividade
                                                 </Label>
                                                 <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-                                                    Permite que outros vejam quando está online. Se desativar, também não poderá ver o status de
-                                                    outros Hunters
+                                                    Permite que outros vejam
+                                                    quando está online. Se
+                                                    desativar, também não poderá
+                                                    ver o status de outros
+                                                    Hunters
                                                 </p>
                                             </div>
                                             <Switch
                                                 id="show_activity_status"
-                                                checked={data.show_activity_status}
-                                                onCheckedChange={(checked) => setData('show_activity_status', checked)}
+                                                checked={
+                                                    data.show_activity_status
+                                                }
+                                                onCheckedChange={(checked) =>
+                                                    setData(
+                                                        'show_activity_status',
+                                                        checked,
+                                                    )
+                                                }
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center justify-end gap-3 pt-6 dark:border-zinc-800">
-                                    <Button type="submit" disabled={processing} size="lg" className="gap-2" variant="gradient">
+                                    <Button
+                                        type="submit"
+                                        disabled={processing}
+                                        size="lg"
+                                        className="gap-2"
+                                        variant="gradient"
+                                    >
                                         {processing ? (
                                             <>
-                                                <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />A
-                                                guardar...
+                                                <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                                A guardar...
                                             </>
                                         ) : (
                                             <>
@@ -390,13 +526,23 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 dark:bg-red-500/20">
                                             <UserX className="size-5 text-red-600 dark:text-red-400" />
                                         </div>
-                                        <span className="leading-tight">Hunters bloqueados</span>
+                                        <span className="leading-tight">
+                                            Hunters bloqueados
+                                        </span>
                                     </CardTitle>
-                                    <CardDescription className="text-base">Gerencie os Hunters que bloqueou</CardDescription>
+                                    <CardDescription className="text-base">
+                                        Gerencie os Hunters que bloqueou
+                                    </CardDescription>
                                 </div>
                                 {blockedUsers.length > 0 && (
-                                    <Badge variant="secondary" className="flex w-fit items-center gap-1.5">
-                                        {blockedUsers.length} {blockedUsers.length === 1 ? 'bloqueado' : 'bloqueados'}
+                                    <Badge
+                                        variant="secondary"
+                                        className="flex w-fit items-center gap-1.5"
+                                    >
+                                        {blockedUsers.length}{' '}
+                                        {blockedUsers.length === 1
+                                            ? 'bloqueado'
+                                            : 'bloqueados'}
                                     </Badge>
                                 )}
                             </div>
@@ -407,8 +553,12 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                     <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800">
                                         <UserX className="size-8 text-zinc-400 dark:text-zinc-600" />
                                     </div>
-                                    <p className="text-base font-medium text-zinc-900 dark:text-zinc-100">Nenhum Hunter bloqueado</p>
-                                    <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Quando bloquear alguém, aparecerá aqui</p>
+                                    <p className="text-base font-medium text-zinc-900 dark:text-zinc-100">
+                                        Nenhum Hunter bloqueado
+                                    </p>
+                                    <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                                        Quando bloquear alguém, aparecerá aqui
+                                    </p>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
@@ -420,7 +570,10 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                             <div className="flex items-center gap-3">
                                                 <div className="relative">
                                                     <img
-                                                        src={user.avatar_url || '/images/default-avatar.png'}
+                                                        src={
+                                                            user.avatar_url ||
+                                                            '/images/default-avatar.png'
+                                                        }
                                                         alt={user.name}
                                                         className="size-12 rounded-xl border-2 border-zinc-200 object-cover dark:border-zinc-700"
                                                     />
@@ -429,19 +582,31 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <p className="font-semibold text-zinc-900 dark:text-zinc-100">{user.name}</p>
-                                                    <p className="text-sm text-zinc-600 dark:text-zinc-400">@{user.user_name}</p>
+                                                    <p className="font-semibold text-zinc-900 dark:text-zinc-100">
+                                                        {user.name}
+                                                    </p>
+                                                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                                                        @{user.user_name}
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <Badge variant="outline" className="hidden items-center gap-1.5 sm:flex">
+                                                <Badge
+                                                    variant="outline"
+                                                    className="hidden items-center gap-1.5 sm:flex"
+                                                >
                                                     <div className="size-1.5 rounded-full bg-red-500" />
-                                                    Bloqueado em {user.blocked_at}
+                                                    Bloqueado em{' '}
+                                                    {user.blocked_at}
                                                 </Badge>
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    onClick={() => setUserToUnblock(user.id)}
+                                                    onClick={() =>
+                                                        setUserToUnblock(
+                                                            user.id,
+                                                        )
+                                                    }
                                                     className="gap-1.5 hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 dark:hover:border-violet-700 dark:hover:bg-violet-950/50 dark:hover:text-violet-400"
                                                 >
                                                     <UserCheck className="size-4" />
@@ -456,17 +621,31 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                     </Card>
 
                     {/* Unblock User Dialog */}
-                    <AlertDialog open={userToUnblock !== null} onOpenChange={(open) => !open && setUserToUnblock(null)}>
+                    <AlertDialog
+                        open={userToUnblock !== null}
+                        onOpenChange={(open) => !open && setUserToUnblock(null)}
+                    >
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>Desbloquear Hunter?</AlertDialogTitle>
+                                <AlertDialogTitle>
+                                    Desbloquear Hunter?
+                                </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Após desbloquear, este Hunter poderá voltar a interagir consigo de acordo com as suas definições de privacidade.
+                                    Após desbloquear, este Hunter poderá voltar
+                                    a interagir consigo de acordo com as suas
+                                    definições de privacidade.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => userToUnblock && unblockUser(userToUnblock)}>Desbloquear</AlertDialogAction>
+                                <AlertDialogAction
+                                    onClick={() =>
+                                        userToUnblock &&
+                                        unblockUser(userToUnblock)
+                                    }
+                                >
+                                    Desbloquear
+                                </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>

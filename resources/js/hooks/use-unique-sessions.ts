@@ -23,14 +23,18 @@ export function useUniqueSessions(sessions: Session[]): Session[] {
     return useMemo(() => {
         // Filter to show only the most recent session per IP address
         return sessions.reduce((acc, session) => {
-            const existingSession = acc.find((s) => s.ip_address === session.ip_address);
+            const existingSession = acc.find(
+                (s) => s.ip_address === session.ip_address,
+            );
 
             if (!existingSession) {
                 // No session with this IP yet, add it
                 acc.push(session);
             } else {
                 // Compare login times and keep the most recent
-                const existingTime = new Date(existingSession.login_at).getTime();
+                const existingTime = new Date(
+                    existingSession.login_at,
+                ).getTime();
                 const currentTime = new Date(session.login_at).getTime();
 
                 if (currentTime > existingTime) {

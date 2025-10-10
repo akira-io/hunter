@@ -19,10 +19,13 @@ export const useStartConversation = (): StartConversationResult => {
         setIsStarting(true);
         setError(null);
         try {
-            const response = await api.post<{ id: number; message: string }>('/conversations', {
-                type: 'direct',
-                participants: [userId],
-            });
+            const response = await api.post<{ id: number; message: string }>(
+                '/conversations',
+                {
+                    type: 'direct',
+                    participants: [userId],
+                },
+            );
 
             const conversationId = response.data.id;
 
@@ -35,7 +38,8 @@ export const useStartConversation = (): StartConversationResult => {
 
             toast({
                 variant: 'destructive',
-                description: ' Hunter não esta a  aceitar mensagens neste momento. Tente novamente mais tarde.',
+                description:
+                    ' Hunter não esta a  aceitar mensagens neste momento. Tente novamente mais tarde.',
             });
         } finally {
             setIsStarting(false);

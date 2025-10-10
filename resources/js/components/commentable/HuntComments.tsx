@@ -3,7 +3,12 @@ import InputError from '@/components/input-error';
 import { LikeButton } from '@/components/likeable/LikeButton';
 import { OnboardingAvatar } from '@/components/Onboarding';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import comments from '@/routes/comments';
@@ -52,13 +57,18 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
                 <>
                     {hunt.can_comment && (
                         <>
-                            <form className="relative flex gap-2" onSubmit={handleAddComment}>
+                            <form
+                                className="relative flex gap-2"
+                                onSubmit={handleAddComment}
+                            >
                                 <Textarea
                                     name="content"
                                     placeholder="Deixe o seu comentário aqui..."
                                     value={data.content}
-                                    onChange={(e) => setData('content', e.target.value)}
-                                    className="focus:ring-primary focus:border-primary transition-all duration-300 focus:ring-2"
+                                    onChange={(e) =>
+                                        setData('content', e.target.value)
+                                    }
+                                    className="transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary"
                                 />
                                 <Button
                                     disabled={processing}
@@ -73,7 +83,9 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
                             {errors.content ? (
                                 <InputError message={errors.content} />
                             ) : (
-                                <span className="float-right text-right text-xs text-gray-500">{data.content.length}/200</span>
+                                <span className="float-right text-right text-xs text-gray-500">
+                                    {data.content.length}/200
+                                </span>
                             )}
                         </>
                     )}
@@ -86,7 +98,7 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
                         {hunt.comments.map((comment) => (
                             <div
                                 key={comment.id}
-                                className="bg-muted animate-[fadeIn_0.5s_forwards] rounded-lg p-0 opacity-0 shadow-md transition-all duration-500 ease-out"
+                                className="animate-[fadeIn_0.5s_forwards] rounded-lg bg-muted p-0 opacity-0 shadow-md transition-all duration-500 ease-out"
                                 style={{
                                     animationName: 'fadeIn',
                                     animationDuration: '0.5s',
@@ -97,11 +109,21 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
                                 <div className="flex flex-col items-start justify-start gap-2 p-2">
                                     <div className="flex w-full items-start justify-between gap-1">
                                         <div className="flex w-full flex-1 flex-grow items-start gap-1">
-                                            <OnboardingAvatar avatarUrl={comment.commenter.avatar_url} size={4} />
-                                            <small className="fleex text-xs">{comment.commenter.name}</small>
-                                            <small className="text-xs text-gray-400">{comment.created_at}</small>
+                                            <OnboardingAvatar
+                                                avatarUrl={
+                                                    comment.commenter.avatar_url
+                                                }
+                                                size={4}
+                                            />
+                                            <small className="fleex text-xs">
+                                                {comment.commenter.name}
+                                            </small>
+                                            <small className="text-xs text-gray-400">
+                                                {comment.created_at}
+                                            </small>
                                         </div>
-                                        {auth.user.id === comment.commenter.id && (
+                                        {auth.user.id ===
+                                            comment.commenter.id && (
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button
@@ -112,16 +134,24 @@ export function HuntComments({ isOpen, hunt }: TweetCommentsProps) {
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent className="gradient">
-                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                        <DeleteComment comment={comment} />
+                                                    <DropdownMenuItem
+                                                        onSelect={(e) =>
+                                                            e.preventDefault()
+                                                        }
+                                                    >
+                                                        <DeleteComment
+                                                            comment={comment}
+                                                        />
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         )}
                                     </div>
-                                    <p className="text-sm leading-relaxed">{comment.content}</p>
+                                    <p className="text-sm leading-relaxed">
+                                        {comment.content}
+                                    </p>
                                 </div>
-                                <div className="text-muted-foreground mb-4 flex px-4 py-2 text-sm">
+                                <div className="mb-4 flex px-4 py-2 text-sm text-muted-foreground">
                                     <LikeButton
                                         count={comment.likes_count}
                                         hasLiked={comment.has_liked}

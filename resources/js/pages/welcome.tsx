@@ -52,7 +52,10 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
         sessionStorage.setItem('hasVisitedWelcome', 'true');
     };
 
-    const uniqueUsers = users.filter((user, index, self) => index === self.findIndex((u) => u.id === user.id));
+    const uniqueUsers = users.filter(
+        (user, index, self) =>
+            index === self.findIndex((u) => u.id === user.id),
+    );
 
     const hasMore = paginator.current_page < paginator.last_page;
 
@@ -98,10 +101,13 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
             {showLoader && <WelcomeLoader onComplete={handleLoaderComplete} />}
             <Head title="Hunter">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
-                <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+                <link
+                    href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600"
+                    rel="stylesheet"
+                />
             </Head>
-            <SidebarProvider className="bg-background flex min-h-screen flex-col items-center justify-start p-6 text-[#1b1b18] lg:p-8 dark:bg-[#0a0a0a]">
-                <header className="bg-card fixed top-0 z-50 w-full p-4 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90">
+            <SidebarProvider className="flex min-h-screen flex-col items-center justify-start bg-background p-6 text-[#1b1b18] lg:p-8 dark:bg-[#0a0a0a]">
+                <header className="fixed top-0 z-50 w-full bg-card p-4 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90">
                     <nav className="flex items-center justify-end gap-4">
                         <AppLogo />
                         <div className="flex-1" />
@@ -153,17 +159,26 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                     }`}
                 >
                     <div className="mt-20 flex w-full flex-col items-center justify-center py-2 md:max-w-4xl lg:max-w-6xl">
-                        <h1 className="mb-4 text-4xl font-bold dark:text-white">Hunter 🇨🇻</h1>
+                        <h1 className="mb-4 text-4xl font-bold dark:text-white">
+                            Hunter 🇨🇻
+                        </h1>
                         <p className="text-md mb-8 max-w-2xl text-center font-normal text-[#1b1b18] sm:text-lg dark:text-[#EDEDEC]">
-                            O ponto de partida para inovação, colaboração e tecnologia em Cabo Verde. Um ecossistema digital onde projetos ganham vida
-                            e talento local encontra visibilidade global.
+                            O ponto de partida para inovação, colaboração e
+                            tecnologia em Cabo Verde. Um ecossistema digital
+                            onde projetos ganham vida e talento local encontra
+                            visibilidade global.
                         </p>
-                        <p className="text-muted-foreground -mt-6 mb-8 text-center text-xs">
-                            "{initialQuote.current.message} - <b>{initialQuote.current.author}</b>"
+                        <p className="-mt-6 mb-8 text-center text-xs text-muted-foreground">
+                            "{initialQuote.current.message} -{' '}
+                            <b>{initialQuote.current.author}</b>"
                         </p>
                         <DevCount users={uniqueUsers} total={paginator.total} />
                     </div>
-                    <Finder users={uniqueUsers} onSearch={search} isSearchLoading={isSearchLoading} />
+                    <Finder
+                        users={uniqueUsers}
+                        onSearch={search}
+                        isSearchLoading={isSearchLoading}
+                    />
                     {/* Infinite scroll trigger */}
                     {!searchQuery && hasMore && (
                         <div
@@ -185,19 +200,23 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                             }}
                         >
                             {isLoadingMore ? (
-                                <div className="text-muted-foreground flex items-center gap-2">
+                                <div className="flex items-center gap-2 text-muted-foreground">
                                     <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-current"></div>
                                     <span>Carregando mais hunters...</span>
                                 </div>
                             ) : (
-                                <div className="text-muted-foreground text-sm">Scroll para carregar mais...</div>
+                                <div className="text-sm text-muted-foreground">
+                                    Scroll para carregar mais...
+                                </div>
                             )}
                         </div>
                     )}
                     {/* End message when no more items */}
                     {!hasMore && uniqueUsers.length > 0 && (
                         <div className="flex w-full items-center justify-center py-8">
-                            <p className="text-muted-foreground text-sm">Todos os hunters foram carregados!</p>
+                            <p className="text-sm text-muted-foreground">
+                                Todos os hunters foram carregados!
+                            </p>
                         </div>
                     )}
                 </div>

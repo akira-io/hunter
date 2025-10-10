@@ -23,15 +23,28 @@ export default function Huntings({ followings }: FollowingsProps) {
         <Layout breadcrumbs={breadcrumbs}>
             <Head title="Huntings" />
             <div className="mb-4 flex items-start justify-between px-5">
-                <SectionHeader title="Huntings" description="São hunters que admiras, que te inspiram e te fazem querer evoluir." />
-                <Button className="text-muted-forground flex h-8 w-8 cursor-pointer border-none shadow-none" variant="secondary">
+                <SectionHeader
+                    title="Huntings"
+                    description="São hunters que admiras, que te inspiram e te fazem querer evoluir."
+                />
+                <Button
+                    className="text-muted-forground flex h-8 w-8 cursor-pointer border-none shadow-none"
+                    variant="secondary"
+                >
                     <ListFilterPlusIcon />
                 </Button>
             </div>
             <InfiniteScroll data="followings">
                 <div className="mx-auto grid w-full max-w-7xl grid-cols-1 justify-center gap-4 p-5 transition-all duration-1 sm:grid-cols-2 md:px-10 xl:grid-cols-3">
                     {followings.data.map(
-                        (following) => following.followable && <Onboarding user={following.followable} key={following.followable.id} hasFollowed />,
+                        (following) =>
+                            following.followable && (
+                                <Onboarding
+                                    user={following.followable}
+                                    key={following.followable.id}
+                                    hasFollowed
+                                />
+                            ),
                     )}
                 </div>
             </InfiniteScroll>

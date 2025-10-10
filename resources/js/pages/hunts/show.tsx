@@ -32,7 +32,12 @@ export default function HuntShow({ hunt }: HuntShowProps) {
             <Head title={`Hunt by ${hunt.owner.name}`} />
             <div className="mx-auto flex h-full max-w-7xl flex-1 flex-col gap-3 p-3 sm:gap-4 sm:p-4">
                 {/* Back Button */}
-                <Button variant="ghost" size="sm" className="w-fit" onClick={goBack}>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-fit"
+                    onClick={goBack}
+                >
                     <ArrowLeft size={16} />
                     Voltar
                 </Button>

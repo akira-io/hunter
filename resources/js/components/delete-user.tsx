@@ -7,7 +7,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 
 export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
@@ -47,7 +55,9 @@ export default function DeleteUser() {
                 <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
                     <p className="font-medium">Atenção</p>
                     <p className="text-sm">
-                        Ao eliminar a sua conta, todos os seus dados e recursos serão eliminados permanentemente. Esta ação não pode ser revertida.
+                        Ao eliminar a sua conta, todos os seus dados e recursos
+                        serão eliminados permanentemente. Esta ação não pode ser
+                        revertida.
                     </p>
                 </div>
                 <Dialog>
@@ -55,10 +65,13 @@ export default function DeleteUser() {
                         <Button variant="destructive">Eliminar Conta</Button>
                     </DialogTrigger>
                     <DialogContent>
-                        <DialogTitle>Você tem certeza que deseja apagar a sua conta?</DialogTitle>
+                        <DialogTitle>
+                            Você tem certeza que deseja apagar a sua conta?
+                        </DialogTitle>
                         <DialogDescription>
-                            Depois que sua conta for excluída, todos os seus recursos e dados também serão excluídos permanentemente. Por favor,
-                            insira sua senha
+                            Depois que sua conta for excluída, todos os seus
+                            recursos e dados também serão excluídos
+                            permanentemente. Por favor, insira sua senha
                         </DialogDescription>
                         <form className="space-y-6" onSubmit={deleteUser}>
                             <div className="grid gap-2">
@@ -71,7 +84,9 @@ export default function DeleteUser() {
                                     name="password"
                                     ref={passwordInput}
                                     value={data.password}
-                                    onChange={(e) => setData('password', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('password', e.target.value)
+                                    }
                                     placeholder="Password"
                                     autoComplete="current-password"
                                 />
@@ -79,12 +94,21 @@ export default function DeleteUser() {
                             </div>
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary" onClick={closeModal}>
+                                    <Button
+                                        variant="secondary"
+                                        onClick={closeModal}
+                                    >
                                         Cancelar
                                     </Button>
                                 </DialogClose>
-                                <Button variant="destructive" disabled={processing} asChild>
-                                    <button type="submit">Eliminar Conta</button>
+                                <Button
+                                    variant="destructive"
+                                    disabled={processing}
+                                    asChild
+                                >
+                                    <button type="submit">
+                                        Eliminar Conta
+                                    </button>
                                 </Button>
                             </DialogFooter>
                         </form>

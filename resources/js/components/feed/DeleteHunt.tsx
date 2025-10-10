@@ -30,5 +30,11 @@ export default function DeleteHunt({ hunt }: DeleteHuntProps) {
         });
     }
 
-    return <HunterConfirmDialog processing={processing} onConfirm={deleteHunt} title="Hunt" />;
+    return (
+        <HunterConfirmDialog
+            processing={processing}
+            onConfirm={deleteHunt}
+            title="Hunt"
+        />
+    );
 }

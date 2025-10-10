@@ -24,8 +24,14 @@ export default function Finder({ users }: FinderProps) {
         <Layout breadcrumbs={breadcrumbs}>
             <Head title="Finder" />
             <div className="mb-4 flex items-start justify-between px-5">
-                <SectionHeader title="Finder" description="Explore os perfis dos Hunters e acompanhe as suas conquistas." />
-                <Button className="text-muted-forground flex h-8 w-8 cursor-pointer border-none shadow-none" variant="secondary">
+                <SectionHeader
+                    title="Finder"
+                    description="Explore os perfis dos Hunters e acompanhe as suas conquistas."
+                />
+                <Button
+                    className="text-muted-forground flex h-8 w-8 cursor-pointer border-none shadow-none"
+                    variant="secondary"
+                >
                     <ListFilterPlusIcon />
                 </Button>
             </div>

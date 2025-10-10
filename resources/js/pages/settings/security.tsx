@@ -15,8 +15,19 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useUniqueSessions } from '@/hooks/use-unique-sessions';
@@ -29,7 +40,19 @@ import { Head, router, useForm } from '@inertiajs/react';
 import { RiGithubFill } from '@remixicon/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { AlertCircle, Check, Globe, KeyRound, LogOut, Monitor, MoreVertical, ShieldAlert, Smartphone, Unlink, X } from 'lucide-react';
+import {
+    AlertCircle,
+    Check,
+    Globe,
+    KeyRound,
+    LogOut,
+    Monitor,
+    MoreVertical,
+    ShieldAlert,
+    Smartphone,
+    Unlink,
+    X,
+} from 'lucide-react';
 import { type FormEventHandler, useRef, useState } from 'react';
 import { RiGoogleFill } from 'react-icons/ri';
 
@@ -63,9 +86,15 @@ interface Props {
     hasPassword: boolean;
 }
 
-export default function Security({ activeSessions, connectedAccounts, hasPassword }: Props) {
+export default function Security({
+    activeSessions,
+    connectedAccounts,
+    hasPassword,
+}: Props) {
     const [sessionToRevoke, setSessionToRevoke] = useState<number | null>(null);
-    const [accountToDisconnect, setAccountToDisconnect] = useState<string | null>(null);
+    const [accountToDisconnect, setAccountToDisconnect] = useState<
+        string | null
+    >(null);
     const [showLogoutAllDialog, setShowLogoutAllDialog] = useState(false);
     const [isConnecting, setIsConnecting] = useState<string | null>(null);
 
@@ -130,7 +159,11 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
     };
 
     const getDeviceIcon = (userAgent: string) => {
-        if (userAgent.includes('Mobile') || userAgent.includes('Android') || userAgent.includes('iPhone')) {
+        if (
+            userAgent.includes('Mobile') ||
+            userAgent.includes('Android') ||
+            userAgent.includes('iPhone')
+        ) {
             return <Smartphone className="size-4" />;
         }
         return <Monitor className="size-4" />;
@@ -151,19 +184,25 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
         else if (userAgent.includes('Mac')) os = 'macOS';
         else if (userAgent.includes('Linux')) os = 'Linux';
         else if (userAgent.includes('Android')) os = 'Android';
-        else if (userAgent.includes('iOS') || userAgent.includes('iPhone')) os = 'iOS';
+        else if (userAgent.includes('iOS') || userAgent.includes('iPhone'))
+            os = 'iOS';
 
         return { browser, os };
     };
 
-    const otherSessionsCount = uniqueSessions.filter((s) => !s.is_current).length;
+    const otherSessionsCount = uniqueSessions.filter(
+        (s) => !s.is_current,
+    ).length;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Segurança" />
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Segurança" description="Gerencie a segurança da sua conta, senha, sessões ativas e contas conectadas" />
+                    <HeadingSmall
+                        title="Segurança"
+                        description="Gerencie a segurança da sua conta, senha, sessões ativas e contas conectadas"
+                    />
 
                     {/* Password Change Section */}
                     <Card className="gradient">
@@ -172,22 +211,38 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                 <KeyRound className="size-5" />
                                 Alterar Senha
                             </CardTitle>
-                            <CardDescription>Mantenha sua conta segura com uma senha forte</CardDescription>
+                            <CardDescription>
+                                Mantenha sua conta segura com uma senha forte
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={updatePassword} className="space-y-4">
+                            <form
+                                onSubmit={updatePassword}
+                                className="space-y-4"
+                            >
                                 <div className="grid gap-2">
-                                    <Label htmlFor="current_password">Senha Atual</Label>
+                                    <Label htmlFor="current_password">
+                                        Senha Atual
+                                    </Label>
                                     <Input
                                         id="current_password"
                                         ref={currentPasswordInput}
                                         value={passwordData.current_password}
-                                        onChange={(e) => setPasswordData('current_password', e.target.value)}
+                                        onChange={(e) =>
+                                            setPasswordData(
+                                                'current_password',
+                                                e.target.value,
+                                            )
+                                        }
                                         type="password"
                                         autoComplete="current-password"
                                         placeholder="Senha atual"
                                     />
-                                    <InputError message={passwordErrors.current_password} />
+                                    <InputError
+                                        message={
+                                            passwordErrors.current_password
+                                        }
+                                    />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="password">Nova Senha</Label>
@@ -195,27 +250,50 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                         id="password"
                                         ref={passwordInput}
                                         value={passwordData.password}
-                                        onChange={(e) => setPasswordData('password', e.target.value)}
+                                        onChange={(e) =>
+                                            setPasswordData(
+                                                'password',
+                                                e.target.value,
+                                            )
+                                        }
                                         type="password"
                                         autoComplete="new-password"
                                         placeholder="Nova senha"
                                     />
-                                    <InputError message={passwordErrors.password} />
+                                    <InputError
+                                        message={passwordErrors.password}
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password_confirmation">Confirmar Senha</Label>
+                                    <Label htmlFor="password_confirmation">
+                                        Confirmar Senha
+                                    </Label>
                                     <Input
                                         id="password_confirmation"
-                                        value={passwordData.password_confirmation}
-                                        onChange={(e) => setPasswordData('password_confirmation', e.target.value)}
+                                        value={
+                                            passwordData.password_confirmation
+                                        }
+                                        onChange={(e) =>
+                                            setPasswordData(
+                                                'password_confirmation',
+                                                e.target.value,
+                                            )
+                                        }
                                         type="password"
                                         autoComplete="new-password"
                                         placeholder="Confirmar senha"
                                     />
-                                    <InputError message={passwordErrors.password_confirmation} />
+                                    <InputError
+                                        message={
+                                            passwordErrors.password_confirmation
+                                        }
+                                    />
                                 </div>
                                 <div className="flex items-center justify-end gap-4">
-                                    <Button disabled={updatingPassword} variant="gradient">
+                                    <Button
+                                        disabled={updatingPassword}
+                                        variant="gradient"
+                                    >
                                         Guardar Senha
                                     </Button>
                                     <Transition
@@ -225,7 +303,9 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                         leave="transition ease-in-out"
                                         leaveTo="opacity-0"
                                     >
-                                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Guardado</p>
+                                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                                            Guardado
+                                        </p>
                                     </Transition>
                                 </div>
                             </form>
@@ -241,10 +321,19 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                         <Monitor className="size-5" />
                                         Sessões Ativas
                                     </CardTitle>
-                                    <CardDescription>Dispositivos atualmente conectados à sua conta</CardDescription>
+                                    <CardDescription>
+                                        Dispositivos atualmente conectados à sua
+                                        conta
+                                    </CardDescription>
                                 </div>
                                 {otherSessionsCount > 0 && (
-                                    <Button variant="destructive" size="sm" onClick={() => setShowLogoutAllDialog(true)}>
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() =>
+                                            setShowLogoutAllDialog(true)
+                                        }
+                                    >
                                         <LogOut className="mr-2 size-4" />
                                         Sair de Todos
                                     </Button>
@@ -255,17 +344,25 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                             {uniqueSessions.length === 0 ? (
                                 <Alert>
                                     <AlertCircle className="size-4" />
-                                    <AlertDescription>Nenhuma sessão ativa encontrada.</AlertDescription>
+                                    <AlertDescription>
+                                        Nenhuma sessão ativa encontrada.
+                                    </AlertDescription>
                                 </Alert>
                             ) : (
                                 uniqueSessions.map((session) => {
-                                    const { browser, os } = parseUserAgent(session.user_agent);
+                                    const { browser, os } = parseUserAgent(
+                                        session.user_agent,
+                                    );
                                     return (
                                         <div
                                             key={session.id}
                                             className="flex items-start justify-start gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
                                         >
-                                            <div className="rounded-full bg-zinc-100 p-3 dark:bg-zinc-800">{getDeviceIcon(session.user_agent)}</div>
+                                            <div className="rounded-full bg-zinc-100 p-3 dark:bg-zinc-800">
+                                                {getDeviceIcon(
+                                                    session.user_agent,
+                                                )}
+                                            </div>
                                             <div className="flex w-full gap-4">
                                                 <div className="w-full space-y-1">
                                                     <div className="flex items-center justify-between gap-2">
@@ -273,7 +370,10 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                                             {browser} no {os}
                                                         </p>
                                                         {session.is_current && (
-                                                            <Badge variant="default" className="text-xs">
+                                                            <Badge
+                                                                variant="default"
+                                                                className="text-xs"
+                                                            >
                                                                 <Check className="mr-1 size-3" />
                                                                 Atual
                                                             </Badge>
@@ -282,35 +382,62 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                                     <div className="flex flex-col gap-1 text-sm text-zinc-600 dark:text-zinc-400">
                                                         <div className="flex items-center gap-2">
                                                             <Globe className="size-3" />
-                                                            <span>{session.ip_address}</span>
-                                                            {session.location?.city && (
+                                                            <span>
+                                                                {
+                                                                    session.ip_address
+                                                                }
+                                                            </span>
+                                                            {session.location
+                                                                ?.city && (
                                                                 <span>
-                                                                    • {session.location.city}
-                                                                    {session.location.country && `, ${session.location.country}`}
+                                                                    •{' '}
+                                                                    {
+                                                                        session
+                                                                            .location
+                                                                            .city
+                                                                    }
+                                                                    {session
+                                                                        .location
+                                                                        .country &&
+                                                                        `, ${session.location.country}`}
                                                                 </span>
                                                             )}
                                                         </div>
                                                         <span className="text-xs">
                                                             Login{' '}
-                                                            {formatDistanceToNow(new Date(session.login_at), {
-                                                                addSuffix: true,
-                                                                locale: ptBR,
-                                                            })}
+                                                            {formatDistanceToNow(
+                                                                new Date(
+                                                                    session.login_at,
+                                                                ),
+                                                                {
+                                                                    addSuffix: true,
+                                                                    locale: ptBR,
+                                                                },
+                                                            )}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
                                             {!session.is_current && (
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="sm">
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                        >
                                                             <MoreVertical className="size-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem
                                                             className="text-red-600 dark:text-red-400"
-                                                            onClick={() => setSessionToRevoke(session.id)}
+                                                            onClick={() =>
+                                                                setSessionToRevoke(
+                                                                    session.id,
+                                                                )
+                                                            }
                                                         >
                                                             <LogOut className="mr-2 size-4" />
                                                             Revogar Sessão
@@ -332,13 +459,18 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                 <Unlink className="size-5" />
                                 Contas Conectadas
                             </CardTitle>
-                            <CardDescription>Gerencie suas contas OAuth conectadas</CardDescription>
+                            <CardDescription>
+                                Gerencie suas contas OAuth conectadas
+                            </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {!hasPassword && (
                                 <Alert variant="destructive">
                                     <ShieldAlert className="size-4" />
-                                    <AlertDescription>Você precisa definir uma senha antes de desconectar contas OAuth.</AlertDescription>
+                                    <AlertDescription>
+                                        Você precisa definir uma senha antes de
+                                        desconectar contas OAuth.
+                                    </AlertDescription>
                                 </Alert>
                             )}
 
@@ -352,7 +484,9 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                         <p className="font-medium">
                                             GitHub{' '}
                                             <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {connectedAccounts.github ? 'Conta conectada' : 'Não conectado'}
+                                                {connectedAccounts.github
+                                                    ? 'Conta conectada'
+                                                    : 'Não conectado'}
                                             </p>
                                         </p>
                                     </div>
@@ -364,7 +498,11 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                                 variant="destructive"
                                                 size="sm"
                                                 disabled={!hasPassword}
-                                                onClick={() => setAccountToDisconnect('github')}
+                                                onClick={() =>
+                                                    setAccountToDisconnect(
+                                                        'github',
+                                                    )
+                                                }
                                                 className="w-full sm:w-auto"
                                             >
                                                 <X className="mr-2 size-4" />
@@ -372,14 +510,28 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                             </Button>
                                         </>
                                     ) : (
-                                        <Button variant="outline" size="sm" asChild className="w-full sm:w-auto" disabled={isConnecting === 'github'}>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            asChild
+                                            className="w-full sm:w-auto"
+                                            disabled={isConnecting === 'github'}
+                                        >
                                             <a
                                                 href="/auth/github"
-                                                onClick={() => setIsConnecting('github')}
-                                                className={isConnecting === 'github' ? 'pointer-events-none' : ''}
+                                                onClick={() =>
+                                                    setIsConnecting('github')
+                                                }
+                                                className={
+                                                    isConnecting === 'github'
+                                                        ? 'pointer-events-none'
+                                                        : ''
+                                                }
                                             >
                                                 <RiGithubFill className="size-4" />
-                                                {isConnecting === 'github' ? 'Conectando...' : 'Conectar'}
+                                                {isConnecting === 'github'
+                                                    ? 'Conectando...'
+                                                    : 'Conectar'}
                                             </a>
                                         </Button>
                                     )}
@@ -390,7 +542,10 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                             <div className="flex flex-col gap-4 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
                                 <div className="flex items-center gap-4">
                                     <div className="shrink-0 rounded-full bg-white p-3 shadow-sm dark:bg-zinc-800">
-                                        <svg className="size-4" viewBox="0 0 24 24">
+                                        <svg
+                                            className="size-4"
+                                            viewBox="0 0 24 24"
+                                        >
                                             <path
                                                 fill="#4285F4"
                                                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -412,7 +567,9 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                     <div>
                                         <p className="font-medium">Google</p>
                                         <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                                            {connectedAccounts.google ? 'Conta conectada' : 'Não conectado'}
+                                            {connectedAccounts.google
+                                                ? 'Conta conectada'
+                                                : 'Não conectado'}
                                         </p>
                                     </div>
                                 </div>
@@ -423,7 +580,11 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                                 variant="destructive"
                                                 size="sm"
                                                 disabled={!hasPassword}
-                                                onClick={() => setAccountToDisconnect('google')}
+                                                onClick={() =>
+                                                    setAccountToDisconnect(
+                                                        'google',
+                                                    )
+                                                }
                                                 className="w-full sm:w-auto"
                                             >
                                                 <X className="mr-2 size-4" />
@@ -431,14 +592,28 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                             </Button>
                                         </>
                                     ) : (
-                                        <Button variant="outline" size="sm" asChild className="w-full sm:w-auto" disabled={isConnecting === 'google'}>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            asChild
+                                            className="w-full sm:w-auto"
+                                            disabled={isConnecting === 'google'}
+                                        >
                                             <a
                                                 href="/auth/google"
-                                                onClick={() => setIsConnecting('google')}
-                                                className={isConnecting === 'google' ? 'pointer-events-none' : ''}
+                                                onClick={() =>
+                                                    setIsConnecting('google')
+                                                }
+                                                className={
+                                                    isConnecting === 'google'
+                                                        ? 'pointer-events-none'
+                                                        : ''
+                                                }
                                             >
                                                 <RiGoogleFill />
-                                                {isConnecting === 'google' ? 'Conectando...' : 'Conectar'}
+                                                {isConnecting === 'google'
+                                                    ? 'Conectando...'
+                                                    : 'Conectar'}
                                             </a>
                                         </Button>
                                     )}
@@ -454,7 +629,9 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                 <ShieldAlert className="size-5" />
                                 Zona de Perigo
                             </CardTitle>
-                            <CardDescription>Ações irreversíveis da conta</CardDescription>
+                            <CardDescription>
+                                Ações irreversíveis da conta
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <DeleteUser />
@@ -463,18 +640,25 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                 </div>
 
                 {/* Revoke Session Dialog */}
-                <AlertDialog open={sessionToRevoke !== null} onOpenChange={() => setSessionToRevoke(null)}>
+                <AlertDialog
+                    open={sessionToRevoke !== null}
+                    onOpenChange={() => setSessionToRevoke(null)}
+                >
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle>Revogar Sessão</AlertDialogTitle>
                             <AlertDialogDescription>
-                                Tem certeza de que deseja revogar esta sessão? O dispositivo será desconectado imediatamente.
+                                Tem certeza de que deseja revogar esta sessão? O
+                                dispositivo será desconectado imediatamente.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
                             <AlertDialogAction
-                                onClick={() => sessionToRevoke && revokeSession(sessionToRevoke)}
+                                onClick={() =>
+                                    sessionToRevoke &&
+                                    revokeSession(sessionToRevoke)
+                                }
                                 className="bg-red-600 hover:bg-red-700"
                             >
                                 Revogar
@@ -484,17 +668,27 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                 </AlertDialog>
 
                 {/* Logout All Devices Dialog */}
-                <AlertDialog open={showLogoutAllDialog} onOpenChange={setShowLogoutAllDialog}>
+                <AlertDialog
+                    open={showLogoutAllDialog}
+                    onOpenChange={setShowLogoutAllDialog}
+                >
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Sair de Todos os Dispositivos</AlertDialogTitle>
+                            <AlertDialogTitle>
+                                Sair de Todos os Dispositivos
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                                Tem certeza de que deseja sair de todos os outros dispositivos? Você permanecerá conectado neste dispositivo.
+                                Tem certeza de que deseja sair de todos os
+                                outros dispositivos? Você permanecerá conectado
+                                neste dispositivo.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={logoutOtherDevices} className="bg-red-600 hover:bg-red-700">
+                            <AlertDialogAction
+                                onClick={logoutOtherDevices}
+                                className="bg-red-600 hover:bg-red-700"
+                            >
                                 Sair de Todos
                             </AlertDialogAction>
                         </AlertDialogFooter>
@@ -502,19 +696,31 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                 </AlertDialog>
 
                 {/* Disconnect Account Dialog */}
-                <AlertDialog open={accountToDisconnect !== null} onOpenChange={() => setAccountToDisconnect(null)}>
+                <AlertDialog
+                    open={accountToDisconnect !== null}
+                    onOpenChange={() => setAccountToDisconnect(null)}
+                >
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Desconectar Conta</AlertDialogTitle>
+                            <AlertDialogTitle>
+                                Desconectar Conta
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                                Tem certeza de que deseja desconectar sua conta do {accountToDisconnect === 'github' ? 'GitHub' : 'Google'}? Você
-                                poderá reconectar a qualquer momento.
+                                Tem certeza de que deseja desconectar sua conta
+                                do{' '}
+                                {accountToDisconnect === 'github'
+                                    ? 'GitHub'
+                                    : 'Google'}
+                                ? Você poderá reconectar a qualquer momento.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
                             <AlertDialogAction
-                                onClick={() => accountToDisconnect && disconnectAccount(accountToDisconnect)}
+                                onClick={() =>
+                                    accountToDisconnect &&
+                                    disconnectAccount(accountToDisconnect)
+                                }
                                 className="bg-red-600 hover:bg-red-700"
                             >
                                 Desconectar

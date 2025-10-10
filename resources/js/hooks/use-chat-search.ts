@@ -19,12 +19,21 @@ interface UseChatSearchReturn {
     isSearching: boolean;
 }
 
-export const useChatSearch = ({ conversations, onlineUsers = [], followedHunters = [] }: UseChatSearchOptions): UseChatSearchReturn => {
+export const useChatSearch = ({
+    conversations,
+    onlineUsers = [],
+    followedHunters = [],
+}: UseChatSearchOptions): UseChatSearchReturn => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchFocused, setIsSearchFocused] = useState(false);
 
     const isUserOnline = (userId: number): boolean => {
-        return onlineUsers.some((user) => user.id === userId) || followedHunters.some((hunter) => hunter.id === userId && hunter.is_online);
+        return (
+            onlineUsers.some((user) => user.id === userId) ||
+            followedHunters.some(
+                (hunter) => hunter.id === userId && hunter.is_online,
+            )
+        );
     };
 
     const getConversationTitle = (conversation: Conversation): string => {
@@ -42,7 +51,8 @@ export const useChatSearch = ({ conversations, onlineUsers = [], followedHunters
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter((conversation) => {
                 const title = getConversationTitle(conversation).toLowerCase();
-                const lastMessage = conversation.last_message?.content.toLowerCase() || '';
+                const lastMessage =
+                    conversation.last_message?.content.toLowerCase() || '';
                 return title.includes(query) || lastMessage.includes(query);
             });
         }
@@ -52,16 +62,24 @@ export const useChatSearch = ({ conversations, onlineUsers = [], followedHunters
             const aParticipant = a.other_participant;
             const bParticipant = b.other_participant;
 
-            const aIsOnline = aParticipant ? isUserOnline(aParticipant.id) : false;
-            const bIsOnline = bParticipant ? isUserOnline(bParticipant.id) : false;
+            const aIsOnline = aParticipant
+                ? isUserOnline(aParticipant.id)
+                : false;
+            const bIsOnline = bParticipant
+                ? isUserOnline(bParticipant.id)
+                : false;
 
             // Online users first
             if (aIsOnline && !bIsOnline) return -1;
             if (!aIsOnline && bIsOnline) return 1;
 
             // If both online or both offline, sort by last message time
-            const aTime = a.last_message_at ? new Date(a.last_message_at).getTime() : 0;
-            const bTime = b.last_message_at ? new Date(b.last_message_at).getTime() : 0;
+            const aTime = a.last_message_at
+                ? new Date(a.last_message_at).getTime()
+                : 0;
+            const bTime = b.last_message_at
+                ? new Date(b.last_message_at).getTime()
+                : 0;
             return bTime - aTime;
         });
     }, [conversations, onlineUsers, followedHunters, searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps

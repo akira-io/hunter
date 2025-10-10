@@ -1,4 +1,11 @@
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import {
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
+} from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -15,7 +22,9 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
         const itemPath = href.split('?')[0].replace(/\/$/, ''); // Remove trailing slash and query params
 
         // Exact match or starts with the path followed by /
-        return currentPath === itemPath || currentPath.startsWith(itemPath + '/');
+        return (
+            currentPath === itemPath || currentPath.startsWith(itemPath + '/')
+        );
     };
 
     const handleLinkClick = () => {
@@ -26,7 +35,9 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
 
     return (
         <SidebarGroup className="px-2 py-0">
-            <SidebarGroupLabel className="text-muted-foreground/70 text-xs font-semibold tracking-wider uppercase">Menu</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-xs font-semibold tracking-wider text-muted-foreground/70 uppercase">
+                Menu
+            </SidebarGroupLabel>
             <SidebarMenu className="gap-2">
                 {items.map((item) => {
                     const isActive = isRouteActive(item.href);
@@ -37,11 +48,17 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 isActive={isActive}
                                 tooltip={{ children: item.title }}
                                 className={cn(
-                                    'group hover:bg-accent/50 h-11 transition-all duration-200',
-                                    isActive && 'bg-accent text-accent-foreground font-medium shadow-sm',
+                                    'group h-11 transition-all duration-200 hover:bg-accent/50',
+                                    isActive &&
+                                        'bg-accent font-medium text-accent-foreground shadow-sm',
                                 )}
                             >
-                                <Link href={item.href} prefetch className="flex items-center gap-3 py-2.5" onClick={handleLinkClick}>
+                                <Link
+                                    href={item.href}
+                                    prefetch
+                                    className="flex items-center gap-3 py-2.5"
+                                    onClick={handleLinkClick}
+                                >
                                     <div className="relative">
                                         {item.icon && (
                                             <item.icon
@@ -53,14 +70,20 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                         )}
                                         {item.badge && item.badge > 0 && (
                                             <div className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-purple-500 px-1 text-[10px] font-bold text-white">
-                                                {item.badge > 99 ? '99+' : item.badge}
+                                                {item.badge > 99
+                                                    ? '99+'
+                                                    : item.badge}
                                             </div>
                                         )}
                                     </div>
-                                    <span className="truncate text-[15px]">{item.title}</span>
+                                    <span className="truncate text-[15px]">
+                                        {item.title}
+                                    </span>
                                     {item.badge && item.badge > 0 && (
                                         <div className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-purple-500 px-1.5 text-xs font-bold text-white">
-                                            {item.badge > 99 ? '99+' : item.badge}
+                                            {item.badge > 99
+                                                ? '99+'
+                                                : item.badge}
                                         </div>
                                     )}
                                 </Link>

@@ -63,8 +63,8 @@ final class HuntSearchProvider implements GlobalSearchable
     {
         /** @var Hunt $model */
         return new SearchResult(
-            id: (string) $model->id,
-            title: $model->content,
+            id: $model->id,
+            title: $model->content ?? "#{$model->id}",
             subtitle: "por {$model->owner->name}",
             description: $model->created_at->diffForHumans(),
             image: $model->owner->avatar_url,
@@ -104,6 +104,6 @@ final class HuntSearchProvider implements GlobalSearchable
     protected function shouldIncludeInResults(Model $model): bool
     {
         /** @var Hunt $model */
-        return ($model->owner->privacy_settings['searchable'] ?? true) === true;
+        return (bool) $model->owner->privacy_settings['searchable'];
     }
 }

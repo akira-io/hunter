@@ -103,6 +103,6 @@ final class UserSearchProvider implements GlobalSearchable
     protected function shouldIncludeInResults(Model $model): bool
     {
         /** @var User $model */
-        return ($model->privacy_settings['searchable'] ?? true) === true;
+        return (bool) $model->privacy_settings['searchable'];
     }
 }

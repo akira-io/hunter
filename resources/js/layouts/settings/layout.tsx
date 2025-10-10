@@ -4,7 +4,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, Bell, Lock, Palette, Settings2, Shield } from 'lucide-react';
+import {
+    ArrowLeft,
+    Bell,
+    Lock,
+    Palette,
+    Settings2,
+    Shield,
+} from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
@@ -54,12 +61,18 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                     <ArrowLeft className="size-4" />
                     Voltar
                 </Link>
-                <Heading title="Definições" description="Gerencie as configurações da sua conta" />
+                <Heading
+                    title="Definições"
+                    description="Gerencie as configurações da sua conta"
+                />
             </div>
 
             {/* Desktop: Title */}
             <div className="mb-8 hidden lg:block">
-                <Heading title="Definições" description="Gerencie as configurações da sua conta" />
+                <Heading
+                    title="Definições"
+                    description="Gerencie as configurações da sua conta"
+                />
             </div>
 
             <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
@@ -76,12 +89,19 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                             size="sm"
                                             variant="ghost"
                                             asChild
-                                            className={cn('w-full justify-start', {
-                                                'bg-white/10 font-medium': currentPath === item.href,
-                                            })}
+                                            className={cn(
+                                                'w-full justify-start',
+                                                {
+                                                    'bg-white/10 font-medium':
+                                                        currentPath ===
+                                                        item.href,
+                                                },
+                                            )}
                                         >
                                             <Link href={item.href} prefetch>
-                                                {Icon && <Icon className="mr-2 size-4" />}
+                                                {Icon && (
+                                                    <Icon className="mr-2 size-4" />
+                                                )}
                                                 {item.title}
                                             </Link>
                                         </Button>

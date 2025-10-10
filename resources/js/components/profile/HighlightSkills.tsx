@@ -1,7 +1,15 @@
 import InputError from '@/components/input-error';
 import { HighlightedSkills } from '@/components/profile/HighlightedSkills';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import MultipleSelector, { Option } from '@/components/ui/multiselect';
 import { useToast } from '@/hooks/use-toast';
@@ -20,10 +28,16 @@ interface HighlightSkillsProps extends ComponentProps<'div'> {
     authSkills: Option[];
 }
 
-export function HighlightSkills({ skills, authSkills: highlightedSkills, ...props }: HighlightSkillsProps) {
+export function HighlightSkills({
+    skills,
+    authSkills: highlightedSkills,
+    ...props
+}: HighlightSkillsProps) {
     const { toast } = useToast();
     const { close, set, isOpen } = useHighlightedSkills();
-    const { data, setData, post, errors, processing } = useForm<Required<HighlightSkillsForm>>({
+    const { data, setData, post, errors, processing } = useForm<
+        Required<HighlightSkillsForm>
+    >({
         skills: highlightedSkills,
     });
 
@@ -53,8 +67,10 @@ export function HighlightSkills({ skills, authSkills: highlightedSkills, ...prop
                     <DialogHeader>
                         <DialogTitle>Destacar Tecnologias</DialogTitle>
                         <DialogDescription>
-                            Destaque as tecnologias que você mais gosta de usar ou que são mais relevantes para o seu trabalho. Isso ajudará os
-                            visitantes a entenderem melhor suas habilidades e interesses.
+                            Destaque as tecnologias que você mais gosta de usar
+                            ou que são mais relevantes para o seu trabalho. Isso
+                            ajudará os visitantes a entenderem melhor suas
+                            habilidades e interesses.
                         </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={submitForm}>
@@ -66,14 +82,25 @@ export function HighlightSkills({ skills, authSkills: highlightedSkills, ...prop
                                 }}
                                 defaultOptions={skills}
                                 placeholder="Selecione as tecnologias"
-                                emptyIndicator={<p className="text-center"> Nenhum resultado encontrado</p>}
+                                emptyIndicator={
+                                    <p className="text-center">
+                                        {' '}
+                                        Nenhum resultado encontrado
+                                    </p>
+                                }
                                 value={highlightedSkills}
-                                onChange={(skills: Option[]) => setData('skills', skills)}
+                                onChange={(skills: Option[]) =>
+                                    setData('skills', skills)
+                                }
                             />
                             <InputError message={errors.skills} />
                         </div>
                         <DialogFooter className="mt-8">
-                            <Button type="submit" disabled={processing} variant="default">
+                            <Button
+                                type="submit"
+                                disabled={processing}
+                                variant="default"
+                            >
                                 <Code /> Destacar
                             </Button>
                         </DialogFooter>
