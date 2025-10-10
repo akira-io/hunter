@@ -308,7 +308,13 @@ export function OnboardingWizard({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleSkip()}>
-            <DialogContent className="flex h-full flex-col overflow-hidden rounded-lg p-0 shadow-lg md:h-[600px] md:max-w-2xl">
+            <DialogContent
+                className="flex h-full flex-col overflow-hidden rounded-lg p-0 shadow-lg md:h-[600px] md:max-w-2xl"
+                style={{
+                    paddingTop: 'env(safe-area-inset-top, 0px)',
+                    paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+                }}
+            >
                 {/* Header - Fixo */}
                 <div className="flex-shrink-0 border-b p-6">
                     <div className="mb-3 flex items-center justify-between">
