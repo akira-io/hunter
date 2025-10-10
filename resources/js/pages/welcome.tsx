@@ -107,7 +107,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                 />
             </Head>
             <SidebarProvider className="flex min-h-screen flex-col items-center justify-start bg-background p-6 text-[#1b1b18] lg:p-8 dark:bg-[#0a0a0a]">
-                <header className="fixed top-0 z-50 w-full bg-card p-4 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90">
+                <header className="pwa-header fixed top-0 z-50 w-full bg-card p-4 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90">
                     <nav className="flex items-center justify-end gap-4">
                         <AppLogo />
                         <div className="flex-1" />
@@ -119,7 +119,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                             <>
                                 <Link
                                     href={login()}
-                                    className="flex items-center justify-center gap-2 rounded-sm border px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] md:border-transparent dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                                    className="mr-4 flex items-center justify-center gap-2 rounded-sm border px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] md:border-transparent dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                                 >
                                     <LogInIcon size={16} />
                                     Iniciar sessão
@@ -131,7 +131,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                                     <UserPlus size={16} />
                                     Criar conta
                                 </Link>
-                                <div className="flex items-center gap-2">
+                                <div className="flex hidden items-center gap-2 md:flex">
                                     <a
                                         className="cursor-pointer dark:text-white"
                                         href="https://github.com/akira-io/devhunter"
