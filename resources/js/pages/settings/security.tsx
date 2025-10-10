@@ -67,11 +67,10 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
     const [sessionToRevoke, setSessionToRevoke] = useState<number | null>(null);
     const [accountToDisconnect, setAccountToDisconnect] = useState<string | null>(null);
     const [showLogoutAllDialog, setShowLogoutAllDialog] = useState(false);
+    const [isConnecting, setIsConnecting] = useState<string | null>(null);
 
-    // Use custom hook to filter duplicate sessions (only one per IP)
     const uniqueSessions = useUniqueSessions(activeSessions);
 
-    // Password form
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
@@ -344,10 +343,10 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                             )}
 
                             {/* GitHub */}
-                            <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
+                            <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 p-4 shadow sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
                                 <div className="flex items-center gap-4">
-                                    <div className="shrink-0 rounded-full bg-black p-3 dark:bg-white">
-                                        <RiGithubFill className="size-4 text-white dark:text-black" />
+                                    <div className="shrink-0 rounded-full bg-white p-3 dark:bg-zinc-800">
+                                        <RiGithubFill className="size-4" />
                                     </div>
                                     <div>
                                         <p className="font-medium">
@@ -373,10 +372,14 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                             </Button>
                                         </>
                                     ) : (
-                                        <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
-                                            <a href="/auth/github">
-                                                <RiGithubFill className="mr-2 size-4" />
-                                                Conectar
+                                        <Button variant="outline" size="sm" asChild className="w-full sm:w-auto" disabled={isConnecting === 'github'}>
+                                            <a
+                                                href="/auth/github"
+                                                onClick={() => setIsConnecting('github')}
+                                                className={isConnecting === 'github' ? 'pointer-events-none' : ''}
+                                            >
+                                                <RiGithubFill className="size-4" />
+                                                {isConnecting === 'github' ? 'Conectando...' : 'Conectar'}
                                             </a>
                                         </Button>
                                     )}
@@ -384,7 +387,7 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                             </div>
 
                             {/* Google */}
-                            <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
+                            <div className="flex flex-col gap-4 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
                                 <div className="flex items-center gap-4">
                                     <div className="shrink-0 rounded-full bg-white p-3 shadow-sm dark:bg-zinc-800">
                                         <svg className="size-4" viewBox="0 0 24 24">
@@ -428,10 +431,14 @@ export default function Security({ activeSessions, connectedAccounts, hasPasswor
                                             </Button>
                                         </>
                                     ) : (
-                                        <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
-                                            <a href="/auth/google">
+                                        <Button variant="outline" size="sm" asChild className="w-full sm:w-auto" disabled={isConnecting === 'google'}>
+                                            <a
+                                                href="/auth/google"
+                                                onClick={() => setIsConnecting('google')}
+                                                className={isConnecting === 'google' ? 'pointer-events-none' : ''}
+                                            >
                                                 <RiGoogleFill />
-                                                Conectar
+                                                {isConnecting === 'google' ? 'Conectando...' : 'Conectar'}
                                             </a>
                                         </Button>
                                     )}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\HandleGithubAuthAction;
+use App\Exceptions\AccountAlreadyLinkedException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -36,13 +37,23 @@ final readonly class GithubAuthController
     #[Get('/auth/github/callback', name: 'github.callback')]
     public function callback(): RedirectResponse
     {
-        /** @var User $githubUser */
-        $githubUser = Socialite::driver('github')->user();
+        try {
+            /** @var User $githubUser */
+            $githubUser = Socialite::driver('github')->user();
 
-        $user = $this->handleGithubAuthAction->handle($githubUser);
+            $user = $this->handleGithubAuthAction->handle($githubUser);
 
-        Auth::login($user, remember: true);
+            if (! Auth::check()) {
+                Auth::login($user, remember: true);
 
-        return to_route('hunts.index');
+                return to_route('hunts.index');
+            }
+
+            return to_route('security.index');
+
+        } catch (AccountAlreadyLinkedException $e) {
+            return to_route('security.index')
+                ->with('error', $e->getMessage());
+        }
     }
 }

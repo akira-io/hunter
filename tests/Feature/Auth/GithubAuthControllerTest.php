@@ -204,3 +204,75 @@ it('preserves existing user data when some github fields are null', function () 
     // Assert redirect to hunts index
     $response->assertRedirect(route('hunts.index'));
 });
+
+it('prevents linking GitHub account already associated with another user', function () {
+    // Create test data
+    $githubId = '123456';
+    $userName = 'githubuser';
+    $email = 'user@example.com';
+
+    // Create first user with GitHub account
+    $existingUserWithGithub = User::factory()->create([
+        'github_id' => $githubId,
+        'user_name' => $userName,
+        'email' => 'existing@example.com',
+    ]);
+
+    // Create second user (authenticated) trying to link the same GitHub account
+    $authenticatedUser = User::factory()->create([
+        'github_id' => null,
+        'user_name' => 'otheruser',
+        'email' => 'authenticated@example.com',
+    ]);
+
+    // Authenticate as the second user
+    $this->actingAs($authenticatedUser);
+
+    // Create a mock Socialite user
+    $socialiteUser = new SocialiteUser();
+    $socialiteUser->id = $githubId;
+    $socialiteUser->nickname = $userName;
+    $socialiteUser->name = 'GitHub User';
+    $socialiteUser->email = $email;
+    $socialiteUser->avatar = 'https://github.com/avatar.jpg';
+    $socialiteUser->token = 'github-token';
+    $socialiteUser->refreshToken = 'github-refresh-token';
+
+    // Set raw data
+    $raw = [
+        'login' => $userName,
+        'bio' => 'Developer',
+        'location' => 'Earth',
+        'html_url' => 'https://github.com/'.$userName,
+    ];
+
+    $socialiteUser->setRaw($raw)->map([
+        'id' => $githubId,
+        'nickname' => $userName,
+        'name' => 'GitHub User',
+        'email' => $email,
+        'avatar' => 'https://github.com/avatar.jpg',
+    ]);
+
+    // Mock the Socialite facade
+    Socialite::shouldReceive('driver')->with('github')->andReturnSelf();
+    Socialite::shouldReceive('user')->andReturn($socialiteUser);
+
+    // Call the callback endpoint
+    $response = $this->get('/auth/github/callback');
+
+    // Assert redirect to security settings with error
+    $response->assertRedirect(route('security.index'));
+    $response->assertSessionHas('error', 'This GitHub account is already linked to another user.');
+
+    // Assert the authenticated user is still logged in (no account takeover)
+    $this->assertAuthenticatedAs($authenticatedUser);
+
+    // Assert the authenticated user's GitHub ID was NOT updated
+    $authenticatedUser->refresh();
+    expect($authenticatedUser->github_id)->toBeNull();
+
+    // Assert the existing user still has the GitHub account
+    $existingUserWithGithub->refresh();
+    expect($existingUserWithGithub->github_id)->toBe($githubId);
+});

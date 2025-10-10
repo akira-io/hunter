@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Actions\Auth;
 
+use App\Exceptions\AccountAlreadyLinkedException;
 use App\Models\User;
 use App\ValueObjects\GithubUser;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Two\User as SocialiteUser;
 
 final readonly class HandleGithubAuthAction
@@ -15,6 +18,8 @@ final readonly class HandleGithubAuthAction
      *
      * This action implements the logic to either create a new user or update an existing one
      * based on email-first authentication strategy for cross-provider compatibility.
+     *
+     * @throws AccountAlreadyLinkedException
      */
     public function handle(SocialiteUser $githubUser): User
     {
@@ -23,6 +28,28 @@ final readonly class HandleGithubAuthAction
 
         /** @var string $email */
         $email = $githubUserData['email'] ?? '';
+
+        /** @var User|null $authenticatedUser */
+        $authenticatedUser = Auth::user();
+
+        /** @var User|null $userByGithubId */
+        $userByGithubId = $this->findUserByGithubId($githubUser->getId());
+
+        if ($authenticatedUser instanceof User) {
+
+            if ($userByGithubId instanceof User && $userByGithubId->id !== $authenticatedUser->id) {
+                Log::warning('Attempted to link GitHub account already associated with another user', [
+                    'authenticated_user_id' => $authenticatedUser->id,
+                    'github_account_user_id' => $userByGithubId->id,
+                    'github_id' => $githubUser->getId(),
+                ]);
+
+                throw new AccountAlreadyLinkedException('GitHub');
+            }
+
+            return $this->linkGithubToExistingUser($authenticatedUser, $githubUserData);
+        }
+
         /** @var User|null $user */
         $user = $this->findUserByEmail($email);
 
@@ -30,11 +57,8 @@ final readonly class HandleGithubAuthAction
             return $this->linkGithubToExistingUser($user, $githubUserData);
         }
 
-        /** @var User|null $user */
-        $user = $this->findUserByGithubId($githubUser->getId());
-
-        if ($user instanceof User) {
-            return $this->updateExistingGithubUser($user, $githubUserData);
+        if ($userByGithubId instanceof User) {
+            return $this->updateExistingGithubUser($userByGithubId, $githubUserData);
         }
 
         return $this->createNewUser($githubUserData);
