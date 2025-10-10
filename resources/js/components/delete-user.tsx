@@ -16,6 +16,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { Trash2 } from 'lucide-react';
 
 export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
@@ -51,7 +52,7 @@ export default function DeleteUser() {
 
     return (
         <div className="space-y-6">
-            <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
+            <div className="items-end space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
                 <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
                     <p className="font-medium">Atenção</p>
                     <p className="text-sm">
@@ -61,9 +62,17 @@ export default function DeleteUser() {
                     </p>
                 </div>
                 <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="destructive">Eliminar Conta</Button>
-                    </DialogTrigger>
+                    <div className="flex w-full justify-center sm:justify-end">
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="destructive"
+                                className="w-full sm:w-auto"
+                            >
+                                <Trash2 className="size-4" />
+                                Eliminar Conta
+                            </Button>
+                        </DialogTrigger>
+                    </div>
                     <DialogContent>
                         <DialogTitle>
                             Você tem certeza que deseja apagar a sua conta?

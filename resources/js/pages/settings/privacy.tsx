@@ -1,4 +1,5 @@
 import PrivacyController from '@/actions/App/Http/Controllers/Settings/PrivacyController';
+import { SaveButton } from '@/components/core/SaveButton';
 import HeadingSmall from '@/components/heading-small';
 import {
     AlertDialog,
@@ -134,7 +135,6 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Privacidade" />
-
             <SettingsLayout>
                 <div className="space-y-6">
                     {/* Header */}
@@ -145,7 +145,6 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                             atividade
                         </p>
                     </div>
-
                     {/* Privacy Settings Form */}
                     <form onSubmit={updatePrivacySettings}>
                         <Card className="gradient overflow-hidden">
@@ -252,14 +251,12 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                         </p>
                                     </div>
                                 </div>
-
                                 {/* Communication Settings */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                                         <MessageSquare className="size-4" />
                                         <span>Comunicação</span>
                                     </div>
-
                                     <div className="space-y-4">
                                         {/* Who Can Message */}
                                         <div className="space-y-3 rounded-xl bg-zinc-50/50 p-4 dark:bg-zinc-900/30">
@@ -324,7 +321,6 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                 </span>
                                             </p>
                                         </div>
-
                                         {/* Who Can Comment */}
                                         <div className="space-y-3 rounded-xl bg-zinc-50/50 p-4 dark:bg-zinc-900/30">
                                             <Label
@@ -393,14 +389,12 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                         </div>
                                     </div>
                                 </div>
-
                                 {/* Additional Privacy Settings */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                                         <Shield className="size-4" />
                                         <span>Privacidade Adicional</span>
                                     </div>
-
                                     <div className="space-y-3">
                                         {/* Searchable */}
                                         <div
@@ -443,7 +437,6 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                                 }
                                             />
                                         </div>
-
                                         {/* Show Activity Status */}
                                         <div
                                             className={cn(
@@ -491,32 +484,12 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className="flex items-center justify-end gap-3 pt-6 dark:border-zinc-800">
-                                    <Button
-                                        type="submit"
-                                        disabled={processing}
-                                        size="lg"
-                                        className="gap-2"
-                                        variant="gradient"
-                                    >
-                                        {processing ? (
-                                            <>
-                                                <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                                                A guardar...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <CheckCircle className="size-4" />
-                                                Guardar alterações
-                                            </>
-                                        )}
-                                    </Button>
+                                <div className="flex items-center justify-end dark:border-zinc-800">
+                                    <SaveButton disabled={processing} />
                                 </div>
                             </CardContent>
                         </Card>
                     </form>
-
                     {/* Blocked Users */}
                     <Card className="overflow-hidden">
                         <CardHeader className="">
@@ -619,7 +592,6 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                             )}
                         </CardContent>
                     </Card>
-
                     {/* Unblock User Dialog */}
                     <AlertDialog
                         open={userToUnblock !== null}

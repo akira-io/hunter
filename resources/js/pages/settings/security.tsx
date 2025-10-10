@@ -1,4 +1,5 @@
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
+import { SaveButton } from '@/components/core/SaveButton';
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
@@ -35,7 +36,6 @@ import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import password from '@/routes/password';
 import { type BreadcrumbItem } from '@/types';
-import { Transition } from '@headlessui/react';
 import { Head, router, useForm } from '@inertiajs/react';
 import { RiGithubFill } from '@remixicon/react';
 import { formatDistanceToNow } from 'date-fns';
@@ -110,7 +110,6 @@ export default function Security({
         put,
         reset: resetPassword,
         processing: updatingPassword,
-        recentlySuccessful,
     } = useForm({
         current_password: '',
         password: '',
@@ -290,23 +289,7 @@ export default function Security({
                                     />
                                 </div>
                                 <div className="flex items-center justify-end gap-4">
-                                    <Button
-                                        disabled={updatingPassword}
-                                        variant="gradient"
-                                    >
-                                        Guardar Senha
-                                    </Button>
-                                    <Transition
-                                        show={recentlySuccessful}
-                                        enter="transition ease-in-out"
-                                        enterFrom="opacity-0"
-                                        leave="transition ease-in-out"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                                            Guardado
-                                        </p>
-                                    </Transition>
+                                    <SaveButton disabled={updatingPassword} />
                                 </div>
                             </form>
                         </CardContent>
@@ -505,7 +488,7 @@ export default function Security({
                                                 }
                                                 className="w-full sm:w-auto"
                                             >
-                                                <X className="mr-2 size-4" />
+                                                <X className="size-4" />
                                                 Desconectar
                                             </Button>
                                         </>
@@ -587,7 +570,7 @@ export default function Security({
                                                 }
                                                 className="w-full sm:w-auto"
                                             >
-                                                <X className="mr-2 size-4" />
+                                                <X className="size-4" />
                                                 Desconectar
                                             </Button>
                                         </>
