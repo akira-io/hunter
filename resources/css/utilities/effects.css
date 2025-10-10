@@ -72,11 +72,11 @@
      */
     /* Button Gradients - Purple Theme */
     .btn-gradient-primary {
-        @apply bg-gradient-to-br from-purple-500 to-purple-800 text-white shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95;
+        @apply bg-gradient-to-br from-purple-500 to-purple-800 text-white shadow-lg transition-all duration-200 hover:shadow-xl active:scale-95;
     }
 
     .btn-gradient-secondary {
-        @apply bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95;
+        @apply bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-md transition-all duration-200 hover:shadow-lg active:scale-95;
     }
 
     .btn-gradient-outline {
