@@ -12,18 +12,7 @@ import hunts from '@/routes/hunts';
 import publicRoutes from '@/routes/public';
 import { Hunt, SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import {
-    BarChart,
-    EllipsisVerticalIcon,
-    Eye,
-    Flame,
-    Heart,
-    Loader2,
-    MessageCircle,
-    Repeat2,
-    ShieldAlert,
-    TrendingUp
-} from 'lucide-react';
+import { BarChart, EllipsisVerticalIcon, Eye, Flame, Heart, Loader2, MessageCircle, Repeat2, ShieldAlert, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 

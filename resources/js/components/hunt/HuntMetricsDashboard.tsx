@@ -166,7 +166,7 @@ export function HuntMetricsDashboard({ hunt }: HuntMetricsDashboardProps) {
                             color="text-blue-500"
                         />
                         <RateCard
-                            label="Interaç˜ões"
+                            label="Interações"
                             value={`${metrics.interaction_rate.toFixed(1)}%`}
                             icon={<Heart size={16} className="sm:h-[18px] sm:w-[18px]" />}
                             color="text-purple-500"
