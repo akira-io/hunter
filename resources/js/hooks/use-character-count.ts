@@ -8,7 +8,6 @@ interface UseCharacterCountOptions {
 }
 
 interface UseCharacterCountReturn {
-
     count: number;
 
     max: number;
@@ -35,7 +34,8 @@ export function useCharacterCount({
         const processedContent = trim ? content.trim() : content;
         const count = processedContent.length;
         const progressPercentage = (count / maxLength) * 100;
-        const isNearLimit = count > maxLength * CHARACTER_WARNING_THRESHOLDS.NEAR_LIMIT;
+        const isNearLimit =
+            count > maxLength * CHARACTER_WARNING_THRESHOLDS.NEAR_LIMIT;
         const isOverLimit = count > maxLength;
         const hasContent = count > 0;
         const canSubmit = hasContent && !isOverLimit;

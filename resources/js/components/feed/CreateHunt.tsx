@@ -167,7 +167,9 @@ export function CreateHunt() {
                         <div className="p-4 sm:p-6">
                             <MarkdownEditor
                                 value={data.content}
-                                onChange={(e) => setData('content', e.target.value)}
+                                onChange={(e) =>
+                                    setData('content', e.target.value)
+                                }
                                 maxLength={CONTENT_LIMITS.HUNT}
                                 name="content"
                                 rows={4}
@@ -206,7 +208,9 @@ export function CreateHunt() {
                             <CharacterCounter
                                 count={characterCount.count}
                                 max={characterCount.max}
-                                progressPercentage={characterCount.progressPercentage}
+                                progressPercentage={
+                                    characterCount.progressPercentage
+                                }
                                 isNearLimit={characterCount.isNearLimit}
                                 isOverLimit={characterCount.isOverLimit}
                                 variant="with-progress"
