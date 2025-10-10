@@ -143,9 +143,9 @@ export function CreateHunt() {
                     'shadow-lg ring-2 shadow-emerald-500/20 ring-emerald-500/50',
             )}
         >
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-0">
                 {isSuccess ? (
-                    <div className="flex flex-col items-center justify-center py-8 text-center duration-300 animate-in fade-in zoom-in">
+                    <div className="flex flex-col items-center justify-center py-12 text-center duration-300 animate-in fade-in zoom-in">
                         <div className="mb-4 rounded-full bg-emerald-500/10 p-4">
                             <CheckCircle2 className="h-12 w-12 text-emerald-500 duration-500 animate-in zoom-in" />
                         </div>
@@ -164,95 +164,91 @@ export function CreateHunt() {
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                     >
-                        {/* Header com título e ícone */}
-                        <div className="mb-4 flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-purple-500" />
-                            <h3 className="text-lg font-semibold">Hunt </h3>
-                        </div>
+                        <div className="p-4 sm:p-6">
+                            <MarkdownEditor
+                                value={data.content}
+                                onChange={(e) => setData('content', e.target.value)}
+                                maxLength={CONTENT_LIMITS.HUNT}
+                                name="content"
+                                rows={4}
+                                hideCounter={true}
+                                placeholder="O que descobriu hoje? Partilhe insights, conquistas ou desafios interessantes..."
+                                renderMobileControls={(controls) => (
+                                    <div className="mb-3 flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-1">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                id="image-upload-mobile"
+                                                className="hidden"
+                                                onChange={handleImageChange}
+                                                name="image"
+                                            />
+                                            <label
+                                                htmlFor="image-upload-mobile"
+                                                className="cursor-pointer rounded-lg p-2 transition-all hover:scale-105 hover:bg-muted active:scale-95 active:bg-muted/80"
+                                                aria-label="Carregar imagem"
+                                            >
+                                                <ImageIcon className="h-5 w-5" />
+                                            </label>
+                                            {controls.emojiPicker}
+                                            {controls.markdownHelp}
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            {controls.editButton}
+                                            {controls.previewButton}
+                                        </div>
+                                    </div>
+                                )}
+                            />
 
-                        <MarkdownEditor
-                            value={data.content}
-                            onChange={(e) => setData('content', e.target.value)}
-                            maxLength={CONTENT_LIMITS.HUNT}
-                            name="content"
-                            rows={4}
-                            hideCounter={true}
-                            placeholder="O que descobriu hoje? Partilhe insights, conquistas ou desafios interessantes..."
-                            renderMobileControls={(controls) => (
-                                <div className="mb-3 flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-1">
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            id="image-upload-mobile"
-                                            className="hidden"
-                                            onChange={handleImageChange}
-                                            name="image"
-                                        />
-                                        <label
-                                            htmlFor="image-upload-mobile"
-                                            className="cursor-pointer rounded-lg p-2 transition-all hover:scale-105 hover:bg-muted active:scale-95 active:bg-muted/80"
-                                            aria-label="Carregar imagem"
+                            {/* Character count and progress */}
+                            <CharacterCounter
+                                count={characterCount.count}
+                                max={characterCount.max}
+                                progressPercentage={characterCount.progressPercentage}
+                                isNearLimit={characterCount.isNearLimit}
+                                isOverLimit={characterCount.isOverLimit}
+                                variant="with-progress"
+                                className="mt-3"
+                            />
+
+                            <InputError
+                                message={errors.content}
+                                className="mt-2 text-sm"
+                            />
+
+                            {/* Image preview */}
+                            {sanitizedImageUrls.length > 0 && (
+                                <div className="mt-4 duration-300 animate-in fade-in slide-in-from-bottom-4">
+                                    {sanitizedImageUrls.map((src, index) => (
+                                        <div
+                                            key={index}
+                                            className="group relative overflow-hidden rounded-xl"
                                         >
-                                            <ImageIcon className="h-5 w-5" />
-                                        </label>
-                                        {controls.emojiPicker}
-                                        {controls.markdownHelp}
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        {controls.editButton}
-                                        {controls.previewButton}
-                                    </div>
+                                            <img
+                                                src={src}
+                                                alt={`Preview ${index}`}
+                                                className="max-h-96 w-full rounded-xl border-2 border-border object-cover shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                                            <button
+                                                type="button"
+                                                onClick={handleRemoveImage}
+                                                className="absolute top-3 right-3 rounded-full bg-red-500 p-2 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-red-600 active:scale-95"
+                                                title="Remover imagem"
+                                                aria-label="Remover imagem"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
-                        />
-
-                        {/* Character count and progress */}
-                        <CharacterCounter
-                            count={characterCount.count}
-                            max={characterCount.max}
-                            progressPercentage={characterCount.progressPercentage}
-                            isNearLimit={characterCount.isNearLimit}
-                            isOverLimit={characterCount.isOverLimit}
-                            variant="with-progress"
-                            className="mt-2"
-                        />
-
-                        <InputError
-                            message={errors.content}
-                            className="mt-2 text-sm"
-                        />
-
-                        {/* Image preview */}
-                        {sanitizedImageUrls.length > 0 && (
-                            <div className="mt-4 duration-300 animate-in fade-in slide-in-from-bottom-4">
-                                {sanitizedImageUrls.map((src, index) => (
-                                    <div
-                                        key={index}
-                                        className="group relative overflow-hidden rounded-xl"
-                                    >
-                                        <img
-                                            src={src}
-                                            alt={`Preview ${index}`}
-                                            className="max-h-96 w-full rounded-xl border-2 border-border object-cover shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                                        <button
-                                            type="button"
-                                            onClick={handleRemoveImage}
-                                            className="absolute top-3 right-3 rounded-full bg-red-500 p-2 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-red-600 active:scale-95"
-                                            title="Remover imagem"
-                                            aria-label="Remover imagem"
-                                        >
-                                            <X size={18} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        </div>
 
                         {/* Actions footer */}
-                        <div className="mt-6 flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                             <div className="hidden items-center gap-2 sm:flex">
                                 <input
                                     type="file"
