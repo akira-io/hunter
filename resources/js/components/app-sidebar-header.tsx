@@ -21,14 +21,7 @@ export function AppSidebarHeader({
             : undefined;
 
     return (
-        <header
-            className="gradient sticky z-50 flex h-16 w-full shrink-0 items-center border-b border-sidebar-border/50 bg-card/80 backdrop-blur-md transition-[width] ease-linear supports-[backdrop-filter]:bg-card/60"
-            style={{
-                top: 0,
-                paddingTop: 'env(safe-area-inset-top)',
-                marginTop: 'calc(-1 * env(safe-area-inset-top))',
-            }}
-        >
+        <header className="pwa-header gradient sticky top-0 z-50 flex w-full shrink-0 items-center border-b border-sidebar-border/50 bg-card/80 backdrop-blur-md transition-[width] ease-linear supports-[backdrop-filter]:bg-card/60 min-h-[64px] md:min-h-[64px]">
             {/* Left side - Navigation */}
             <div className="flex items-center gap-2 px-3 md:px-6">
                 <SidebarTrigger className="-ml-1 transition-colors hover:bg-accent hover:text-accent-foreground" />
@@ -42,9 +35,9 @@ export function AppSidebarHeader({
 
             {/* Right side - Actions (Fixed position to avoid sidebar push) */}
             <div
-                className="fixed flex h-16 items-center gap-2 transition-[right] duration-200 ease-linear md:right-15"
+                className="fixed flex items-center gap-2 transition-[right] duration-200 ease-linear md:right-15"
                 style={{
-                    top: 'env(safe-area-inset-top)',
+                    top: 'calc(env(safe-area-inset-top, 0px) + 16px)',
                     right: sidebarOffset ? sidebarOffset : '0.75rem',
                 }}
             >

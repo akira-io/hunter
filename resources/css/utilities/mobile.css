@@ -104,15 +104,17 @@
     }
     
 
+    /* PWA Header - Handles iPhone notch and safe areas */
     .pwa-header {
         position: sticky;
         top: 0;
         z-index: 50;
         background: inherit;
-        padding-top: calc(env(safe-area-inset-top, 0px) + 8px);
-        padding-bottom: 8px;
-        /* Compensate for safe area only in standalone PWA mode */
-        margin-top: 0;
+        /* Add safe area padding plus consistent spacing */
+        padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+        padding-bottom: 12px;
+        padding-left: max(env(safe-area-inset-left, 0px), 12px);
+        padding-right: max(env(safe-area-inset-right, 0px), 12px);
     }
 
     /* PWA body adjustments */
@@ -120,15 +122,22 @@
         body {
             /* Remove any default padding in standalone mode */
             padding: 0 !important;
+            margin: 0 !important;
             /* Ensure content respects safe areas */
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
         }
 
         /* Ensure app container is flush with top */
         #app {
             padding-top: 0 !important;
             margin-top: 0 !important;
+        }
+
+        /* Enhanced header for PWA mode */
+        .pwa-header {
+            padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+            padding-bottom: 16px;
         }
     }
 
@@ -145,17 +154,24 @@
             position: sticky;
         }
 
+        /* iPhone/iPad specific safe area handling */
+        .pwa-header {
+            /* Ensure header never goes behind notch */
+            padding-top: max(calc(env(safe-area-inset-top, 0px) + 12px), 12px);
+        }
+
         /* iPad PWA specific fixes */
         @media (display-mode: standalone) {
             /* Prevent content from showing behind status bar */
             body {
-                padding-top: env(safe-area-inset-top);
+                padding-top: env(safe-area-inset-top, 0px);
             }
 
-            /* Ensure header respects safe area in landscape */
-            header {
-                padding-left: max(env(safe-area-inset-left), 0.75rem);
-                padding-right: max(env(safe-area-inset-right), 0.75rem);
+            /* Enhanced header padding for PWA on iOS */
+            .pwa-header {
+                padding-top: max(calc(env(safe-area-inset-top, 0px) + 16px), 16px);
+                padding-left: max(env(safe-area-inset-left, 0px), 16px);
+                padding-right: max(env(safe-area-inset-right, 0px), 16px);
             }
         }
     }
