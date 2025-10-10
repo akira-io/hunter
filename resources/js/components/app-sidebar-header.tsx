@@ -21,7 +21,14 @@ export function AppSidebarHeader({
             : undefined;
 
     return (
-        <header className="gradient sticky top-0 z-50 flex h-16 w-full shrink-0 items-center border-b border-sidebar-border/50 bg-card/80 backdrop-blur-md transition-[width] ease-linear supports-[backdrop-filter]:bg-card/60">
+        <header
+            className="gradient sticky z-50 flex h-16 w-full shrink-0 items-center border-b border-sidebar-border/50 bg-card/80 backdrop-blur-md transition-[width] ease-linear supports-[backdrop-filter]:bg-card/60"
+            style={{
+                top: 0,
+                paddingTop: 'env(safe-area-inset-top)',
+                marginTop: 'calc(-1 * env(safe-area-inset-top))',
+            }}
+        >
             {/* Left side - Navigation */}
             <div className="flex items-center gap-2 px-3 md:px-6">
                 <SidebarTrigger className="-ml-1 transition-colors hover:bg-accent hover:text-accent-foreground" />
@@ -35,8 +42,11 @@ export function AppSidebarHeader({
 
             {/* Right side - Actions (Fixed position to avoid sidebar push) */}
             <div
-                className="fixed top-0 right-3 flex h-16 items-center gap-2 transition-[right] duration-200 ease-linear md:right-15"
-                style={sidebarOffset ? { right: sidebarOffset } : undefined}
+                className="fixed flex h-16 items-center gap-2 transition-[right] duration-200 ease-linear md:right-15"
+                style={{
+                    top: 'env(safe-area-inset-top)',
+                    right: sidebarOffset ? sidebarOffset : '0.75rem',
+                }}
             >
                 {/* Global Search */}
                 <GlobalSearch />

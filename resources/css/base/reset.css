@@ -24,9 +24,26 @@
         @apply border-border;
     }
 
+    html {
+        margin: 0;
+        padding: 0;
+    }
+
     body {
         @apply bg-background text-foreground;
+        margin: 0;
+        padding: 0;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        /* Ensure full height without scrollbars in PWA mode */
+        min-height: 100vh;
+        /* Better rendering in standalone mode */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Remove any default padding/margin from root app container */
+    #app {
+        padding: 0;
+        margin: 0;
     }
 }

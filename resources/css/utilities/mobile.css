@@ -104,6 +104,33 @@
         backface-visibility: hidden;
     }
 
+    /* PWA-specific header positioning */
+    .pwa-header {
+        /* Ensure header is flush with top in PWA mode */
+        position: sticky;
+        top: 0;
+        padding-top: env(safe-area-inset-top);
+        /* Compensate for safe area to maintain flush appearance */
+        margin-top: calc(-1 * env(safe-area-inset-top));
+    }
+
+    /* PWA body adjustments */
+    @media (display-mode: standalone) {
+        body {
+            /* Remove any default padding in standalone mode */
+            padding: 0 !important;
+            /* Ensure content respects safe areas */
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* Ensure app container is flush with top */
+        #app {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+    }
+
     /* iOS-specific fixes */
     @supports (-webkit-touch-callout: none) {
         .mobile-chat-container {
@@ -115,6 +142,20 @@
             /* Prevent iOS keyboard from breaking layout */
             position: -webkit-sticky;
             position: sticky;
+        }
+
+        /* iPad PWA specific fixes */
+        @media (display-mode: standalone) {
+            /* Prevent content from showing behind status bar */
+            body {
+                padding-top: env(safe-area-inset-top);
+            }
+
+            /* Ensure header respects safe area in landscape */
+            header {
+                padding-left: max(env(safe-area-inset-left), 0.75rem);
+                padding-right: max(env(safe-area-inset-right), 0.75rem);
+            }
         }
     }
 }
