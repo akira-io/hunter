@@ -93,9 +93,13 @@ export function AppSidebar() {
         <Sidebar
             collapsible="icon"
             variant="sidebar"
-            className="pwa-header border-r border-border/50"
+            className="border-r border-border/50"
+            style={{
+                paddingTop: 'env(safe-area-inset-top, 0px)',
+                paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+                paddingLeft: 'env(safe-area-inset-left, 0px)',
+            }}
         >
-            º
             <SidebarHeader className="border-b border-border/50">
                 <SidebarMenu>
                     <SidebarMenuItem>

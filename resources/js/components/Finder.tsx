@@ -21,7 +21,7 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
         <>
             {/* Search Bar */}
             {onSearch && (
-                <div className="mt-15 mb-40 w-full max-w-2xl px-4 md:px-0">
+                <div className="mt-15 mb-10 w-full max-w-2xl px-4 px-6 md:px-0">
                     <div className="relative">
                         <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                         <input
@@ -49,7 +49,7 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
             )}
 
             {/* Users Grid */}
-            <div className="grid w-full max-w-7xl grid-cols-1 justify-center gap-4 transition-all duration-1 sm:grid-cols-2 md:px-10 xl:grid-cols-3">
+            <div className="grid w-full max-w-7xl grid-cols-1 justify-center gap-4 px-6 transition-all duration-1 sm:grid-cols-2 md:px-10 xl:grid-cols-3">
                 {uniqueUsers.map((user) => (
                     <Onboarding user={user} key={`user-${user.id}`} />
                 ))}

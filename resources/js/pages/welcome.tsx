@@ -106,8 +106,15 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                     rel="stylesheet"
                 />
             </Head>
-            <SidebarProvider className="flex min-h-screen flex-col items-center justify-start bg-background p-6 text-[#1b1b18] lg:p-8 dark:bg-[#0a0a0a]">
-                <header className="pwa-header fixed top-0 z-50 w-full bg-card p-4 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90">
+            <SidebarProvider className="flex min-h-screen flex-col items-center justify-start bg-background text-[#1b1b18] lg:p-8 dark:bg-[#0a0a0a]">
+                <header
+                    className="fixed top-0 right-0 left-0 z-50 w-full bg-card p-8 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90"
+                    style={{
+                        paddingTop:
+                            'calc(env(safe-area-inset-top, 0px) + 32px)',
+                        paddingBottom: '32px',
+                    }}
+                >
                     <nav className="flex items-center justify-end gap-4">
                         <AppLogo />
                         <div className="flex-1" />
@@ -119,7 +126,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                             <>
                                 <Link
                                     href={login()}
-                                    className="mr-4 flex items-center justify-center gap-2 rounded-sm border px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] md:border-transparent dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                                    className="flex items-center justify-center gap-2 rounded-sm border px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] md:border-transparent dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                                 >
                                     <LogInIcon size={16} />
                                     Iniciar sessão
@@ -158,7 +165,7 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                         showLoader ? 'opacity-0' : 'animate-fade-in opacity-100'
                     }`}
                 >
-                    <div className="mt-20 flex w-full flex-col items-center justify-center py-2 md:max-w-4xl lg:max-w-6xl">
+                    <div className="mt-40 flex w-full flex-col items-center justify-center p-6 py-2 md:max-w-4xl lg:max-w-6xl">
                         <h1 className="mb-4 text-4xl font-bold dark:text-white">
                             Hunter 🇨🇻
                         </h1>
