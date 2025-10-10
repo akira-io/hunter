@@ -402,7 +402,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, currentU
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder="Digite uma mensagem..."
-                                className="flex-1 resize-none rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-purple-400 dark:focus:ring-purple-400"
+                                className="flex-1 resize-none rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
                                 disabled={sending}
                                 rows={1}
                                 style={{
