@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1760100022383'; // Auto-updated by Vite build
+const CACHE_VERSION = 'v1760101503196'; // Auto-updated by Vite build
 const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `devhunter-images-${CACHE_VERSION}`;
@@ -20,7 +20,7 @@ self.addEventListener('install', (event) => {
             console.error('[SW] Failed to cache static assets:', error);
         })
     );
-    self.skipWaiting();
+    // Don't skip waiting - let the user decide when to activate via the update dialog
 });
 
 // Activate event - clean up old caches

@@ -66,11 +66,16 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
                             newWorker.addEventListener('statechange', () => {
                                 console.log('[SW] 🔄 New worker state changed to:', newWorker.state);
                                 console.log('[SW] Has controller?', !!navigator.serviceWorker.controller);
+                                console.log('[SW] Registration waiting:', registration.waiting);
 
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    console.log('[SW] ✅ New version available! Showing dialog...');
+                                    console.log('[SW] ✅ New version available! Showing update dialog...');
                                     setWaitingWorker(newWorker);
                                     setUpdateAvailable(true);
+                                } else if (newWorker.state === 'installed') {
+                                    console.log('[SW] First install - no controller yet, not showing dialog');
+                                } else if (newWorker.state === 'activated') {
+                                    console.log('[SW] Worker activated (skipWaiting was called)');
                                 }
                             });
                         }
@@ -105,9 +110,9 @@ export function ServiceWorkerProvider({ children }: { children: ReactNode }) {
 
     const applyUpdate = () => {
         if (waitingWorker) {
-            console.log('[SW] Applying update...');
+            console.log('[SW] Applying update - sending SKIP_WAITING message...');
             waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-            window.location.reload();
+            // Reload will happen automatically when controllerchange event fires
         }
     };
 

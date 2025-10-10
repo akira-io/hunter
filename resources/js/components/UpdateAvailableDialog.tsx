@@ -21,17 +21,17 @@ export function UpdateAvailableDialog({ open, onUpdate, onLater }: UpdateAvailab
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10">
                         <Sparkles className="h-6 w-6 text-purple-500" />
                     </div>
-                    <DialogTitle>Nova Versão Disponível!</DialogTitle>
+                    <DialogTitle className="text-center">Nova Versão Disponível!</DialogTitle>
                     <DialogDescription className="text-center">
                         Uma nova versão do Hunter está disponível com melhorias e correções. Atualizar agora?
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="flex-col gap-2">
-                    <Button onClick={onUpdate} className="w-full gap-2">
+                    <Button onClick={onUpdate} className="w-full gap-2" variant="gradient">
                         <RefreshCw className="h-4 w-4" />
                         Atualizar agora
                     </Button>
-                    <Button variant="outline" onClick={onLater} className="w-full">
+                    <Button variant="ghost" onClick={onLater} className="w-full">
                         Mais tarde
                     </Button>
                 </DialogFooter>
