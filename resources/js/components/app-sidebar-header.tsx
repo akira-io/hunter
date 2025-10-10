@@ -12,13 +12,6 @@ export function AppSidebarHeader({
     breadcrumbs?: BreadcrumbItemType[];
 }) {
     const { auth } = usePage<{ auth: { user?: { id: number } } }>().props;
-    const { state, isMobile } = useSidebar();
-
-    // Calcula o offset baseado no estado do sidebar (apenas em desktop quando expandido)
-    const sidebarOffset =
-        !isMobile && state === 'expanded'
-            ? 'calc(var(--sidebar-width) + 0.75rem)'
-            : undefined;
 
     return (
         <header className="pwa-header gradient sticky top-0 z-50 flex w-full shrink-0 items-center border-b border-sidebar-border/50 bg-card/80 backdrop-blur-md transition-[width] ease-linear supports-[backdrop-filter]:bg-card/60 min-h-[64px] md:min-h-[64px]">
@@ -33,12 +26,11 @@ export function AppSidebarHeader({
             {/* Spacer */}
             <div className="flex-1"></div>
 
-            {/* Right side - Actions (Fixed position to avoid sidebar push) */}
+            {/* Right side - Actions (Fixed position) */}
             <div
-                className="fixed flex items-center gap-2 transition-[right] duration-200 ease-linear md:right-15"
+                className="fixed right-3 flex items-center gap-2 md:right-6"
                 style={{
                     top: 'calc(env(safe-area-inset-top, 0px) + 16px)',
-                    right: sidebarOffset ? sidebarOffset : '0.75rem',
                 }}
             >
                 {/* Global Search */}
