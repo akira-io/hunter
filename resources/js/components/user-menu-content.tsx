@@ -7,9 +7,10 @@ import profile from '@/routes/profile';
 import settings from '@/routes/settings';
 import { type User } from '@/types';
 import { Link, useForm } from '@inertiajs/react';
-import { BookOpen, LogOut, Settings, Sparkles, Target, UserIcon } from 'lucide-react';
+import { BookOpen, Loader2, LogOut, Settings, Sparkles, Target, UserIcon } from 'lucide-react';
 
 import OnboardingController from '@/actions/App/Http/Controllers/OnboardingController';
+import { useToast } from '@/hooks/use-toast';
 
 interface UserMenuContentProps {
     user: User;
@@ -18,11 +19,27 @@ interface UserMenuContentProps {
 export function UserMenuContent({ user }: UserMenuContentProps) {
     const cleanup = useMobileNavigation();
     const { post, processing } = useForm({});
+    const { toast } = useToast();
 
     const handleReplayTutorial = () => {
         post(OnboardingController.destroy().url, {
             preserveScroll: true,
-            onSuccess: () => cleanup(),
+            onSuccess: () => {
+                cleanup();
+                toast({
+                    title: 'Tutorial reiniciado',
+                    description: 'O tutorial será aberto em alguns instantes...',
+                    duration: 3000,
+                });
+            },
+            onError: () => {
+                toast({
+                    title: 'Erro',
+                    description: 'Não foi possível reiniciar o tutorial. Tente novamente.',
+                    variant: 'destructive',
+                    duration: 3000,
+                });
+            },
         });
     };
 
@@ -65,9 +82,17 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <button className="block w-full px-3 py-2 text-left sm:px-4 sm:py-2" onClick={handleReplayTutorial} disabled={processing}>
-                        <BookOpen className="mr-2 size-4 text-zinc-500 dark:text-zinc-400" />
-                        <span className="text-zinc-900 dark:text-zinc-100">Repetir Tutorial</span>
+                    <button
+                        className="block w-full px-3 py-2 text-left transition-opacity disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2"
+                        onClick={handleReplayTutorial}
+                        disabled={processing}
+                    >
+                        {processing ? (
+                            <Loader2 className="mr-2 size-4 animate-spin text-zinc-500 dark:text-zinc-400" />
+                        ) : (
+                            <BookOpen className="mr-2 size-4 text-zinc-500 dark:text-zinc-400" />
+                        )}
+                        <span className="text-zinc-900 dark:text-zinc-100">{processing ? 'A reiniciar tutorial...' : 'Repetir Tutorial'}</span>
                     </button>
                 </DropdownMenuItem>
             </div>
