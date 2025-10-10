@@ -110,6 +110,15 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
         };
     }, [conversationId]);
 
+    // Auto-focus input when conversation loads
+    useEffect(() => {
+        if (!loading && textareaRef.current) {
+            requestAnimationFrame(() => {
+                textareaRef.current?.focus();
+            });
+        }
+    }, [loading, conversationId]);
+
     const markMessagesAsRead = async (conversationId: number, messageIds?: number[]) => {
         try {
             await api.post(`/conversations/${conversationId}/messages/read`, {
@@ -147,10 +156,14 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
             await sendMessageToServer(conversationId, newMessage.trim());
             setNewMessage('');
 
-            if (textareaRef.current) {
-                textareaRef.current.style.height = 'auto';
-                textareaRef.current.style.height = '44px';
-            }
+            // Reset textarea height and refocus after DOM updates
+            requestAnimationFrame(() => {
+                if (textareaRef.current) {
+                    textareaRef.current.style.height = 'auto';
+                    textareaRef.current.style.height = '44px';
+                    textareaRef.current.focus();
+                }
+            });
 
             setTimeout(() => scrollToBottom(), 100);
         } catch (error) {
@@ -301,7 +314,7 @@ export default function DesktopChat({ conversationId, currentUser }: DesktopChat
                                 }
                             }}
                             placeholder="Type a message..."
-                            className="flex-1 resize-none rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-zinc-900 placeholder-zinc-500 transition-all focus:border-transparent focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:ring-purple-400"
+                            className="flex-1 resize-none rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-zinc-900 placeholder-zinc-500 transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
                             disabled={sending}
                             autoComplete="off"
                             rows={1}

@@ -291,4 +291,78 @@ describe('Chat Browser Tests', function () {
         // Check that avatars are displayed (even if they're fallback icons)
         $page->assertVisible('[data-testid="user-avatar"]');
     });
+
+    it('automatically refocuses input field after sending a message', function () {
+        actingAs($this->user1);
+
+        $conversation = Conversation::factory()->direct()->create();
+        $conversation->participants()->attach([
+            $this->user1->id => ['joined_at' => now(), 'is_admin' => true],
+            $this->user2->id => ['joined_at' => now(), 'is_admin' => false],
+        ]);
+
+        $page = visit("/chat/{$conversation->id}");
+
+        $page->waitFor('textarea[placeholder="Type a message..."]')
+            ->type('textarea[placeholder="Type a message..."]', 'First message')
+            ->click('button[type="submit"]')
+            ->waitForText('First message')
+            ->pause(500);
+
+        $isFocused = $page->script('return document.activeElement === document.querySelector("textarea[placeholder=\'Type a message...\']")');
+
+        expect($isFocused)->toBeArray()
+            ->and($isFocused[0])->toBeTrue();
+
+        $page->type('textarea[placeholder="Type a message..."]', 'Second message')
+            ->click('button[type="submit"]')
+            ->waitForText('Second message')
+            ->pause(500);
+
+        $isFocusedAgain = $page->script('return document.activeElement === document.querySelector("textarea[placeholder=\'Type a message...\']")');
+
+        expect($isFocusedAgain)->toBeArray()
+            ->and($isFocusedAgain[0])->toBeTrue();
+
+        $this->assertDatabaseHas('messages', [
+            'conversation_id' => $conversation->id,
+            'user_id' => $this->user1->id,
+            'content' => 'First message',
+        ]);
+
+        $this->assertDatabaseHas('messages', [
+            'conversation_id' => $conversation->id,
+            'user_id' => $this->user1->id,
+            'content' => 'Second message',
+        ]);
+    });
+
+    it('refocuses input after sending message with Enter key', function () {
+        actingAs($this->user1);
+
+        $conversation = Conversation::factory()->direct()->create();
+        $conversation->participants()->attach([
+            $this->user1->id => ['joined_at' => now(), 'is_admin' => true],
+            $this->user2->id => ['joined_at' => now(), 'is_admin' => false],
+        ]);
+
+        $page = visit("/chat/{$conversation->id}");
+
+        $page->waitFor('textarea[placeholder="Type a message..."]')
+            ->type('textarea[placeholder="Type a message..."]', 'Testing Enter key')
+            ->press('Enter')
+            ->waitForText('Testing Enter key')
+            ->pause(500);
+
+        $isFocused = $page->script('return document.activeElement === document.querySelector("textarea[placeholder=\'Type a message...\']")');
+
+        expect($isFocused)->toBeArray()
+            ->and($isFocused[0])->toBeTrue();
+
+        $this->assertDatabaseHas('messages', [
+            'conversation_id' => $conversation->id,
+            'user_id' => $this->user1->id,
+            'content' => 'Testing Enter key',
+        ]);
+    });
 })->group('browser');
