@@ -169,39 +169,32 @@ export default function DesktopChat({
         if (!newMessage.trim() || sending) return;
 
         const messageContent = newMessage.trim();
-        const textarea = textareaRef.current;
 
-        // CRITICAL: Focus FIRST, before any state changes
-        // This ensures focus is 100% synchronous with user gesture (mobile keyboard requirement)
-        if (textarea) {
-            textarea.focus();
-        }
-
-        // Now clear and reset
-        setNewMessage('');
-        if (textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = '44px';
-        }
+        setSending(true);
 
         try {
-            setSending(true);
             await sendMessageToServer(conversationId, messageContent);
+
+            // Only clear after successful send
+            setNewMessage('');
+
+            // Reset height
+            if (textareaRef.current) {
+                textareaRef.current.style.height = 'auto';
+                textareaRef.current.style.height = '44px';
+            }
 
             setTimeout(() => scrollToBottom(), 100);
         } catch (error) {
             console.error('Failed to send message:', error);
-            setNewMessage(messageContent);
         } finally {
             setSending(false);
 
-            // Re-focus after state updates for PC (in case lost during re-renders)
+            // Re-focus after state updates (works for both PC and mobile now)
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    if (textareaRef.current) {
-                        textareaRef.current.focus();
-                    }
-                });
+                if (textareaRef.current) {
+                    textareaRef.current.focus();
+                }
             });
         }
     };
@@ -233,19 +226,6 @@ export default function DesktopChat({
             conversationId={conversationId}
         >
             <Head title={`Chat - ${getConversationTitle()}`} />
-            {/* Mobile viewport meta for proper rendering */}
-            <Head>
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-                />
-                <meta name="mobile-web-app-capable" content="yes" />
-                <meta name="apple-mobile-web-app-capable" content="yes" />
-                <meta
-                    name="apple-mobile-web-app-status-bar-style"
-                    content="default"
-                />
-            </Head>
 
             <div className="flex h-full flex-col">
                 {/* Chat Header */}
@@ -409,6 +389,8 @@ export default function DesktopChat({
                             className="flex-1 resize-none rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-zinc-900 placeholder-zinc-500 transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
                             disabled={sending}
                             autoComplete="off"
+                            inputMode="text"
+                            enterKeyHint="send"
                             rows={1}
                             style={{
                                 minHeight: '44px',
