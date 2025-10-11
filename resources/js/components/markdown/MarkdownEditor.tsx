@@ -147,7 +147,7 @@ export function MarkdownEditor({
                     </div>
                 </TabsContent>
                 <TabsContent value="preview" className="mt-0">
-                    <div className="min-h-[200px] max-h-[400px] overflow-y-auto rounded-lg border border-border bg-muted p-4 transition-colors">
+                    <div className="max-h-[400px] min-h-[200px] overflow-y-auto rounded-lg border border-border bg-muted p-4 transition-colors">
                         <MarkdownRenderer
                             content={value || '*Nada para visualizar ainda...*'}
                         />
