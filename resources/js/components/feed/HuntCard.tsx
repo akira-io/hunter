@@ -316,7 +316,7 @@ export function HuntCard({
                                     className="opacity-60"
                                     aria-hidden="true"
                                 />
-                                Preview
+                                Ver
                             </DropdownMenuItem>
                             {hunt.is_owner && (
                                 <DropdownMenuItem onClick={gotoMetrics}>

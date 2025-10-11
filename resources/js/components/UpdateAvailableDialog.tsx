@@ -27,7 +27,7 @@ export function UpdateAvailableDialog({
 
     return (
         <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onLater()}>
-            <DialogContent className="top-[50%] left-[50%] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white p-0 shadow-2xl dark:bg-zinc-900">
+            <DialogContent className="top-[50%] left-[50%] max-w-sm -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white p-0 shadow-2xl dark:bg-zinc-900">
                 <div className="gradient absolute inset-0">
                     {/*<div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(147,51,234,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(147,51,234,0.2),transparent_50%)]" />*/}
                 </div>
@@ -68,8 +68,7 @@ export function UpdateAvailableDialog({
                                 </span>{' '}
                             </DialogTitle>
                             <DialogDescription className="text-center text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
-                                🚀 O{' '}
-                                <span className="font-semibold">Hunter</span>{' '}
+                                🚀 <span className="font-semibold">Hunter</span>{' '}
                                 acaba de dar mais um grande passo!
                                 <span className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                                     A tua experiência foi atualizada para a
