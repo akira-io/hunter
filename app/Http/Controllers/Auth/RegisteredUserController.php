@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
+use App\Actions\Auth\RegisterUserAction;
+use App\DataTransferObjects\Auth\RegisterUserData;
+use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -30,21 +28,11 @@ final readonly class RegisteredUserController
      *
      * @throws ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(RegisterRequest $request, RegisterUserAction $registerUserAction): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::query()->create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->string('password')->value()),
-        ]);
-
-        event(new Registered($user));
+        $user = $registerUserAction->handle(
+            userData: RegisterUserData::fromRequest(request: $request)
+        );
 
         Auth::login($user);
 

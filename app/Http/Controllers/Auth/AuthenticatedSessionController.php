@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Auth\LoginUserAction;
+use App\DataTransferObjects\Auth\LoginCredentials;
+use App\Events\UserOffline;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -28,9 +33,18 @@ final readonly class AuthenticatedSessionController
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request, LoginUserAction $loginUserAction): RedirectResponse
     {
-        $request->authenticate();
+        /** @var array<string, mixed> $credentials */
+        $credentials = $request->only('email', 'password');
+
+        $loginCredentials = LoginCredentials::from(
+            credentials: $credentials,
+            remember: $request->boolean('remember'),
+            ip: (string) $request->ip()
+        );
+
+        $loginUserAction->handle($loginCredentials);
 
         $request->session()->regenerate();
 
@@ -42,7 +56,13 @@ final readonly class AuthenticatedSessionController
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        /** @var User $user */
+        $user = $request->user();
+
+        UserOffline::dispatch($user);
+        Cache::forget("user_online_{$user->id}");
+
+        Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

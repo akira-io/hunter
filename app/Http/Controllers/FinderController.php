@@ -22,12 +22,10 @@ final readonly class FinderController
     #[Get('/', name: 'finder.index')]
     public function __invoke(Request $request, GetHuntersAction $action): Response
     {
-
-        [$user, $paginator] = $action->handle($request);
+        [$users, $paginator] = $action->handle($request);
 
         return Inertia::render('finder', [
-            'users' => $user,
-            'paginator' => $paginator,
+            'users' => Inertia::scroll($paginator),
         ]);
     }
 }

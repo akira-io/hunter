@@ -8,7 +8,6 @@ use Akira\Followable\Exceptions\FollowableTraitNotFoundException;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Inertia\ResponseFactory;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
 
@@ -21,14 +20,17 @@ final readonly class GetHuntingsController
      * @throws FollowableTraitNotFoundException
      */
     #[Get('followable/followings', name: 'followable.followings')]
-    public function __invoke(Request $request): Response|ResponseFactory
+    public function __invoke(Request $request): Response
     {
         /*** @var User $user */
         $user = type($request->user())->as(User::class);
-        $followings = $user->followings()->with(['followable'])->paginate(20);
+        $paginator = $user->followings()->with(['followable'])->paginate(20);
+        $followingsWithStatus = $user->attachFollowStatus($paginator);
+        /** @var \Illuminate\Support\Collection<(int|string), mixed> $followingsWithStatus */
+        $paginator->setCollection($followingsWithStatus);
 
         return inertia('followable/huntings', [
-            'followings' => $user->attachFollowStatus($followings),
+            'followings' => \Inertia\Inertia::scroll($paginator),
         ]);
     }
 }

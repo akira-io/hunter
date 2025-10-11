@@ -5,7 +5,9 @@ interface HuntStore {
     setIsFloatCreateHuntOpen: (isOpen: boolean) => void;
 }
 
-export const useHuntStore: UseBoundStore<Mutate<StoreApi<HuntStore>, []>> = create((set) => ({
-    isFloatCreateHuntOpen: false,
-    setIsFloatCreateHuntOpen: (condition: boolean) => set({ isFloatCreateHuntOpen: condition }),
-}));
+export const useHuntStore: UseBoundStore<Mutate<StoreApi<HuntStore>, []>> =
+    create((set) => ({
+        isFloatCreateHuntOpen: false,
+        setIsFloatCreateHuntOpen: (condition: boolean) =>
+            set({ isFloatCreateHuntOpen: condition }),
+    }));

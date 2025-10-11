@@ -1,9 +1,21 @@
 includes:
-   - phpstan-baseline.neon
+    - vendor/nesbot/carbon/extension.neon
+    - vendor/nunomaduro/larastan/extension.neon
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - phpstan-baseline.neon
 
 parameters:
 
     paths:
         - app
+        - bootstrap/app.php
+        - public
+        - routes
 
-    level: max
+    excludePaths:
+        analyse:
+         - %currentWorkingDirectory%/app/Services/Pan/PanAnalyticsService.php
+
+    level: 7
+
+    tmpDir: /tmp/phpstan

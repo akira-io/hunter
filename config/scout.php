@@ -145,6 +145,12 @@ return [
             App\Models\User::class => [
                 'filterableAttributes' => ['id', 'name', 'email', 'location', 'user_name', 'skills'],
                 'sortableAttributes' => ['created_at'],
+                'searchableAttributes' => ['name', 'email', 'user_name', 'bio', 'location', 'skills'],
+            ],
+            App\Models\Hunt::class => [
+                'filterableAttributes' => ['id', 'owner_id', 'created_at'],
+                'sortableAttributes' => ['created_at'],
+                'searchableAttributes' => ['content', 'owner_name', 'owner_username'],
             ],
         ],
     ],

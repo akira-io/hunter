@@ -6,8 +6,8 @@ namespace App\Http\Controllers\Followable;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response;
-use Inertia\ResponseFactory;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
 
@@ -18,16 +18,19 @@ final readonly class GetHuntersController
      * Display the followers of the authenticated user.
      */
     #[Get('followable/followers', name: 'followable.followers')]
-    public function __invoke(Request $request): Response|ResponseFactory
+    public function __invoke(Request $request): Response
     {
 
         /*** @var User $user */
         $user = type($request->user())->as(User::class);
 
-        $followers = $user->followers()->paginate(20);
+        $paginator = $user->followers()->paginate(20);
+        $followersWithStatus = $user->attachFollowStatus($paginator);
+        /** @var \Illuminate\Support\Collection<int, \Illuminate\Database\Eloquent\Model&object{pivot: \Illuminate\Database\Eloquent\Relations\Pivot}> $followersWithStatus */
+        $paginator->setCollection($followersWithStatus);
 
         return inertia('followable/hunters', [
-            'followers' => $user->attachFollowStatus($followers),
+            'followers' => Inertia::scroll($paginator),
         ]);
     }
 }

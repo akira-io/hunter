@@ -1,5 +1,12 @@
 import type React from 'react';
-import { type ChangeEvent, type DragEvent, type InputHTMLAttributes, useCallback, useRef, useState } from 'react';
+import {
+    type ChangeEvent,
+    type DragEvent,
+    type InputHTMLAttributes,
+    useCallback,
+    useRef,
+    useState,
+} from 'react';
 
 export type FileMetadata = {
     name: string;
@@ -42,13 +49,25 @@ export type FileUploadActions = {
     handleDrop: (e: DragEvent<HTMLElement>) => void;
     handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
     openFileDialog: () => void;
-    getInputProps: (props?: InputHTMLAttributes<HTMLInputElement>) => InputHTMLAttributes<HTMLInputElement> & {
+    getInputProps: (
+        props?: InputHTMLAttributes<HTMLInputElement>,
+    ) => InputHTMLAttributes<HTMLInputElement> & {
         ref: React.Ref<HTMLInputElement>;
     };
 };
 
-export const useFileUpload = (options: FileUploadOptions = {}): [FileUploadState, FileUploadActions] => {
-    const { maxFiles = Infinity, maxSize = Infinity, accept = '*', multiple = false, initialFiles = [], onFilesChange, onFilesAdded } = options;
+export const useFileUpload = (
+    options: FileUploadOptions = {},
+): [FileUploadState, FileUploadActions] => {
+    const {
+        maxFiles = Infinity,
+        maxSize = Infinity,
+        accept = '*',
+        multiple = false,
+        initialFiles = [],
+        onFilesChange,
+        onFilesAdded,
+    } = options;
 
     const [state, setState] = useState<FileUploadState>({
         files: initialFiles.map((file) => ({
@@ -75,13 +94,18 @@ export const useFileUpload = (options: FileUploadOptions = {}): [FileUploadState
             }
 
             if (accept !== '*') {
-                const acceptedTypes = accept.split(',').map((type) => type.trim());
-                const fileType = file instanceof File ? file.type || '' : file.type;
+                const acceptedTypes = accept
+                    .split(',')
+                    .map((type) => type.trim());
+                const fileType =
+                    file instanceof File ? file.type || '' : file.type;
                 const fileExtension = `.${file instanceof File ? file.name.split('.').pop() : file.name.split('.').pop()}`;
 
                 const isAccepted = acceptedTypes.some((type) => {
                     if (type.startsWith('.')) {
-                        return fileExtension.toLowerCase() === type.toLowerCase();
+                        return (
+                            fileExtension.toLowerCase() === type.toLowerCase()
+                        );
                     }
                     if (type.endsWith('/*')) {
                         const baseType = type.split('/')[0];
@@ -100,25 +124,35 @@ export const useFileUpload = (options: FileUploadOptions = {}): [FileUploadState
         [accept, maxSize],
     );
 
-    const createPreview = useCallback((file: File | FileMetadata): string | undefined => {
-        if (file instanceof File) {
-            return URL.createObjectURL(file);
-        }
-        return file.url;
-    }, []);
+    const createPreview = useCallback(
+        (file: File | FileMetadata): string | undefined => {
+            if (file instanceof File) {
+                return URL.createObjectURL(file);
+            }
+            return file.url;
+        },
+        [],
+    );
 
-    const generateUniqueId = useCallback((file: File | FileMetadata): string => {
-        if (file instanceof File) {
-            return `${file.name}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        }
-        return file.id;
-    }, []);
+    const generateUniqueId = useCallback(
+        (file: File | FileMetadata): string => {
+            if (file instanceof File) {
+                return `${file.name}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+            }
+            return file.id;
+        },
+        [],
+    );
 
     const clearFiles = useCallback(() => {
         setState((prev) => {
             // Clean up object URLs
             prev.files.forEach((file) => {
-                if (file.preview && file.file instanceof File && file.file.type.startsWith('image/')) {
+                if (
+                    file.preview &&
+                    file.file instanceof File &&
+                    file.file.type.startsWith('image/')
+                ) {
                     URL.revokeObjectURL(file.preview);
                 }
             });
@@ -154,8 +188,14 @@ export const useFileUpload = (options: FileUploadOptions = {}): [FileUploadState
             }
 
             // Check if adding these files would exceed maxFiles (only in multiple mode)
-            if (multiple && maxFiles !== Infinity && state.files.length + newFilesArray.length > maxFiles) {
-                errors.push(`You can only upload a maximum of ${maxFiles} files.`);
+            if (
+                multiple &&
+                maxFiles !== Infinity &&
+                state.files.length + newFilesArray.length > maxFiles
+            ) {
+                errors.push(
+                    `You can only upload a maximum of ${maxFiles} files.`,
+                );
                 setState((prev) => ({ ...prev, errors }));
                 return;
             }
@@ -166,7 +206,9 @@ export const useFileUpload = (options: FileUploadOptions = {}): [FileUploadState
                 // Only check for duplicates if multiple files are allowed
                 if (multiple) {
                     const isDuplicate = state.files.some(
-                        (existingFile) => existingFile.file.name === file.name && existingFile.file.size === file.size,
+                        (existingFile) =>
+                            existingFile.file.name === file.name &&
+                            existingFile.file.size === file.size,
                     );
 
                     // Skip duplicate files silently
@@ -203,7 +245,9 @@ export const useFileUpload = (options: FileUploadOptions = {}): [FileUploadState
                 onFilesAdded?.(validFiles);
 
                 setState((prev) => {
-                    const newFiles = !multiple ? validFiles : [...prev.files, ...validFiles];
+                    const newFiles = !multiple
+                        ? validFiles
+                        : [...prev.files, ...validFiles];
                     onFilesChange?.(newFiles);
                     return {
                         ...prev,
@@ -223,14 +267,30 @@ export const useFileUpload = (options: FileUploadOptions = {}): [FileUploadState
                 inputRef.current.value = '';
             }
         },
-        [multiple, maxFiles, state.files, clearFiles, maxSize, validateFile, generateUniqueId, createPreview, onFilesAdded, onFilesChange],
+        [
+            multiple,
+            maxFiles,
+            state.files,
+            clearFiles,
+            maxSize,
+            validateFile,
+            generateUniqueId,
+            createPreview,
+            onFilesAdded,
+            onFilesChange,
+        ],
     );
 
     const removeFile = useCallback(
         (id: string) => {
             setState((prev) => {
                 const fileToRemove = prev.files.find((file) => file.id === id);
-                if (fileToRemove && fileToRemove.preview && fileToRemove.file instanceof File && fileToRemove.file.type.startsWith('image/')) {
+                if (
+                    fileToRemove &&
+                    fileToRemove.preview &&
+                    fileToRemove.file instanceof File &&
+                    fileToRemove.file.type.startsWith('image/')
+                ) {
                     URL.revokeObjectURL(fileToRemove.preview);
                 }
 
@@ -322,7 +382,8 @@ export const useFileUpload = (options: FileUploadOptions = {}): [FileUploadState
                 type: 'file' as const,
                 onChange: handleFileChange,
                 accept: props.accept || accept,
-                multiple: props.multiple !== undefined ? props.multiple : multiple,
+                multiple:
+                    props.multiple !== undefined ? props.multiple : multiple,
                 ref: inputRef,
             };
         },

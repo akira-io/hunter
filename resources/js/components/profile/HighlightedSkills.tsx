@@ -114,21 +114,29 @@ export function HighlightedSkills({ techs }: { techs: Option[] }) {
         VulnerabilityAssessment: <FaShieldAlt className="text-blue-600" />,
         SecurityAuditing: <FaClipboardCheck className="text-green-600" />,
         RiskManagement: <FaBalanceScale className="text-purple-500" />,
-        Compliance: <FaClipboardList className="text-indigo-500" />,
-        IncidentManagement: <FaExclamationTriangle className="text-yellow-500" />,
+        Compliance: <FaClipboardList className="text-purple-500" />,
+        IncidentManagement: (
+            <FaExclamationTriangle className="text-yellow-500" />
+        ),
         DigitalForensics: <FaSearch className="text-gray-400" />,
         SecurityAwareness: <FaLightbulb className="text-yellow-400" />,
         CloudSecurity: <FaCloud className="text-blue-400" />,
         ApplicationSecurity: <FaLock className="text-gray-600" />,
         DataProtection: <FaDatabase className="text-green-700" />,
-        SIEM: <FaServer className="text-indigo-600" />,
+        SIEM: <FaServer className="text-purple-600" />,
     };
 
     return (
         <>
             {techs.map((tech, index) => (
-                <Badge key={tech.value + index} variant="outline" className="items-center gap-1.5">
-                    {skillIcons[tech.label] || <FaCode className="text-muted-foreground" />}
+                <Badge
+                    key={tech.value + index}
+                    variant="outline"
+                    className="items-center gap-1.5"
+                >
+                    {skillIcons[tech.label] || (
+                        <FaCode className="text-muted-foreground" />
+                    )}
                     <span>{tech.label}</span>
                 </Badge>
             ))}

@@ -1,33 +1,58 @@
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from '@/components/ui/sidebar';
+import { useChatContext } from '@/contexts/ChatContext';
+import finder from '@/routes/finder';
+import followable from '@/routes/followable';
+import hunts from '@/routes/hunts';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, EyeIcon, FileSearch, MessageCircleMore, NetworkIcon, RssIcon } from 'lucide-react';
+import {
+    BookOpen,
+    EyeIcon,
+    FileSearch,
+    MessageCircle,
+    MessageCircleMore,
+    NetworkIcon,
+    Sparkles,
+} from 'lucide-react';
+import { useMemo } from 'react';
 import { AiFillGithub } from 'react-icons/ai';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Hunt Line',
-        href: route('hunts.index'),
-        icon: RssIcon,
+        title: 'Hunts',
+        href: hunts.index.url(),
+        icon: Sparkles,
     },
     {
         title: 'Explorar',
-        href: route('finder.index'),
+        href: finder.index.url(),
         icon: FileSearch,
     },
     {
         title: 'Hunters',
-        href: route('followable.followers'),
+        href: followable.followers.url(),
         icon: EyeIcon,
     },
-
     {
         title: 'Huntings',
-        href: route('followable.followings'),
+        href: followable.followings.url(),
         icon: NetworkIcon,
+    },
+    {
+        title: 'Chat',
+        href: '/chat',
+        icon: MessageCircle,
     },
 ];
 
@@ -39,35 +64,77 @@ const footerNavItems: NavItem[] = [
     },
     {
         title: 'Repositório',
-        href: 'https://github.com/akira-io/hunter',
+        href: 'https://github.com/hunter-cv/web',
         icon: AiFillGithub,
     },
     {
         title: 'Documentação',
-        href: 'https://github.com/akira-io/hunter/blob/main/README.md',
+        href: 'https://github.com/hunter-cv/web/blob/develop/docs/01-getting-started.md',
         icon: BookOpen,
     },
 ];
 
 export function AppSidebar() {
+    const { conversations } = useChatContext();
+
+    // Calculate total unread messages
+    const totalUnreadCount = useMemo(() => {
+        return conversations.reduce((total, conv) => {
+            return total + (conv.unread_count || 0);
+        }, 0);
+    }, [conversations]);
+
+    // Add badge count to chat item
+    const itemsWithBadge = useMemo(() => {
+        return mainNavItems.map((item) => {
+            if (item.title === 'Chat' && totalUnreadCount > 0) {
+                return {
+                    ...item,
+                    badge: totalUnreadCount,
+                };
+            }
+            return item;
+        });
+    }, [totalUnreadCount]);
+
     return (
-        <Sidebar collapsible="icon" variant="sidebar">
-            <SidebarHeader>
+        <Sidebar
+            collapsible="icon"
+            variant="sidebar"
+            className="border-r border-border/50"
+            style={{
+                paddingBottom: '10px',
+            }}
+        >
+            <SidebarHeader
+                className="border-b border-border/50"
+                style={{
+                    paddingTop: 'calc(env(safe-area-inset-top, 0px) + 8px)',
+                }}
+            >
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href="/" prefetch>
-                                <AppLogo />
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="group transition-all duration-200 hover:bg-accent/50"
+                        >
+                            <Link
+                                href="/"
+                                prefetch
+                                className="flex items-center gap-2"
+                            >
+                                <AppLogo className="transition-transform duration-200 group-hover:scale-105" />
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            <SidebarContent>
-                <NavMain items={mainNavItems} />
+            <SidebarContent className="gap-0 py-4">
+                <NavMain items={itemsWithBadge} />
             </SidebarContent>
-            <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+            <SidebarFooter className="mt-auto border-t-0 pb-4">
+                <NavFooter items={footerNavItems} />
             </SidebarFooter>
         </Sidebar>
     );

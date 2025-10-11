@@ -37,7 +37,8 @@ final class UserFactory extends Factory
             'github_id' => fake()->unique()->numberBetween(1, 1000000),
             'github_token' => fake()->uuid(),
             'github_refresh_token' => fake()->uuid(),
-            'avatar_url' => fake()->imageUrl(),
+            // 50% chance de não ter avatar para testar fallback
+            'avatar_url' => fake()->boolean(50) ? null : fake()->imageUrl(),
             'github_url' => fake()->url(),
             'twitter_url' => fake()->url(),
             'linkedin_url' => fake()->url(),
@@ -47,6 +48,16 @@ final class UserFactory extends Factory
             'location' => fake()->city(),
             'bio' => fake()->sentence(),
             'skills' => fake()->randomElements(SkillsEnum::get(), 10),
+            'onboarding_completed' => true,
+            'onboarding_completed_at' => now(),
+            'notification_settings' => json_encode([
+                'follow_notifications' => true,
+                'email_notifications' => true,
+                'browser_notifications' => true,
+                'hunt_notifications_in_app' => true,
+                'hunt_notifications_browser' => true,
+                'hunt_notifications_email' => true,
+            ]),
         ];
     }
 

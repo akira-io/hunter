@@ -1,4 +1,5 @@
 import { useToast } from '@/hooks/use-toast';
+import profile from '@/routes/profile';
 import { SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -23,10 +24,16 @@ export function useProfileUpdate() {
     const [fileTooLargeDialogOpen, setFileTooLargeDialogOpen] = useState(false);
     const [fileTooLarge, setFileTooLarge] = useState(false);
 
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(auth.user.avatar_url || null);
-    const [backgroundPreview, setBackgroundPreview] = useState<string>(auth.user.background_image_url || '');
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(
+        auth.user.avatar_url || null,
+    );
+    const [backgroundPreview, setBackgroundPreview] = useState<string>(
+        auth.user.background_image_url || '',
+    );
 
-    const { data, setData, post, errors, processing } = useForm<Required<ProfileForm>>({
+    const { data, setData, post, errors, processing } = useForm<
+        Required<ProfileForm>
+    >({
         name: auth.user.name ?? '',
         email: auth.user.email ?? '',
         bio: auth.user.bio ?? '',
@@ -36,11 +43,14 @@ export function useProfileUpdate() {
         background_image_url: auth.user.background_image_url ?? '',
     });
 
-    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>, type: 'avatar' | 'background') {
+    function handleFileChange(
+        e: React.ChangeEvent<HTMLInputElement>,
+        type: 'avatar' | 'background',
+    ) {
         const file = e.target.files?.[0];
         if (file) {
             // Validate file size
-            if (file.size > 400 * 1024) {
+            if (file.size > 2048 * 1024) {
                 setFileTooLarge(true);
                 setFileTooLargeDialogOpen(true);
                 return;
@@ -52,7 +62,8 @@ export function useProfileUpdate() {
                 toast({
                     variant: 'destructive',
                     title: 'Invalid File Type',
-                    description: 'Please upload a valid image file (JPEG, PNG, or GIF).',
+                    description:
+                        'Please upload a valid image file (JPEG, PNG, or GIF).',
                 });
                 return;
             }
@@ -84,7 +95,7 @@ export function useProfileUpdate() {
     function updateProfile(e: React.FormEvent) {
         e.preventDefault();
 
-        post(route('profile.update'), {
+        post(profile.update.url(), {
             preserveState: true,
             preserveScroll: true,
             forceFormData: true,
@@ -99,7 +110,8 @@ export function useProfileUpdate() {
                 toast({
                     variant: 'destructive',
                     title: 'Erro ao atualizar o perfil',
-                    description: 'Ocorreu um erro ao atualizar o perfil. Tente novamente mais tarde.',
+                    description:
+                        'Ocorreu um erro ao atualizar o perfil. Tente novamente mais tarde.',
                 });
             },
         });

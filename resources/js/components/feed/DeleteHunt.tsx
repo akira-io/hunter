@@ -1,5 +1,6 @@
 import { HunterConfirmDialog } from '@/components/core/HuntDialog';
 import { useToast } from '@/hooks/use-toast';
+import hunts from '@/routes/hunts';
 import { Hunt } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { Ban } from 'lucide-react';
@@ -13,7 +14,7 @@ export default function DeleteHunt({ hunt }: DeleteHuntProps) {
     const { delete: destroy, processing } = useForm();
 
     function deleteHunt() {
-        destroy(route('hunts.destroy', { hunt }), {
+        destroy(hunts.destroy.url(hunt), {
             preserveScroll: true,
             onSuccess: () => {
                 toast({ description: 'Hunt eliminada com sucesso.' });
@@ -29,5 +30,11 @@ export default function DeleteHunt({ hunt }: DeleteHuntProps) {
         });
     }
 
-    return <HunterConfirmDialog processing={processing} onConfirm={deleteHunt} title="Hunt" />;
+    return (
+        <HunterConfirmDialog
+            processing={processing}
+            onConfirm={deleteHunt}
+            title="Hunt"
+        />
+    );
 }

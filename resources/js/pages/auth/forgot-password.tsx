@@ -9,22 +9,33 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { login } from '@/routes';
+import password from '@/routes/password';
 
 export default function ForgotPassword({ status }: { status?: string }) {
-    const { data, setData, post, processing, errors } = useForm<Required<{ email: string }>>({
+    const { data, setData, post, processing, errors } = useForm<
+        Required<{ email: string }>
+    >({
         email: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('password.email'));
+        post(password.email().url);
     };
 
     return (
-        <AuthLayout title="Redifinir Password" description="Introduzir o seu e-mail para receber um link de redefinição de password">
+        <AuthLayout
+            title="Redifinir Password"
+            description="Introduzir o seu e-mail para receber um link de redefinição de password"
+        >
             <Head title="Redifinir Password" />
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && (
+                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                    {status}
+                </div>
+            )}
             <div className="space-y-6">
                 <form onSubmit={submit}>
                     <div className="grid gap-2">
@@ -43,14 +54,16 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     </div>
                     <div className="my-6 flex items-center justify-start">
                         <Button className="w-full" disabled={processing}>
-                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                            {processing && (
+                                <LoaderCircle className="h-4 w-4 animate-spin" />
+                            )}
                             Enviar link de redefinição
                         </Button>
                     </div>
                 </form>
-                <div className="text-muted-foreground space-x-1 text-center text-sm">
+                <div className="space-x-1 text-center text-sm text-muted-foreground">
                     <span>Ou, voltar para </span>
-                    <TextLink href={route('login')}>iniciar sessão</TextLink>
+                    <TextLink href={login()}>iniciar sessão</TextLink>
                 </div>
             </div>
         </AuthLayout>

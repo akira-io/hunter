@@ -22,6 +22,7 @@ final class HuntOwnerResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'user_name' => $this->user_name,
             'avatar_url' => $this->getMedia('profile_avatar')->last()?->getUrl() ?? $this->avatar_url,
         ];
     }

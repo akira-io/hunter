@@ -1,0 +1,193 @@
+/**
+ * Animation Utilities
+ * Smooth transitions, hover effects, and animations
+ */
+
+@layer utilities {
+    /* Smooth animations and transitions */
+    .animate-smooth {
+        @apply transition-all duration-300 ease-out;
+    }
+
+    .animate-smooth-fast {
+        @apply transition-all duration-200 ease-out;
+    }
+
+    .animate-smooth-slow {
+        @apply transition-all duration-500 ease-out;
+    }
+
+    .animate-float {
+        @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg;
+    }
+
+    .animate-scale {
+        @apply transition-all duration-300 ease-out hover:scale-[1.02];
+    }
+
+    .animate-glow {
+        @apply transition-all duration-300 ease-out hover:shadow-xl hover:shadow-primary/25;
+    }
+
+    /* Enhanced card effects */
+    .effect {
+        @apply transition-transform duration-500 ease-in-out odd:-rotate-1 even:rotate-1 hover:rotate-0 hover:duration-600;
+
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Subtle enhanced button effects */
+    .btn-enhanced {
+        @apply transition-all duration-200 ease-out hover:shadow-lg active:scale-95;
+    }
+
+    /* Gradient animations */
+    .gradient-animate {
+        background: linear-gradient(
+            -45deg,
+            var(--primary),
+            var(--secondary),
+            var(--accent),
+            var(--primary)
+        );
+        background-size: 400% 400%;
+        animation: gradient-shift 8s ease infinite;
+    }
+
+    @keyframes gradient-shift {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    /* Improved button interactions */
+    .button-press {
+        @apply active:scale-95 active:duration-75;
+    }
+
+    /* Skeleton loading */
+    .skeleton-shimmer {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .skeleton-shimmer::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 2s infinite;
+    }
+
+    .dark .skeleton-shimmer::after {
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+        );
+    }
+
+    @keyframes shimmer {
+        to {
+            left: 100%;
+        }
+    }
+
+    /* Welcome loader animations */
+    .animate-scale-in {
+        animation: scale-in 0.8s ease-out forwards;
+    }
+
+    .animate-slide-up {
+        animation: slide-up 0.6s ease-out forwards;
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes scale-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes slide-up {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0) translateX(0);
+        }
+        25% {
+            transform: translateY(-10px) translateX(5px);
+        }
+        50% {
+            transform: translateY(-5px) translateX(-5px);
+        }
+        75% {
+            transform: translateY(-15px) translateX(3px);
+        }
+    }
+
+    /* Progress bar shimmer effect */
+    @keyframes shimmer {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    /* Fade in animation for content after loader */
+    .animate-fade-in {
+        animation: fade-in 1s ease-out forwards;
+    }
+
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

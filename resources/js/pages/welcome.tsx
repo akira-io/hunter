@@ -4,56 +4,117 @@ import { Finder } from '@/components/Finder';
 import { NavUser } from '@/components/nav-user';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/toaster';
+import { WelcomeLoader } from '@/components/WelcomeLoader';
+import { home, login, register } from '@/routes';
 import { type SharedData, User } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RiDiscordFill, RiGithubFill } from '@remixicon/react';
 import { LogInIcon, UserPlus } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export interface WelcomeProps {
     users: User[];
     paginator: {
         data: User[];
-        total: 0;
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+        next_page_url?: string;
+        prev_page_url?: string;
+        from?: number;
+        to?: number;
     };
+    // nextPageUsers?: User[];
 }
 
 export default function Welcome({ users, paginator }: WelcomeProps) {
     const { auth, quote } = usePage<SharedData>().props;
 
     const [isSearchLoading, setIsSearchLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [showLoader, setShowLoader] = useState(true);
+    const [, setHasVisited] = useState(false);
 
-    const initialUsersRef = useRef<User[]>(paginator.data);
-    const initialTotalRef = useRef(paginator.total);
+    const initialQuote = useRef(quote);
 
-    const _users = initialUsersRef.current;
-    const _total = initialTotalRef.current;
+    useEffect(() => {
+        const visited = sessionStorage.getItem('hasVisitedWelcome');
+        if (visited) {
+            setShowLoader(false);
+            setHasVisited(true);
+        }
+    }, []);
 
-    function search(e: React.ChangeEvent<HTMLInputElement>) {
-        e.preventDefault();
-        setIsSearchLoading(true);
+    const handleLoaderComplete = () => {
+        setShowLoader(false);
+        sessionStorage.setItem('hasVisitedWelcome', 'true');
+    };
+
+    const uniqueUsers = users.filter(
+        (user, index, self) =>
+            index === self.findIndex((u) => u.id === user.id),
+    );
+
+    const hasMore = paginator.current_page < paginator.last_page;
+
+    function loadMoreUsers() {
+        if (isLoadingMore || !hasMore) return;
+
+        setIsLoadingMore(true);
+        const nextPage = paginator.current_page + 1;
+
         router.get(
-            route('home'),
-            { q: e.target.value },
+            home().url,
+            { page: nextPage },
             {
-                preserveScroll: true,
                 preserveState: true,
-                replace: true,
+                preserveScroll: true,
+                replace: false,
+                only: ['users', 'paginator'],
                 onFinish: () => {
-                    setIsSearchLoading(false);
+                    setIsLoadingMore(false);
                 },
             },
         );
     }
 
+    function search(e: React.ChangeEvent<HTMLInputElement>) {
+        e.preventDefault();
+        const query = e.target.value;
+        setSearchQuery(query);
+        setIsSearchLoading(true);
+
+        router.get(home().url, query ? { q: query } : {}, {
+            preserveScroll: query ? true : false,
+            preserveState: true,
+            replace: true,
+            onFinish: () => {
+                setIsSearchLoading(false);
+            },
+        });
+    }
+
     return (
         <>
-            <Head title="Dev Hunter">
+            {showLoader && <WelcomeLoader onComplete={handleLoaderComplete} />}
+            <Head title="Hunter">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
-                <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+                <link
+                    href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600"
+                    rel="stylesheet"
+                />
             </Head>
-            <SidebarProvider className="bg-background flex min-h-screen flex-col items-center justify-start bg-[#FDFDFC] p-6 text-[#1b1b18] lg:p-8 dark:bg-[#0a0a0a]">
-                <header className="bg-card fixed top-0 z-50 w-full bg-[#FDFDFC]/90 p-4 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90">
+            <SidebarProvider className="flex min-h-screen flex-col items-center justify-start bg-background text-[#1b1b18] lg:p-8 dark:bg-[#0a0a0a]">
+                <header
+                    className="fixed top-0 right-0 left-0 z-50 w-full bg-card p-8 text-sm backdrop-blur md:px-40 dark:bg-[#0a0a0a]/90"
+                    style={{
+                        paddingTop:
+                            'calc(env(safe-area-inset-top, 0px) + 20px)',
+                        paddingBottom: '20px',
+                    }}
+                >
                     <nav className="flex items-center justify-end gap-4">
                         <AppLogo />
                         <div className="flex-1" />
@@ -64,20 +125,20 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                         ) : (
                             <>
                                 <Link
-                                    href={route('login')}
+                                    href={login()}
                                     className="flex items-center justify-center gap-2 rounded-sm border px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] md:border-transparent dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                                 >
                                     <LogInIcon size={16} />
                                     Iniciar sessão
                                 </Link>
                                 <Link
-                                    href={route('register')}
+                                    href={register()}
                                     className="hidden items-center justify-center gap-2 rounded-sm border border-[#19140035] px-5 py-1.5 text-sm text-[#1b1b18] hover:border-[#1915014a] md:flex dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                                 >
                                     <UserPlus size={16} />
                                     Criar conta
                                 </Link>
-                                <div className="flex items-center gap-2">
+                                <div className="flex hidden items-center gap-2 md:flex">
                                     <a
                                         className="cursor-pointer dark:text-white"
                                         href="https://github.com/akira-io/devhunter"
@@ -99,19 +160,72 @@ export default function Welcome({ users, paginator }: WelcomeProps) {
                         )}
                     </nav>
                 </header>
-                <div className="mb-50 flex w-full flex-col items-center justify-start opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    <div className="mt-20 flex w-full flex-col items-center justify-center py-2 md:max-w-4xl lg:max-w-6xl">
-                        <h1 className="mb-4 text-4xl font-bold dark:text-white">Hunter 🇨🇻</h1>
+                <div
+                    className={`mb-50 flex w-full flex-col items-center justify-start transition-opacity duration-1000 lg:grow ${
+                        showLoader ? 'opacity-0' : 'animate-fade-in opacity-100'
+                    }`}
+                >
+                    <div className="mt-40 flex w-full flex-col items-center justify-center p-6 py-2 md:max-w-4xl lg:max-w-6xl">
+                        <h1 className="mb-4 text-4xl font-bold dark:text-white">
+                            Hunter 🇨🇻
+                        </h1>
                         <p className="text-md mb-8 max-w-2xl text-center font-normal text-[#1b1b18] sm:text-lg dark:text-[#EDEDEC]">
-                            O ponto de partida para inovação, colaboração e tecnologia em Cabo Verde. Um ecossistema digital onde projetos ganham vida
-                            e talento local encontra visibilidade global.
+                            O ponto de partida para inovação, colaboração e
+                            tecnologia em Cabo Verde. Um ecossistema digital
+                            onde projetos ganham vida e talento local encontra
+                            visibilidade global.
                         </p>
-                        <p className="text-muted-foreground -mt-6 mb-8 text-center text-xs">
-                            "{quote.message} - <b>{quote.author}</b>"
+                        <p className="-mt-6 mb-8 text-center text-xs text-muted-foreground">
+                            "{initialQuote.current.message} -{' '}
+                            <b>{initialQuote.current.author}</b>"
                         </p>
-                        <DevCount users={_users} total={_total} />
+                        <DevCount users={uniqueUsers} total={paginator.total} />
                     </div>
-                    <Finder users={users} onSearch={search} isSearchLoading={isSearchLoading} />
+                    <Finder
+                        users={uniqueUsers}
+                        onSearch={search}
+                        isSearchLoading={isSearchLoading}
+                    />
+                    {/* Infinite scroll trigger */}
+                    {!searchQuery && hasMore && (
+                        <div
+                            className="flex w-full items-center justify-center py-8"
+                            ref={(el) => {
+                                if (el && !isLoadingMore) {
+                                    const observer = new IntersectionObserver(
+                                        (entries) => {
+                                            const [entry] = entries;
+                                            if (entry.isIntersecting) {
+                                                loadMoreUsers();
+                                            }
+                                        },
+                                        { rootMargin: '200px' },
+                                    );
+                                    observer.observe(el);
+                                    return () => observer.disconnect();
+                                }
+                            }}
+                        >
+                            {isLoadingMore ? (
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-current"></div>
+                                    <span>Carregando mais hunters...</span>
+                                </div>
+                            ) : (
+                                <div className="text-sm text-muted-foreground">
+                                    Scroll para carregar mais...
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    {/* End message when no more items */}
+                    {!hasMore && uniqueUsers.length > 0 && (
+                        <div className="flex w-full items-center justify-center py-8">
+                            <p className="text-sm text-muted-foreground">
+                                Todos os hunters foram carregados!
+                            </p>
+                        </div>
+                    )}
                 </div>
             </SidebarProvider>
             <Toaster />

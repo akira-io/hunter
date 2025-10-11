@@ -67,23 +67,6 @@ final class ProfileUpdateRequest extends FormRequest
     }
 
     /**
-     * Update the user's profile information
-     */
-    public function updateUserInformation(): bool
-    {
-
-        $user = type($this->user())->as(User::class);
-
-        $user->fill($this->except('avatar_url', 'background_image_url'));
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        return $user->save();
-    }
-
-    /**
      * Get the avatar rules
      *
      * @return string[]
@@ -91,7 +74,7 @@ final class ProfileUpdateRequest extends FormRequest
     private function avatarRules(): array
     {
         if ($this->hasFile('avatar_url')) {
-            return ['nullable', 'image', 'max:400', 'mimes:jpg,jpeg,png'];
+            return ['nullable', 'image', 'max:2048', 'mimes:jpg,jpeg,png'];
         }
 
         if (is_string($this->input('avatar_url'))) {
@@ -109,7 +92,7 @@ final class ProfileUpdateRequest extends FormRequest
     private function backgroundRules(): array
     {
         if ($this->hasFile('background_image_url')) {
-            return ['nullable', 'image', 'max:400', 'mimes:jpg,jpeg,png'];
+            return ['nullable', 'image', 'max:2048', 'mimes:jpg,jpeg,png'];
         }
 
         if (is_string($this->input('background_image_url'))) {

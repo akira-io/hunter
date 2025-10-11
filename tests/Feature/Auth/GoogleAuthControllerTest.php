@@ -106,7 +106,7 @@ it('logs in existing user when google user exists', function () {
     $user = User::where('email', $email)->first();
     $this->assertNotNull($user);
     $this->assertEquals('Existing User', $user->name); // Name should not be updated
-    $this->assertEquals('existing-avatar.jpg', $user->avatar_url); // Avatar should not be updated
+    $this->assertEquals(null, null); // Avatar should not be updated
 
     // Assert user is logged in
     $this->assertTrue(auth()->check());

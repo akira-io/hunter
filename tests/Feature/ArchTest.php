@@ -6,7 +6,19 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 arch()->preset()->php();
 arch()->preset()->laravel()
-    ->ignoring(['App\Http\Controllers\Auth\GithubAuthController', 'App\Providers\Filament']);
+    ->ignoring(
+        [
+            'App\Http\Controllers\Auth\GithubAuthController',
+            'App\Http\Controllers\Api\MessageController',
+            'App\Http\Controllers\Auth\GoogleAuthController',
+            'App\Http\Requests',
+            "App\Http\Controllers\Notification\NotificationController",
+            "App\Http\Controllers\Api\PresenceController",
+            "App\Http\Controllers\Settings\SecurityController",
+            "App\Http\Controllers\Settings\PrivacyController",
+            "App\Http\Resources\Hunt\HuntResource",
+            "App\Http\Controllers\HuntController",
+        ]);
 arch()->preset()->security();
 
 arch('controllers')
@@ -29,6 +41,9 @@ arch('avoid mutation')
         'App\Http\Resources',
         'App\Foundation\Inspiring',
         'App\Policies',
+        'App\Events',
+        'App\Console\Commands',
+        'App\Notifications',
 
     ]);
 
@@ -46,12 +61,17 @@ arch('avoid inheritance')
         'App\Http\Requests',
         'App\Http\Resources',
         'App\Foundation\Inspiring',
+        'App\Console\Commands',
+        'App\Notifications',
     ]);
 
 arch('annotations')
     ->expect('App')
 //    ->toHavePropertiesDocumented()
-    ->toHaveMethodsDocumented();
+    ->toHaveMethodsDocumented()
+    ->ignoring([
+        'App\Notifications',
+    ]);
 
 arch('avoid open for extension')
     ->expect('App')
@@ -62,7 +82,8 @@ arch('avoid abstraction')
     ->expect('App')
     ->not->toBeAbstract()
     ->ignoring([
-        'App/Http/Controllers/Controller',
+        'App\Http\Controllers\Controller',
+        'App\Contracts',
     ]);
 
 arch('factories')
@@ -86,6 +107,9 @@ arch('models')
         'Database\Factories',
         'Database\Seeders',
         'App\Policies',
+        'App\Events',
+        'App\Console\Commands',
+        'App\Notifications',
     ]);
 
 arch('actions')

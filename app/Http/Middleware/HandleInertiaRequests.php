@@ -9,7 +9,6 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Throwable;
-use Tighten\Ziggy\Ziggy;
 
 final class HandleInertiaRequests extends Middleware
 {
@@ -43,7 +42,7 @@ final class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $quotes = str(type(Inspiring::quotes()->random())->asString());
+        $quotes = str(Inspiring::quotes()->random());
 
         [$message, $author] = explode('-', $quotes->value());
 
@@ -53,10 +52,6 @@ final class HandleInertiaRequests extends Middleware
             'quote' => ['message' => mb_trim($message), 'author' => mb_trim($author)],
             'auth' => [
                 'user' => $request->user() ? UserResource::make($request->user())->resolve() : null,
-            ],
-            'ziggy' => fn (): array => [
-                ...(new Ziggy)->toArray(),
-                'location' => $request->url(),
             ],
             'sidebarOpen' => $request->hasCookie('sidebar_state') && $request->cookie('sidebar_state') !== 'false',
         ];

@@ -7,13 +7,17 @@ namespace App\Actions;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 final readonly class GetHuntersAction
 {
     /**
      * Handle the action of getting hunters.
      *
-     * @return array{mixed,LengthAwarePaginator<int, string>}
+     * @return array{
+     *     0: Collection<int, array<string, mixed>>,
+     *     1: LengthAwarePaginator<int, User>
+     * }
      */
     public function handle(Request $request, int $perPage = 15, ?User $user = null): array
     {
@@ -26,39 +30,52 @@ final readonly class GetHuntersAction
             ? User::search($query)
             : User::query()->inRandomOrder();
 
-        /**
-         * @var LengthAwarePaginator<int, string> $paginator
-         */
+        /** @var LengthAwarePaginator<int, User> $paginator */
         $paginator = $usersQuery->paginate($perPage)->withQueryString();
 
         $paginator->getCollection()->load('academicBackgrounds'); // @phpstan-ignore-line
-        $hunters = $paginator->getCollection()->map(
-            static fn (User $user): array => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'avatar_url' => $user->getMedia('profile_avatar')->last()?->getUrl() ?? $user->avatar_url,
-                'background_image_url' => $user->getMedia('profile_background')->last()?->getUrl() ?? 'https://images.unsplash.com/photo-1746768934151-8c5cb84bcf11?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwzMHx8fGVufDB8fHx8fA%3D%3D',
-                'location' => $user->location,
-                'bio' => $user->bio,
-                'user_name' => $user->user_name,
-                'email_verified_at' => $user->email_verified_at,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-                'skills' => $user->skills,
-                'github_url' => $user->github_url,
-                'twitter_url' => $user->twitter_url,
-                'linkedin_url' => $user->linkedin_url,
-                'bluesky_url' => $user->bluesky_url,
-                'website_url' => $user->website_url,
-                'youtube_url' => $user->youtube_url,
-            ]
+        /** @var Collection<int, User> $collection */
+        $collection = $paginator->getCollection();
+
+        $user?->attachFollowStatus($collection);
+
+        /** @var Collection<int, array<string, mixed>> $hunters */
+        $hunters = $collection->map(
+            function (User $userModel) use ($user): array {
+                $data = [
+                    'id' => $userModel->id,
+                    'name' => $userModel->name,
+                    'email' => $userModel->email,
+                    'avatar_url' => $userModel->getMedia('profile_avatar')->last()?->getUrl() ?? $userModel->avatar_url,
+                    'background_image_url' => $userModel->getMedia('profile_background')->last()?->getUrl() ?? 'https://images.unsplash.com/photo-1746768934151-8c5cb84bcf11?w=500&auto=format&fit=crop&q=60',
+                    'location' => $userModel->location,
+                    'bio' => $userModel->bio,
+                    'user_name' => $userModel->user_name,
+                    'email_verified_at' => $userModel->email_verified_at,
+                    'created_at' => $userModel->created_at,
+                    'updated_at' => $userModel->updated_at,
+                    'skills' => $userModel->skills,
+                    'github_url' => $userModel->github_url,
+                    'twitter_url' => $userModel->twitter_url,
+                    'linkedin_url' => $userModel->linkedin_url,
+                    'bluesky_url' => $userModel->bluesky_url,
+                    'website_url' => $userModel->website_url,
+                    'youtube_url' => $userModel->youtube_url,
+                ];
+
+                // Only include follow status if user is authenticated
+                if ($user) {
+                    $data['has_followed'] = $userModel->has_followed ?? false;
+                    $data['followed_at'] = $userModel->followed_at ?? null;
+                    $data['follow_accepted_at'] = $userModel->follow_accepted_at ?? null;
+                    $data['is_blocked'] = $user->hasBlocked($userModel);
+                }
+
+                return $data;
+            }
         );
 
-        $hunters = $user
-            ? $user->attachFollowStatus($hunters)
-            : $hunters;
-
+        /** @var Collection<int, array<string, mixed>> $hunters */
         return [$hunters, $paginator];
     }
 }

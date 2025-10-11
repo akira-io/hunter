@@ -12,9 +12,17 @@ export function SectionHeader({
     className?: string;
 } & ComponentProps<'div'>) {
     return (
-        <div data-slot="section-header" className={cn('mb-4 px-4', className)} {...props}>
+        <div
+            data-slot="section-header"
+            className={cn('mb-4 px-4', className)}
+            {...props}
+        >
             <h2 className="text-2xl font-bold">{title}</h2>
-            {description && <p className="text-muted-foreground prose w-full max-w-100">{description}</p>}
+            {description && (
+                <p className="prose w-full max-w-100 text-muted-foreground">
+                    {description}
+                </p>
+            )}
         </div>
     );
 }

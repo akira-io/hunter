@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\Hunt\CreateHuntAction;
+use App\Actions\Hunt\DeleteHuntAction;
+use App\Actions\Hunt\GetHuntsAction;
+use App\Actions\Hunt\GetUserHuntsAction;
+use App\DataTransferObjects\Hunt\CreateHuntData;
 use App\Http\Requests\Hunt\CreateHuntRequest;
 use App\Http\Requests\Hunt\DeleteHuntRequest;
 use App\Http\Resources\Hunt\HuntResource;
@@ -28,19 +33,31 @@ final readonly class HuntController
      * Display the hunt line.
      */
     #[Get(uri: '/', name: 'hunts.index')]
-    public function index(Request $request): Response
+    public function index(Request $request, GetHuntsAction $getHuntsAction): Response
     {
         /** @var User $user */
         $user = $request->user();
 
-        //        dd(Hunt::latest()->first()->comments);
-
-        $hunts = Hunt::query()
-            ->latest()
-            ->paginate();
+        $hunts = $getHuntsAction->handle(user: $user);
 
         return Inertia::render('hunts/hunts', [
-            'hunts' => HuntResource::collection($user->attachLikeStatus($hunts)),
+            'hunts' => Inertia::scroll(fn () => HuntResource::collection($hunts)),
+        ]);
+    }
+
+    /**
+     * Display all hunts created by the authenticated user.
+     */
+    #[Get(uri: '/my', name: 'hunts.my')]
+    public function my(Request $request, GetUserHuntsAction $getUserHuntsAction): Response
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $hunts = $getUserHuntsAction->handle(user: $user);
+
+        return Inertia::render('hunts/my-hunts', [
+            'hunts' => Inertia::scroll(fn () => HuntResource::collection($hunts)),
         ]);
     }
 
@@ -48,21 +65,51 @@ final readonly class HuntController
      * Store a new hunt.
      */
     #[Post(uri: '/', name: 'hunts.store')]
-    public function store(CreateHuntRequest $request): RedirectResponse
+    public function store(CreateHuntRequest $request, CreateHuntAction $createHuntAction): RedirectResponse
     {
+        /** @var User $user */
+        $user = $request->user();
 
-        $request->store();
+        $hunt = $createHuntAction->handle(
+            user: $user,
+            huntData: CreateHuntData::fromRequest(request: $request)
+        );
 
-        return to_route('hunts.index');
+        // Attach like status for the current user
+        $user->attachLikeStatus($hunt);
+
+        return to_route('hunts.index')->with([
+            'newHunt' => HuntResource::make($hunt)->resolve(),
+        ]);
+    }
+
+    /**
+     * Show a single hunt.
+     */
+    #[Get(uri: '/{hunt}', name: 'hunts.show')]
+    public function show(Request $request, Hunt $hunt): Response
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        if (! $hunt->owner->canBeViewedBy($user)) {
+            abort(403, 'You do not have permission to view this hunt.');
+        }
+
+        $user->attachLikeStatus($hunt);
+
+        return Inertia::render('hunts/show', [
+            'hunt' => HuntResource::make($hunt)->resolve(),
+        ]);
     }
 
     /**
      * Delete a hunt.
      */
     #[Delete(uri: '/{hunt}', name: 'hunts.destroy')]
-    public function destroy(DeleteHuntRequest $request, Hunt $hunt): RedirectResponse
+    public function destroy(DeleteHuntRequest $request, Hunt $hunt, DeleteHuntAction $deleteHuntAction): RedirectResponse
     {
-        $request->destroy($hunt);
+        $deleteHuntAction->handle(hunt: $hunt);
 
         return back();
     }

@@ -1,16 +1,18 @@
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle, LogInIcon } from 'lucide-react';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
+import { GithubLoginButton } from '@/components/login/GithubLoginButton';
+import { GoogleLoginButton } from '@/components/login/GoogleLoginButton';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
-import { RiGithubFill } from '@remixicon/react';
-import { RiGoogleFill } from 'react-icons/ri';
+import { login, register } from '@/routes';
+import password from '@/routes/password';
 
 type LoginForm = {
     email: string;
@@ -24,10 +26,9 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
-    const [loadingGithub, setLoadingGithub] = useState(false);
-    const [loadingGoogle, setLoadingGoogle] = useState(false);
-
-    const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
+    const { data, setData, post, processing, errors, reset } = useForm<
+        Required<LoginForm>
+    >({
         email: '',
         password: '',
         remember: false,
@@ -35,26 +36,23 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('login'), {
+        post(login.url(), {
             onFinish: () => reset('password'),
         });
     };
 
-    const handleGithubLogin = () => {
-        setLoadingGithub(true);
-        window.location.assign(route('github.login'));
-    };
-
-    const handleGoogleLogin = () => {
-        setLoadingGoogle(true);
-        window.location.assign(route('google.login'));
-    };
-
     return (
-        <AuthLayout title="Login" description="Iniciar sessão na sua conta Hunter">
+        <AuthLayout
+            title="Login"
+            description="Iniciar sessão na sua conta Hunter"
+        >
             <Head title="Login" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
+                <div className="grid gap-1">
+                    <GithubLoginButton />
+                    <GoogleLoginButton />
+                </div>
+                <div className="mt-2 grid gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="email">E-mail</Label>
                         <Input
@@ -74,7 +72,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="flex items-center">
                             <Label htmlFor="password">Password</Label>
                             {canResetPassword && (
-                                <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
+                                <TextLink
+                                    href={password.request.url()}
+                                    className="ml-auto text-sm"
+                                    tabIndex={5}
+                                >
                                     Esqueci-me da password
                                 </TextLink>
                             )}
@@ -86,7 +88,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             tabIndex={2}
                             autoComplete="current-password"
                             value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
                             placeholder="Password"
                         />
                         <InputError message={errors.password} />
@@ -101,37 +105,33 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         />
                         <Label htmlFor="remember">Lembrar-me</Label>
                     </div>
-                    <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
-                        {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LogInIcon />}
+                    <Button
+                        type="submit"
+                        className="mt-4 w-full"
+                        tabIndex={4}
+                        disabled={processing}
+                        variant="gradient"
+                    >
+                        {processing ? (
+                            <LoaderCircle className="h-4 w-4 animate-spin" />
+                        ) : (
+                            <LogInIcon />
+                        )}
                         Iniciar sessão
                     </Button>
-                    <div className="grid gap-1">
-                        <Button variant="outline" type="button" className="w-full" onClick={handleGithubLogin} tabIndex={5} disabled={loadingGithub}>
-                            {loadingGithub ? (
-                                <LoaderCircle className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <RiGithubFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
-                            )}
-                            Continuar com GitHub
-                        </Button>
-                        <Button variant="outline" type="button" className="w-full" onClick={handleGoogleLogin} tabIndex={6} disabled={loadingGithub}>
-                            {loadingGoogle ? (
-                                <LoaderCircle className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <RiGoogleFill className="me-1 text-[#333333] dark:text-white/60" size={16} aria-hidden="true" />
-                            )}
-                            Continuar com Google
-                        </Button>
-                    </div>
                 </div>
-                <div className="text-muted-foreground text-center text-sm">
+                <div className="text-center text-sm text-muted-foreground">
                     Você não tem uma conta?{' '}
-                    <TextLink href={route('register')} tabIndex={7}>
+                    <TextLink href={register.url()} tabIndex={7}>
                         Criar conta
                     </TextLink>
                 </div>
             </form>
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && (
+                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                    {status}
+                </div>
+            )}
         </AuthLayout>
     );
 }

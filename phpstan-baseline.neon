@@ -1,61 +1,349 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,string\>\:\:map\(\) expects callable\(string, int\)\: array\{id\: int, name\: string, email\: string, avatar_url\: string\|null, background_image_url\: string, location\: string, bio\: string, user_name\: string, email_verified_at\: string\|null, created_at\: Carbon\\CarbonImmutable, updated_at\: Carbon\\CarbonImmutable, skills\: list\<mixed\>, github_url\: string\|null, twitter_url\: string\|null, linkedin_url\: string\|null, bluesky_url\: string\|null, website_url\: string\|null, youtube_url\: string\|null\}, Closure\(App\\Models\\User\)\: array\{id\: int, name\: string, email\: string, avatar_url\: string\|null, background_image_url\: string, location\: string, bio\: string, user_name\: string, email_verified_at\: string\|null, created_at\: Carbon\\CarbonImmutable, updated_at\: Carbon\\CarbonImmutable, skills\: list\<mixed\>, github_url\: string\|null, twitter_url\: string\|null, linkedin_url\: string\|null, bluesky_url\: string\|null, website_url\: string\|null, youtube_url\: string\|null\} given\.$#'
-			identifier: argument.type
+			rawMessage: 'Method App\Actions\Auth\LoginUserAction::handle() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
 			count: 1
-			path: app/Actions/GetHuntersAction.php
+			path: app/Actions/Auth/LoginUserAction.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Guard\:\:logout\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/Auth/AuthenticatedSessionController.php
-
-		-
-			message: '#^Method App\\Http\\Middleware\\HandleInertiaRequests\:\:share\(\) should return array\<string, mixed\> but returns array\.$#'
+			rawMessage: 'Anonymous function should return array{id: int, title: mixed, type: string, avatar_url: string|null, participants: Illuminate\Support\Collection<int, array{id: int, name: string, avatar_url: string|null}>, other_participant: App\Models\User, last_message: array{id: mixed, content: mixed, type: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}|null, last_message_at: Carbon\Carbon|null, ...} but returns array{id: int, title: mixed, type: string, avatar_url: string|null, participants: Illuminate\Support\Collection<int, array{id: int, name: string, avatar_url: string|null}>, other_participant: App\Models\User, last_message: array{id: mixed, content: mixed, type: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}|null, last_message_at: Carbon\Carbon|null, ...}.'
 			identifier: return.type
 			count: 1
-			path: app/Http/Middleware/HandleInertiaRequests.php
+			path: app/Actions/Chat/GetConversationsAction.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\MorphMany\<Illuminate\\Database\\Eloquent\\Model, App\\Models\\Comment\>\:\:contains\(\)\.$#'
-			identifier: method.notFound
+			rawMessage: 'Parameter #1 $callback of method Illuminate\Database\Eloquent\Collection<int,App\Models\Conversation>::map() expects callable(App\Models\Conversation, int): array{id: int, title: mixed, type: string, avatar_url: string|null, participants: Illuminate\Support\Collection<int, array{id: int, name: string, avatar_url: string|null}>, other_participant: App\Models\User, last_message: array{id: mixed, content: mixed, type: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}|null, last_message_at: Carbon\Carbon|null, unread_count: int<0, max>}, Closure(App\Models\Conversation): array{id: int, title: mixed, type: string, avatar_url: string|null, participants: Illuminate\Support\Collection<int, array{id: int, name: string, avatar_url: string|null}>, other_participant: App\Models\User, last_message: array{id: mixed, content: mixed, type: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}|null, last_message_at: Carbon\Carbon|null, unread_count: int<0, max>} given.'
+			identifier: argument.type
 			count: 1
-			path: app/Http/Resources/Hunt/HuntResource.php
+			path: app/Actions/Chat/GetConversationsAction.php
 
 		-
-			message: '#^Method App\\Http\\Resources\\Hunt\\HuntResource\:\:commentsWithHasLiked\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			rawMessage: 'Parameter #2 $imagePath of job class App\Jobs\ProcessHuntImage constructor expects string in App\Jobs\ProcessHuntImage::dispatch(), string|false given.'
+			identifier: argument.type
+			count: 1
+			path: app/Actions/Hunt/CreateHuntAction.php
+
+		-
+			rawMessage: 'Method App\Actions\Settings\GetBlockedUsersAction::handle() should return Illuminate\Support\Collection<int, array<string, mixed>> but returns Illuminate\Support\Collection<int, array{id: int, name: string, user_name: string, avatar_url: string|null, blocked_at: string}>.'
+			identifier: return.type
+			count: 1
+			path: app/Actions/Settings/GetBlockedUsersAction.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 2
+			path: app/Actions/User/UserProfileAction.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Auth/ConfirmablePasswordController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Auth/EmailVerificationNotificationController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Auth/EmailVerificationPromptController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Followable/GetHuntersController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Followable/GetHuntingsController.php
+
+		-
+			rawMessage: 'Parameter #1 $collection of method Illuminate\Pagination\AbstractPaginator<int,Illuminate\Database\Eloquent\Model>::setCollection() expects Illuminate\Support\Collection<int, Illuminate\Database\Eloquent\Model>, Illuminate\Support\Collection<int|string, mixed> given.'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Followable/GetHuntingsController.php
+
+		-
+			rawMessage: 'Anonymous function should return Illuminate\Pagination\LengthAwarePaginator<int, array{id: string, type: string, title: string, message: string, data: array<string, mixed>, read_at: string|null, created_at: string, created_at_human: string}> but returns Illuminate\Pagination\LengthAwarePaginator<int, array{id: string, type: string, title: string, message: string, data: array<string, mixed>, read_at: string|null, created_at: string, created_at_human: string}>.'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/Notification/NotificationController.php
+
+		-
+			rawMessage: Instanceof between Illuminate\Notifications\DatabaseNotification and Illuminate\Notifications\DatabaseNotification will always evaluate to true.
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Notification/NotificationController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 2
+			path: app/Http/Controllers/OnboardingController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Profile/AcademicBackgroundController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Profile/HighlightSkillController.php
+
+		-
+			rawMessage: 'Call to function is_array() with array<string, mixed> will always evaluate to true.'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Http/Controllers/Profile/LinksController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Profile/LinksController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Settings/PasswordController.php
+
+		-
+			rawMessage: 'Call to method asString() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Settings/PasswordController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 4
+			path: app/Http/Controllers/Settings/PrivacyController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 2
+			path: app/Http/Controllers/Settings/ProfileController.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 5
+			path: app/Http/Controllers/Settings/SecurityController.php
+
+		-
+			rawMessage: 'Call to method asString() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Controllers/Settings/SecurityController.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Auth\LoginRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Auth/LoginRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Auth\NewPasswordRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Auth/NewPasswordRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Auth\PasswordResetLinkRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Auth/PasswordResetLinkRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Auth\RegisterRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Auth/RegisterRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Chat\CreateConversationRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Chat/CreateConversationRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Chat\MarkMessagesAsReadRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Chat/MarkMessagesAsReadRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Chat\SendMessageRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Chat/SendMessageRequest.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Requests/Commentable/DeleteCommentRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Commentable\StoreCommentRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Commentable/StoreCommentRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Feed\FollowRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Feed/FollowRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Hunt\CreateHuntRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Hunt/CreateHuntRequest.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Http/Requests/Hunt/DeleteHuntRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Profile\AboutRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Profile/AboutRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Profile\AcademicBackgroundRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Profile/AcademicBackgroundRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Profile\HighlightSkillRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Profile/HighlightSkillRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Profile\ProfileLinkRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Profile/ProfileLinkRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Settings\DeleteAccountRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Settings/DeleteAccountRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Settings\NotificationUpdateRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Settings/NotificationUpdateRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Settings\PasswordUpdateRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Settings/PasswordUpdateRequest.php
+
+		-
+			rawMessage: 'Call to method as() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 4
+			path: app/Http/Requests/Settings/ProfileUpdateRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Settings\RevokeSessionRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Settings/RevokeSessionRequest.php
+
+		-
+			rawMessage: 'Method App\Http\Requests\Settings\UpdatePrivacySettingsRequest::authorize() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
+			count: 1
+			path: app/Http/Requests/Settings/UpdatePrivacySettingsRequest.php
+
+		-
+			rawMessage: Right side of && is always true.
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			rawMessage: 'Call to function is_object() with App\Models\User will always evaluate to true.'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Http/Resources/MessageResource.php
+
+		-
+			rawMessage: 'Call to function method_exists() with App\Models\User and ''getAttribute'' will always evaluate to true.'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Http/Resources/MessageResource.php
+
+		-
+			rawMessage: 'Method App\Models\Conversation::forUser() should return Illuminate\Database\Eloquent\Builder<$this(App\Models\Conversation)> but returns Illuminate\Database\Eloquent\Builder<App\Models\Conversation>.'
+			identifier: return.type
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			rawMessage: 'Method App\Models\Hunt::toHumanDate() return type with generic class Illuminate\Database\Eloquent\Casts\Attribute does not specify its types: TGet, TSet'
 			identifier: missingType.generics
 			count: 1
-			path: app/Http/Resources/Hunt/HuntResource.php
+			path: app/Models/Hunt.php
 
 		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:map\(\) expects callable\(mixed, int\|string\)\: App\\Models\\Comment, Closure\(App\\Models\\Comment\)\: App\\Models\\Comment given\.$#'
-			identifier: argument.type
+			rawMessage: 'Method App\Policies\CommentPolicy::view() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
 			count: 1
-			path: app/Http/Resources/Hunt/HuntResource.php
+			path: app/Policies/CommentPolicy.php
 
 		-
-			message: '#^Parameter \#1 \$value of function collect expects Illuminate\\Contracts\\Support\\Arrayable\<\(int\|string\), mixed\>\|iterable\<\(int\|string\), mixed\>\|null, Illuminate\\Database\\Eloquent\\Relations\\MorphMany\<Akira\\Commentable\\Models\\Comment, App\\Models\\Hunt\> given\.$#'
-			identifier: argument.type
+			rawMessage: 'Method App\Policies\CommentPolicy::viewAny() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
 			count: 1
-			path: app/Http/Resources/Hunt/HuntResource.php
+			path: app/Policies/CommentPolicy.php
 
 		-
-			message: '#^Property App\\Models\\Comment\:\:\$has_liked \(bool\) does not accept mixed\.$#'
-			identifier: assign.propertyType
+			rawMessage: 'Method App\Policies\HuntPolicy::view() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
 			count: 1
-			path: app/Http/Resources/Hunt/HuntResource.php
+			path: app/Policies/HuntPolicy.php
 
 		-
-			message: '#^Unable to resolve the template type TKey in call to function collect$#'
-			identifier: argument.templateType
+			rawMessage: 'Method App\Policies\HuntPolicy::viewAny() never returns false so the return type can be changed to true.'
+			identifier: return.tooWideBool
 			count: 1
-			path: app/Http/Resources/Hunt/HuntResource.php
+			path: app/Policies/HuntPolicy.php
 
 		-
-			message: '#^Unable to resolve the template type TValue in call to function collect$#'
-			identifier: argument.templateType
+			rawMessage: Access to constant on internal interface Pan\Contracts\AnalyticsRepository.
+			identifier: classConstant.internalInterface
 			count: 1
-			path: app/Http/Resources/Hunt/HuntResource.php
+			path: app/Providers/PanServiceProvider.php
+
+		-
+			rawMessage: 'Call to method asString() of internal class PinkaryProject\TypeGuard\Type from outside its root namespace PinkaryProject.'
+			identifier: method.internalClass
+			count: 1
+			path: app/Rules/Rules/WithoutBlankCharactersRule.php

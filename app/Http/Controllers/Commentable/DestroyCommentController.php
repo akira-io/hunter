@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Commentable;
 
 use Akira\Commentable\Exceptions\DeleteCommentNotAllowedException;
+use App\Actions\Social\DeleteCommentAction;
 use App\Http\Requests\Commentable\DeleteCommentRequest;
 use App\Models\Comment;
 use App\Models\User;
@@ -18,18 +19,17 @@ use Spatie\RouteAttributes\Attributes\Prefix;
 final readonly class DestroyCommentController
 {
     /**
-     * Store a new comment for the hunt.
+     * Delete a comment.
      *
      * @throws DeleteCommentNotAllowedException
      */
     #[Delete('{comment}', name: 'comments.destroy')]
-    public function destroy(DeleteCommentRequest $request, Comment $comment): RedirectResponse
+    public function destroy(DeleteCommentRequest $request, Comment $comment, DeleteCommentAction $deleteCommentAction): RedirectResponse
     {
-
         /** @var User $user */
         $user = $request->user();
 
-        $user->deleteComment($comment);
+        $deleteCommentAction->handle($user, $comment);
 
         return back();
     }

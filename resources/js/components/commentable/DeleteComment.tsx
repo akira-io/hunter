@@ -1,5 +1,6 @@
 import { HunterConfirmDialog } from '@/components/core/HuntDialog';
 import { useToast } from '@/hooks/use-toast';
+import comments from '@/routes/comments';
 import { Comment } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { Ban } from 'lucide-react';
@@ -13,7 +14,7 @@ export default function DeleteComment({ comment }: DeleteComentProps) {
     const { delete: destroy, processing } = useForm();
 
     function deleteComment() {
-        destroy(route('comments.destroy', { comment }), {
+        destroy(comments.destroy(comment).url, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
@@ -30,5 +31,11 @@ export default function DeleteComment({ comment }: DeleteComentProps) {
         });
     }
 
-    return <HunterConfirmDialog processing={processing} onConfirm={deleteComment} title="Comentário" />;
+    return (
+        <HunterConfirmDialog
+            processing={processing}
+            onConfirm={deleteComment}
+            title="Comentário"
+        />
+    );
 }

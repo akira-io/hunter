@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Commentable;
 
+use App\Actions\Social\CreateCommentAction;
 use App\Http\Requests\Commentable\StoreCommentRequest;
 use App\Models\Hunt;
 use App\Models\User;
@@ -23,12 +24,14 @@ final readonly class HuntCommentController
      * @throws Exception
      */
     #[Post('{hunt}', name: 'hunts.comment')]
-    public function store(StoreCommentRequest $request, Hunt $hunt): RedirectResponse
+    public function store(StoreCommentRequest $request, Hunt $hunt, CreateCommentAction $createCommentAction): RedirectResponse
     {
         /** @var User $user */
         $user = $request->user();
 
-        $user->comment($hunt, $request->string('content')->value());
+        $content = $request->string('content')->value();
+
+        $createCommentAction->handle(user: $user, commentable: $hunt, content: $content);
 
         return back();
     }

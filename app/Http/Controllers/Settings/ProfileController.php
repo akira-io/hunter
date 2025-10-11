@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Settings;
 
+use App\Actions\Profile\UpdateProfileAction;
 use App\Actions\User\Profile\UpdateProfileAvatarAction;
 use App\Actions\User\Profile\UpdateProfileBackgroundAction;
+use App\DataTransferObjects\Profile\UpdateProfileData;
 use App\Enums\SkillsEnum;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
@@ -44,36 +45,17 @@ final readonly class ProfileController
      * @throws FileIsTooBig
      * @throws FileDoesNotExist
      */
-    public function update(ProfileUpdateRequest $request, UpdateProfileAvatarAction $profileAvatarAction, UpdateProfileBackgroundAction $profileBackgroundAction): RedirectResponse
+    public function update(ProfileUpdateRequest $request, UpdateProfileAvatarAction $profileAvatarAction, UpdateProfileBackgroundAction $profileBackgroundAction, UpdateProfileAction $updateProfileAction): RedirectResponse
     {
-
-        // $user = type($request->user())->as(User::class);
+        $user = type($request->user())->as(User::class);
 
         $request->updateImages($profileBackgroundAction, $profileAvatarAction);
 
-        $request->updateUserInformation();
+        $updateProfileAction->handle(
+            user: $user,
+            profileData: UpdateProfileData::fromRequest(request: $request)
+        );
 
         return back();
-    }
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = type($request->user())->as(User::class);
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
     }
 }

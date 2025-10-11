@@ -18,6 +18,8 @@ final class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        /** @var User|null $authUser */
+        $authUser = $request->user();
 
         return [
             'id' => $this->id,
@@ -40,6 +42,10 @@ final class UserResource extends JsonResource
             'bluesky_url' => $this->bluesky_url,
             'website_url' => $this->website_url,
             'youtube_url' => $this->youtube_url,
+            'onboarding_completed' => $this->onboarding_completed,
+            'onboarding_completed_at' => $this->onboarding_completed_at,
+            'is_blocked' => $authUser?->hasBlocked($this->resource) ?? false,
+            'is_online' => $this->resource->canShowOnlineStatusTo($authUser) && $this->resource->isOnline(),
         ];
     }
 }

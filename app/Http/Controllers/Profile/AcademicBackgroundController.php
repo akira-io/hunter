@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Profile;
 
+use App\Actions\Profile\UpdateAcademicBackgroundAction;
+use App\DataTransferObjects\Profile\AcademicBackgroundData;
 use App\Http\Requests\Profile\AcademicBackgroundRequest;
 use App\Models\AcademicBackground;
 use App\Models\User;
@@ -21,12 +23,14 @@ final readonly class AcademicBackgroundController
      * Store the user's professional education.
      */
     #[Post('/', name: 'profile.education')]
-    public function store(AcademicBackgroundRequest $request): RedirectResponse
+    public function store(AcademicBackgroundRequest $request, UpdateAcademicBackgroundAction $updateAcademicBackgroundAction): RedirectResponse
     {
-
         $user = type($request->user())->as(User::class);
 
-        $user->academicBackgrounds()->create((array) $request->validated());
+        $updateAcademicBackgroundAction->handle(
+            user: $user,
+            academicData: AcademicBackgroundData::fromRequest(request: $request)
+        );
 
         return to_route('profile.edit');
     }

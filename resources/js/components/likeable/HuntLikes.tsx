@@ -1,4 +1,5 @@
 import { LikeButton } from '@/components/likeable/LikeButton';
+import hunts from '@/routes/hunts';
 import { Hunt } from '@/types';
 import { useForm } from '@inertiajs/react';
 
@@ -10,11 +11,17 @@ export function HuntLikes({ hunt }: LikesProps) {
     const { post } = useForm();
 
     function handleLike() {
-        post(route('hunts.toggle-like', hunt.id), {
+        post(hunts.toggleLike.url(hunt), {
             preserveScroll: true,
             preserveState: true,
         });
     }
 
-    return <LikeButton count={hunt.likes_count} hasLiked={hunt.has_liked} onLike={handleLike} />;
+    return (
+        <LikeButton
+            count={hunt.likes_count}
+            hasLiked={hunt.has_liked}
+            onLike={handleLike}
+        />
+    );
 }

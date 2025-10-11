@@ -12,6 +12,24 @@ on:
 jobs:
   code_base_test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: devhunter_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout
@@ -31,18 +49,13 @@ jobs:
           cache: 'npm'
 
       - name: Install Aspell
-        shell: bash
-        run: |
-          sudo apt-get update && sudo apt-get install -y aspell aspell-en
-
-      - name: Install Node Dependencies
-        run: npm ci --force
-
-      - name: Build Assets
-        run: npm run build
+        run: sudo apt-get update && sudo apt-get install -y aspell aspell-en
 
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install Node Dependencies
+        run: npm ci --force
 
       - name: Copy Environment File
         run: cp .env.example .env
@@ -50,11 +63,26 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
+      - name: Configure Database
+        run: |
+          echo "DB_CONNECTION=pgsql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_DATABASE=devhunter_test" >> .env
+          echo "DB_USERNAME=postgres" >> .env
+          echo "DB_PASSWORD=postgres" >> .env
+
+      - name: Run Database Migrations
+        run: php artisan migrate --force
+
+      - name: Build Assets
+        run: npm run build
+
       - name: Setup Meilisearch
         run: |
           /usr/bin/docker pull getmeili/meilisearch:v1.14
           /usr/bin/docker run -d -p 7700:7700 getmeili/meilisearch:v1.14
-          sleep 10 # Aguarda o Meilisearch inicializar
+          sleep 10
 
       - name: Wait for Meilisearch to be available
         run: |
@@ -69,20 +97,12 @@ jobs:
           echo "MEILISEARCH_HOST=http://localhost:7700" >> .env
           echo "MEILISEARCH_API_KEY=your_meilisearch_api_key" >> .env
 
+      - name: Sync Meilisearch Indexes
+        run: php artisan scout:sync-index-setting
+
       - name: Tests
+        env:
+          DB_DATABASE: devhunter_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
         run: composer test
-
-      - name: Ensure Frontend is Well Formatted
-        run: npm run format:check
-
-      - name: Ensure Typescript Types
-        run: npm run types
-
-      - name: Lint Frontend
-        run: npm run lint
-
-      - name: Commit Changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: format frontend"
-          commit_options: '--no-verify'

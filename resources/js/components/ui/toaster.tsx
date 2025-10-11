@@ -8,10 +8,10 @@ export function Toaster() {
     const { toasts } = useToast();
 
     return (
-        <ToastProvider>
+        <ToastProvider duration={2000}>
             {toasts.map(function({ id, title = 'Sucesso', description, icon, action, ...props }) {
                 return (
-                    <Toast key={id} {...props} className='mt-2'>
+                    <Toast key={id} {...props} className='mt-2' duration={2000}>
                         <div className='flex w-full justify-between gap-2 mt-4'>
                             <div className='flex flex-col gap-3'>
                                 <div className='space-y-1'>

@@ -28,10 +28,13 @@ final class DeleteHuntRequest extends FormRequest
      */
     public function authorize(): bool
     {
-
+        /** @var User $user */
         $user = type($this->user())->as(User::class);
 
-        return (bool) $user->can('delete', $this->route('hunt'));
+        /** @var mixed $hunt */
+        $hunt = $this->route('hunt');
+
+        return (bool) $user->can('delete', $hunt);
     }
 
     /**
@@ -39,6 +42,9 @@ final class DeleteHuntRequest extends FormRequest
      */
     public function destroy(Hunt $hunt): ?bool
     {
-        return $hunt->delete();
+        /** @var bool|null $deleted */
+        $deleted = $hunt->delete();
+
+        return $deleted;
     }
 }

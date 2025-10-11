@@ -18,7 +18,7 @@ it('toggles like on a hunt and redirects to hunts index', function () {
 
     $response = $this->post(route('hunts.toggle-like', $this->hunt));
 
-    $response->assertRedirect(route('hunts.index'));
+    $response->assertRedirectBack();
 });
 
 it('requires authentication to toggle like on a hunt', function () {

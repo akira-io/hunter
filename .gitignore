@@ -25,3 +25,7 @@ yarn-error.log
 /herd.yml
 
 .DS_Store
+/resources/js/actions
+/resources/js/routes
+/resources/js/wayfinder
+.env.testing

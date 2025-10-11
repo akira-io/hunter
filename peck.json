@@ -13,7 +13,18 @@
             "commentable",
             "likeable",
             "huntings",
-            "commitlint"
+            "commitlint",
+            "paginator",
+            "ds",
+            "broadcastable",
+            "onboarding",
+            "dto",
+            "laravel's",
+            "gamification",
+            "ux",
+            "commenter",
+            "orchestrator",
+            "virality"
         ],
         "paths": [
             "resources",

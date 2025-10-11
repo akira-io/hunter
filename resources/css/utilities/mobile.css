@@ -1,0 +1,181 @@
+/**
+ * Mobile-Specific Utilities
+ * Safe areas, chat container, and mobile optimizations
+ */
+
+@layer utilities {
+    /* Safe area insets */
+    .safe-area-inset-bottom {
+        padding-bottom: max(env(safe-area-inset-bottom), 16px);
+    }
+
+    .safe-area-inset-top {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-area-inset-left {
+        padding-left: env(safe-area-inset-left);
+    }
+
+    .safe-area-inset-right {
+        padding-right: env(safe-area-inset-right);
+    }
+
+    /* Safe area positioning utilities for modals */
+    .safe-top {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Mobile chat container optimizations */
+    .mobile-chat-container {
+        /* Prevent zoom on input focus */
+        -webkit-text-size-adjust: 100%;
+        /* Prevent touch callouts */
+        -webkit-touch-callout: none;
+        /* Prevent text selection */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        /* Improve scrolling performance */
+        -webkit-overflow-scrolling: touch;
+        /* Prevent bounce effect */
+        overscroll-behavior-y: contain;
+        /* Ensure proper mobile viewport height */
+        height: 100dvh; /* Dynamic viewport height for mobile browsers */
+        /* Prevent any accidental zooming */
+        touch-action: manipulation;
+        /* Ensure content fits within safe areas */
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        /* Position relative for better stacking context */
+        position: relative;
+    }
+
+    /* Allow text selection for message content */
+    .mobile-chat-message {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+        /* Enhanced word breaking for long messages */
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        /* Preserve line breaks but allow wrapping */
+        white-space: pre-wrap;
+        /* Better text rendering on mobile */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        /* Ensure proper line height for readability */
+        line-height: 1.5;
+    }
+
+    /* Prevent mobile keyboard issues */
+    .mobile-message-input {
+        /* Prevent zoom on focus for iOS */
+        font-size: 16px;
+        /* Smooth textarea resize */
+        transition: height 0.1s ease;
+        /* Better touch targets */
+        min-height: 44px;
+        /* Proper line height for textarea */
+        line-height: 1.4;
+    }
+
+    .mobile-message-input:focus {
+        /* Maintain font size on focus */
+        font-size: 16px;
+    }
+
+    /* Enhanced mobile keyboard handling */
+    .mobile-input-container {
+        /* Stick to bottom with proper safe area */
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        /* Handle keyboard appearance */
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    /* PWA Header - Handles iPhone notch and safe areas */
+    .pwa-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: @apply bg-background;
+        /* Add safe area padding plus consistent spacing */
+        padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+        padding-bottom: 12px;
+        padding-left: max(env(safe-area-inset-left, 0px), 12px);
+        padding-right: max(env(safe-area-inset-right, 0px), 12px);
+        width: 100%;
+    }
+
+    /* PWA body adjustments */
+    @media (display-mode: standalone) {
+        body {
+            /* Remove any default padding in standalone mode */
+            padding: 0 !important;
+            margin: 0 !important;
+            /* Ensure content respects safe areas */
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
+        }
+
+        /* Ensure app container is flush with top */
+        #app {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        /* Enhanced header for PWA mode */
+        .pwa-header {
+            padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+            padding-bottom: 16px;
+        }
+    }
+
+    /* iOS-specific fixes */
+    @supports (-webkit-touch-callout: none) {
+        .mobile-chat-container {
+            /* Better handling of iOS viewport quirks */
+            height: -webkit-fill-available;
+        }
+
+        .mobile-input-container {
+            /* Prevent iOS keyboard from breaking layout */
+            position: -webkit-sticky;
+            position: sticky;
+        }
+
+        /* iPhone/iPad specific safe area handling */
+        .pwa-header {
+            /* Ensure header never goes behind notch */
+            padding-top: max(calc(env(safe-area-inset-top, 0px) + 12px), 12px);
+        }
+
+        /* iPad PWA specific fixes */
+        @media (display-mode: standalone) {
+            /* Prevent content from showing behind status bar */
+            body {
+                padding-top: env(safe-area-inset-top, 0px);
+            }
+
+            /* Enhanced header padding for PWA on iOS */
+            .pwa-header {
+                padding-top: max(
+                    calc(env(safe-area-inset-top, 0px) + 16px),
+                    16px
+                );
+                padding-left: max(env(safe-area-inset-left, 0px), 16px);
+                padding-right: max(env(safe-area-inset-right, 0px), 16px);
+            }
+        }
+    }
+}

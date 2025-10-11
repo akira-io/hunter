@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Followable;
 
 use Akira\Followable\Exceptions\FollowableTraitNotFoundException;
+use App\Actions\Social\UnfollowUserAction;
 use App\Http\Requests\Feed\FollowRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -20,17 +21,16 @@ final readonly class UnFollowController
      * @throws FollowableTraitNotFoundException
      */
     #[Post('followable/unfollow', name: 'followable.unfollow')]
-    public function __invoke(FollowRequest $request): RedirectResponse
+    public function __invoke(FollowRequest $request, UnfollowUserAction $unfollowUserAction): RedirectResponse
     {
         /** @var User $user */
         $user = $request->user();
 
         /** @var User $userToUnFollow */
-        $userToUnFollow = User::query()->find($request->validated('user_id'));
+        $userToUnFollow = User::query()->findOrFail($request->validated('user_id'));
 
-        $user->unfollow($userToUnFollow);
+        $unfollowUserAction->handle(follower: $user, userToUnfollow: $userToUnFollow);
 
         return back();
-
     }
 }

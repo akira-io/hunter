@@ -6,7 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import { Trash2 } from 'lucide-react';
 
 export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
@@ -27,7 +37,7 @@ export default function DeleteUser() {
     const deleteUser: FormEventHandler = (e) => {
         e.preventDefault();
 
-        destroy(route('profile.destroy'), {
+        destroy(SecurityController.destroy().url, {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onError: () => passwordInput.current?.focus(),
@@ -42,22 +52,35 @@ export default function DeleteUser() {
 
     return (
         <div className="space-y-6">
-            <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
+            <div className="items-end space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
                 <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
                     <p className="font-medium">Atenção</p>
                     <p className="text-sm">
-                        Ao eliminar a sua conta, todos os seus dados e recursos serão eliminados permanentemente. Esta ação não pode ser revertida.
+                        Ao eliminar a sua conta, todos os seus dados e recursos
+                        serão eliminados permanentemente. Esta ação não pode ser
+                        revertida.
                     </p>
                 </div>
                 <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="destructive">Eliminar Conta</Button>
-                    </DialogTrigger>
+                    <div className="flex w-full justify-center sm:justify-end">
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="destructive"
+                                className="w-full sm:w-auto"
+                            >
+                                <Trash2 className="size-4" />
+                                Eliminar Conta
+                            </Button>
+                        </DialogTrigger>
+                    </div>
                     <DialogContent>
-                        <DialogTitle>Você tem certeza que deseja apagar a sua conta?</DialogTitle>
+                        <DialogTitle>
+                            Você tem certeza que deseja apagar a sua conta?
+                        </DialogTitle>
                         <DialogDescription>
-                            Depois que sua conta for excluída, todos os seus recursos e dados também serão excluídos permanentemente. Por favor,
-                            insira sua senha
+                            Depois que sua conta for excluída, todos os seus
+                            recursos e dados também serão excluídos
+                            permanentemente. Por favor, insira sua senha
                         </DialogDescription>
                         <form className="space-y-6" onSubmit={deleteUser}>
                             <div className="grid gap-2">
@@ -70,7 +93,9 @@ export default function DeleteUser() {
                                     name="password"
                                     ref={passwordInput}
                                     value={data.password}
-                                    onChange={(e) => setData('password', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('password', e.target.value)
+                                    }
                                     placeholder="Password"
                                     autoComplete="current-password"
                                 />
@@ -78,12 +103,21 @@ export default function DeleteUser() {
                             </div>
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary" onClick={closeModal}>
+                                    <Button
+                                        variant="secondary"
+                                        onClick={closeModal}
+                                    >
                                         Cancelar
                                     </Button>
                                 </DialogClose>
-                                <Button variant="destructive" disabled={processing} asChild>
-                                    <button type="submit">Eliminar Conta</button>
+                                <Button
+                                    variant="destructive"
+                                    disabled={processing}
+                                    asChild
+                                >
+                                    <button type="submit">
+                                        Eliminar Conta
+                                    </button>
                                 </Button>
                             </DialogFooter>
                         </form>

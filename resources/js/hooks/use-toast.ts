@@ -1,9 +1,10 @@
 import * as React from 'react';
 
 import type { ToastActionElement, ToastProps } from '@/components/ui/toast';
+import { XCircle } from 'lucide-react';
 
-const TOAST_LIMIT = 2;
-const TOAST_REMOVE_DELAY = 5000;
+const TOAST_LIMIT = 1;
+const TOAST_REMOVE_DELAY = 3000;
 
 type ToasterToast = ToastProps & {
     id: string;
@@ -81,7 +82,9 @@ export const reducer = (state: State, action: Action): State => {
         case 'UPDATE_TOAST':
             return {
                 ...state,
-                toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
+                toasts: state.toasts.map((t) =>
+                    t.id === action.toast.id ? { ...t, ...action.toast } : t,
+                ),
             };
 
         case 'DISMISS_TOAST': {
@@ -139,6 +142,38 @@ type Toast = Omit<ToasterToast, 'id'>;
 function toast({ ...props }: Toast) {
     const id = genId();
 
+    let icon = props.icon;
+    let title = props.title;
+    switch (props.variant) {
+        case 'destructive':
+            icon = React.createElement(XCircle, {
+                className: 'h-5 w-5 text-red-500',
+            });
+            title = 'Erro';
+            break;
+    }
+
+    if (props.description) {
+        const existingToast = memoryState.toasts.find(
+            (t) => t.description === props.description && t.open,
+        );
+        if (existingToast) {
+            return {
+                id: existingToast.id,
+                dismiss: () =>
+                    dispatch({
+                        type: 'DISMISS_TOAST',
+                        toastId: existingToast.id,
+                    }),
+                update: (updateProps: ToasterToast) =>
+                    dispatch({
+                        type: 'UPDATE_TOAST',
+                        toast: { ...updateProps, id: existingToast.id },
+                    }),
+            };
+        }
+    }
+
     const update = (props: ToasterToast) =>
         dispatch({
             type: 'UPDATE_TOAST',
@@ -151,6 +186,8 @@ function toast({ ...props }: Toast) {
         toast: {
             ...props,
             id,
+            icon,
+            title,
             open: true,
             onOpenChange: (open) => {
                 if (!open) dismiss();
@@ -181,7 +218,8 @@ function useToast() {
     return {
         ...state,
         toast,
-        dismiss: (toastId?: string) => dispatch({ type: 'DISMISS_TOAST', toastId }),
+        dismiss: (toastId?: string) =>
+            dispatch({ type: 'DISMISS_TOAST', toastId }),
     };
 }
 

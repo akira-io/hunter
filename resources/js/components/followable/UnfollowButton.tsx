@@ -1,8 +1,17 @@
 import { Button } from '@/components/ui/button';
 
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import followable from '@/routes/followable';
 import { User } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { CheckCircle, UserMinus2Icon } from 'lucide-react';
@@ -13,12 +22,17 @@ interface UnfollowButtonProps extends HTMLAttributes<HTMLButtonElement> {
     user: User;
 }
 
-export default function UnfollowButton({ user, className }: UnfollowButtonProps) {
+export default function UnfollowButton({
+    user,
+    className,
+}: UnfollowButtonProps) {
     const { toast } = useToast();
-    const { post, processing } = useForm();
+    const { post, processing } = useForm({
+        user_id: user.id,
+    });
 
     function unFollow() {
-        post(route('followable.unfollow', { user_id: user.id }), {
+        post(followable.unfollow().url, {
             preserveScroll: true,
             onSuccess: () => {
                 toast({
@@ -47,10 +61,13 @@ export default function UnfollowButton({ user, className }: UnfollowButtonProps)
                 </Button>
             </DialogTrigger>
             <DialogContent className="p-6">
-                <DialogTitle>Deixar de Seguir ?</DialogTitle>
+                <DialogTitle>
+                    Deixar de Seguir <b>{user.name}</b> ?
+                </DialogTitle>
                 <DialogDescription className="pt-4">
-                    Você tem certeza que deseja deixar de seguir <b>{user.name}</b> ? <br />
-                    <span className="text-muted-foreground text-sm">Você pode voltar a segui-lo a qualquer momento.</span>
+                    <span className="text-sm text-muted-foreground">
+                        Você pode voltar a segui-lo a qualquer momento.
+                    </span>
                 </DialogDescription>
                 <DialogFooter className="pt-4">
                     <DialogClose asChild>
@@ -59,7 +76,11 @@ export default function UnfollowButton({ user, className }: UnfollowButtonProps)
                             Cancelar
                         </Button>
                     </DialogClose>
-                    <Button variant="destructive" disabled={processing} onClick={unFollow}>
+                    <Button
+                        variant="destructive"
+                        disabled={processing}
+                        onClick={unFollow}
+                    >
                         <CheckCircle /> Confirmar
                     </Button>
                 </DialogFooter>

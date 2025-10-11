@@ -1,6 +1,15 @@
 import { Icon } from '@/components/icon';
-import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
+} from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
+import { ExternalLink } from 'lucide-react';
 import { type ComponentPropsWithoutRef } from 'react';
 
 export function NavFooter({
@@ -10,19 +19,50 @@ export function NavFooter({
 }: ComponentPropsWithoutRef<typeof SidebarGroup> & {
     items: NavItem[];
 }) {
+    const { isMobile, setOpenMobile } = useSidebar();
+
+    const handleLinkClick = () => {
+        // Fecha o sidebar apenas no mobile
+        if (isMobile) {
+            setOpenMobile(false);
+        }
+    };
+
     return (
-        <SidebarGroup {...props} className={`group-data-[collapsible=icon]:p-0 ${className || ''}`}>
+        <SidebarGroup
+            {...props}
+            className={cn(
+                'border-t border-border/50 pt-2 group-data-[collapsible=icon]:p-0',
+                className,
+            )}
+        >
             <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenu className="gap-2">
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 asChild
-                                className="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100"
+                                className="group h-11 text-muted-foreground transition-all duration-200 hover:bg-accent/50 hover:text-foreground"
                             >
-                                <a href={item.href} target="_blank" rel="noopener noreferrer">
-                                    {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
-                                    <span>{item.title}</span>
+                                <a
+                                    href={item.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between gap-2 py-2.5"
+                                    onClick={handleLinkClick}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        {item.icon && (
+                                            <Icon
+                                                iconNode={item.icon}
+                                                className="h-[18px] w-[18px] transition-transform duration-200 group-hover:scale-110"
+                                            />
+                                        )}
+                                        <span className="truncate text-[15px]">
+                                            {item.title}
+                                        </span>
+                                    </div>
+                                    <ExternalLink className="h-3.5 w-3.5 opacity-0 transition-opacity duration-200 group-hover:opacity-50" />
                                 </a>
                             </SidebarMenuButton>
                         </SidebarMenuItem>

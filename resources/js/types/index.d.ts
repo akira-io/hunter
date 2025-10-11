@@ -1,7 +1,6 @@
 import { Option } from '@/components/ui/multiselect';
 import { LucideIcon } from 'lucide-react';
 import { IconType } from 'react-icons';
-import type { Config } from 'ziggy-js';
 
 export interface Auth {
     user: User;
@@ -22,13 +21,13 @@ export interface NavItem {
     href: string;
     icon?: LucideIcon | null | IconType;
     isActive?: boolean;
+    badge?: number;
 }
 
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
-    ziggy: Config & { location: string };
     sidebarOpen: boolean;
 
     [key: string]: unknown;
@@ -53,6 +52,7 @@ export interface User {
     youtube_url?: string;
     professional_educations?: AcademicBackground[];
     has_followed: boolean;
+    is_blocked?: boolean;
     user_name?: string;
     background_image_url: string;
 
@@ -83,11 +83,42 @@ export interface Hunt {
     updated_at: string;
     owner: User;
     image_url?: string;
+    image_processing_status?: 'pending' | 'processing' | 'completed' | 'failed';
     comments: Comment[];
     shares: number;
     likes_count: number;
     views: number;
     has_liked: boolean;
+    can_comment: boolean;
+    is_owner: boolean;
+    metrics?: HuntMetrics | null;
+}
+
+export interface HuntMetrics {
+    // Raw counts
+    views: number;
+    likes: number;
+    comments: number;
+    shares: number;
+    total_engagements: number;
+
+    // Advanced metrics (only visible to owner)
+    engagement_rate: number;
+    interaction_rate: number;
+    comment_rate: number;
+    share_rate: number;
+    quality_score: number;
+    virality_coefficient: number;
+    avg_engagement_per_view: number;
+    performance_level:
+        | 'poor'
+        | 'below_average'
+        | 'average'
+        | 'good'
+        | 'excellent';
+    rank: number; // 1-5 stars
+    is_viral: boolean;
+    is_performing_well: boolean;
 }
 
 export interface Comment {
@@ -99,4 +130,30 @@ export interface Comment {
     hunt_id: number;
     likes_count: number;
     has_liked: boolean;
+}
+
+export interface Notification {
+    id: string;
+    type: string;
+    title: string;
+    message: string;
+    data: Record<string, unknown>;
+    read_at: string | null;
+    created_at: string;
+    created_at_human: string;
+}
+
+export interface PaginationInfo {
+    current_page: number;
+    per_page: number;
+    total: number;
+    total_pages: number;
+    has_next_page: boolean;
+    has_prev_page: boolean;
+}
+
+export interface NotificationCounts {
+    all: number;
+    unread: number;
+    read: number;
 }
