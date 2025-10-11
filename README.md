@@ -46,6 +46,23 @@
 share your coding journey, connect with like-minded professionals, and build meaningful relationships in the tech
 community.
 
+### 🎉 What's New in Latest Version
+
+**Current Stack:** Laravel 12.32.5 | React 19.1 | PHP 8.4.13
+
+Recent improvements and features:
+
+- 💬 **Enhanced Chat System** - Real-time messaging with WebSocket support via Laravel Reverb
+- 🎨 **Modern UI Components** - Complete Radix UI integration with Tailwind CSS v4
+- 📱 **PWA Support** - Progressive Web App with offline capabilities and service worker
+- 🔒 **Security Enhancements** - Active session management and improved authentication
+- ⚡ **Performance** - Optimized queries, Meilisearch integration, and Redis caching
+- 🧪 **Testing** - Comprehensive test suite with Pest PHP v4
+
+[Changelog →](CHANGELOG.md)
+
+---
+
 ### Why  Hunter?
 
 The developer community needed a platform that truly understands their needs:
@@ -106,10 +123,41 @@ Build your developer network:
 
 Collaborate instantly:
 
-- **WebSocket-Powered** messaging
-- **Private Conversations**
-- **Read Receipts**
+- **WebSocket-Powered** messaging (Laravel Reverb)
+- **Private Conversations** with direct messaging
+- **Read Receipts** and message status
 - **Online Presence** indicators
+- **Typing Indicators** (coming soon)
+- **Mobile Optimized** with iOS keyboard support
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 📱 Progressive Web App
+
+Modern mobile experience:
+
+- **Installable** on iOS, Android & Desktop
+- **Offline Support** with service worker
+- **Push Notifications** (coming soon)
+- **App-like Experience** with native feel
+- **Auto-updates** and cache management
+
+</td>
+<td width="50%">
+
+### 🔒 Security & Privacy
+
+Advanced protection features:
+
+- **Active Sessions Management** across devices
+- **OAuth Integration** (GitHub & Google)
+- **Two-Factor Authentication** (coming soon)
+- **User Blocking** system
+- **Privacy Controls** and settings
+- **Activity Logging** and audit trails
 
 </td>
 </tr>
@@ -128,11 +176,12 @@ Collaborate instantly:
 
 ### Prerequisites
 
-- **PHP** 8.4+
+- **PHP** 8.4.13+
 - **Composer** 2.x
-- **Node.js** 18+
+- **Node.js** 20+ / npm 10+
 - **PostgreSQL** 14+
-- **Redis** (for cache & queues)
+- **Redis** (for cache, queues & WebSockets)
+- **Meilisearch** (optional, for search)
 
 ### Installation
 
@@ -240,8 +289,8 @@ All documentation includes practical examples and is optimized for production us
 
 **Framework & Core**
 
-- Laravel 12
-- PHP 8.4+
+- Laravel 12.32.5
+- PHP 8.4.13
 - PostgreSQL 14+
 - Redis
 
@@ -250,10 +299,10 @@ All documentation includes practical examples and is optimized for production us
 
 **Real-time & Search**
 
-- Laravel Reverb (WebSockets)
-- Laravel Scout
+- Laravel Reverb 1.6 (WebSockets)
+- Laravel Scout 10.19
 - Meilisearch
-- Laravel Sanctum (API Auth)
+- Laravel Sanctum 4.2 (API Auth)
 
 </td>
 </tr>
@@ -267,18 +316,19 @@ All documentation includes practical examples and is optimized for production us
 
 **UI & Styling**
 
-- React 18
+- React 19.1
 - TypeScript
-- Tailwind CSS v4
-- Vite
+- Tailwind CSS v4.1
+- Vite 7.1
 
 </td>
 <td>
 
 **State & Navigation**
 
-- Inertia.js v2
-- Laravel Echo
+- Inertia.js v2.2
+- Laravel Echo 2.2
+- Radix UI Components
 - React Hooks
 
 </td>
@@ -287,14 +337,20 @@ All documentation includes practical examples and is optimized for production us
 
 ### Key Packages
 
-| Package                       | Purpose                 |
-|-------------------------------|-------------------------|
-| `akira/laravel-followable`    | Following system        |
-| `akira/laravel-likeable`      | Like functionality      |
-| `akira/laravel-commentable`   | Comments system         |
-| `akira/laravel-auth-logs`     | Authentication tracking |
-| `spatie/laravel-medialibrary` | Media management        |
-| `laravel/socialite`           | OAuth (GitHub & Google) |
+| Package                       | Version | Purpose                   |
+|-------------------------------|---------|---------------------------|
+| `akira/laravel-followable`    | 0.2.0   | Following system          |
+| `akira/laravel-likeable`      | 0.2.0   | Like functionality        |
+| `akira/laravel-commentable`   | 1.x-dev | Comments system           |
+| `akira/laravel-auth-logs`     | 1.0.0   | Authentication tracking   |
+| `spatie/laravel-medialibrary` | 11.12+  | Media management          |
+| `laravel/socialite`           | 5.23    | OAuth (GitHub & Google)   |
+| `laravel/horizon`             | 5.34    | Queue monitoring          |
+| `laravel/pulse`               | 1.4     | Application monitoring    |
+| `laravel/nightwatch`          | 1.14    | Error tracking            |
+| `laravel/wayfinder`           | 0.1.12  | Type-safe routing         |
+| `spatie/laravel-activitylog`  | 4.10+   | Activity logging          |
+| `spatie/laravel-query-builder`| 6.3+    | API query building        |
 
 > 📖 For more technical details, see the [complete documentation](./docs/README.md)
 
@@ -336,10 +392,13 @@ All documentation includes practical examples and is optimized for production us
 
 - [x] **Real-time Chat**
   - [x] WebSocket-powered messaging (Laravel Reverb)
-  - [x] Private conversations
-  - [x] Read receipts
+  - [x] Private direct conversations
+  - [x] Read receipts and message status
   - [x] Online presence indicators
-  - [x] Unread message counts
+  - [x] Unread message counts with badges
+  - [x] Mobile-optimized UI with iOS keyboard handling
+  - [x] Auto-scroll to latest messages
+  - [x] Real-time message delivery
 
 - [x] **Notifications System**
   - [x] Real-time in-app notifications
@@ -349,10 +408,19 @@ All documentation includes practical examples and is optimized for production us
 
 - [x] **Search & Discovery**
   - [x] Full-text search with Meilisearch
-  - [x] User search
-  - [x] Hunt search
+  - [x] User search with filters
+  - [x] Hunt search with relevance
   - [x] Skill-based discovery
   - [x] Debounced search input
+  - [x] Real-time search results
+
+- [x] **Progressive Web App (PWA)**
+  - [x] Installable on all platforms
+  - [x] Offline support with service worker
+  - [x] App manifest for native-like experience
+  - [x] Automatic cache versioning
+  - [x] Optimized asset loading
+  - [x] iOS safe area support
 
 ### 🚧 In Progress
 

@@ -1,3 +1,4 @@
+
 # Hunter Documentation
 
 Welcome to the Hunter documentation! This comprehensive guide covers all aspects of the platform, from getting started to advanced features.
@@ -177,6 +178,40 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
     - Responsive design
     - Integration examples
 
+## 🆕 New in v0.6.0
+
+19. **[Active Sessions Management](./19-active-sessions.md)**
+    - Session detection and tracking
+    - Smart IP filtering
+    - Device and browser information
+    - Session revocation controls
+    - Logout all devices feature
+    - Security best practices
+    - TypeScript implementation
+    - Custom React hooks
+    - Complete testing guide
+
+20. **[User Blocking System](./20-user-blocking.md)**
+    - Block/unblock users
+    - Interaction restrictions
+    - Privacy controls
+    - Database schema
+    - Backend implementation
+    - Frontend components
+    - Comprehensive testing
+    - Usage examples
+    - Security considerations
+
+21. **[Test Coverage Improvements](./21-test-coverage.md)**
+    - 95% average coverage achieved
+    - 101 tests with 284 assertions
+    - Test suite improvements
+    - Coverage by component
+    - Testing strategies
+    - Best practices
+    - CI/CD integration
+    - Performance metrics
+
 ## 📖 Quick Reference
 
 | Document | Description |
@@ -260,6 +295,16 @@ If you need help:
 
 ## What's New in the Documentation
 
+### Version 0.6.0 (Latest - October 16, 2025)
+
+- 🔒 **[Active Sessions Management](RELEASE-0.6.0.md)** - Complete guide to viewing and managing login sessions
+- ✅ **[Test Coverage Report](RELEASE-0.6.0.md#-test-coverage-achievements)** - 101 tests with 95% average coverage
+- 🛡️ **[Enhanced Security](RELEASE-0.6.0.md#-enhanced-security-features)** - User blocking and OAuth improvements
+- 📋 **[Migration Guide](MIGRATION-0.6.0.md)** - Upgrade from v0.5.0 to v0.6.0
+- ⚡ **[Performance Improvements](RELEASE-0.6.0.md#-performance-metrics)** - Optimized session queries
+
+### Previous Versions
+
 - ✨ **Markdown Editor** - Comprehensive guide to the markdown editing system with emojis, preview, and help
 - ✨ **Notifications System** - Complete guide to real-time and email notifications
 - 🎮 **Gamification** - XP, Levels, Badges, Rewards, and Leaderboards
@@ -277,5 +322,7 @@ Hunter is open-source software licensed under the [GNU Affero General Public Lic
 
 ---
 
-> **Version Information**: See [package.json](../package.json) for current version (v0.5.0) and [CHANGELOG.md](../CHANGELOG.md) for version history.
+> **Version Information**: Current version **v0.6.0** (October 16, 2025). See [RELEASE-0.6.0.md](RELEASE-0.6.0.md) for
+> release notes, [MIGRATION-0.6.0.md](MIGRATION-0.6.0.md) for migration guide, and [CHANGELOG.md](../CHANGELOG.md) for
+> complete version history.
 
