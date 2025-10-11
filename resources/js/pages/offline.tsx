@@ -5,7 +5,7 @@ import { WifiOff } from 'lucide-react';
 
 export default function Offline() {
     const handleReload = () => {
-        window.location.reload();
+        window.location.replace('/');
     };
 
     return (
