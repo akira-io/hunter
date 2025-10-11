@@ -166,22 +166,26 @@ export default function DesktopChat({
         e.preventDefault();
         if (!newMessage.trim() || sending) return;
 
+        const messageContent = newMessage.trim();
+
+        // Store scroll position before clearing
+        const textarea = textareaRef.current;
+
+        // Clear input immediately while keeping focus
+        setNewMessage('');
+
+        // Keep textarea focused and reset height synchronously
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = '44px';
+        }
+
         try {
-            await sendMessageToServer(conversationId, newMessage.trim());
-            setNewMessage('');
-
-            // Reset textarea height and refocus after DOM updates
-            requestAnimationFrame(() => {
-                if (textareaRef.current) {
-                    textareaRef.current.style.height = 'auto';
-                    textareaRef.current.style.height = '44px';
-                    textareaRef.current.focus();
-                }
-            });
-
+            await sendMessageToServer(conversationId, messageContent);
             setTimeout(() => scrollToBottom(), 100);
         } catch (error) {
             console.error('Failed to send message:', error);
+            setNewMessage(messageContent);
         }
     };
 
