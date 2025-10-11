@@ -124,9 +124,7 @@ export default function DesktopChat({
     // Auto-focus input when conversation loads
     useEffect(() => {
         if (!loading && textareaRef.current) {
-            requestAnimationFrame(() => {
-                textareaRef.current?.focus();
-            });
+            textareaRef.current.focus();
         }
     }, [loading, conversationId]);
 
@@ -168,34 +166,22 @@ export default function DesktopChat({
         e.preventDefault();
         if (!newMessage.trim() || sending) return;
 
-        const messageContent = newMessage.trim();
-
-        setSending(true);
-
         try {
-            await sendMessageToServer(conversationId, messageContent);
-
-            // Only clear after successful send
+            await sendMessageToServer(conversationId, newMessage.trim());
             setNewMessage('');
 
-            // Reset height
-            if (textareaRef.current) {
-                textareaRef.current.style.height = 'auto';
-                textareaRef.current.style.height = '44px';
-            }
+            // Reset textarea height and refocus after DOM updates
+            requestAnimationFrame(() => {
+                if (textareaRef.current) {
+                    textareaRef.current.style.height = 'auto';
+                    textareaRef.current.style.height = '44px';
+                    textareaRef.current.focus();
+                }
+            });
 
             setTimeout(() => scrollToBottom(), 100);
         } catch (error) {
             console.error('Failed to send message:', error);
-        } finally {
-            setSending(false);
-
-            // Re-focus after state updates (works for both PC and mobile now)
-            requestAnimationFrame(() => {
-                if (textareaRef.current) {
-                    textareaRef.current.focus();
-                }
-            });
         }
     };
 
@@ -371,7 +357,13 @@ export default function DesktopChat({
 
                 {/* Message Input */}
                 <div className="border-t border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                    <div className="flex items-end gap-3">
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSendMessage(e);
+                        }}
+                        className="flex items-end gap-3"
+                    >
                         <textarea
                             ref={textareaRef}
                             value={newMessage}
@@ -379,7 +371,10 @@ export default function DesktopChat({
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault();
-                                    handleSendMessage(e);
+                                    const form = e.currentTarget.form;
+                                    if (form) {
+                                        form.requestSubmit();
+                                    }
                                 }
                             }}
                             placeholder="Type a message..."
@@ -402,14 +397,14 @@ export default function DesktopChat({
                             }}
                         />
                         <button
-                            type="button"
-                            onClick={handleSendMessage}
+                            type="submit"
                             disabled={!newMessage.trim() || sending}
                             className="rounded-2xl bg-gradient-to-r from-purple-500 to-purple-700 px-4 py-3 text-white shadow-lg transition-all duration-200 hover:from-purple-600 hover:to-purple-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+                            style={{ touchAction: 'manipulation' }}
                         >
                             <Send size={18} />
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </ChatLayout>
