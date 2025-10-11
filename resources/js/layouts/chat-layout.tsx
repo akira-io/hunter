@@ -89,11 +89,11 @@ function ChatLayoutContent({
     };
 
     return (
-        <div className="flex h-screen flex-col bg-zinc-50 dark:bg-zinc-900">
+        <div className="flex h-screen max-h-screen flex-col overflow-hidden bg-zinc-50 dark:bg-zinc-900">
             <Head title={title} />
 
             {/* Desktop and Mobile Responsive Layout */}
-            <div className="flex h-full">
+            <div className="flex h-full min-h-0">
                 {/* Sidebar - Conversations List (Hidden on mobile when conversation is selected) */}
                 {showSidebar && (
                     <div
@@ -368,7 +368,7 @@ function ChatLayoutContent({
 
                 {/* Main Chat Area (Hidden on mobile when no conversation is selected) */}
                 <div
-                    className={`flex flex-1 flex-col ${conversationId ? '' : 'hidden md:flex'}`}
+                    className={`flex min-h-0 flex-1 flex-col overflow-hidden ${conversationId ? '' : 'hidden md:flex'}`}
                 >
                     {children}
                 </div>
