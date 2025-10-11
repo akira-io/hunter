@@ -220,7 +220,7 @@ export default function DesktopChat({
             <div className="flex h-full flex-col">
                 {/* Chat Header */}
                 <div
-                    className="fixed top-0 right-0 left-0 z-50 flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3 md:left-80 md:px-6 md:py-4 dark:border-zinc-700 dark:bg-zinc-800"
+                    className="sticky top-0 z-50 flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3 md:px-6 md:py-4 dark:border-zinc-700 dark:bg-zinc-800"
                     style={{
                         paddingTop: 'max(0.75rem, env(safe-area-inset-top))',
                     }}
@@ -296,13 +296,7 @@ export default function DesktopChat({
                 </div>
 
                 {/* Messages Area */}
-                <div
-                    className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4 md:p-6"
-                    style={{
-                        paddingTop:
-                            'calc(env(safe-area-inset-top, 0px) + 64px)',
-                    }}
-                >
+                <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4 md:p-6">
                     {conversation?.messages?.length === 0 ? (
                         <div className="flex h-full flex-col items-center justify-center text-center">
                             <div className="mb-4 grid size-16 place-items-center rounded-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700">
