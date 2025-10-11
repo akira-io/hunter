@@ -117,7 +117,7 @@ final class Conversation extends Model
      * Scope a query to only include conversations for a given user.
      *
      * @param  Builder<self>  $query
-     * @return Builder<$this>
+     * @return Builder<self>
      */
     #[Scope]
     public function forUser(Builder $query, User $user): Builder

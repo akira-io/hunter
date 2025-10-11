@@ -18,7 +18,7 @@ Broadcast::channel('user.{id}', function (App\Models\User $user, int $id) {
 
 Broadcast::channel('conversation.{conversationId}', function (App\Models\User $user, $conversationId) {
     return Conversation::query()
-        ->forUser($user)
+        ->scopes(['forUser' => $user])
         ->where('id', $conversationId)
         ->exists();
 });
