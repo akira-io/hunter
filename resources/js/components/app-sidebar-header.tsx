@@ -14,7 +14,7 @@ export function AppSidebarHeader({
     const { auth } = usePage<{ auth: { user?: { id: number } } }>().props;
 
     return (
-        <header className="pwa-header gradient sticky top-0 z-50 flex w-full shrink-0 items-center border-b border-sidebar-border/50 bg-card/80 backdrop-blur-md transition-[width] ease-linear supports-[backdrop-filter]:bg-card/60 min-h-[64px] md:min-h-[64px]">
+        <header className="pwa-header gradient sticky top-0 z-50 flex min-h-[64px] w-full shrink-0 items-center border-b border-sidebar-border/50 bg-card/80 backdrop-blur-md transition-[width] ease-linear supports-[backdrop-filter]:bg-card/60 md:min-h-[64px]">
             {/* Left side - Navigation */}
             <div className="flex items-center gap-2 px-3 md:px-6">
                 <SidebarTrigger className="-ml-1 transition-colors hover:bg-accent hover:text-accent-foreground" />

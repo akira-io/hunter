@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
+use RectorLaravel\Rector\FuncCall\RemoveDumpDataDeadCodeRector;
+use RectorLaravel\Set\LaravelSetProvider;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -13,6 +15,7 @@ return RectorConfig::configure()
         __DIR__.'/database',
         __DIR__.'/public',
     ])
+
     ->withSkip([
         AddOverrideAttributeToOverriddenMethodsRector::class,
     ])
@@ -24,4 +27,9 @@ return RectorConfig::configure()
         earlyReturn: true,
         strictBooleans: true,
     )
-    ->withPhpSets();
+    ->withPhpSets()
+    ->withSetProviders(LaravelSetProvider::class)
+    ->withComposerBased(laravel: true/** other options */)
+    ->withConfiguredRule(
+        RemoveDumpDataDeadCodeRector::class, ['dd', 'dump', 'var_dump', 'ray']
+    );

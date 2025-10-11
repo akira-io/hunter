@@ -102,7 +102,6 @@
         transform: translateZ(0);
         backface-visibility: hidden;
     }
-    
 
     /* PWA Header - Handles iPhone notch and safe areas */
     .pwa-header {
@@ -170,7 +169,10 @@
 
             /* Enhanced header padding for PWA on iOS */
             .pwa-header {
-                padding-top: max(calc(env(safe-area-inset-top, 0px) + 16px), 16px);
+                padding-top: max(
+                    calc(env(safe-area-inset-top, 0px) + 16px),
+                    16px
+                );
                 padding-left: max(env(safe-area-inset-left, 0px), 16px);
                 padding-right: max(env(safe-area-inset-right, 0px), 16px);
             }
