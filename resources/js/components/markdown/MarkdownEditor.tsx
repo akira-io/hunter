@@ -138,6 +138,7 @@ export function MarkdownEditor({
                                     'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
                                 minHeight: `${rows * 1.5}rem`,
                                 maxHeight: '400px',
+                                overflowY: 'auto',
                                 backgroundColor: 'var(--color-muted)',
                                 color: 'var(--color-foreground)',
                                 resize: 'vertical',
@@ -146,7 +147,7 @@ export function MarkdownEditor({
                     </div>
                 </TabsContent>
                 <TabsContent value="preview" className="mt-0">
-                    <div className="min-h-[200px] rounded-lg border border-border bg-muted p-4 transition-colors">
+                    <div className="min-h-[200px] max-h-[400px] overflow-y-auto rounded-lg border border-border bg-muted p-4 transition-colors">
                         <MarkdownRenderer
                             content={value || '*Nada para visualizar ainda...*'}
                         />
