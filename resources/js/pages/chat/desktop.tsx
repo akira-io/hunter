@@ -403,7 +403,7 @@ export default function DesktopChat({
                         <button
                             type="submit"
                             disabled={!newMessage.trim() || sending}
-                            className="rounded-2xl bg-gradient-to-r from-purple-500 to-purple-700 px-4 py-3 text-white shadow-lg transition-all duration-200 hover:from-purple-600 hover:to-purple-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+                            className="hidden rounded-2xl bg-gradient-to-r from-purple-500 to-purple-700 px-4 py-3 text-white shadow-lg transition-all duration-200 hover:from-purple-600 hover:to-purple-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50 md:block"
                             style={{ touchAction: 'manipulation' }}
                         >
                             <Send size={18} />
