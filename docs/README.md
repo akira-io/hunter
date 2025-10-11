@@ -212,6 +212,17 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
     - CI/CD integration
     - Performance metrics
 
+22. **[Hunt Metrics System](./22-hunt-metrics-system.md)**
+    - Comprehensive analytics for hunts
+    - Pipeline architecture pattern
+    - Engagement, reach, and quality metrics
+    - Weighted scoring system
+    - Virality coefficient calculation
+    - Performance levels and rankings
+    - DTOs and type safety
+    - 100% test coverage
+    - Usage examples and API
+
 ## 📖 Quick Reference
 
 | Document | Description |
