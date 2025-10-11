@@ -43,12 +43,12 @@ test('correct password must be provided to update password', function () {
         ->assertRedirect('/settings/password');
 });
 
-test('password settings page can be rendered', function () {
+test('password settings page redirects to security', function () {
     $user = User::factory()->create();
 
     $response = $this
         ->actingAs($user)
         ->get('/settings/password');
 
-    $response->assertStatus(200);
+    $response->assertRedirect(route('security.index'));
 });

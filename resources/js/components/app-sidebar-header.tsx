@@ -2,7 +2,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { GlobalSearch } from '@/components/GlobalSearch';
 import { NavUser } from '@/components/nav-user';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
-import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { usePage } from '@inertiajs/react';
 

@@ -8,18 +8,15 @@ use App\Http\Requests\Settings\PasswordUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
-use Inertia\Inertia;
-use Inertia\Response;
 
 final readonly class PasswordController
 {
     /**
      * Show the user's password settings page.
      */
-    public function edit(): Response
+    public function edit(): RedirectResponse
     {
-        return Inertia::render('settings/password');
+        return redirect()->route('security.index');
     }
 
     /**
