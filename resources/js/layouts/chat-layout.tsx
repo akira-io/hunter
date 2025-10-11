@@ -102,7 +102,12 @@ function ChatLayoutContent({
                         }`}
                     >
                         {/* Sidebar Header */}
-                        <div className="border-b border-zinc-200 dark:border-zinc-700">
+                        <div
+                            className="border-b border-zinc-200 dark:border-zinc-700"
+                            style={{
+                                paddingTop: 'env(safe-area-inset-top, 0px)',
+                            }}
+                        >
                             <div className="flex items-center justify-between p-4">
                                 <button
                                     onClick={() =>
