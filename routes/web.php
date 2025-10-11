@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+Route::get('/offline', static fn () => inertia('offline'))->name('offline');
 
 Route::middleware('auth:web')->group(static function () {
 

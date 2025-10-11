@@ -1,26 +1,31 @@
-const CACHE_VERSION = 'v1760192749953'; // Auto-updated by Vite build
+const CACHE_VERSION = 'v1760200395014'; // Auto-updated by Vite build
 const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `devhunter-images-${CACHE_VERSION}`;
 
 // Assets to cache on install (only truly static assets, no HTML pages)
-const STATIC_ASSETS = [
-    '/manifest.json',
-    '/logo.svg',
-];
+const STATIC_ASSETS = ['/manifest.json', '/logo.svg', '/offline'];
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
     console.log('[SW] Installing service worker...');
     event.waitUntil(
-        caches.open(STATIC_CACHE).then((cache) => {
-            console.log('[SW] Caching static assets');
-            return cache.addAll(STATIC_ASSETS.map(url => new Request(url, { cache: 'reload' })));
-        }).catch((error) => {
-            console.error('[SW] Failed to cache static assets:', error);
-        })
+        caches
+            .open(STATIC_CACHE)
+            .then((cache) => {
+                console.log('[SW] Caching static assets');
+                return cache.addAll(
+                    STATIC_ASSETS.map(
+                        (url) => new Request(url, { cache: 'reload' }),
+                    ),
+                );
+            })
+            .catch((error) => {
+                console.error('[SW] Failed to cache static assets:', error);
+            }),
     );
-    // Don't skip waiting - let the user decide when to activate via the update dialog
+    // Skip waiting to activate immediately
+    self.skipWaiting();
 });
 
 // Activate event - clean up old caches
@@ -30,13 +35,17 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
-                    if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE && cacheName !== IMAGE_CACHE) {
+                    if (
+                        cacheName !== STATIC_CACHE &&
+                        cacheName !== DYNAMIC_CACHE &&
+                        cacheName !== IMAGE_CACHE
+                    ) {
                         console.log('[SW] Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
-                })
+                }),
             );
-        })
+        }),
     );
     return self.clients.claim();
 });
@@ -57,17 +66,21 @@ self.addEventListener('fetch', (event) => {
     }
 
     // Skip auth routes (OAuth, login, register, etc) - let them pass through
-    if (url.pathname.startsWith('/auth/') ||
+    if (
+        url.pathname.startsWith('/auth/') ||
         url.pathname.startsWith('/login') ||
         url.pathname.startsWith('/register') ||
-        url.pathname.startsWith('/logout')) {
+        url.pathname.startsWith('/logout')
+    ) {
         return;
     }
 
     // Skip Inertia requests (infinite scroll, form submissions, etc) - always use network
-    if (request.headers.get('X-Inertia') ||
+    if (
+        request.headers.get('X-Inertia') ||
         request.headers.get('X-Inertia-Partial-Component') ||
-        request.headers.get('X-Inertia-Partial-Data')) {
+        request.headers.get('X-Inertia-Partial-Data')
+    ) {
         return;
     }
 
@@ -77,10 +90,17 @@ self.addEventListener('fetch', (event) => {
     } else if (url.pathname.startsWith('/api/')) {
         // Don't cache API requests - always fetch from network
         event.respondWith(fetch(request));
-    } else if (request.destination === 'document' || request.headers.get('accept')?.includes('text/html')) {
+    } else if (
+        request.destination === 'document' ||
+        request.headers.get('accept')?.includes('text/html')
+    ) {
         // HTML pages - always fetch from network first (Network First strategy)
         event.respondWith(handleHTMLRequest(request));
-    } else if (request.destination === 'script' || request.destination === 'style' || url.pathname.match(/\.(js|css)$/)) {
+    } else if (
+        request.destination === 'script' ||
+        request.destination === 'style' ||
+        url.pathname.match(/\.(js|css)$/)
+    ) {
         // JS/CSS - cache with network update in background (Stale While Revalidate)
         event.respondWith(handleAssetRequest(request));
     } else {
@@ -107,14 +127,16 @@ async function handleHTMLRequest(request) {
             return cached;
         }
 
-        // Return offline message
-        return new Response('Offline - Please check your connection', {
-            status: 503,
-            statusText: 'Service Unavailable',
-            headers: new Headers({
-                'Content-Type': 'text/html',
-            }),
-        });
+        // Return offline page from static cache
+        const staticCache = await caches.open(STATIC_CACHE);
+        const offlinePage = await staticCache.match('/offline');
+
+        if (offlinePage) {
+            return offlinePage;
+        }
+
+        // Fallback to simple offline message
+        return '/offline';
     }
 }
 
@@ -128,12 +150,17 @@ async function handleAssetRequest(request) {
 
         // If we get a 404 or error, the manifest has changed - clear cache
         if (!response.ok) {
-            console.warn('[SW] Asset not found (manifest changed?), clearing caches...');
+            console.warn(
+                '[SW] Asset not found (manifest changed?), clearing caches...',
+            );
             await clearAllCaches();
             // Notify clients to reload
             const clients = await self.clients.matchAll();
-            clients.forEach(client => {
-                client.postMessage({ type: 'CACHE_CLEARED', reason: 'asset_not_found' });
+            clients.forEach((client) => {
+                client.postMessage({
+                    type: 'CACHE_CLEARED',
+                    reason: 'asset_not_found',
+                });
             });
             return response;
         }
@@ -164,7 +191,7 @@ async function clearAllCaches() {
         cacheNames.map((cacheName) => {
             console.log('[SW] Deleting cache:', cacheName);
             return caches.delete(cacheName);
-        })
+        }),
     );
 }
 
@@ -239,9 +266,9 @@ self.addEventListener('message', (event) => {
         event.waitUntil(
             caches.keys().then((cacheNames) => {
                 return Promise.all(
-                    cacheNames.map((cacheName) => caches.delete(cacheName))
+                    cacheNames.map((cacheName) => caches.delete(cacheName)),
                 );
-            })
+            }),
         );
     }
 });
@@ -270,9 +297,7 @@ self.addEventListener('push', (event) => {
         actions: data.actions || [],
     };
 
-    event.waitUntil(
-        self.registration.showNotification(title, options)
-    );
+    event.waitUntil(self.registration.showNotification(title, options));
 });
 
 // Notification click handler
@@ -280,17 +305,24 @@ self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 
     event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-            // Check if there's already a window open
-            for (const client of clientList) {
-                if (client.url === event.notification.data.url && 'focus' in client) {
-                    return client.focus();
+        clients
+            .matchAll({ type: 'window', includeUncontrolled: true })
+            .then((clientList) => {
+                // Check if there's already a window open
+                for (const client of clientList) {
+                    if (
+                        client.url === event.notification.data.url &&
+                        'focus' in client
+                    ) {
+                        return client.focus();
+                    }
                 }
-            }
-            // Open new window if none found
-            if (clients.openWindow) {
-                return clients.openWindow(event.notification.data.url || '/');
-            }
-        })
+                // Open new window if none found
+                if (clients.openWindow) {
+                    return clients.openWindow(
+                        event.notification.data.url || '/',
+                    );
+                }
+            }),
     );
 });
