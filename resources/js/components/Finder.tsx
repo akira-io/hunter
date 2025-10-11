@@ -39,7 +39,7 @@ export function Finder({ users, onSearch, isSearchLoading }: FinderProps) {
                             data-1p-ignore="true"
                             role="searchbox"
                             aria-label="Procurar hunters"
-                            className="w-full rounded-lg border border-zinc-200 bg-white py-3 pr-4 pl-12 text-sm transition-all outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-primary dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                            className="w-full rounded-lg border border-zinc-200 bg-white py-3 pr-4 pl-12 text-base transition-all outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-primary dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                         />
                         {isSearchLoading && (
                             <Loader className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 animate-spin text-muted-foreground" />
