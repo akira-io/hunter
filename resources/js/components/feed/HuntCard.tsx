@@ -4,13 +4,7 @@ import { HuntModal } from '@/components/feed/HuntModal';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useSanitizeImageUrl } from '@/hooks/use-sanitize-image-url';
 import { cn } from '@/lib/utils';
@@ -28,15 +22,10 @@ import {
     MessageCircle,
     Repeat2,
     ShieldAlert,
-    TrendingUp,
+    TrendingUp
 } from 'lucide-react';
 import { useState } from 'react';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface HuntCardProps {
     hunt: Hunt;
@@ -163,10 +152,8 @@ export function HuntCard({
                                 onClick={gotoMetrics}
                             >
                                 <BarChart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline">
-                                    Ver Detalhes
-                                </span>
-                                <span className="sm:hidden">Ver</span>
+                                <span className="inline">Ver Detalhes</span>
+                                {/*<span className="sm:hidden">Ver</span>*/}
                             </Button>
                         </div>
 
