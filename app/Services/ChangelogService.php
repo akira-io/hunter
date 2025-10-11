@@ -113,9 +113,7 @@ final readonly class ChangelogService
             $sectionContent = mb_substr($content, $startPos, $endPos - $startPos);
 
             $entry = $this->parseEntry($versionLine, $sectionContent);
-            if ($entry instanceof ChangelogEntry) {
-                $entries->push($entry);
-            }
+            $entries->push($entry);
         }
 
         return $entries;
