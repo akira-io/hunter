@@ -120,6 +120,7 @@
       "@release-it/conventional-changelog": {
         "infile": "CHANGELOG.md",
         "preset": "conventionalcommits",
+        "writeChangelog": false,
         "types": {
           "feat": {
             "section": "Features"
