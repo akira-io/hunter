@@ -219,7 +219,7 @@ export default function DesktopChat({
 
             <div className="flex h-full flex-col">
                 {/* Chat Header */}
-                <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3 md:px-6 md:py-4 dark:border-zinc-700 dark:bg-zinc-800">
+                <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3 md:px-6 md:py-4 dark:border-zinc-700 dark:bg-zinc-800" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
                     {/* Mobile back button */}
                     <button
                         onClick={() => window.history.back()}
