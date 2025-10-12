@@ -8,37 +8,18 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle,
+    AlertDialogTitle
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-} from '@/components/ui/input-otp';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import twoFactor from '@/routes/two-factor';
 import { router } from '@inertiajs/react';
-import {
-    AlertCircle,
-    Check,
-    Copy,
-    Download,
-    RefreshCw,
-    Shield,
-    ShieldCheck,
-    X,
-} from 'lucide-react';
-import { useState } from 'react';
+import { AlertCircle, Copy, Download, RefreshCw, Shield, ShieldCheck, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface TwoFactorAuthenticationProps {
     twoFactorEnabled: boolean;
@@ -57,9 +38,17 @@ export function TwoFactorAuthentication({
     const [enabling, setEnabling] = useState(false);
     const [disabling, setDisabling] = useState(false);
     const [confirmingCode, setConfirmingCode] = useState('');
+    const [confirming, setConfirming] = useState(false);
     const [, setShowRecoveryCodes] = useState(false);
     const [showDisableDialog, setShowDisableDialog] = useState(false);
     const [regenerating, setRegenerating] = useState(false);
+
+    useEffect(() => {
+        if (confirmingCode.length === 6 && !confirmed && !confirming) {
+            confirm2FA();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [confirmingCode]);
 
     const enable2FA = () => {
         setEnabling(true);
@@ -69,12 +58,20 @@ export function TwoFactorAuthentication({
             {
                 preserveScroll: true,
                 onSuccess: () => {
-                    setEnabling(false);
-                    toast({
-                        title: '2FA Ativado',
-                        description:
-                            'Escaneie o código QR para completar a configuração.',
-                        duration: 5000,
+                    // Force page reload to get the QR code
+                    router.reload({
+                        only: ['twoFactorEnabled', 'qrCodeSvg', 'confirmed'],
+                        onSuccess: () => {
+                            setEnabling(false);
+                            toast({
+                                title: '2FA Ativado',
+                                description:
+                                    'Escaneie o código QR para completar a configuração.',
+                            });
+                        },
+                        onError: () => {
+                            setEnabling(false);
+                        },
                     });
                 },
                 onError: () => {
@@ -92,6 +89,7 @@ export function TwoFactorAuthentication({
     };
 
     const confirm2FA = () => {
+        setConfirming(true);
         router.post(
             twoFactor.confirm.url(),
             { code: confirmingCode },
@@ -99,20 +97,21 @@ export function TwoFactorAuthentication({
                 preserveScroll: true,
                 onSuccess: () => {
                     setConfirmingCode('');
+                    setConfirming(false);
                     toast({
                         title: '2FA Confirmado',
                         description:
                             'A autenticação de dois fatores está agora ativa e protegendo sua conta!',
-                        duration: 5000,
                     });
                 },
                 onError: () => {
+                    setConfirmingCode('');
+                    setConfirming(false);
                     toast({
                         title: 'Código Inválido',
                         description:
                             'O código inserido não é válido. Verifique e tente novamente.',
                         variant: 'destructive',
-                        duration: 5000,
                     });
                 },
             },
@@ -130,7 +129,6 @@ export function TwoFactorAuthentication({
                     title: '2FA Desativado',
                     description:
                         'A autenticação de dois fatores foi desativada.',
-                    duration: 3000,
                 });
             },
             onError: () => {
@@ -140,7 +138,6 @@ export function TwoFactorAuthentication({
                     description:
                         'Não foi possível desativar o 2FA. Tente novamente.',
                     variant: 'destructive',
-                    duration: 3000,
                 });
             },
         });
@@ -170,7 +167,6 @@ export function TwoFactorAuthentication({
                         description:
                             'Não foi possível regenerar os códigos. Tente novamente.',
                         variant: 'destructive',
-                        duration: 3000,
                     });
                 },
             },
@@ -197,7 +193,6 @@ export function TwoFactorAuthentication({
                 title: 'Códigos Copiados',
                 description:
                     'Os códigos de recuperação foram copiados para a área de transferência.',
-                duration: 3000,
             });
         }
     };
@@ -217,7 +212,6 @@ export function TwoFactorAuthentication({
                 title: 'Códigos Transferidos',
                 description:
                     'Os códigos de recuperação foram baixados com sucesso.',
-                duration: 3000,
             });
         }
     };
@@ -286,8 +280,8 @@ export function TwoFactorAuthentication({
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="confirm_code">
+                                <div className="flex flex-col items-center justify-center space-y-2">
+                                    <Label htmlFor="confirm_code ">
                                         Código de Confirmação
                                     </Label>
                                     <div className="flex justify-center">
@@ -297,6 +291,7 @@ export function TwoFactorAuthentication({
                                             onChange={(value) =>
                                                 setConfirmingCode(value)
                                             }
+                                            disabled={confirming}
                                         >
                                             <InputOTPGroup>
                                                 <InputOTPSlot index={0} />
@@ -308,18 +303,13 @@ export function TwoFactorAuthentication({
                                             </InputOTPGroup>
                                         </InputOTP>
                                     </div>
+                                    {confirming && (
+                                        <p className="text-center text-sm text-muted-foreground">
+                                            Verificando código...
+                                        </p>
+                                    )}
                                     <InputError message="" />
                                 </div>
-
-                                <Button
-                                    onClick={confirm2FA}
-                                    disabled={confirmingCode.length !== 6}
-                                    className="w-full"
-                                    variant="gradient"
-                                >
-                                    <Check className="size-4" />
-                                    Confirmar e Ativar
-                                </Button>
                             </div>
                         )}
 
