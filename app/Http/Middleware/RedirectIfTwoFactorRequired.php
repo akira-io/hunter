@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-final class RedirectIfTwoFactorRequired
+final readonly class RedirectIfTwoFactorRequired
 {
     /**
      * Handle an incoming request.

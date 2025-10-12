@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-final class EnsureCanAccessTwoFactorChallenge
+final readonly class EnsureCanAccessTwoFactorChallenge
 {
     /**
      * Handle an incoming request.

@@ -7,7 +7,7 @@ namespace App\Http\Responses;
 use Illuminate\Http\JsonResponse;
 use Laravel\Fortify\Contracts\TwoFactorLoginResponse as TwoFactorLoginResponseContract;
 
-final class TwoFactorLoginResponse implements TwoFactorLoginResponseContract
+final readonly class TwoFactorLoginResponse implements TwoFactorLoginResponseContract
 {
     /**
      * Create an HTTP response that represents the object.

@@ -216,16 +216,23 @@ it('user can login with two factor code', function () {
         'password' => 'password123',
     ])->assertRedirect('/two-factor-challenge');
 
-    // Wait a moment to ensure we don't reuse the same code
-    sleep(1);
-
-    // Generate a fresh code for the challenge
-    $newCode = $google2fa->getCurrentOtp($secret);
+    // Wait for a new TOTP window to ensure we get a different code
+    // TOTP codes change every 30 seconds, so we need to wait for the next window
+    $currentCode = $google2fa->getCurrentOtp($secret);
+    $newCode = $currentCode;
+    $maxAttempts = 35; // Max 35 seconds wait
+    $attempts = 0;
+    
+    while ($newCode === $currentCode && $attempts < $maxAttempts) {
+        sleep(1);
+        $attempts++;
+        $newCode = $google2fa->getCurrentOtp($secret);
+    }
 
     // Provide 2FA code
     post('/two-factor-challenge', [
         'code' => $newCode,
-    ])->assertRedirect(config('fortify.home'));
+    ])->assertRedirect(route('hunts.index', absolute: false));
 });
 
 it('user can login with recovery code', function () {
@@ -263,7 +270,7 @@ it('user can login with recovery code', function () {
     // Provide recovery code
     post('/two-factor-challenge', [
         'recovery_code' => $recoveryCode,
-    ])->assertRedirect(config('fortify.home'));
+    ])->assertRedirect(route('hunts.index', absolute: false));
 });
 
 it('security page shows two factor authentication status', function () {
