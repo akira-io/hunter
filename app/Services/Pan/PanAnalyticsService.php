@@ -10,6 +10,9 @@ use Pan\Enums\EventType;
 use Pan\PanConfiguration;
 use Pan\ValueObjects\Analytic;
 
+/**
+ *@codeCoverageIgnore
+ */
 final readonly class PanAnalyticsService implements AnalyticsRepository
 {
     /**

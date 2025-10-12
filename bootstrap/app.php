@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\EnsureCanAccessTwoFactorChallenge;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\RedirectIfTwoFactorRequired;
 use App\Http\Middleware\TrackUserPresence;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -26,7 +28,12 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+            RedirectIfTwoFactorRequired::class,
             TrackUserPresence::class,
+        ]);
+
+        $middleware->alias([
+            'two-factor-challenge' => EnsureCanAccessTwoFactorChallenge::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

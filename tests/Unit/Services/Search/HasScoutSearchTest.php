@@ -163,3 +163,78 @@ it('throws exception when search method does not return Scout Builder', function
     expect(fn () => $provider->search('test'))
         ->toThrow(RuntimeException::class, 'search() must return Scout Builder instance');
 });
+
+it('default shouldIncludeInResults returns true', function () {
+    // Test that the default implementation returns true for all models
+    $user = App\Models\User::factory()->create();
+
+    // Use reflection to access the protected method
+    $reflection = new ReflectionClass($this->provider);
+    $method = $reflection->getMethod('shouldIncludeInResults');
+    $method->setAccessible(true);
+
+    $result = $method->invoke($this->provider, $user);
+
+    expect($result)->toBeTrue();
+});
+
+it('shouldIncludeInResults can be overridden for custom filtering', function () {
+    // Create a provider with custom filtering logic
+    $provider = new class implements GlobalSearchable
+    {
+        use HasScoutSearch;
+
+        public function getType(): string
+        {
+            return 'test';
+        }
+
+        public function getLabel(): string
+        {
+            return 'Test';
+        }
+
+        public function getIcon(): string
+        {
+            return 'test';
+        }
+
+        public function getPriority(): int
+        {
+            return 1;
+        }
+
+        public function getModelClass(): string
+        {
+            return App\Models\User::class;
+        }
+
+        public function mapToSearchResults(Model $model): SearchResult
+        {
+            return new SearchResult((string) $model->id, 'Test', null, null, null, []);
+        }
+
+        public function buildRedirectUrl(Model $model): string
+        {
+            return '/test';
+        }
+
+        // Override shouldIncludeInResults with custom logic
+        protected function shouldIncludeInResults(Model $model): bool
+        {
+            // Example: only include users with specific property
+            return $model->email !== 'filtered@example.com';
+        }
+    };
+
+    $normalUser = App\Models\User::factory()->create(['email' => 'normal@example.com']);
+    $filteredUser = App\Models\User::factory()->create(['email' => 'filtered@example.com']);
+
+    // Use reflection to test the protected method
+    $reflection = new ReflectionClass($provider);
+    $method = $reflection->getMethod('shouldIncludeInResults');
+    $method->setAccessible(true);
+
+    expect($method->invoke($provider, $normalUser))->toBeTrue()
+        ->and($method->invoke($provider, $filteredUser))->toBeFalse();
+});

@@ -40,6 +40,9 @@ test('to array', function () {
             'google_token',
             'google_refresh_token',
             'privacy_settings',
+            'two_factor_secret',
+            'two_factor_recovery_codes',
+            'two_factor_confirmed_at',
         ]);
 });
 
