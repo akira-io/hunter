@@ -70,6 +70,39 @@ it('removes has_liked attribute when incrementing views', function () {
     expect($hunt->getAttributes())->not->toHaveKey('has_liked');
 });
 
+it('does not increment views when owner views their own hunt', function () {
+    $owner = User::factory()->create();
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $owner->id,
+        'views_count' => 5,
+    ]);
+
+    $hunt->incrementViews($owner->id);
+
+    expect($hunt->fresh()->views_count)->toBe(5); // Should stay the same
+});
+
+it('increments views when non-owner views the hunt', function () {
+    $owner = User::factory()->create();
+    $viewer = User::factory()->create();
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $owner->id,
+        'views_count' => 5,
+    ]);
+
+    $hunt->incrementViews($viewer->id);
+
+    expect($hunt->fresh()->views_count)->toBe(6); // Should increment
+});
+
+it('increments views when no user id provided', function () {
+    $hunt = Hunt::factory()->create(['views_count' => 5]);
+
+    $hunt->incrementViews();
+
+    expect($hunt->fresh()->views_count)->toBe(6); // Should increment for anonymous/guest
+});
+
 it('increments shares count correctly', function () {
     $hunt = Hunt::factory()->create(['shares_count' => 3]);
 
