@@ -123,7 +123,8 @@ export function HuntCard({
                     'relative mx-auto mb-4 overflow-hidden',
                     widthClasses[width],
                 )}
-                data-pan={`hunt-${hunt.id}`}
+                // Only track views for hunts that don't belong to the current user
+                {...(!isOwner && { 'data-pan': `hunt-${hunt.id}` })}
             >
                 {/* Owner's Viral Performance Banner - Mobile Optimized - Only show in feed, not on show page */}
                 {isOwner && isViral && showViralBanner && (

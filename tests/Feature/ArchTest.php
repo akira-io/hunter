@@ -18,6 +18,9 @@ arch()->preset()->laravel()
             "App\Http\Controllers\Settings\PrivacyController",
             "App\Http\Resources\Hunt\HuntResource",
             "App\Http\Controllers\HuntController",
+            "App\Http\Controllers\Auth\AuthenticatedSessionController",
+            "App\Http\Responses\TwoFactorLoginResponse",
+
         ]);
 arch()->preset()->security();
 

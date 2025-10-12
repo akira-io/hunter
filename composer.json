@@ -15,6 +15,7 @@
     "akira/laravel-followable": "^0.2.0",
     "akira/laravel-likeable": "^0.2.0",
     "inertiajs/inertia-laravel": "^2.0.2",
+    "laravel/fortify": "^1.31",
     "laravel/framework": "^12.9.2",
     "laravel/horizon": "^5.31",
     "laravel/nightwatch": "^1.7",
@@ -104,7 +105,7 @@
       "npm run test:types"
     ],
     "test:type-coverage": "pest --type-coverage --min=100 --compact --parallel",
-    "test:unit": "pest --parallel --coverage --exactly=98.5 --compact",
+    "test:unit": "pest --parallel --coverage --exactly=99.0 --compact",
     "test": [
       "@test:type-coverage",
       "@test:unit",

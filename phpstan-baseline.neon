@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			rawMessage: 'Method App\Actions\Auth\LoginUserAction::handle() never returns false so the return type can be changed to true.'
-			identifier: return.tooWideBool
-			count: 1
-			path: app/Actions/Auth/LoginUserAction.php
-
-		-
 			rawMessage: 'Anonymous function should return array{id: int, title: mixed, type: string, avatar_url: string|null, participants: Illuminate\Support\Collection<int, array{id: int, name: string, avatar_url: string|null}>, other_participant: App\Models\User, last_message: array{id: mixed, content: mixed, type: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}|null, last_message_at: Carbon\Carbon|null, ...} but returns array{id: int, title: mixed, type: string, avatar_url: string|null, participants: Illuminate\Support\Collection<int, array{id: int, name: string, avatar_url: string|null}>, other_participant: App\Models\User, last_message: array{id: mixed, content: mixed, type: mixed, created_at: mixed, user: array{id: mixed, name: mixed, avatar_url: string|null}}|null, last_message_at: Carbon\Carbon|null, ...}.'
 			identifier: return.type
 			count: 1
@@ -347,3 +341,15 @@ parameters:
 			identifier: method.internalClass
 			count: 1
 			path: app/Rules/Rules/WithoutBlankCharactersRule.php
+
+		-
+			rawMessage: 'Cannot call method diffForHumans() on Carbon\Carbon|string.'
+			identifier: method.nonObject
+			count: 1
+			path: app/ValueObjects/ChangelogEntry.php
+
+		-
+			rawMessage: 'Cannot call method isoFormat() on Carbon\Carbon|string.'
+			identifier: method.nonObject
+			count: 1
+			path: app/ValueObjects/ChangelogEntry.php

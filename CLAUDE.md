@@ -552,3 +552,24 @@ export default () => (
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test` with a specific filename or filter.
 </laravel-boost-guidelines>
+
+## 🧭 Routing Convention Rule
+
+- Always use **Spatie Route Attributes** for defining routes in Laravel.
+
+### ✅ Frontend Guidelines
+
+- Use the `Wayfinder` package to generate, resolve, and navigate routes dynamically.
+- Never hardcode URLs directly in components or pages.
+- Always import your route controllers from `@/actions/App/Http/Controllers/...`.
+- Use controller-based helpers for navigation or links — **never hardcode URLs**.
+- Prefer `.url` for static links and `router.visit()` for dynamic navigation.
+
+**Example (static link):**
+
+```tsx
+import ChangelogController from '@/actions/App/Http/Controllers/ChangelogController';
+
+<Link href={ChangelogController.show(entry.version).url}>
+    View Changelog
+</Link>

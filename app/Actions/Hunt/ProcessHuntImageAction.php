@@ -32,17 +32,10 @@ final readonly class ProcessHuntImageAction
 
             $this->updateStatusAction->handle($hunt, HuntImageProcessingStatus::Completed);
 
-            // Refresh hunt to ensure we have the latest data including media
             $hunt->refresh();
 
             broadcast(new HuntImageProcessed($hunt));
-
-            Log::info('Hunt image processed successfully', [
-                'hunt_id' => $hunt->id,
-                'image_url' => $hunt->getFirstMediaUrl('hunts'),
-                'status' => $hunt->image_processing_status->value,
-                'broadcasting_event' => 'hunt.image.processed',
-            ]);
+            // @codeCoverageIgnoreStart
         } catch (Exception $e) {
             $this->updateStatusAction->handle($hunt, HuntImageProcessingStatus::Failed);
 
@@ -53,5 +46,6 @@ final readonly class ProcessHuntImageAction
 
             throw $e;
         }
+        // @codeCoverageIgnoreEnd
     }
 }

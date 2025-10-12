@@ -1,3 +1,4 @@
+
 const CACHE_VERSION = 'v1760210239071'; // Auto-updated by Vite build
 const STATIC_CACHE = `devhunter-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `devhunter-dynamic-${CACHE_VERSION}`;
