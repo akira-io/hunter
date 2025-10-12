@@ -1,5 +1,8 @@
-import { UnsavedChangesDialog } from '@/components/unsaved-changes-dialog';
-import { useFormDirty, useUnsavedChangesGuard } from '@/hooks/use-unsaved-changes-guard';
+import { HunterConfirmationDialog } from '@/components/core/HunterConfirmationDialog';
+import {
+    useFormDirty,
+    useUnsavedChangesGuard,
+} from '@/hooks/use-unsaved-changes-guard';
 import { ReactNode } from 'react';
 
 interface UnsavedChangesGuardProps<T> {
@@ -44,7 +47,7 @@ export function UnsavedChangesGuard<T>({
     return (
         <>
             {children}
-            <UnsavedChangesDialog
+            <HunterConfirmationDialog
                 open={showDialog}
                 onOpenChange={(open) => {
                     if (!open) {

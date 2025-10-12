@@ -1,3 +1,4 @@
+import type { VisitOptions } from '@inertiajs/core';
 import { router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -8,24 +9,6 @@ interface UseUnsavedChangesGuardOptions {
     message?: string;
 }
 
-/**
- * Hook to prevent users from accidentally leaving a page with unsaved changes.
- * Handles both Inertia navigation and browser events (refresh, close, back/forward).
- *
- * @param isDirty - Whether the form has unsaved changes
- * @param options - Configuration options
- *
- * @example
- * ```tsx
- * const [formData, setFormData] = useState(initialData);
- * const isDirty = !isEqual(formData, initialData);
- *
- * useUnsavedChangesGuard(isDirty, {
- *   enabled: true,
- *   message: 'You have unsaved changes. Are you sure you want to leave?'
- * });
- * ```
- */
 export function useUnsavedChangesGuard(
     isDirty: boolean,
     options: UseUnsavedChangesGuardOptions = {},
@@ -38,7 +21,10 @@ export function useUnsavedChangesGuard(
     } = options;
 
     const [showDialog, setShowDialog] = useState(false);
-    const [pendingNavigation, setPendingNavigation] = useState<(() => void) | null>(null);
+    const [pendingVisit, setPendingVisit] = useState<{
+        url: string;
+        options: VisitOptions;
+    } | null>(null);
     const isNavigatingRef = useRef(false);
 
     // Handle browser events (refresh, close, back/forward)
@@ -61,57 +47,81 @@ export function useUnsavedChangesGuard(
         };
     }, [enabled, isDirty]);
 
-    // Handle Inertia navigation
+    // Handle Inertia navigation using router hooks
     useEffect(() => {
         if (!enabled || !isDirty) {
             return;
         }
 
-        const handleStart = (event: CustomEvent) => {
+        const unregisterListener = router.on('before', (event) => {
             // If we're already navigating (user confirmed), allow it
             if (isNavigatingRef.current) {
-                return;
+                return true;
+            }
+
+            // Ignore prefetch requests (triggered on hover)
+            if (event.detail.visit.prefetch) {
+                return true;
             }
 
             // Prevent navigation and show confirmation dialog
-            event.preventDefault();
-
-            // Store the navigation callback
-            setPendingNavigation(() => () => {
-                isNavigatingRef.current = true;
-                // Use the visit options from the event
-                router.visit(event.detail.visit.url, {
-                    ...event.detail.visit,
-                    onFinish: () => {
-                        isNavigatingRef.current = false;
-                    },
-                });
+            setPendingVisit({
+                url: event.detail.visit.url.toString(),
+                options: {
+                    method: event.detail.visit.method,
+                    data: event.detail.visit.data,
+                    replace: event.detail.visit.replace,
+                    preserveScroll: event.detail.visit.preserveScroll,
+                    preserveState: event.detail.visit.preserveState,
+                    only: event.detail.visit.only,
+                    headers: event.detail.visit.headers,
+                    errorBag: event.detail.visit.errorBag,
+                    forceFormData: event.detail.visit.forceFormData,
+                },
             });
-
             setShowDialog(true);
-        };
 
-        // Listen for Inertia navigation start events
-        document.addEventListener('inertia:before', handleStart as EventListener);
+            return false; // Cancel navigation
+        });
 
         return () => {
-            document.removeEventListener('inertia:before', handleStart as EventListener);
+            unregisterListener();
         };
     }, [enabled, isDirty]);
 
     const handleConfirm = () => {
-        setShowDialog(false);
-
-        if (pendingNavigation) {
-            onConfirm?.();
-            pendingNavigation();
-            setPendingNavigation(null);
+        if (!pendingVisit) {
+            return;
         }
+
+        const visitUrl = pendingVisit.url;
+        const visitOptions = pendingVisit.options;
+
+        // Reset state first
+        setShowDialog(false);
+        setPendingVisit(null);
+
+        // Mark as navigating
+        isNavigatingRef.current = true;
+
+        // Call confirm callback
+        onConfirm?.();
+
+        // Perform the navigation
+        router.visit(visitUrl, {
+            ...visitOptions,
+            onFinish: () => {
+                isNavigatingRef.current = false;
+            },
+            onError: () => {
+                isNavigatingRef.current = false;
+            },
+        });
     };
 
     const handleCancel = () => {
         setShowDialog(false);
-        setPendingNavigation(null);
+        setPendingVisit(null);
         isNavigatingRef.current = false;
         onCancel?.();
     };
@@ -124,18 +134,6 @@ export function useUnsavedChangesGuard(
     };
 }
 
-/**
- * Hook to track if form data has changed from its initial state.
- *
- * @param data - Current form data
- * @param initialData - Initial form data
- * @returns Whether the form is dirty (has changes)
- *
- * @example
- * ```tsx
- * const isDirty = useFormDirty(formData, initialData);
- * ```
- */
 export function useFormDirty<T>(data: T, initialData: T): boolean {
     const [isDirty, setIsDirty] = useState(false);
 

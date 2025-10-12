@@ -16,29 +16,30 @@ Hunter's **Unsaved Changes Guard** is a comprehensive system that prevents users
 
 ## Components
 
-The system consists of 3 main components:
+The system consists of 4 main components:
 
 ### 1. useUnsavedChangesGuard Hook
-Core hook that provides protection against accidental navigation.
+Core hook that provides protection against accidental navigation. Returns dialog state and handlers.
 
 ### 2. useFormDirty Hook
-Helper hook to automatically detect form changes.
+Helper hook to automatically detect form changes using JSON comparison.
 
 ### 3. UnsavedChangesDialog
-Accessible confirmation dialog with consistent styling.
+Accessible confirmation dialog component with consistent styling.
 
 ### 4. UnsavedChangesGuard Component
-Convenient wrapper that combines hook + dialog.
+Convenient wrapper component that combines the hook and dialog for quick setup.
 
 ## Installation
 
 ### Dependencies
 
-The guard system uses React hooks and Inertia.js:
+The guard system uses React hooks, Inertia.js, and TypeScript:
 
 ```json
 {
   "@inertiajs/react": "^2.0.0",
+  "@inertiajs/core": "^2.0.0",
   "react": "^18.0.0"
 }
 ```
@@ -52,6 +53,9 @@ import { UnsavedChangesDialog } from '@/components/unsaved-changes-dialog';
 
 // Component wrapper approach
 import { UnsavedChangesGuard } from '@/components/unsaved-changes-guard';
+
+// Type imports (if needed)
+import type { VisitOptions } from '@inertiajs/core';
 ```
 
 ## Basic Usage
@@ -366,17 +370,68 @@ function useFormDirty<T>(
    ↓
 3. useUnsavedChangesGuard activates protection
    - Attaches beforeunload listener (browser events)
-   - Listens for inertia:before events (app navigation)
+   - Listens for router.on('before') events (Inertia navigation)
    ↓
 4. User attempts to leave
    ↓
 5. Navigation intercepted
+   - Inertia: router.on('before') returns false
+   - Browser: beforeunload event.preventDefault()
    ↓
 6. Confirmation dialog shown
    ↓
 7. User decision:
-   → Confirm: Navigation proceeds
+   → Confirm: Navigation proceeds via router.visit()
    → Cancel: Stay on page, keep edits
+```
+
+### Technical Implementation
+
+**State Management:**
+```tsx
+const [showDialog, setShowDialog] = useState(false);
+const [pendingVisit, setPendingVisit] = useState<{
+    url: string;
+    options: VisitOptions;
+} | null>(null);
+const isNavigatingRef = useRef(false);
+```
+
+**Event Interception:**
+```tsx
+// Inertia navigation
+const unregisterListener = router.on('before', (event) => {
+    if (isNavigatingRef.current || event.detail.visit.prefetch) {
+        return true; // Allow navigation
+    }
+    
+    // Store visit details and show dialog
+    setPendingVisit({
+        url: event.detail.visit.url.toString(),
+        options: { /* visit options */ }
+    });
+    setShowDialog(true);
+    
+    return false; // Prevent navigation
+});
+
+// Browser navigation
+window.addEventListener('beforeunload', (event) => {
+    event.preventDefault();
+    event.returnValue = ''; // Required for Chrome
+});
+```
+
+**Confirmed Navigation:**
+```tsx
+const handleConfirm = () => {
+    isNavigatingRef.current = true; // Allow next navigation
+    router.visit(pendingVisit.url, {
+        ...pendingVisit.options,
+        onFinish: () => isNavigatingRef.current = false,
+        onError: () => isNavigatingRef.current = false,
+    });
+};
 ```
 
 ### Navigation Events
@@ -387,7 +442,8 @@ The guard handles these navigation scenarios:
 - Clicking `<Link>` components
 - Calling `router.visit()`
 - Using `router.get/post/patch/delete()`
-- Browser back/forward (when handled by Inertia)
+- Programmatic navigation via Inertia
+- Uses `router.on('before')` event listener
 
 **Browser Navigation:**
 - Browser back/forward buttons (native)
@@ -395,6 +451,13 @@ The guard handles these navigation scenarios:
 - Clicking bookmarks
 - Page refresh (F5, Cmd+R)
 - Closing tab/window
+- Uses `beforeunload` event listener
+
+**Ignored Navigation:**
+- Prefetch requests (hover events on `<Link>` components)
+- Navigation after user confirmation (`isNavigatingRef.current === true`)
+- Navigation when guard is disabled (`enabled === false`)
+- Navigation when form is clean (`isDirty === false`)
 
 ### Change Detection
 
@@ -685,9 +748,11 @@ Works correctly with iOS keyboard and navigation:
 // Handles iOS keyboard events
 window.addEventListener('beforeunload', handleBeforeUnload);
 
-// Works with iOS back swipe gesture
-document.addEventListener('inertia:before', handleInertiaNavigation);
+// Works with iOS back swipe gesture via Inertia
+router.on('before', handleInertiaNavigation);
 ```
+
+**Note:** The guard properly handles Inertia's router events, which work consistently across all browsers including iOS Safari.
 
 ## Testing
 
@@ -774,13 +839,17 @@ test('shows confirmation when leaving with unsaved changes', async () => {
 
 **Solutions:**
 1. Check that `isDirty` is `true`
-2. Verify `enabled` is `true`
+2. Verify `enabled` is `true` (or not set, defaults to `true`)
 3. Ensure `UnsavedChangesDialog` is rendered
 4. Check for JavaScript errors in console
+5. Verify Inertia.js is properly initialized
 
 ```tsx
 // Debug: Log state
 console.log({ isDirty, enabled, showDialog });
+
+// Check if router.on is available
+console.log('Router:', router);
 ```
 
 ### Dialog Shows After Save
@@ -791,10 +860,11 @@ console.log({ isDirty, enabled, showDialog });
 1. Reset form after save with `reset()`
 2. Update `initialData` state
 3. Check that `isDirty` becomes `false` after save
+4. Disable guard during form submission with `enabled={!processing}`
 
 ```tsx
 // ✅ Solution 1: Use reset()
-const { data, reset } = useForm(initialData);
+const { data, reset, processing } = useForm(initialData);
 patch(route('update'), {
   onSuccess: () => reset(),
 });
@@ -804,6 +874,9 @@ const [initialData, setInitialData] = useState(userData);
 patch(route('update'), {
   onSuccess: (response) => setInitialData(response.data),
 });
+
+// ✅ Solution 3: Disable during submission
+<UnsavedChangesGuard enabled={!processing} ... />
 ```
 
 ### Browser Warning Doesn't Show
@@ -811,14 +884,30 @@ patch(route('update'), {
 **Problem:** No warning when refreshing/closing browser
 
 **Solutions:**
-1. This is expected for modern browsers - custom messages are ignored
+1. This is expected for modern browsers - custom messages are ignored for security
 2. Browser shows generic warning, not your custom message
-3. Internal navigation uses custom dialog
+3. Inertia navigation uses custom dialog (works as expected)
+4. Ensure `beforeunload` listener is attached (check devtools)
 
 ```tsx
 // ℹ️  Browser security restriction
-// beforeunload shows generic browser message
-// Inertia navigation shows your custom message
+// beforeunload shows generic browser message (cannot be customized)
+// Inertia navigation shows your custom message ✅
+```
+
+### TypeScript Errors
+
+**Problem:** Type errors with `VisitOptions`
+
+**Solution:** Import `VisitOptions` from `@inertiajs/core`, not `@inertiajs/react`
+
+```tsx
+// ❌ Wrong
+import { router, type VisitOptions } from '@inertiajs/react';
+
+// ✅ Correct
+import { router } from '@inertiajs/react';
+import type { VisitOptions } from '@inertiajs/core';
 ```
 
 ### Multiple Dialogs Appearing
@@ -829,6 +918,7 @@ patch(route('update'), {
 1. Don't nest multiple guards
 2. Use single guard for multiple forms
 3. Check that you're not duplicating the dialog component
+4. Verify cleanup in useEffect return statements
 
 ```tsx
 // ❌ Bad: Nested guards
@@ -847,7 +937,7 @@ useUnsavedChangesGuard(isDirty);
 
 **Problem:** File uploads don't trigger guard
 
-**Solution:** Add custom comparison for File objects
+**Solution:** Add custom comparison for File objects (JSON.stringify doesn't serialize File objects)
 
 ```tsx
 const { data } = useForm({ content: '', image: null });
