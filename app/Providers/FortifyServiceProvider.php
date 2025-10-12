@@ -11,6 +11,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -29,13 +32,9 @@ final class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Fortify::twoFactorChallengeView(function () {
-            return inertia('auth/two-factor-challenge');
-        });
+        Fortify::twoFactorChallengeView(fn () => inertia('auth/two-factor-challenge'));
 
-        Fortify::confirmPasswordView(function () {
-            return inertia('auth/confirm-password');
-        });
+        Fortify::confirmPasswordView(fn () => inertia('auth/confirm-password'));
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
@@ -43,8 +42,6 @@ final class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($throttleKey);
         });
 
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        });
+        RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
     }
 }

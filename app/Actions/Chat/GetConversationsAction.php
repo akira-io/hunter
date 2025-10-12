@@ -31,7 +31,7 @@ final readonly class GetConversationsAction
 
         $query->with('participants');
         // @phpstan-ignore-next-line
-        $query->with(['messages' => fn (HasMany $query) => $query->latest()->limit(1)->with('user')]);
+        $query->with(['messages' => fn (HasMany $query) => $query->latest()->latest('id')->limit(1)->with('user')]);
 
         /** @var Collection<int, Conversation> $conversationsCollection */
         $conversationsCollection = $query->orderBy('last_message_at', 'desc')

@@ -60,7 +60,7 @@ final readonly class SecurityController
                 ? $user->twoFactorQrCodeSvg()
                 : null,
             'recoveryCodes' => $twoFactorEnabled && $twoFactorConfirmed
-                ? json_decode(decrypt($user->two_factor_recovery_codes ?? '[]'), true)
+                ? json_decode((string) decrypt($user->two_factor_recovery_codes ?? '[]'), true)
                 : null,
             'confirmed' => $twoFactorConfirmed,
         ]);

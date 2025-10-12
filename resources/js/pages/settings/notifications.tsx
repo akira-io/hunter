@@ -1,5 +1,12 @@
 import notificationController from '@/actions/App/Http/Controllers/Settings/NotificationController';
 import HeadingSmall from '@/components/heading-small';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
@@ -18,13 +25,6 @@ import {
     XCircle,
 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 
 interface NotificationSettings {
     follow_notifications: boolean;

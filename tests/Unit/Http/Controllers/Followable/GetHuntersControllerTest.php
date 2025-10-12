@@ -47,4 +47,3 @@ it('handles empty followers gracefully', function () {
 
     expect($response)->toBeInstanceOf(InertiaResponse::class);
 });
-

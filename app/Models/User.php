@@ -55,8 +55,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read bool $onboarding_completed
  * @property-read  array<string, mixed> $notification_settings
  * @property-read  array<string, mixed> $privacy_settings
- * @property-read  string $two_factor_recovery_codes
- * @property-read  string $two_factor_secret
+ * @property-read  string|null $two_factor_recovery_codes
+ * @property-read  string|null $two_factor_secret
  * @property-read  CarbonInterface|null $two_factor_confirmed_at
  *
  * @method void markAsRead()

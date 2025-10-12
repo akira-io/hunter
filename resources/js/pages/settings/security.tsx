@@ -4,6 +4,7 @@ import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 
+import { TwoFactorAuthentication } from '@/components/security/TwoFactorAuthentication';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
     AlertDialog,
@@ -55,7 +56,6 @@ import {
 } from 'lucide-react';
 import { type FormEventHandler, useRef, useState } from 'react';
 import { RiGoogleFill } from 'react-icons/ri';
-import { TwoFactorAuthentication } from '@/components/security/TwoFactorAuthentication';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

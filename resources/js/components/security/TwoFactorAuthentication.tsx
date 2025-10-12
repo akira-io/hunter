@@ -57,7 +57,7 @@ export function TwoFactorAuthentication({
     const [enabling, setEnabling] = useState(false);
     const [disabling, setDisabling] = useState(false);
     const [confirmingCode, setConfirmingCode] = useState('');
-    const [showRecoveryCodes, setShowRecoveryCodes] = useState(false);
+    const [, setShowRecoveryCodes] = useState(false);
     const [showDisableDialog, setShowDisableDialog] = useState(false);
     const [regenerating, setRegenerating] = useState(false);
 
@@ -177,18 +177,18 @@ export function TwoFactorAuthentication({
         );
     };
 
-    const showRecoveryCodesHandler = () => {
-        router.get(
-            twoFactor.recoveryCodes.url(),
-            {},
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    setShowRecoveryCodes(true);
-                },
-            },
-        );
-    };
+    // const showRecoveryCodesHandler = () => {
+    //     router.get(
+    //         twoFactor.recoveryCodes.url(),
+    //         {},
+    //         {
+    //             preserveScroll: true,
+    //             onSuccess: () => {
+    //                 setShowRecoveryCodes(true);
+    //             },
+    //         },
+    //     );
+    // };
 
     const copyRecoveryCodes = () => {
         if (recoveryCodes) {

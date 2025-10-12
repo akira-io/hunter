@@ -3,7 +3,6 @@ import { LoaderCircle, ShieldCheck, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 
 import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -53,18 +52,23 @@ export default function TwoFactorChallenge() {
                 });
             }, 100);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [otpValue, recovery]);
 
     const handleCancel = () => {
         setCanceling(true);
-        router.post(twoFactor.cancel.url(), {}, {
-            onFinish: () => {
-                setCanceling(false);
+        router.post(
+            twoFactor.cancel.url(),
+            {},
+            {
+                onFinish: () => {
+                    setCanceling(false);
+                },
+                onError: (errors) => {
+                    console.error('Erro ao cancelar 2FA:', errors);
+                },
             },
-            onError: (errors) => {
-                console.error('Erro ao cancelar 2FA:', errors);
-            },
-        });
+        );
     };
 
     return (

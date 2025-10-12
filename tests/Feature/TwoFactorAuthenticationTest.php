@@ -222,7 +222,7 @@ it('user can login with two factor code', function () {
     $newCode = $currentCode;
     $maxAttempts = 35; // Max 35 seconds wait
     $attempts = 0;
-    
+
     while ($newCode === $currentCode && $attempts < $maxAttempts) {
         sleep(1);
         $attempts++;
