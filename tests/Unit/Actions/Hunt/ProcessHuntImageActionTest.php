@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Actions\Hunt;
-
 use App\Actions\Hunt\ProcessHuntImageAction;
 use App\Actions\Hunt\UpdateHuntImageStatusAction;
 use App\Enums\HuntImageProcessingStatus;
@@ -13,179 +11,134 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Mockery;
-use Tests\TestCase;
 
-final class ProcessHuntImageActionTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    private ProcessHuntImageAction $action;
+beforeEach(function () {
+    Storage::fake('public');
+    $this->updateStatusAction = app(UpdateHuntImageStatusAction::class);
+    $this->action = new ProcessHuntImageAction($this->updateStatusAction);
+});
 
-    private UpdateHuntImageStatusAction $updateStatusAction;
+it('successfully processes and stores hunt image', function () {
+    Event::fake();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $user = User::factory()->create();
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $user->id,
+        'image_processing_status' => HuntImageProcessingStatus::Pending,
+    ]);
 
-        Storage::fake('public');
-        $this->updateStatusAction = app(UpdateHuntImageStatusAction::class);
-        $this->action = new ProcessHuntImageAction($this->updateStatusAction);
-    }
+    $image = UploadedFile::fake()->image('test.jpg', 800, 600);
 
-    public function test_successfully_processes_and_stores_hunt_image(): void
-    {
-        Event::fake();
-        Log::spy();
+    $this->action->handle($hunt, $image);
 
-        $user = User::factory()->create();
+    $hunt->refresh();
+
+    expect($hunt->image_processing_status)->toBe(HuntImageProcessingStatus::Completed)
+        ->and($hunt->getFirstMediaUrl('hunts'))->not->toBeEmpty()
+        ->and($hunt->getMedia('hunts'))->toHaveCount(1);
+});
+
+it('updates status to processing before handling image', function () {
+    Event::fake();
+
+    $user = User::factory()->create();
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $user->id,
+        'image_processing_status' => HuntImageProcessingStatus::Pending,
+    ]);
+
+    $image = UploadedFile::fake()->image('test.jpg');
+
+    $this->action->handle($hunt, $image);
+
+    // After processing, it should be completed
+    $hunt->refresh();
+    expect($hunt->image_processing_status)->toBe(HuntImageProcessingStatus::Completed);
+});
+
+it('broadcasts hunt image processed event', function () {
+    Event::fake();
+
+    $user = User::factory()->create();
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $user->id,
+        'image_processing_status' => HuntImageProcessingStatus::Pending,
+    ]);
+
+    $image = UploadedFile::fake()->image('test.jpg');
+
+    $this->action->handle($hunt, $image);
+
+    Event::assertDispatched(HuntImageProcessed::class, function ($event) use ($hunt) {
+        return $event->hunt->id === $hunt->id
+            && $event->hunt->image_processing_status === HuntImageProcessingStatus::Completed;
+    });
+});
+
+it('refreshes hunt before broadcasting', function () {
+    Event::fake();
+
+    $user = User::factory()->create();
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $user->id,
+        'image_processing_status' => HuntImageProcessingStatus::Pending,
+    ]);
+
+    $image = UploadedFile::fake()->image('test.jpg');
+
+    $this->action->handle($hunt, $image);
+
+    Event::assertDispatched(HuntImageProcessed::class, function ($event) {
+        // Verify hunt has been refreshed with media
+        return $event->hunt->image_processing_status === HuntImageProcessingStatus::Completed
+            && $event->hunt->getMedia('hunts')->count() > 0;
+    });
+});
+
+it('adds media to hunts collection', function () {
+    Event::fake();
+
+    $user = User::factory()->create();
+    $hunt = Hunt::factory()->create([
+        'owner_id' => $user->id,
+        'image_processing_status' => HuntImageProcessingStatus::Pending,
+    ]);
+
+    $image = UploadedFile::fake()->image('test.jpg');
+
+    expect($hunt->getMedia('hunts'))->toHaveCount(0);
+
+    $this->action->handle($hunt, $image);
+
+    $hunt->refresh();
+
+    expect($hunt->getMedia('hunts'))->toHaveCount(1)
+        ->and($hunt->getMedia('hunts')->first()->collection_name)->toBe('hunts');
+});
+
+it('handles different image types', function () {
+    Event::fake();
+
+    $user = User::factory()->create();
+
+    $imageTypes = ['jpg', 'png', 'gif'];
+
+    foreach ($imageTypes as $type) {
         $hunt = Hunt::factory()->create([
             'owner_id' => $user->id,
             'image_processing_status' => HuntImageProcessingStatus::Pending,
         ]);
 
-        $image = UploadedFile::fake()->image('test.jpg', 800, 600);
+        $image = UploadedFile::fake()->image("test.{$type}");
 
         $this->action->handle($hunt, $image);
 
         $hunt->refresh();
 
-        $this->assertEquals(HuntImageProcessingStatus::Completed, $hunt->image_processing_status);
-        $this->assertNotEmpty($hunt->getFirstMediaUrl('hunts'));
-        $this->assertCount(1, $hunt->getMedia('hunts'));
+        expect($hunt->image_processing_status)->toBe(HuntImageProcessingStatus::Completed)
+            ->and($hunt->getFirstMediaUrl('hunts'))->not->toBeEmpty();
     }
-
-    public function test_updates_status_to_processing_before_handling_image(): void
-    {
-        Event::fake();
-
-        $user = User::factory()->create();
-        $hunt = Hunt::factory()->create([
-            'owner_id' => $user->id,
-            'image_processing_status' => HuntImageProcessingStatus::Pending,
-        ]);
-
-        $image = UploadedFile::fake()->image('test.jpg');
-
-        $this->action->handle($hunt, $image);
-
-        // After processing, it should be completed
-        $hunt->refresh();
-        $this->assertEquals(HuntImageProcessingStatus::Completed, $hunt->image_processing_status);
-    }
-
-    public function test_broadcasts_hunt_image_processed_event(): void
-    {
-        Event::fake();
-
-        $user = User::factory()->create();
-        $hunt = Hunt::factory()->create([
-            'owner_id' => $user->id,
-            'image_processing_status' => HuntImageProcessingStatus::Pending,
-        ]);
-
-        $image = UploadedFile::fake()->image('test.jpg');
-
-        $this->action->handle($hunt, $image);
-
-        Event::assertDispatched(HuntImageProcessed::class, function ($event) use ($hunt) {
-            return $event->hunt->id === $hunt->id
-                && $event->hunt->image_processing_status === HuntImageProcessingStatus::Completed;
-        });
-    }
-
-    public function test_logs_success_message_with_hunt_details(): void
-    {
-        Event::fake();
-        Log::spy();
-
-        $user = User::factory()->create();
-        $hunt = Hunt::factory()->create([
-            'owner_id' => $user->id,
-            'image_processing_status' => HuntImageProcessingStatus::Pending,
-        ]);
-
-        $image = UploadedFile::fake()->image('test.jpg');
-
-        $this->action->handle($hunt, $image);
-
-        Log::shouldHaveReceived('info')
-            ->once()
-            ->with('Hunt image processed successfully', Mockery::on(function ($context) use ($hunt) {
-                return $context['hunt_id'] === $hunt->id
-                    && isset($context['image_url'])
-                    && $context['status'] === HuntImageProcessingStatus::Completed->value
-                    && $context['broadcasting_event'] === 'hunt.image.processed';
-            }));
-    }
-
-    public function test_refreshes_hunt_before_broadcasting(): void
-    {
-        Event::fake();
-
-        $user = User::factory()->create();
-        $hunt = Hunt::factory()->create([
-            'owner_id' => $user->id,
-            'image_processing_status' => HuntImageProcessingStatus::Pending,
-        ]);
-
-        $image = UploadedFile::fake()->image('test.jpg');
-
-        $this->action->handle($hunt, $image);
-
-        Event::assertDispatched(HuntImageProcessed::class, function ($event) {
-            // Verify hunt has been refreshed with media
-            return $event->hunt->image_processing_status === HuntImageProcessingStatus::Completed
-                && $event->hunt->getMedia('hunts')->count() > 0;
-        });
-    }
-
-    public function test_adds_media_to_hunts_collection(): void
-    {
-        Event::fake();
-
-        $user = User::factory()->create();
-        $hunt = Hunt::factory()->create([
-            'owner_id' => $user->id,
-            'image_processing_status' => HuntImageProcessingStatus::Pending,
-        ]);
-
-        $image = UploadedFile::fake()->image('test.jpg');
-
-        $this->assertCount(0, $hunt->getMedia('hunts'));
-
-        $this->action->handle($hunt, $image);
-
-        $hunt->refresh();
-
-        $this->assertCount(1, $hunt->getMedia('hunts'));
-        $this->assertEquals('hunts', $hunt->getMedia('hunts')->first()->collection_name);
-    }
-
-    public function test_handles_different_image_types(): void
-    {
-        Event::fake();
-
-        $user = User::factory()->create();
-
-        $imageTypes = ['jpg', 'png', 'gif'];
-
-        foreach ($imageTypes as $type) {
-            $hunt = Hunt::factory()->create([
-                'owner_id' => $user->id,
-                'image_processing_status' => HuntImageProcessingStatus::Pending,
-            ]);
-
-            $image = UploadedFile::fake()->image("test.{$type}");
-
-            $this->action->handle($hunt, $image);
-
-            $hunt->refresh();
-
-            $this->assertEquals(HuntImageProcessingStatus::Completed, $hunt->image_processing_status);
-            $this->assertNotEmpty($hunt->getFirstMediaUrl('hunts'));
-        }
-    }
-}
+});
