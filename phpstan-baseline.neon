@@ -347,3 +347,15 @@ parameters:
 			identifier: method.internalClass
 			count: 1
 			path: app/Rules/Rules/WithoutBlankCharactersRule.php
+
+		-
+			rawMessage: 'Cannot call method diffForHumans() on Carbon\Carbon|string.'
+			identifier: method.nonObject
+			count: 1
+			path: app/ValueObjects/ChangelogEntry.php
+
+		-
+			rawMessage: 'Cannot call method isoFormat() on Carbon\Carbon|string.'
+			identifier: method.nonObject
+			count: 1
+			path: app/ValueObjects/ChangelogEntry.php
