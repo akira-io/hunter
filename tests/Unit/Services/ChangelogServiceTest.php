@@ -133,3 +133,149 @@ it('counts total changes correctly', function () {
 
     expect($entry->getTotalChanges())->toBe($expectedTotal);
 });
+
+it('parses legacy format with #### headers', function () {
+    $legacyContent = <<<'MARKDOWN'
+# Changelog
+
+## 1.0.0 (2024-01-01)
+
+#### Features
+
+- Legacy feature one
+- Legacy feature two
+
+#### Bug Fixes
+
+- Legacy bug fix one
+- Legacy bug fix two
+
+MARKDOWN;
+
+    File::shouldReceive('exists')
+        ->once()
+        ->with(base_path('CHANGELOG.md'))
+        ->andReturn(true);
+
+    File::shouldReceive('get')
+        ->once()
+        ->with(base_path('CHANGELOG.md'))
+        ->andReturn($legacyContent);
+
+    Cache::forget('changelog:entries');
+
+    $entries = $this->changelogService->getAll();
+
+    expect($entries)->toHaveCount(1)
+        ->and($entries->first()->version)->toBe('1.0.0')
+        ->and($entries->first()->sections)->toHaveKey('Features')
+        ->and($entries->first()->sections['Features'])->toContain('Legacy feature one')
+        ->and($entries->first()->sections)->toHaveKey('Bug Fixes')
+        ->and($entries->first()->sections['Bug Fixes'])->toContain('Legacy bug fix one');
+});
+
+it('falls back to legacy parsing when no ### sections found', function () {
+    $contentWithoutSections = <<<'MARKDOWN'
+# Changelog
+
+## 2.0.0 (2024-02-01)
+
+#### Improvements
+
+- Improvement one
+- Improvement two
+
+MARKDOWN;
+
+    File::shouldReceive('exists')
+        ->once()
+        ->with(base_path('CHANGELOG.md'))
+        ->andReturn(true);
+
+    File::shouldReceive('get')
+        ->once()
+        ->with(base_path('CHANGELOG.md'))
+        ->andReturn($contentWithoutSections);
+
+    Cache::forget('changelog:entries');
+
+    $entries = $this->changelogService->getAll();
+
+    expect($entries)->toHaveCount(1)
+        ->and($entries->first()->sections)->not->toBeEmpty()
+        ->and($entries->first()->sections)->toHaveKey('Improvements');
+});
+
+it('handles legacy format with no items', function () {
+    $emptyLegacyContent = <<<'MARKDOWN'
+# Changelog
+
+## 3.0.0 (2024-03-01)
+
+#### Empty Section
+
+MARKDOWN;
+
+    File::shouldReceive('exists')
+        ->once()
+        ->with(base_path('CHANGELOG.md'))
+        ->andReturn(true);
+
+    File::shouldReceive('get')
+        ->once()
+        ->with(base_path('CHANGELOG.md'))
+        ->andReturn($emptyLegacyContent);
+
+    Cache::forget('changelog:entries');
+
+    $entries = $this->changelogService->getAll();
+
+    expect($entries)->toHaveCount(1)
+        ->and($entries->first()->sections)->toBeEmpty();
+});
+
+it('parses multiple legacy sections correctly', function () {
+    $multipleSections = <<<'MARKDOWN'
+# Changelog
+
+## 4.0.0 (2024-04-01)
+
+#### Added
+
+- New feature A
+- New feature B
+- New feature C
+
+#### Changed
+
+- Changed item 1
+- Changed item 2
+
+#### Fixed
+
+- Fixed bug 1
+- Fixed bug 2
+- Fixed bug 3
+
+MARKDOWN;
+
+    File::shouldReceive('exists')
+        ->once()
+        ->with(base_path('CHANGELOG.md'))
+        ->andReturn(true);
+
+    File::shouldReceive('get')
+        ->once()
+        ->with(base_path('CHANGELOG.md'))
+        ->andReturn($multipleSections);
+
+    Cache::forget('changelog:entries');
+
+    $entries = $this->changelogService->getAll();
+
+    expect($entries)->toHaveCount(1)
+        ->and($entries->first()->sections)->toHaveCount(3)
+        ->and($entries->first()->sections['Added'])->toHaveCount(3)
+        ->and($entries->first()->sections['Changed'])->toHaveCount(2)
+        ->and($entries->first()->sections['Fixed'])->toHaveCount(3);
+});

@@ -117,7 +117,7 @@ export default function ChangelogShow({ entry }: Props) {
                                                 className="flex items-start gap-2.5 sm:gap-3"
                                             >
                                                 <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-zinc-400 sm:mt-2 sm:h-2 sm:w-2 dark:bg-zinc-500" />
-                                                <span className="flex-1 break-words text-sm sm:text-base">
+                                                <span className="flex-1 text-sm break-words sm:text-base">
                                                     {item}
                                                 </span>
                                             </li>

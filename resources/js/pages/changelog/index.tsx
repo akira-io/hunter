@@ -119,9 +119,7 @@ export default function ChangelogIndex({ entries }: Props) {
                                     </span>
                                     <span className="flex items-center gap-1.5 text-muted-foreground">
                                         <GitBranch className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                        {
-                                            Object.keys(entry.sections).length
-                                        }{' '}
+                                        {Object.keys(entry.sections).length}{' '}
                                         seções
                                     </span>
                                 </div>
@@ -129,9 +127,8 @@ export default function ChangelogIndex({ entries }: Props) {
                                 {/* Details Button - Mobile (Full Width) */}
                                 <Link
                                     href={
-                                        ChangelogController.show(
-                                            entry.version,
-                                        ).url
+                                        ChangelogController.show(entry.version)
+                                            .url
                                     }
                                     className="flex items-center justify-center gap-2 rounded-lg bg-zinc-100 px-4 py-2.5 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-200 active:bg-zinc-300 sm:hidden dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700 dark:active:bg-zinc-600"
                                 >
@@ -169,7 +166,7 @@ export default function ChangelogIndex({ entries }: Props) {
                                                             </li>
                                                         ))}
                                                     {items.length > 3 && (
-                                                        <li className="text-xs italic text-muted-foreground">
+                                                        <li className="text-xs text-muted-foreground italic">
                                                             +{items.length - 3}{' '}
                                                             mais mudanças
                                                         </li>
