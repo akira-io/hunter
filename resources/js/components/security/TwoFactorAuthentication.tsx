@@ -8,17 +8,35 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle
+    AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSlot,
+} from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import twoFactor from '@/routes/two-factor';
 import { router } from '@inertiajs/react';
-import { AlertCircle, Copy, Download, RefreshCw, Shield, ShieldCheck, X } from 'lucide-react';
+import {
+    AlertCircle,
+    Copy,
+    Download,
+    RefreshCw,
+    Shield,
+    ShieldCheck,
+    X,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface TwoFactorAuthenticationProps {
