@@ -46,11 +46,23 @@ final readonly class SecurityController
     public function index(Request $request): Response
     {
         $user = type($request->user())->as(User::class);
+        $user->refresh();
+
+        $twoFactorEnabled = ! is_null($user->two_factor_secret);
+        $twoFactorConfirmed = ! is_null($user->two_factor_confirmed_at);
 
         return Inertia::render('settings/security', [
             'activeSessions' => $this->activeSessionsAction->handle($user),
             'connectedAccounts' => $this->connectedAccountsAction->handle($user),
             'hasPassword' => ! empty($user->password),
+            'twoFactorEnabled' => $twoFactorEnabled,
+            'qrCodeSvg' => $twoFactorEnabled && ! $twoFactorConfirmed
+                ? $user->twoFactorQrCodeSvg()
+                : null,
+            'recoveryCodes' => $twoFactorEnabled && $twoFactorConfirmed
+                ? json_decode(decrypt($user->two_factor_recovery_codes ?? '[]'), true)
+                : null,
+            'confirmed' => $twoFactorConfirmed,
         ]);
     }
 

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -54,6 +55,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read bool $onboarding_completed
  * @property-read  array<string, mixed> $notification_settings
  * @property-read  array<string, mixed> $privacy_settings
+ * @property-read  string $two_factor_recovery_codes
+ * @property-read  string $two_factor_secret
+ * @property-read  CarbonInterface|null $two_factor_confirmed_at
  *
  * @method void markAsRead()
  */
@@ -71,6 +75,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     use Liker;
     use Notifiable;
     use Searchable;
+    use TwoFactorAuthenticatable;
 
     /**
      * @var mixed|string

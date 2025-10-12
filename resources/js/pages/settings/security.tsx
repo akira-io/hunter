@@ -3,6 +3,7 @@ import { SaveButton } from '@/components/core/SaveButton';
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
     AlertDialog,
@@ -34,7 +35,6 @@ import { Label } from '@/components/ui/label';
 import { useUniqueSessions } from '@/hooks/use-unique-sessions';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import password from '@/routes/password';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
 import { RiGithubFill } from '@remixicon/react';
@@ -55,6 +55,7 @@ import {
 } from 'lucide-react';
 import { type FormEventHandler, useRef, useState } from 'react';
 import { RiGoogleFill } from 'react-icons/ri';
+import { TwoFactorAuthentication } from '@/components/security/TwoFactorAuthentication';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -84,12 +85,20 @@ interface Props {
     activeSessions: Session[];
     connectedAccounts: ConnectedAccounts;
     hasPassword: boolean;
+    twoFactorEnabled: boolean;
+    qrCodeSvg?: string;
+    recoveryCodes?: string[];
+    confirmed?: boolean;
 }
 
 export default function Security({
     activeSessions,
     connectedAccounts,
     hasPassword,
+    twoFactorEnabled = false,
+    qrCodeSvg,
+    recoveryCodes,
+    confirmed = false,
 }: Props) {
     const [sessionToRevoke, setSessionToRevoke] = useState<number | null>(null);
     const [accountToDisconnect, setAccountToDisconnect] = useState<
@@ -119,7 +128,7 @@ export default function Security({
     const updatePassword: FormEventHandler = (e) => {
         e.preventDefault();
 
-        put(password.update().url, {
+        put('/settings/password', {
             preserveScroll: true,
             onSuccess: () => resetPassword(),
             onError: (errors) => {
@@ -197,10 +206,18 @@ export default function Security({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Segurança" />
             <SettingsLayout>
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <HeadingSmall
                         title="Segurança"
                         description="Gerencie a segurança da sua conta, senha, sessões ativas e contas conectadas"
+                    />
+
+                    {/* Two-Factor Authentication Section */}
+                    <TwoFactorAuthentication
+                        twoFactorEnabled={twoFactorEnabled}
+                        qrCodeSvg={qrCodeSvg}
+                        recoveryCodes={recoveryCodes}
+                        confirmed={confirmed}
                     />
 
                     {/* Password Change Section */}

@@ -15,6 +15,7 @@
     "akira/laravel-followable": "^0.2.0",
     "akira/laravel-likeable": "^0.2.0",
     "inertiajs/inertia-laravel": "^2.0.2",
+    "laravel/fortify": "^1.31",
     "laravel/framework": "^12.9.2",
     "laravel/horizon": "^5.31",
     "laravel/nightwatch": "^1.7",

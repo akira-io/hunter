@@ -9,25 +9,13 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle,
+    AlertDialogTitle
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
@@ -47,7 +35,7 @@ import {
     UserCheck,
     Users,
     UserX,
-    XCircle,
+    XCircle
 } from 'lucide-react';
 import { type FormEventHandler, useState } from 'react';
 
@@ -138,34 +126,29 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
             <SettingsLayout>
                 <div className="space-y-6">
                     {/* Header */}
-                    <div>
-                        <HeadingSmall title="Privacidade" />
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                            Controle quem pode ver o seu perfil, publicações e
-                            atividade
-                        </p>
-                    </div>
+
+                    <HeadingSmall
+                        title="Privacidade"
+                        description="Controle quem pode ver o seu perfil, publicações e atividade"
+                    />
+
                     {/* Privacy Settings Form */}
                     <form onSubmit={updatePrivacySettings}>
-                        <Card className="gradient overflow-hidden">
-                            <CardHeader className="">
-                                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                    <div className="space-y-1.5">
-                                        <CardTitle className="flex items-center gap-2.5 text-xl">
-                                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 dark:bg-violet-500/20">
-                                                <Eye className="size-5 text-violet-600 dark:text-violet-400" />
-                                            </div>
-                                            <span className="leading-tight">
-                                                Visibilidade e Permissões
-                                            </span>
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <CardTitle className="flex items-center gap-2 text-lg">
+                                            <Eye className="size-5" />
+                                            Visibilidade e Permissões
                                         </CardTitle>
-                                        <CardDescription className="text-base">
+                                        <CardDescription>
                                             Gerencie quem pode interagir consigo
                                         </CardDescription>
                                     </div>
                                     <Badge
                                         variant="secondary"
-                                        className="flex hidden w-fit items-center gap-1.5 md:flex"
+                                        className="hidden w-fit items-center gap-1.5 md:flex"
                                     >
                                         <Shield className="size-3" />
                                         Privacidade
@@ -492,18 +475,14 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                     </form>
                     {/* Blocked Users */}
                     <Card className="overflow-hidden">
-                        <CardHeader className="">
-                            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                <div className="space-y-1.5">
-                                    <CardTitle className="flex items-center gap-2.5 text-xl">
-                                        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 dark:bg-red-500/20">
-                                            <UserX className="size-5 text-red-600 dark:text-red-400" />
-                                        </div>
-                                        <span className="leading-tight">
-                                            Hunters bloqueados
-                                        </span>
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <CardTitle className="flex items-center gap-2 text-lg">
+                                        <UserX className="size-5" />
+                                        Hunters bloqueados
                                     </CardTitle>
-                                    <CardDescription className="text-base">
+                                    <CardDescription>
                                         Gerencie os Hunters que bloqueou
                                     </CardDescription>
                                 </div>
@@ -520,6 +499,34 @@ export default function Privacy({ privacySettings, blockedUsers }: Props) {
                                 )}
                             </div>
                         </CardHeader>
+                        {/*<CardHeader>*/}
+                        {/*    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">*/}
+                        {/*        <div className="space-y-1.5">*/}
+                        {/*            <CardTitle className="flex items-center gap-2.5 text-xl">*/}
+                        {/*                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 dark:bg-red-500/20">*/}
+                        {/*                    <UserX className="size-5 text-red-600 dark:text-red-400" />*/}
+                        {/*                </div>*/}
+                        {/*                <span className="leading-tight">*/}
+                        {/*                    Hunters bloqueados*/}
+                        {/*                </span>*/}
+                        {/*            </CardTitle>*/}
+                        {/*            <CardDescription className="text-base">*/}
+                        {/*                Gerencie os Hunters que bloqueou*/}
+                        {/*            </CardDescription>*/}
+                        {/*        </div>*/}
+                        {/*        {blockedUsers.length > 0 && (*/}
+                        {/*            <Badge*/}
+                        {/*                variant="secondary"*/}
+                        {/*                className="flex w-fit items-center gap-1.5"*/}
+                        {/*            >*/}
+                        {/*                {blockedUsers.length}{' '}*/}
+                        {/*                {blockedUsers.length === 1*/}
+                        {/*                    ? 'bloqueado'*/}
+                        {/*                    : 'bloqueados'}*/}
+                        {/*            </Badge>*/}
+                        {/*        )}*/}
+                        {/*    </div>*/}
+                        {/*</CardHeader>*/}
                         <CardContent className="pt-6">
                             {blockedUsers.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50/50 py-16 dark:border-zinc-800 dark:bg-zinc-900/30">
