@@ -92,7 +92,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.9.2",
     "vaul": "^1.1.2",
-    "vite": "^7.1.7",
+    "vite": "^7.1.11",
     "zustand": "^5.0.8"
   },
   "optionalDependencies": {
