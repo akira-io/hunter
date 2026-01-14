@@ -19,45 +19,21 @@ final readonly class GetHuntsAction
      */
     public function handle(User $user): LengthAwarePaginator
     {
-        $userLatestHuntId = $this->getUserLatestHuntId($user);
+        $followedUserIds = $user->following()->pluck('id')->toArray();
+        $userIds = array_merge([$user->id], $followedUserIds);
 
-        $hunts = $this->getHuntsQuery($user, $userLatestHuntId);
+        $hunts = Hunt::query()
+            ->with(['owner', 'reshares'])
+            ->whereIn('owner_id', $userIds)
+            ->orWhereHas('reshares', function (Builder $query) use ($userIds) {
+                $query->whereIn('user_id', $userIds);
+            })
+            ->latest()
+            ->paginate();
 
         $hunts = $this->filterByVisibility($hunts, $user);
 
         return $this->attachLikeStatus($hunts, $user);
-    }
-
-    /**
-     * Get the ID of the user's latest hunt.
-     */
-    private function getUserLatestHuntId(User $user): ?int
-    {
-        return Hunt::query()
-            ->where('owner_id', $user->id)
-            ->latest()
-            ->value('id');
-    }
-
-    /**
-     * Build the query to get hunts: only latest from auth user, all from others.
-     *
-     * @return LengthAwarePaginator<int, Hunt>
-     */
-    private function getHuntsQuery(User $user, ?int $userLatestHuntId): LengthAwarePaginator
-    {
-        return Hunt::query()
-            ->with('owner')
-            ->where(function (Builder $query) use ($user, $userLatestHuntId): void {
-                if ($userLatestHuntId !== null && $userLatestHuntId !== 0) {
-                    $query->where('id', $userLatestHuntId);
-                }
-
-                $query->orWhere('owner_id', '!=', $user->id);
-            })
-            ->orderByRaw('CASE WHEN id = ? THEN 0 ELSE 1 END', [$userLatestHuntId ?? 0])
-            ->latest()
-            ->paginate();
     }
 
     /**

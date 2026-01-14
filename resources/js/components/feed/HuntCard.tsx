@@ -3,6 +3,7 @@ import DeleteHunt from '@/components/feed/DeleteHunt';
 import { HuntModal } from '@/components/feed/HuntModal';
 import { HuntLikes } from '@/components/likeable/HuntLikes';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
+import { ReshareHunt } from '@/components/feed/ReshareHunt';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -464,17 +465,7 @@ export function HuntCard({
                             </span>
                         </Button>
 
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center gap-1 px-2 text-orange-500 sm:px-3"
-                        >
-                            <Repeat2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                            <span className="hidden sm:inline">
-                                {hunt.shares}
-                            </span>
-                            <span className="sm:hidden">{hunt.shares}</span>
-                        </Button>
+                        <ReshareHunt hunt={hunt} />
 
                         <Button
                             variant="ghost"

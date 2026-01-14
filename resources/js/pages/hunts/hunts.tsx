@@ -1,5 +1,6 @@
 import { CreateHunt } from '@/components/feed/CreateHunt';
 import { HuntCard } from '@/components/feed/HuntCard';
+import { ResharedHuntCard } from '@/components/feed/ResharedHuntCard';
 import { useHuntImageProcessing } from '@/hooks/use-hunt-image-processing';
 import AppLayout from '@/layouts/app-layout';
 import hunts from '@/routes/hunts';
@@ -65,9 +66,17 @@ export default function HuntLine({ hunts, newHunt }: HuntLineProps) {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <CreateHunt />
                 <InfiniteScroll data="hunts">
-                    {displayHunts.map((hunt) => (
-                        <HuntCard key={hunt.id} hunt={hunt} />
-                    ))}
+                    {displayHunts.map((hunt) =>
+                        hunt.resharer ? (
+                            <ResharedHuntCard
+                                key={`${hunt.id}-${hunt.resharer.id}`}
+                                hunt={hunt}
+                                resharer={hunt.resharer}
+                            />
+                        ) : (
+                            <HuntCard key={hunt.id} hunt={hunt} />
+                        ),
+                    )}
                 </InfiniteScroll>
             </div>
         </AppLayout>

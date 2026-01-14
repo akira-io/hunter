@@ -29,3 +29,4 @@ yarn-error.log
 /resources/js/routes
 /resources/js/wayfinder
 .env.testing
+*.log
