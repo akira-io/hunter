@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Laravel\Scout\Searchable;
@@ -74,6 +75,11 @@ final class Hunt extends Model implements HasMedia
     {
 
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function reshares(): HasMany
+    {
+        return $this->hasMany(Reshare::class);
     }
 
     /**

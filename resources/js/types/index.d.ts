@@ -77,6 +77,7 @@ export interface ProfileStoreTypes {
 }
 
 export interface Hunt {
+    resharer?: User;
     id: number;
     content: string;
     created_at: string;
@@ -85,7 +86,7 @@ export interface Hunt {
     image_url?: string;
     image_processing_status?: 'pending' | 'processing' | 'completed' | 'failed';
     comments: Comment[];
-    shares: number;
+    reshares_count: number;
     likes_count: number;
     views: number;
     has_liked: boolean;
