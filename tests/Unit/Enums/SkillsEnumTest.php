@@ -2,73 +2,54 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Enums;
-
 use App\Enums\SkillsEnum;
-use Tests\TestCase;
 
-final class SkillsEnumTest extends TestCase
-{
-    public function test_get_returns_array_of_associative_arrays(): void
-    {
-        $result = SkillsEnum::get();
+it('get returns array of associative arrays', function () {
+    $result = SkillsEnum::get();
 
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
+    expect($result)->toBeArray()->not->toBeEmpty();
 
-        // Check structure of first item
-        $firstItem = $result[0];
-        $this->assertArrayHasKey('value', $firstItem);
-        $this->assertArrayHasKey('label', $firstItem);
-        $this->assertEquals($firstItem['value'], $firstItem['label']);
+    $firstItem = $result[0];
+    expect(array_key_exists('value', $firstItem))->toBeTrue();
+    expect(array_key_exists('label', $firstItem))->toBeTrue();
+    expect($firstItem['value'])->toBe($firstItem['label']);
 
-        // Verify all enum cases are included
-        $this->assertCount(count(SkillsEnum::cases()), $result);
+    expect(count($result))->toBe(count(SkillsEnum::cases()));
+});
+
+it('get from db returns formatted array', function () {
+    $skills = ['PHP', 'JavaScript', 'Laravel'];
+    $result = SkillsEnum::getFromDb($skills);
+
+    expect($result)->toBeArray();
+    expect(count($result))->toBe(count($skills));
+
+    foreach ($result as $index => $item) {
+        expect(array_key_exists('value', $item))->toBeTrue();
+        expect(array_key_exists('label', $item))->toBeTrue();
+        expect($item['value'])->toBe($skills[$index]);
+        expect($item['label'])->toBe($skills[$index]);
+    }
+});
+
+it('get from db with null returns empty array', function () {
+    $result = SkillsEnum::getFromDb(null);
+
+    expect($result)->toBeArray()->toBeEmpty();
+});
+
+it('get values returns array of strings', function () {
+    $result = SkillsEnum::getValues();
+
+    expect($result)->toBeArray()->not->toBeEmpty();
+
+    foreach ($result as $item) {
+        expect($item)->toBeString();
     }
 
-    public function test_get_from_db_returns_formatted_array(): void
-    {
-        $skills = ['PHP', 'JavaScript', 'Laravel'];
-        $result = SkillsEnum::getFromDb($skills);
+    expect(count($result))->toBe(count(SkillsEnum::cases()));
 
-        $this->assertIsArray($result);
-        $this->assertCount(count($skills), $result);
-
-        // Check structure of items
-        foreach ($result as $index => $item) {
-            $this->assertArrayHasKey('value', $item);
-            $this->assertArrayHasKey('label', $item);
-            $this->assertEquals($skills[$index], $item['value']);
-            $this->assertEquals($skills[$index], $item['label']);
-        }
-    }
-
-    public function test_get_from_db_with_null_returns_empty_array(): void
-    {
-        $result = SkillsEnum::getFromDb(null);
-
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
-    }
-
-    public function test_get_values_returns_array_of_strings(): void
-    {
-        $result = SkillsEnum::getValues();
-
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-
-        // Check all items are strings
-        foreach ($result as $item) {
-            $this->assertIsString($item);
-        }
-
-        // Verify all enum cases are included
-        $this->assertCount(count(SkillsEnum::cases()), $result);
-
-        // Verify specific values are included
-        $this->assertContains(SkillsEnum::PHP->value, $result);
-        $this->assertContains(SkillsEnum::JavaScript->value, $result);
-        $this->assertContains(SkillsEnum::Laravel->value, $result);
-    }
-}
+    expect($result)->toContain(SkillsEnum::PHP->value);
+    expect($result)->toContain(SkillsEnum::JavaScript->value);
+    expect($result)->toContain(SkillsEnum::Laravel->value);
+});

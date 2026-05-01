@@ -115,3 +115,54 @@ test('calculates engagement rates correctly', function () {
         ->and($metrics->shareRate)->toBe(10.0)
         ->and($metrics->interactionRate)->toBe(20.0);
 });
+
+test('returns correct type identifier', function () {
+    $calculator = app(HuntMetricsCalculator::class);
+
+    expect($calculator->getType())->toBe('hunt');
+});
+
+test('returns correct model class', function () {
+    $calculator = app(HuntMetricsCalculator::class);
+
+    expect($calculator->getModelClass())->toBe(Hunt::class);
+});
+
+test('supports method returns true for Hunt model', function () {
+    $hunt = Hunt::factory()->create();
+    $calculator = app(HuntMetricsCalculator::class);
+
+    expect($calculator->supports($hunt))->toBeTrue();
+});
+
+test('supports method returns false for non-Hunt model', function () {
+    $user = App\Models\User::factory()->create();
+    $calculator = app(HuntMetricsCalculator::class);
+
+    expect($calculator->supports($user))->toBeFalse();
+});
+
+test('calculate method throws exception for non-Hunt model', function () {
+    $user = App\Models\User::factory()->create();
+    $calculator = app(HuntMetricsCalculator::class);
+
+    expect(fn () => $calculator->calculate($user))
+        ->toThrow(InvalidArgumentException::class, 'Model must be an instance of Hunt');
+});
+
+test('calculate method returns MetricsData for Hunt model', function () {
+    $hunt = Hunt::factory()->create([
+        'views_count' => 100,
+        'shares_count' => 10,
+    ]);
+
+    $calculator = app(HuntMetricsCalculator::class);
+    $result = $calculator->calculate($hunt);
+
+    expect($result)->toBeInstanceOf(App\DataTransferObjects\Metrics\MetricsData::class)
+        ->and($result->type)->toBe('hunt')
+        ->and($result->metrics)->toBeArray()
+        ->and($result->metrics)->toHaveKey('views')
+        ->and($result->metrics)->toHaveKey('likes')
+        ->and($result->metrics)->toHaveKey('engagement_rate');
+});

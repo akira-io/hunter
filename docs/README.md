@@ -2,11 +2,6 @@
 # Hunter Documentation
 
 Welcome to the Hunter documentation! This comprehensive guide covers all aspects of the platform, from getting started to advanced features.
-
-## 📚 Core Documentation
-
-### Getting Started
-
 1. **[Getting Started](./01-getting-started.md)**
    - Installation & setup
    - Environment configuration
@@ -21,7 +16,6 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
    - Email verification
    - API authentication with Sanctum
 
-### Platform Features
 
 3. **[User Profiles](./03-user-profiles.md)**
    - Profile management
@@ -63,7 +57,6 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
    - Search suggestions
    - Analytics
 
-## 🚀 Advanced Features
 
 8. **[API Reference](./08-api-reference.md)**
    - Authentication
@@ -89,7 +82,7 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
     - Browser testing
     - CI/CD
 
-## 🔥 New Features
+
 
 11. **[Notifications System](./11-notifications-system.md)**
     - Real-time notifications
@@ -141,8 +134,6 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
     - Backup strategies
     - Security checklist
 
-## 🎨 UI Components
-
 16. **[Markdown Editor](./16-markdown-editor.md)**
     - Complete markdown editing system
     - Emoji picker with categories
@@ -178,8 +169,6 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
     - Responsive design
     - Integration examples
 
-## 🆕 New in v0.6.0
-
 19. **[Active Sessions Management](./19-active-sessions.md)**
     - Session detection and tracking
     - Smart IP filtering
@@ -211,6 +200,28 @@ Welcome to the Hunter documentation! This comprehensive guide covers all aspects
     - Best practices
     - CI/CD integration
     - Performance metrics
+
+22. **[Hunt Metrics System](./22-hunt-metrics-system.md)**
+    - Comprehensive analytics for hunts
+    - Pipeline architecture pattern
+    - Engagement, reach, and quality metrics
+    - Weighted scoring system
+    - Virality coefficient calculation
+    - Performance levels and rankings
+    - DTOs and type safety
+    - 100% test coverage
+    - Usage examples and API
+
+23. **[Unsaved Changes Guard](./23-unsaved-changes-guard.md)**
+- Prevent accidental data loss
+- Automatic change detection
+- Inertia & browser navigation handling
+- Accessible confirmation dialogs
+- Mobile-optimized layouts
+- Custom hooks and components
+- TypeScript support
+- Full test coverage
+- Integration examples
 
 ## 📖 Quick Reference
 

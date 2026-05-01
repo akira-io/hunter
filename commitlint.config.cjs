@@ -3,6 +3,6 @@ module.exports = {
     extends: ['@commitlint/config-conventional'],
     rules: {
         'body-max-line-length': [0, 'always', 300],
-        'header-max-length': [2, 'always', 200],
+        'header-max-length': [2, 'always', 300],
     },
 };

@@ -3,6 +3,7 @@ import { MarkdownEditor } from '@/components/markdown/MarkdownEditor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CharacterCounter } from '@/components/ui/character-counter';
+import { UnsavedChangesGuard } from '@/components/unsaved-changes-guard';
 import { CONTENT_LIMITS } from '@/constants/validation';
 import { useCharacterCount } from '@/hooks/use-character-count';
 import { useSanitizeImageUrls } from '@/hooks/use-sanitize-image-url';
@@ -45,6 +46,8 @@ export function CreateHunt() {
     const hasImage = imagePreview.length > 0;
     const canSubmit =
         (characterCount.hasContent || hasImage) && !characterCount.isOverLimit;
+
+    const initialData = { content: '', image: '' };
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         setImagePreview([]);
@@ -134,181 +137,195 @@ export function CreateHunt() {
     };
 
     return (
-        <Card
-            className={cn(
-                'gradient mx-auto w-full max-w-2xl transition-all duration-300',
-                isFocused &&
-                    'shadow-md ring-1 ring-zinc-300 dark:ring-zinc-700',
-                isSuccess &&
-                    'shadow-lg ring-2 shadow-emerald-500/20 ring-emerald-500/50',
-            )}
+        <UnsavedChangesGuard
+            data={data}
+            initialData={initialData}
+            enabled={!processing && !isSuccess}
+            title="Descartar Hunt?"
+            message="Sua Hunt ainda não foi publicada. Se sair agora, ela será perdida."
+            confirmText="Descartar"
+            cancelText="Continuar editando"
         >
-            <CardContent className="p-0">
-                {isSuccess ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-center duration-300 animate-in fade-in zoom-in">
-                        <div className="mb-4 rounded-full bg-emerald-500/10 p-4">
-                            <CheckCircle2 className="h-12 w-12 text-emerald-500 duration-500 animate-in zoom-in" />
+            <Card
+                className={cn(
+                    'gradient mx-auto w-full max-w-2xl transition-all duration-300',
+                    isFocused &&
+                        'shadow-md ring-1 ring-zinc-300 dark:ring-zinc-700',
+                    isSuccess &&
+                        'shadow-lg ring-2 shadow-emerald-500/20 ring-emerald-500/50',
+                )}
+            >
+                <CardContent className="p-0">
+                    {isSuccess ? (
+                        <div className="flex flex-col items-center justify-center py-12 text-center duration-300 animate-in fade-in zoom-in">
+                            <div className="mb-4 rounded-full bg-emerald-500/10 p-4">
+                                <CheckCircle2 className="h-12 w-12 text-emerald-500 duration-500 animate-in zoom-in" />
+                            </div>
+                            <h3 className="text-xl font-semibold text-emerald-600 dark:text-emerald-400">
+                                Hunt Partilhado!
+                            </h3>
+                            <p className="mt-2 text-sm text-muted-foreground">
+                                O seu hunt está agora visível para todos
+                            </p>
                         </div>
-                        <h3 className="text-xl font-semibold text-emerald-600 dark:text-emerald-400">
-                            Hunt Partilhado!
-                        </h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                            O seu hunt está agora visível para todos
-                        </p>
-                    </div>
-                ) : (
-                    <form
-                        className="relative flex w-full flex-col"
-                        onSubmit={shareHunt}
-                        encType="multipart/form-data"
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
-                    >
-                        <div className="p-4 sm:p-6">
-                            <MarkdownEditor
-                                value={data.content}
-                                onChange={(e) =>
-                                    setData('content', e.target.value)
-                                }
-                                maxLength={CONTENT_LIMITS.HUNT}
-                                name="content"
-                                rows={4}
-                                hideCounter={true}
-                                placeholder="O que descobriu hoje? Partilhe insights, conquistas ou desafios interessantes..."
-                                renderMobileControls={(controls) => (
-                                    <div className="mb-3 flex items-center justify-between gap-2">
-                                        <div className="flex items-center gap-1">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                id="image-upload-mobile"
-                                                className="hidden"
-                                                onChange={handleImageChange}
-                                                name="image"
-                                            />
-                                            <label
-                                                htmlFor="image-upload-mobile"
-                                                className="cursor-pointer rounded-lg p-2 transition-all hover:scale-105 hover:bg-muted active:scale-95 active:bg-muted/80"
-                                                aria-label="Carregar imagem"
-                                            >
-                                                <ImageIcon className="h-5 w-5" />
-                                            </label>
-                                            {controls.emojiPicker}
-                                            {controls.markdownHelp}
+                    ) : (
+                        <form
+                            className="relative flex w-full flex-col"
+                            onSubmit={shareHunt}
+                            encType="multipart/form-data"
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                        >
+                            <div className="p-4 sm:p-6">
+                                <MarkdownEditor
+                                    value={data.content}
+                                    onChange={(e) =>
+                                        setData('content', e.target.value)
+                                    }
+                                    maxLength={CONTENT_LIMITS.HUNT}
+                                    name="content"
+                                    rows={4}
+                                    hideCounter={true}
+                                    placeholder="O que descobriu hoje? Partilhe insights, conquistas ou desafios interessantes..."
+                                    renderMobileControls={(controls) => (
+                                        <div className="mb-3 flex items-center justify-between gap-2">
+                                            <div className="flex items-center gap-1">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    id="image-upload-mobile"
+                                                    className="hidden"
+                                                    onChange={handleImageChange}
+                                                    name="image"
+                                                />
+                                                <label
+                                                    htmlFor="image-upload-mobile"
+                                                    className="cursor-pointer rounded-lg p-2 transition-all hover:scale-105 hover:bg-muted active:scale-95 active:bg-muted/80"
+                                                    aria-label="Carregar imagem"
+                                                >
+                                                    <ImageIcon className="h-5 w-5" />
+                                                </label>
+                                                {controls.emojiPicker}
+                                                {controls.markdownHelp}
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                {controls.editButton}
+                                                {controls.previewButton}
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-1">
-                                            {controls.editButton}
-                                            {controls.previewButton}
-                                        </div>
-                                    </div>
-                                )}
-                            />
-
-                            {/* Character count and progress */}
-                            <CharacterCounter
-                                count={characterCount.count}
-                                max={characterCount.max}
-                                progressPercentage={
-                                    characterCount.progressPercentage
-                                }
-                                isNearLimit={characterCount.isNearLimit}
-                                isOverLimit={characterCount.isOverLimit}
-                                variant="with-progress"
-                                className="mt-3"
-                            />
-
-                            <InputError
-                                message={errors.content}
-                                className="mt-2 text-sm"
-                            />
-
-                            {/* Image preview */}
-                            {sanitizedImageUrls.length > 0 && (
-                                <div className="mt-4 duration-300 animate-in fade-in slide-in-from-bottom-4">
-                                    {sanitizedImageUrls.map((src, index) => (
-                                        <div
-                                            key={index}
-                                            className="group relative overflow-hidden rounded-xl"
-                                        >
-                                            <img
-                                                src={src}
-                                                alt={`Preview ${index}`}
-                                                className="max-h-96 w-full rounded-xl border-2 border-border object-cover shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                                            <button
-                                                type="button"
-                                                onClick={handleRemoveImage}
-                                                className="absolute top-3 right-3 rounded-full bg-red-500 p-2 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-red-600 active:scale-95"
-                                                title="Remover imagem"
-                                                aria-label="Remover imagem"
-                                            >
-                                                <X size={18} />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Actions footer */}
-                        <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-                            <div className="hidden items-center gap-2 sm:flex">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    id="image-upload"
-                                    className="hidden"
-                                    onChange={handleImageChange}
-                                    name="image"
-                                />
-                                <label
-                                    htmlFor="image-upload"
-                                    className={cn(
-                                        'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:scale-105 hover:bg-muted active:scale-95 active:bg-muted/80',
-                                        imagePreview.length > 0 &&
-                                            'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
                                     )}
-                                    aria-label="Carregar imagem"
-                                >
-                                    <ImageIcon className="h-4 w-4" />
-                                    {imagePreview.length > 0
-                                        ? 'Alterar imagem'
-                                        : 'Adicionar imagem'}
-                                </label>
+                                />
 
-                                {imagePreview.length > 0 && (
-                                    <span className="text-xs text-muted-foreground duration-300 animate-in fade-in slide-in-from-left-2">
-                                        1 imagem selecionada
-                                    </span>
+                                {/* Character count and progress */}
+                                <CharacterCounter
+                                    count={characterCount.count}
+                                    max={characterCount.max}
+                                    progressPercentage={
+                                        characterCount.progressPercentage
+                                    }
+                                    isNearLimit={characterCount.isNearLimit}
+                                    isOverLimit={characterCount.isOverLimit}
+                                    variant="with-progress"
+                                    className="mt-3"
+                                />
+
+                                <InputError
+                                    message={errors.content}
+                                    className="mt-2 text-sm"
+                                />
+
+                                {/* Image preview */}
+                                {sanitizedImageUrls.length > 0 && (
+                                    <div className="mt-4 duration-300 animate-in fade-in slide-in-from-bottom-4">
+                                        {sanitizedImageUrls.map(
+                                            (src, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="group relative overflow-hidden rounded-xl"
+                                                >
+                                                    <img
+                                                        src={src}
+                                                        alt={`Preview ${index}`}
+                                                        className="max-h-96 w-full rounded-xl border-2 border-border object-cover shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={
+                                                            handleRemoveImage
+                                                        }
+                                                        className="absolute top-3 right-3 rounded-full bg-red-500 p-2 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-red-600 active:scale-95"
+                                                        title="Remover imagem"
+                                                        aria-label="Remover imagem"
+                                                    >
+                                                        <X size={18} />
+                                                    </button>
+                                                </div>
+                                            ),
+                                        )}
+                                    </div>
                                 )}
                             </div>
 
-                            <Button
-                                type="submit"
-                                disabled={processing || !canSubmit}
-                                size="lg"
-                                className={cn(
-                                    'w-full gap-2 bg-gradient-to-r from-purple-500 to-purple-700 transition-all duration-300 hover:from-purple-600 hover:to-purple-800 hover:shadow-lg hover:shadow-purple-500/30 active:scale-95 disabled:opacity-50 sm:w-auto',
-                                    processing && 'animate-pulse',
-                                )}
-                            >
-                                {processing ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                        Partilhando...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Sparkles className="h-4 w-4" />
-                                        Partilhar Hunt
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    </form>
-                )}
-            </CardContent>
-        </Card>
+                            {/* Actions footer */}
+                            <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                                <div className="hidden items-center gap-2 sm:flex">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        id="image-upload"
+                                        className="hidden"
+                                        onChange={handleImageChange}
+                                        name="image"
+                                    />
+                                    <label
+                                        htmlFor="image-upload"
+                                        className={cn(
+                                            'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:scale-105 hover:bg-muted active:scale-95 active:bg-muted/80',
+                                            imagePreview.length > 0 &&
+                                                'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+                                        )}
+                                        aria-label="Carregar imagem"
+                                    >
+                                        <ImageIcon className="h-4 w-4" />
+                                        {imagePreview.length > 0
+                                            ? 'Alterar imagem'
+                                            : 'Adicionar imagem'}
+                                    </label>
+
+                                    {imagePreview.length > 0 && (
+                                        <span className="text-xs text-muted-foreground duration-300 animate-in fade-in slide-in-from-left-2">
+                                            1 imagem selecionada
+                                        </span>
+                                    )}
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    disabled={processing || !canSubmit}
+                                    size="lg"
+                                    className={cn(
+                                        'w-full gap-2 bg-gradient-to-r from-purple-500 to-purple-700 transition-all duration-300 hover:from-purple-600 hover:to-purple-800 hover:shadow-lg hover:shadow-purple-500/30 active:scale-95 disabled:opacity-50 sm:w-auto',
+                                        processing && 'animate-pulse',
+                                    )}
+                                >
+                                    {processing ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                            Partilhando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Sparkles className="h-4 w-4" />
+                                            Partilhar Hunt
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        </form>
+                    )}
+                </CardContent>
+            </Card>
+        </UnsavedChangesGuard>
     );
 }

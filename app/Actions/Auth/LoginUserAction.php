@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Actions\Auth;
 
 use App\DataTransferObjects\Auth\LoginCredentials;
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -24,6 +26,29 @@ final readonly class LoginUserAction
         $throttleKey = $this->getThrottleKey($credentials->email, $ip);
 
         $this->ensureIsNotRateLimited($throttleKey);
+
+        $user = User::query()
+            ->where('email', $credentials->email)->first();
+
+        if (! $user || ! Hash::check($credentials->password, $user->password ?? '')) {
+            RateLimiter::hit($throttleKey);
+
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
+
+        if (! is_null($user->two_factor_secret) && ! is_null($user->two_factor_confirmed_at)) {
+
+            request()->session()->put([
+                'login.id' => $user->id,
+                'login.remember' => $credentials->remember,
+            ]);
+
+            RateLimiter::clear($throttleKey);
+
+            return false;
+        }
 
         if (! Auth::attempt($credentials->toArray(), $credentials->remember)) {
             RateLimiter::hit($throttleKey);

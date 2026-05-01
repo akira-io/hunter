@@ -2,221 +2,191 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Actions\Settings;
-
 use Akira\LaravelAuthLogs\AuthenticationLog;
 use App\Actions\Settings\ActiveSessionsAction;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-final class ActiveSessionsActionTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    $this->action = new ActiveSessionsAction();
+});
 
-    private ActiveSessionsAction $action;
+it('returns only most recent session per ip', function () {
+    $user = User::factory()->create();
+    $sameIp = '192.168.1.1';
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->action = new ActiveSessionsAction();
-    }
+    $oldSession = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $sameIp,
+        'user_agent' => 'Mozilla/5.0 (Old Browser)',
+        'login_at' => now()->subHours(2),
+        'logout_at' => null,
+    ]);
 
-    public function test_returns_only_most_recent_session_per_ip(): void
-    {
-        $user = User::factory()->create();
-        $sameIp = '192.168.1.1';
+    $middleSession = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $sameIp,
+        'user_agent' => 'Mozilla/5.0 (Middle Browser)',
+        'login_at' => now()->subHour(),
+        'logout_at' => null,
+    ]);
 
-        // Create multiple sessions with the same IP at different times
-        $oldSession = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $sameIp,
-            'user_agent' => 'Mozilla/5.0 (Old Browser)',
-            'login_at' => now()->subHours(2),
-            'logout_at' => null,
-        ]);
+    $recentSession = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $sameIp,
+        'user_agent' => 'Mozilla/5.0 (Recent Browser)',
+        'login_at' => now(),
+        'logout_at' => null,
+    ]);
 
-        $middleSession = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $sameIp,
-            'user_agent' => 'Mozilla/5.0 (Middle Browser)',
-            'login_at' => now()->subHour(),
-            'logout_at' => null,
-        ]);
+    $sessions = $this->action->handle($user);
 
-        $recentSession = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $sameIp,
-            'user_agent' => 'Mozilla/5.0 (Recent Browser)',
-            'login_at' => now(),
-            'logout_at' => null,
-        ]);
+    expect($sessions->count())->toBe(1);
+    expect($sessions->first()['id'])->toBe($recentSession->id);
+    expect($sessions->first()['ip_address'])->toBe($sameIp);
+});
 
-        $sessions = $this->action->handle($user);
+it('returns multiple sessions with different ips', function () {
+    $user = User::factory()->create();
 
-        // Should return only 1 session (the most recent one)
-        $this->assertCount(1, $sessions);
-        $this->assertEquals($recentSession->id, $sessions->first()['id']);
-        $this->assertEquals($sameIp, $sessions->first()['ip_address']);
-    }
+    $session1 = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => '192.168.1.1',
+        'user_agent' => 'Mozilla/5.0 (Browser 1)',
+        'login_at' => now()->subHour(),
+        'logout_at' => null,
+    ]);
 
-    public function test_returns_multiple_sessions_with_different_ips(): void
-    {
-        $user = User::factory()->create();
+    $session2 = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => '192.168.1.2',
+        'user_agent' => 'Mozilla/5.0 (Browser 2)',
+        'login_at' => now(),
+        'logout_at' => null,
+    ]);
 
-        // Create sessions with different IPs
-        $session1 = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => '192.168.1.1',
-            'user_agent' => 'Mozilla/5.0 (Browser 1)',
-            'login_at' => now()->subHour(),
-            'logout_at' => null,
-        ]);
+    $sessions = $this->action->handle($user);
 
-        $session2 = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => '192.168.1.2',
-            'user_agent' => 'Mozilla/5.0 (Browser 2)',
-            'login_at' => now(),
-            'logout_at' => null,
-        ]);
+    expect($sessions->count())->toBe(2);
+});
 
-        $sessions = $this->action->handle($user);
+it('excludes logged out sessions', function () {
+    $user = User::factory()->create();
 
-        // Should return both sessions since they have different IPs
-        $this->assertCount(2, $sessions);
-    }
+    $activeSession = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => '192.168.1.1',
+        'user_agent' => 'Mozilla/5.0 (Active)',
+        'login_at' => now(),
+        'logout_at' => null,
+    ]);
 
-    public function test_excludes_logged_out_sessions(): void
-    {
-        $user = User::factory()->create();
+    $loggedOutSession = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => '192.168.1.2',
+        'user_agent' => 'Mozilla/5.0 (Logged Out)',
+        'login_at' => now()->subHour(),
+        'logout_at' => now(),
+    ]);
 
-        // Create active session
-        $activeSession = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => '192.168.1.1',
-            'user_agent' => 'Mozilla/5.0 (Active)',
-            'login_at' => now(),
-            'logout_at' => null,
-        ]);
+    $sessions = $this->action->handle($user);
 
-        // Create logged out session
-        $loggedOutSession = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => '192.168.1.2',
-            'user_agent' => 'Mozilla/5.0 (Logged Out)',
-            'login_at' => now()->subHour(),
-            'logout_at' => now(),
-        ]);
+    expect($sessions->count())->toBe(1);
+    expect($sessions->first()['id'])->toBe($activeSession->id);
+});
 
-        $sessions = $this->action->handle($user);
+it('marks current session correctly', function () {
+    $user = User::factory()->create();
+    $currentIp = request()->ip();
 
-        // Should return only the active session
-        $this->assertCount(1, $sessions);
-        $this->assertEquals($activeSession->id, $sessions->first()['id']);
-    }
+    AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $currentIp,
+        'user_agent' => 'Mozilla/5.0 (Current)',
+        'login_at' => now(),
+        'logout_at' => null,
+    ]);
 
-    public function test_marks_current_session_correctly(): void
-    {
-        $user = User::factory()->create();
-        $currentIp = request()->ip();
+    AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => '192.168.1.99',
+        'user_agent' => 'Mozilla/5.0 (Other)',
+        'login_at' => now(),
+        'logout_at' => null,
+    ]);
 
-        // Create session with current IP
-        AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $currentIp,
-            'user_agent' => 'Mozilla/5.0 (Current)',
-            'login_at' => now(),
-            'logout_at' => null,
-        ]);
+    $sessions = $this->action->handle($user);
 
-        // Create session with different IP
-        AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => '192.168.1.99',
-            'user_agent' => 'Mozilla/5.0 (Other)',
-            'login_at' => now(),
-            'logout_at' => null,
-        ]);
+    $currentSession = $sessions->firstWhere('ip_address', $currentIp);
+    $otherSession = $sessions->firstWhere('ip_address', '192.168.1.99');
 
-        $sessions = $this->action->handle($user);
+    expect($currentSession['is_current'])->toBeTrue();
+    expect($otherSession['is_current'])->toBeFalse();
+});
 
-        $currentSession = $sessions->firstWhere('ip_address', $currentIp);
-        $otherSession = $sessions->firstWhere('ip_address', '192.168.1.99');
+it('handles duplicate ips and returns most recent', function () {
+    $user = User::factory()->create();
+    $ip1 = '192.168.1.1';
+    $ip2 = '192.168.1.2';
 
-        $this->assertTrue($currentSession['is_current']);
-        $this->assertFalse($otherSession['is_current']);
-    }
+    AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $ip1,
+        'user_agent' => 'Mozilla/5.0 (Old)',
+        'login_at' => now()->subHours(3),
+        'logout_at' => null,
+    ]);
 
-    public function test_handles_duplicate_ips_and_returns_most_recent(): void
-    {
-        $user = User::factory()->create();
-        $ip1 = '192.168.1.1';
-        $ip2 = '192.168.1.2';
+    AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $ip1,
+        'user_agent' => 'Mozilla/5.0 (Middle)',
+        'login_at' => now()->subHours(2),
+        'logout_at' => null,
+    ]);
 
-        // Create 3 sessions for IP1 (should keep most recent)
-        AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $ip1,
-            'user_agent' => 'Mozilla/5.0 (Old)',
-            'login_at' => now()->subHours(3),
-            'logout_at' => null,
-        ]);
+    $mostRecentIp1 = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $ip1,
+        'user_agent' => 'Mozilla/5.0 (Recent)',
+        'login_at' => now()->subHour(),
+        'logout_at' => null,
+    ]);
 
-        AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $ip1,
-            'user_agent' => 'Mozilla/5.0 (Middle)',
-            'login_at' => now()->subHours(2),
-            'logout_at' => null,
-        ]);
+    AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $ip2,
+        'user_agent' => 'Mozilla/5.0 (Old IP2)',
+        'login_at' => now()->subMinutes(30),
+        'logout_at' => null,
+    ]);
 
-        $mostRecentIp1 = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $ip1,
-            'user_agent' => 'Mozilla/5.0 (Recent)',
-            'login_at' => now()->subHour(),
-            'logout_at' => null,
-        ]);
+    $mostRecentIp2 = AuthenticationLog::forceCreate([
+        'authenticatable_type' => User::class,
+        'authenticatable_id' => $user->id,
+        'ip_address' => $ip2,
+        'user_agent' => 'Mozilla/5.0 (Recent IP2)',
+        'login_at' => now(),
+        'logout_at' => null,
+    ]);
 
-        // Create 2 sessions for IP2 (should keep most recent)
-        AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $ip2,
-            'user_agent' => 'Mozilla/5.0 (Old IP2)',
-            'login_at' => now()->subMinutes(30),
-            'logout_at' => null,
-        ]);
+    $sessions = $this->action->handle($user);
 
-        $mostRecentIp2 = AuthenticationLog::forceCreate([
-            'authenticatable_type' => User::class,
-            'authenticatable_id' => $user->id,
-            'ip_address' => $ip2,
-            'user_agent' => 'Mozilla/5.0 (Recent IP2)',
-            'login_at' => now(),
-            'logout_at' => null,
-        ]);
+    expect($sessions->count())->toBe(2);
 
-        $sessions = $this->action->handle($user);
-
-        // Should return only 2 sessions (one per IP)
-        $this->assertCount(2, $sessions);
-
-        $sessionIds = $sessions->pluck('id')->toArray();
-        $this->assertContains($mostRecentIp1->id, $sessionIds);
-        $this->assertContains($mostRecentIp2->id, $sessionIds);
-    }
-}
+    $sessionIds = $sessions->pluck('id')->toArray();
+    expect($sessionIds)->toContain($mostRecentIp1->id);
+    expect($sessionIds)->toContain($mostRecentIp2->id);
+});

@@ -14,7 +14,7 @@ export function SectionHeader({
     return (
         <div
             data-slot="section-header"
-            className={cn('mb-4 px-4', className)}
+            className={cn('mb-4 px-0 sm:px-4', className)}
             {...props}
         >
             <h2 className="text-2xl font-bold">{title}</h2>

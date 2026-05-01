@@ -105,9 +105,15 @@ final class Hunt extends Model implements HasMedia
 
     /**
      * Increment the views count for the hunt.
+     * Views from the hunt owner are not counted.
      */
-    public function incrementViews(): void
+    public function incrementViews(?int $userId = null): void
     {
+        // Don't count views from the hunt owner
+        if ($userId !== null && $userId === $this->owner_id) {
+            return;
+        }
+
         // Remove has_liked from attributes to prevent saving it
         unset($this->attributes['has_liked']);
 

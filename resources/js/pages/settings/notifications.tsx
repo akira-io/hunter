@@ -1,5 +1,12 @@
 import notificationController from '@/actions/App/Http/Controllers/Settings/NotificationController';
 import HeadingSmall from '@/components/heading-small';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
@@ -115,7 +122,7 @@ export default function Notifications({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notificações - Definições" />
             <SettingsLayout>
-                <div className="space-y-4 sm:space-y-6">
+                <div className="space-y-4">
                     <HeadingSmall
                         title="Notificações"
                         description="Gerencie como você recebe notificações"
@@ -137,287 +144,300 @@ export default function Notifications({
                             </p>
                         </div>
                     </div>
-                    <div className="space-y-4 sm:space-y-6">
-                        {/* Follow Notifications (In-App) */}
-                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
-                            <div className="flex gap-3">
-                                <div
-                                    className={cn(
-                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
-                                        data.follow_notifications
-                                            ? 'bg-purple-500/20'
-                                            : 'bg-muted',
-                                    )}
-                                >
-                                    <User
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Geral</CardTitle>
+                            <CardDescription>
+                                Gerencie suas preferências de notificações
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {/* Follow Notifications (In-App) */}
+                            <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                                <div className="flex gap-3">
+                                    <div
                                         className={cn(
-                                            'h-5 w-5 transition-all duration-300',
+                                            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
                                             data.follow_notifications
-                                                ? 'text-purple-500'
-                                                : 'text-muted-foreground',
+                                                ? 'bg-purple-500/20'
+                                                : 'bg-muted',
                                         )}
-                                    />
-                                </div>
-                                <div className="flex-1 space-y-1">
-                                    <Label
-                                        htmlFor="follow_notifications"
-                                        className="cursor-pointer text-base font-medium"
                                     >
-                                        Notificações de Seguidores (No App)
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Receba notificações no aplicativo quando
-                                        alguém começar a te seguir
-                                    </p>
+                                        <User
+                                            className={cn(
+                                                'h-5 w-5 transition-all duration-300',
+                                                data.follow_notifications
+                                                    ? 'text-purple-500'
+                                                    : 'text-muted-foreground',
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <Label
+                                            htmlFor="follow_notifications"
+                                            className="cursor-pointer text-base font-medium"
+                                        >
+                                            Notificações de Seguidores (No App)
+                                        </Label>
+                                        <p className="text-sm text-muted-foreground">
+                                            Receba notificações no aplicativo
+                                            quando alguém começar a te seguir
+                                        </p>
+                                    </div>
                                 </div>
+                                <Switch
+                                    id="follow_notifications"
+                                    checked={data.follow_notifications}
+                                    onCheckedChange={(checked) =>
+                                        handleToggleChange(
+                                            'follow_notifications',
+                                            checked,
+                                        )
+                                    }
+                                />
                             </div>
-                            <Switch
-                                id="follow_notifications"
-                                checked={data.follow_notifications}
-                                onCheckedChange={(checked) =>
-                                    handleToggleChange(
-                                        'follow_notifications',
-                                        checked,
-                                    )
-                                }
-                            />
-                        </div>
 
-                        {/* Browser Notifications */}
-                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
-                            <div className="flex gap-3">
-                                <div
-                                    className={cn(
-                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
-                                        data.browser_notifications
-                                            ? 'bg-purple-500/20'
-                                            : 'bg-muted',
-                                    )}
-                                >
-                                    <Bell
+                            {/* Browser Notifications */}
+                            <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                                <div className="flex gap-3">
+                                    <div
                                         className={cn(
-                                            'h-5 w-5 transition-all duration-300',
+                                            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
                                             data.browser_notifications
-                                                ? 'text-purple-500'
-                                                : 'text-muted-foreground',
+                                                ? 'bg-purple-500/20'
+                                                : 'bg-muted',
                                         )}
-                                    />
-                                </div>
-                                <div className="flex-1 space-y-1">
-                                    <Label
-                                        htmlFor="browser_notifications"
-                                        className="cursor-pointer text-base font-medium"
                                     >
-                                        Notificações em tempo real
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Receba notificações em tempo real para
-                                        todas as atividades
-                                    </p>
+                                        <Bell
+                                            className={cn(
+                                                'h-5 w-5 transition-all duration-300',
+                                                data.browser_notifications
+                                                    ? 'text-purple-500'
+                                                    : 'text-muted-foreground',
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <Label
+                                            htmlFor="browser_notifications"
+                                            className="cursor-pointer text-base font-medium"
+                                        >
+                                            Notificações em tempo real
+                                        </Label>
+                                        <p className="text-sm text-muted-foreground">
+                                            Receba notificações em tempo real
+                                            para todas as atividades
+                                        </p>
+                                    </div>
                                 </div>
+                                <Switch
+                                    id="browser_notifications"
+                                    checked={data.browser_notifications}
+                                    onCheckedChange={(checked) =>
+                                        handleToggleChange(
+                                            'browser_notifications',
+                                            checked,
+                                        )
+                                    }
+                                />
                             </div>
-                            <Switch
-                                id="browser_notifications"
-                                checked={data.browser_notifications}
-                                onCheckedChange={(checked) =>
-                                    handleToggleChange(
-                                        'browser_notifications',
-                                        checked,
-                                    )
-                                }
-                            />
-                        </div>
 
-                        {/* Email Notifications */}
-                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
-                            <div className="flex gap-3">
-                                <div
-                                    className={cn(
-                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
-                                        data.email_notifications
-                                            ? 'bg-purple-500/20'
-                                            : 'bg-muted',
-                                    )}
-                                >
-                                    <Mail
+                            {/* Email Notifications */}
+                            <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                                <div className="flex gap-3">
+                                    <div
                                         className={cn(
-                                            'h-5 w-5 transition-all duration-300',
+                                            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
                                             data.email_notifications
-                                                ? 'text-purple-500'
-                                                : 'text-muted-foreground',
+                                                ? 'bg-purple-500/20'
+                                                : 'bg-muted',
                                         )}
-                                    />
-                                </div>
-                                <div className="flex-1 space-y-1">
-                                    <Label
-                                        htmlFor="email_notifications"
-                                        className="cursor-pointer text-base font-medium"
                                     >
-                                        Notificações por Email
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Receba resumos e atualizações
-                                        importantes por email para todas as
-                                        atividades
-                                    </p>
+                                        <Mail
+                                            className={cn(
+                                                'h-5 w-5 transition-all duration-300',
+                                                data.email_notifications
+                                                    ? 'text-purple-500'
+                                                    : 'text-muted-foreground',
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <Label
+                                            htmlFor="email_notifications"
+                                            className="cursor-pointer text-base font-medium"
+                                        >
+                                            Notificações por Email
+                                        </Label>
+                                        <p className="text-sm text-muted-foreground">
+                                            Receba resumos e atualizações
+                                            importantes por email para todas as
+                                            atividades
+                                        </p>
+                                    </div>
                                 </div>
+                                <Switch
+                                    id="email_notifications"
+                                    checked={data.email_notifications}
+                                    onCheckedChange={(checked) =>
+                                        handleToggleChange(
+                                            'email_notifications',
+                                            checked,
+                                        )
+                                    }
+                                />
                             </div>
-                            <Switch
-                                id="email_notifications"
-                                checked={data.email_notifications}
-                                onCheckedChange={(checked) =>
-                                    handleToggleChange(
-                                        'email_notifications',
-                                        checked,
-                                    )
-                                }
-                            />
-                        </div>
 
-                        {/* Divider */}
-                        <div className="border-t pt-4">
-                            <h3 className="mb-4 text-lg font-semibold">
-                                Notificações de Hunts
-                            </h3>
-                        </div>
+                            {/* Divider */}
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Hunts</CardTitle>
+                            <CardDescription>
+                                Notificações relacionadas a novos hunts
+                            </CardDescription>
+                        </CardHeader>
 
-                        {/* Hunt Notifications - In App */}
-                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
-                            <div className="flex gap-3">
-                                <div
-                                    className={cn(
-                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
-                                        data.hunt_notifications_in_app
-                                            ? 'bg-purple-500/20'
-                                            : 'bg-muted',
-                                    )}
-                                >
-                                    <Megaphone
+                        <CardContent className="space-y-4">
+                            {/* Hunt Notifications - In App */}
+                            <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                                <div className="flex gap-3">
+                                    <div
                                         className={cn(
-                                            'h-5 w-5 transition-all duration-300',
+                                            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
                                             data.hunt_notifications_in_app
-                                                ? 'text-purple-500'
-                                                : 'text-muted-foreground',
+                                                ? 'bg-purple-500/20'
+                                                : 'bg-muted',
                                         )}
-                                    />
-                                </div>
-                                <div className="flex-1 space-y-1">
-                                    <Label
-                                        htmlFor="hunt_notifications_in_app"
-                                        className="cursor-pointer text-base font-medium"
                                     >
-                                        Novos Hunts (No App)
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Receba notificações no app quando
-                                        hunters que você segue publicarem novos
-                                        hunts
-                                    </p>
+                                        <Megaphone
+                                            className={cn(
+                                                'h-5 w-5 transition-all duration-300',
+                                                data.hunt_notifications_in_app
+                                                    ? 'text-purple-500'
+                                                    : 'text-muted-foreground',
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <Label
+                                            htmlFor="hunt_notifications_in_app"
+                                            className="cursor-pointer text-base font-medium"
+                                        >
+                                            Novos Hunts (No App)
+                                        </Label>
+                                        <p className="text-sm text-muted-foreground">
+                                            Receba notificações no app quando
+                                            hunters que você segue publicarem
+                                            novos hunts
+                                        </p>
+                                    </div>
                                 </div>
+                                <Switch
+                                    id="hunt_notifications_in_app"
+                                    checked={data.hunt_notifications_in_app}
+                                    onCheckedChange={(checked) =>
+                                        handleToggleChange(
+                                            'hunt_notifications_in_app',
+                                            checked,
+                                        )
+                                    }
+                                />
                             </div>
-                            <Switch
-                                id="hunt_notifications_in_app"
-                                checked={data.hunt_notifications_in_app}
-                                onCheckedChange={(checked) =>
-                                    handleToggleChange(
-                                        'hunt_notifications_in_app',
-                                        checked,
-                                    )
-                                }
-                            />
-                        </div>
 
-                        {/* Hunt Notifications - Browser */}
-                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
-                            <div className="flex gap-3">
-                                <div
-                                    className={cn(
-                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
-                                        data.hunt_notifications_browser
-                                            ? 'bg-purple-500/20'
-                                            : 'bg-muted',
-                                    )}
-                                >
-                                    <Bell
+                            {/* Hunt Notifications - Browser */}
+                            <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                                <div className="flex gap-3">
+                                    <div
                                         className={cn(
-                                            'h-5 w-5 transition-all duration-300',
+                                            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
                                             data.hunt_notifications_browser
-                                                ? 'text-purple-500'
-                                                : 'text-muted-foreground',
+                                                ? 'bg-purple-500/20'
+                                                : 'bg-muted',
                                         )}
-                                    />
-                                </div>
-                                <div className="flex-1 space-y-1">
-                                    <Label
-                                        htmlFor="hunt_notifications_browser"
-                                        className="cursor-pointer text-base font-medium"
                                     >
-                                        Novos Hunts (Tempo Real)
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Receba notificações em tempo real quando
-                                        novos hunts forem publicados
-                                    </p>
+                                        <Bell
+                                            className={cn(
+                                                'h-5 w-5 transition-all duration-300',
+                                                data.hunt_notifications_browser
+                                                    ? 'text-purple-500'
+                                                    : 'text-muted-foreground',
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <Label
+                                            htmlFor="hunt_notifications_browser"
+                                            className="cursor-pointer text-base font-medium"
+                                        >
+                                            Novos Hunts (Tempo Real)
+                                        </Label>
+                                        <p className="text-sm text-muted-foreground">
+                                            Receba notificações em tempo real
+                                            quando novos hunts forem publicados
+                                        </p>
+                                    </div>
                                 </div>
+                                <Switch
+                                    id="hunt_notifications_browser"
+                                    checked={data.hunt_notifications_browser}
+                                    onCheckedChange={(checked) =>
+                                        handleToggleChange(
+                                            'hunt_notifications_browser',
+                                            checked,
+                                        )
+                                    }
+                                />
                             </div>
-                            <Switch
-                                id="hunt_notifications_browser"
-                                checked={data.hunt_notifications_browser}
-                                onCheckedChange={(checked) =>
-                                    handleToggleChange(
-                                        'hunt_notifications_browser',
-                                        checked,
-                                    )
-                                }
-                            />
-                        </div>
 
-                        {/* Hunt Notifications - Email */}
-                        <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
-                            <div className="flex gap-3">
-                                <div
-                                    className={cn(
-                                        'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
-                                        data.hunt_notifications_email
-                                            ? 'bg-purple-500/20'
-                                            : 'bg-muted',
-                                    )}
-                                >
-                                    <Mail
+                            {/* Hunt Notifications - Email */}
+                            <div className="gradient group relative flex items-start justify-between gap-4 rounded-lg border p-4 transition-all">
+                                <div className="flex gap-3">
+                                    <div
                                         className={cn(
-                                            'h-5 w-5 transition-all duration-300',
+                                            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300',
                                             data.hunt_notifications_email
-                                                ? 'text-purple-500'
-                                                : 'text-muted-foreground',
+                                                ? 'bg-purple-500/20'
+                                                : 'bg-muted',
                                         )}
-                                    />
-                                </div>
-                                <div className="flex-1 space-y-1">
-                                    <Label
-                                        htmlFor="hunt_notifications_email"
-                                        className="cursor-pointer text-base font-medium"
                                     >
-                                        Novos Hunts (Email)
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Receba emails quando hunters que você
-                                        segue publicarem novos hunts
-                                        (recomendado: desativado)
-                                    </p>
+                                        <Mail
+                                            className={cn(
+                                                'h-5 w-5 transition-all duration-300',
+                                                data.hunt_notifications_email
+                                                    ? 'text-purple-500'
+                                                    : 'text-muted-foreground',
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <Label
+                                            htmlFor="hunt_notifications_email"
+                                            className="cursor-pointer text-base font-medium"
+                                        >
+                                            Novos Hunts (Email)
+                                        </Label>
+                                        <p className="text-sm text-muted-foreground">
+                                            Receba emails quando hunters que
+                                            você segue publicarem novos hunts
+                                            (recomendado: desativado)
+                                        </p>
+                                    </div>
                                 </div>
+                                <Switch
+                                    id="hunt_notifications_email"
+                                    checked={data.hunt_notifications_email}
+                                    onCheckedChange={(checked) =>
+                                        handleToggleChange(
+                                            'hunt_notifications_email',
+                                            checked,
+                                        )
+                                    }
+                                />
                             </div>
-                            <Switch
-                                id="hunt_notifications_email"
-                                checked={data.hunt_notifications_email}
-                                onCheckedChange={(checked) =>
-                                    handleToggleChange(
-                                        'hunt_notifications_email',
-                                        checked,
-                                    )
-                                }
-                            />
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </SettingsLayout>
         </AppLayout>

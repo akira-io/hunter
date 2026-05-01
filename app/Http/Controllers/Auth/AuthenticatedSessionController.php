@@ -44,7 +44,11 @@ final readonly class AuthenticatedSessionController
             ip: (string) $request->ip()
         );
 
-        $loginUserAction->handle($loginCredentials);
+        $loggedIn = $loginUserAction->handle($loginCredentials);
+
+        if (! $loggedIn) {
+            return redirect()->route('two-factor.login');
+        }
 
         $request->session()->regenerate();
 
@@ -68,5 +72,17 @@ final readonly class AuthenticatedSessionController
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * Cancel two-factor authentication challenge.
+     */
+    public function cancelTwoFactor(Request $request): RedirectResponse
+    {
+        $request->session()->forget(['login.id', 'login.remember']);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home');
     }
 }
